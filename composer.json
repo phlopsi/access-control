@@ -1,0 +1,19 @@
+{
+    "name": "phlopsi/rbac",
+    "description": "Access control API",
+    "minimum-stability": "alpha",
+    "require": {
+        "propel/propel": "~2.0"
+    },
+    "authors": [
+        {
+            "name": "Patrick Fischer",
+            "email": "nbphobos@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "org\\bitbucket\\phlopsi\\access_control\\": "src/org/bitbucket/phlopsi/access_control/"
+        }
+    }
+}

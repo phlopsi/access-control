@@ -1,0 +1,11 @@
+/vendor/
+/composer.lock
+/tests/phpunit-skelgen.php
+/tests/phpunit-skelgen.phar
+/tests/configuration.xml
+/tests/bootstrap.php
+/phpmd.phar
+/nbproject/project.xml
+/nbproject/project.properties
+/tests/
+/nbproject/
