@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://xsd.propelorm.org/1.6/database.xsd"
     name="access_control"
     defaultIdMethod="native"
     namespace="org\bitbucket\phlopsi\access_control\propel"

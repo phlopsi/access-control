@@ -1,9 +1,8 @@
 {
     "name": "phlopsi/rbac",
     "description": "Access control API",
-    "minimum-stability": "alpha",
     "require": {
-        "propel/propel": "~2.0"
+        "propel/propel": "~2.0@alpha"
     },
     "authors": [
         {
