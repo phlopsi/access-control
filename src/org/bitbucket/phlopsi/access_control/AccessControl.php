@@ -33,8 +33,8 @@ use org\bitbucket\phlopsi\access_control\propel\UserQuery as PropelUserQuery;
 
 class AccessControl
 {
-    private static $roles = [];
-    private static $users = [];
+    private $roles = [];
+    private $users = [];
 
     public function createPermission($permission_id)
     {
@@ -63,7 +63,7 @@ class AccessControl
             throw new \InvalidArgumentException('$role_id converts to an empty string!');
         }
 
-        if (\array_key_exists($role_id, self::$roles)) {
+        if (\array_key_exists($role_id, $this->roles)) {
             throw new EntityAlreadyExistsException('Role "' . $role_id . '" already exists!');
         }
 
@@ -77,9 +77,9 @@ class AccessControl
         $new_role->setExternalId($role_id);
         $new_role->save();
 
-        self::$roles[$role_id] = new Role($new_role);
+        $this->roles[$role_id] = new Role($new_role);
 
-        return self::$roles[$role_id];
+        return $this->roles[$role_id];
     }
 
     public function createUser($user_id)
@@ -90,7 +90,7 @@ class AccessControl
             throw new \InvalidArgumentException('$user_id converts to an empty string!');
         }
 
-        if (\array_key_exists($user_id, self::$users)) {
+        if (\array_key_exists($user_id, $this->users)) {
             throw new EntityAlreadyExistsException('User "' . $user_id . '" already exists!');
         }
 
@@ -104,9 +104,9 @@ class AccessControl
         $new_user->setExternalId($user_id);
         $new_user->save();
 
-        self::$users[$user_id] = new User($new_user);
+        $this->users[$user_id] = new User($new_user);
 
-        return self::$users[$user_id];
+        return $this->users[$user_id];
     }
 
     public function deletePermission($permission_id)
@@ -130,8 +130,8 @@ class AccessControl
             throw new \InvalidArgumentException('$role_id converts to an empty string!');
         }
 
-        if (\array_key_exists($role_id, self::$roles)) {
-            unset(self::$roles[$role_id]);
+        if (\array_key_exists($role_id, $this->roles)) {
+            unset($this->roles[$role_id]);
         }
 
         PropelRoleQuery::create()
@@ -147,8 +147,8 @@ class AccessControl
             throw new \InvalidArgumentException('$user_id converts to an empty string!');
         }
 
-        if (\array_key_exists($user_id, self::$users)) {
-            unset(self::$users[$user_id]);
+        if (\array_key_exists($user_id, $this->users)) {
+            unset($this->users[$user_id]);
         }
 
         PropelUserQuery::create()
@@ -164,17 +164,17 @@ class AccessControl
             throw new \InvalidArgumentException('$role_id converts to an empty string!');
         }
 
-        if (!\array_key_exists($role_id, self::$roles)) {
+        if (!\array_key_exists($role_id, $this->roles)) {
             $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
 
             if (is_null($role)) {
                 throw new EntityNotFoundException('Role "' . $role_id . '" not found!');
             }
 
-            self::$roles[$role_id] = new Role($role);
+            $this->roles[$role_id] = new Role($role);
         }
 
-        return self::$roles[$role_id];
+        return $this->roles[$role_id];
     }
 
     public function retrieveUser($user_id)
@@ -185,17 +185,17 @@ class AccessControl
             throw new \InvalidArgumentException('$user_id converts to an empty string!');
         }
 
-        if (!\array_key_exists($user_id, self::$users)) {
+        if (!\array_key_exists($user_id, $this->users)) {
             $user = PropelUserQuery::create()->findOneByExternalId($user_id);
 
             if (is_null($user)) {
                 throw new EntityNotFoundException('User "' . $user_id . '" not found!');
             }
 
-            self::$users[$user_id] = new User($user);
+            $this->users[$user_id] = new User($user);
         }
 
-        return self::$users[$user_id];
+        return $this->users[$user_id];
     }
 
 }
