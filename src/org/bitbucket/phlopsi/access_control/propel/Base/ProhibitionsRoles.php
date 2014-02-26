@@ -14,8 +14,8 @@ use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use org\bitbucket\phlopsi\access_control\propel\Permission as ChildPermission;
-use org\bitbucket\phlopsi\access_control\propel\PermissionQuery as ChildPermissionQuery;
+use org\bitbucket\phlopsi\access_control\propel\Prohibition as ChildProhibition;
+use org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery as ChildProhibitionQuery;
 use org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery as ChildProhibitionsRolesQuery;
 use org\bitbucket\phlopsi\access_control\propel\Role as ChildRole;
 use org\bitbucket\phlopsi\access_control\propel\RoleQuery as ChildRoleQuery;
@@ -68,9 +68,9 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
     protected $roles_id;
 
     /**
-     * @var        Permission
+     * @var        Prohibition
      */
-    protected $aPermission;
+    protected $aProhibition;
 
     /**
      * @var        Role
@@ -348,7 +348,7 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getprohibitionId()
+    public function getProhibitionId()
     {
 
         return $this->prohibitions_id;
@@ -359,7 +359,7 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getroleId()
+    public function getRoleId()
     {
 
         return $this->roles_id;
@@ -371,7 +371,7 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles The current object (for fluent API support)
      */
-    public function setprohibitionId($v)
+    public function setProhibitionId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -382,13 +382,13 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
             $this->modifiedColumns[] = ProhibitionsRolesTableMap::PROHIBITIONS_ID;
         }
 
-        if ($this->aPermission !== null && $this->aPermission->getId() !== $v) {
-            $this->aPermission = null;
+        if ($this->aProhibition !== null && $this->aProhibition->getId() !== $v) {
+            $this->aProhibition = null;
         }
 
 
         return $this;
-    } // setprohibitionId()
+    } // setProhibitionId()
 
     /**
      * Set the value of [roles_id] column.
@@ -396,7 +396,7 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles The current object (for fluent API support)
      */
-    public function setroleId($v)
+    public function setRoleId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -413,7 +413,7 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
 
 
         return $this;
-    } // setroleId()
+    } // setRoleId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -452,10 +452,10 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProhibitionsRolesTableMap::translateFieldName('prohibitionId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProhibitionsRolesTableMap::translateFieldName('ProhibitionId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->prohibitions_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProhibitionsRolesTableMap::translateFieldName('roleId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProhibitionsRolesTableMap::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->roles_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -487,8 +487,8 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aPermission !== null && $this->prohibitions_id !== $this->aPermission->getId()) {
-            $this->aPermission = null;
+        if ($this->aProhibition !== null && $this->prohibitions_id !== $this->aProhibition->getId()) {
+            $this->aProhibition = null;
         }
         if ($this->aRole !== null && $this->roles_id !== $this->aRole->getId()) {
             $this->aRole = null;
@@ -532,7 +532,7 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aPermission = null;
+            $this->aProhibition = null;
             $this->aRole = null;
         } // if (deep)
     }
@@ -650,11 +650,11 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aPermission !== null) {
-                if ($this->aPermission->isModified() || $this->aPermission->isNew()) {
-                    $affectedRows += $this->aPermission->save($con);
+            if ($this->aProhibition !== null) {
+                if ($this->aProhibition->isModified() || $this->aProhibition->isNew()) {
+                    $affectedRows += $this->aProhibition->save($con);
                 }
-                $this->setPermission($this->aPermission);
+                $this->setProhibition($this->aProhibition);
             }
 
             if ($this->aRole !== null) {
@@ -776,10 +776,10 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getprohibitionId();
+                return $this->getProhibitionId();
                 break;
             case 1:
-                return $this->getroleId();
+                return $this->getRoleId();
                 break;
             default:
                 return null;
@@ -810,8 +810,8 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
         $alreadyDumpedObjects['ProhibitionsRoles'][serialize($this->getPrimaryKey())] = true;
         $keys = ProhibitionsRolesTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getprohibitionId(),
-            $keys[1] => $this->getroleId(),
+            $keys[0] => $this->getProhibitionId(),
+            $keys[1] => $this->getRoleId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -819,8 +819,8 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aPermission) {
-                $result['Permission'] = $this->aPermission->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            if (null !== $this->aProhibition) {
+                $result['Prohibition'] = $this->aProhibition->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aRole) {
                 $result['Role'] = $this->aRole->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -860,10 +860,10 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setprohibitionId($value);
+                $this->setProhibitionId($value);
                 break;
             case 1:
-                $this->setroleId($value);
+                $this->setRoleId($value);
                 break;
         } // switch()
     }
@@ -889,8 +889,8 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
     {
         $keys = ProhibitionsRolesTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setprohibitionId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setroleId($arr[$keys[1]]);
+        if (array_key_exists($keys[0], $arr)) $this->setProhibitionId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setRoleId($arr[$keys[1]]);
     }
 
     /**
@@ -933,8 +933,8 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
     public function getPrimaryKey()
     {
         $pks = array();
-        $pks[0] = $this->getprohibitionId();
-        $pks[1] = $this->getroleId();
+        $pks[0] = $this->getProhibitionId();
+        $pks[1] = $this->getRoleId();
 
         return $pks;
     }
@@ -947,8 +947,8 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
      */
     public function setPrimaryKey($keys)
     {
-        $this->setprohibitionId($keys[0]);
-        $this->setroleId($keys[1]);
+        $this->setProhibitionId($keys[0]);
+        $this->setRoleId($keys[1]);
     }
 
     /**
@@ -958,7 +958,7 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return (null === $this->getprohibitionId()) && (null === $this->getroleId());
+        return (null === $this->getProhibitionId()) && (null === $this->getRoleId());
     }
 
     /**
@@ -974,8 +974,8 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setprohibitionId($this->getprohibitionId());
-        $copyObj->setroleId($this->getroleId());
+        $copyObj->setProhibitionId($this->getProhibitionId());
+        $copyObj->setRoleId($this->getRoleId());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1004,24 +1004,24 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildPermission object.
+     * Declares an association between this object and a ChildProhibition object.
      *
-     * @param                  ChildPermission $v
+     * @param                  ChildProhibition $v
      * @return                 \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setPermission(ChildPermission $v = null)
+    public function setProhibition(ChildProhibition $v = null)
     {
         if ($v === null) {
-            $this->setprohibitionId(NULL);
+            $this->setProhibitionId(NULL);
         } else {
-            $this->setprohibitionId($v->getId());
+            $this->setProhibitionId($v->getId());
         }
 
-        $this->aPermission = $v;
+        $this->aProhibition = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildPermission object, it will not be re-added.
+        // If this object has already been added to the ChildProhibition object, it will not be re-added.
         if ($v !== null) {
             $v->addProhibitionsRoles($this);
         }
@@ -1032,26 +1032,26 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildPermission object
+     * Get the associated ChildProhibition object
      *
      * @param      ConnectionInterface $con Optional Connection object.
-     * @return                 ChildPermission The associated ChildPermission object.
+     * @return                 ChildProhibition The associated ChildProhibition object.
      * @throws PropelException
      */
-    public function getPermission(ConnectionInterface $con = null)
+    public function getProhibition(ConnectionInterface $con = null)
     {
-        if ($this->aPermission === null && ($this->prohibitions_id !== null)) {
-            $this->aPermission = ChildPermissionQuery::create()->findPk($this->prohibitions_id, $con);
+        if ($this->aProhibition === null && ($this->prohibitions_id !== null)) {
+            $this->aProhibition = ChildProhibitionQuery::create()->findPk($this->prohibitions_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aPermission->addProhibitionsRoless($this);
+                $this->aProhibition->addProhibitionsRoless($this);
              */
         }
 
-        return $this->aPermission;
+        return $this->aProhibition;
     }
 
     /**
@@ -1064,9 +1064,9 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
     public function setRole(ChildRole $v = null)
     {
         if ($v === null) {
-            $this->setroleId(NULL);
+            $this->setRoleId(NULL);
         } else {
-            $this->setroleId($v->getId());
+            $this->setRoleId($v->getId());
         }
 
         $this->aRole = $v;
@@ -1133,7 +1133,7 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aPermission = null;
+        $this->aProhibition = null;
         $this->aRole = null;
     }
 

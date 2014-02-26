@@ -116,7 +116,7 @@ class SessionsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('sessionTypeId', 'userId', 'Key', 'SessionDuration', 'simulatedUserId', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_PHPNAME       => array('SessionTypeId', 'UserId', 'Key', 'SessionDuration', 'simulatedUserId', 'CreatedAt', 'UpdatedAt', ),
         self::TYPE_STUDLYPHPNAME => array('sessionTypeId', 'userId', 'key', 'sessionDuration', 'simulatedUserId', 'createdAt', 'updatedAt', ),
         self::TYPE_COLNAME       => array(SessionsTableMap::SESSION_TYPES_ID, SessionsTableMap::USERS_ID, SessionsTableMap::KEY, SessionsTableMap::SESSION_DURATION, SessionsTableMap::SIMULATED_USERS_ID, SessionsTableMap::CREATED_AT, SessionsTableMap::UPDATED_AT, ),
         self::TYPE_RAW_COLNAME   => array('SESSION_TYPES_ID', 'USERS_ID', 'KEY', 'SESSION_DURATION', 'SIMULATED_USERS_ID', 'CREATED_AT', 'UPDATED_AT', ),
@@ -131,7 +131,7 @@ class SessionsTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('sessionTypeId' => 0, 'userId' => 1, 'Key' => 2, 'SessionDuration' => 3, 'simulatedUserId' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
+        self::TYPE_PHPNAME       => array('SessionTypeId' => 0, 'UserId' => 1, 'Key' => 2, 'SessionDuration' => 3, 'simulatedUserId' => 4, 'CreatedAt' => 5, 'UpdatedAt' => 6, ),
         self::TYPE_STUDLYPHPNAME => array('sessionTypeId' => 0, 'userId' => 1, 'key' => 2, 'sessionDuration' => 3, 'simulatedUserId' => 4, 'createdAt' => 5, 'updatedAt' => 6, ),
         self::TYPE_COLNAME       => array(SessionsTableMap::SESSION_TYPES_ID => 0, SessionsTableMap::USERS_ID => 1, SessionsTableMap::KEY => 2, SessionsTableMap::SESSION_DURATION => 3, SessionsTableMap::SIMULATED_USERS_ID => 4, SessionsTableMap::CREATED_AT => 5, SessionsTableMap::UPDATED_AT => 6, ),
         self::TYPE_RAW_COLNAME   => array('SESSION_TYPES_ID' => 0, 'USERS_ID' => 1, 'KEY' => 2, 'SESSION_DURATION' => 3, 'SIMULATED_USERS_ID' => 4, 'CREATED_AT' => 5, 'UPDATED_AT' => 6, ),
@@ -154,9 +154,10 @@ class SessionsTableMap extends TableMap
         $this->setClassName('\\org\\bitbucket\\phlopsi\\access_control\\propel\\Sessions');
         $this->setPackage('org.bitbucket.phlopsi.access_control.propel');
         $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addForeignKey('SESSION_TYPES_ID', 'sessionTypeId', 'INTEGER', 'session_types', 'ID', true, null, null);
-        $this->addForeignKey('USERS_ID', 'userId', 'INTEGER', 'users', 'ID', true, null, null);
+        $this->addForeignKey('SESSION_TYPES_ID', 'SessionTypeId', 'INTEGER', 'session_types', 'ID', true, null, null);
+        $this->addForeignKey('USERS_ID', 'UserId', 'INTEGER', 'users', 'ID', true, null, null);
         $this->addPrimaryKey('KEY', 'Key', 'VARCHAR', true, 127, null);
         $this->addColumn('SESSION_DURATION', 'SessionDuration', 'TIMESTAMP', false, null, null);
         $this->addForeignKey('SIMULATED_USERS_ID', 'simulatedUserId', 'INTEGER', 'users', 'ID', false, null, null);

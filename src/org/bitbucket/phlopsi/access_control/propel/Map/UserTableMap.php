@@ -142,6 +142,9 @@ class UserTableMap extends TableMap
         $this->addRelation('ProhibitionsUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'ProhibitionsUserss');
         $this->addRelation('RolesUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'RolesUserss');
         $this->addRelation('Sessions', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Sessions', RelationMap::ONE_TO_MANY, array('id' => 'simulated_users_id', ), null, null, 'Sessionss');
+        $this->addRelation('Prohibition', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
+        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
+        $this->addRelation('SessionType', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\SessionType', RelationMap::MANY_TO_MANY, array(), null, null, 'SessionTypes');
     } // buildRelations()
 
     /**

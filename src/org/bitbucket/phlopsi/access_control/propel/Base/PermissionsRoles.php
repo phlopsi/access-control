@@ -348,7 +348,7 @@ abstract class PermissionsRoles implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getpermissionId()
+    public function getPermissionId()
     {
 
         return $this->permissions_id;
@@ -359,7 +359,7 @@ abstract class PermissionsRoles implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getroleId()
+    public function getRoleId()
     {
 
         return $this->roles_id;
@@ -371,7 +371,7 @@ abstract class PermissionsRoles implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles The current object (for fluent API support)
      */
-    public function setpermissionId($v)
+    public function setPermissionId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -388,7 +388,7 @@ abstract class PermissionsRoles implements ActiveRecordInterface
 
 
         return $this;
-    } // setpermissionId()
+    } // setPermissionId()
 
     /**
      * Set the value of [roles_id] column.
@@ -396,7 +396,7 @@ abstract class PermissionsRoles implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles The current object (for fluent API support)
      */
-    public function setroleId($v)
+    public function setRoleId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -413,7 +413,7 @@ abstract class PermissionsRoles implements ActiveRecordInterface
 
 
         return $this;
-    } // setroleId()
+    } // setRoleId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -452,10 +452,10 @@ abstract class PermissionsRoles implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PermissionsRolesTableMap::translateFieldName('permissionId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PermissionsRolesTableMap::translateFieldName('PermissionId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->permissions_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PermissionsRolesTableMap::translateFieldName('roleId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PermissionsRolesTableMap::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->roles_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -776,10 +776,10 @@ abstract class PermissionsRoles implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getpermissionId();
+                return $this->getPermissionId();
                 break;
             case 1:
-                return $this->getroleId();
+                return $this->getRoleId();
                 break;
             default:
                 return null;
@@ -810,8 +810,8 @@ abstract class PermissionsRoles implements ActiveRecordInterface
         $alreadyDumpedObjects['PermissionsRoles'][serialize($this->getPrimaryKey())] = true;
         $keys = PermissionsRolesTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getpermissionId(),
-            $keys[1] => $this->getroleId(),
+            $keys[0] => $this->getPermissionId(),
+            $keys[1] => $this->getRoleId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -860,10 +860,10 @@ abstract class PermissionsRoles implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setpermissionId($value);
+                $this->setPermissionId($value);
                 break;
             case 1:
-                $this->setroleId($value);
+                $this->setRoleId($value);
                 break;
         } // switch()
     }
@@ -889,8 +889,8 @@ abstract class PermissionsRoles implements ActiveRecordInterface
     {
         $keys = PermissionsRolesTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setpermissionId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setroleId($arr[$keys[1]]);
+        if (array_key_exists($keys[0], $arr)) $this->setPermissionId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setRoleId($arr[$keys[1]]);
     }
 
     /**
@@ -933,8 +933,8 @@ abstract class PermissionsRoles implements ActiveRecordInterface
     public function getPrimaryKey()
     {
         $pks = array();
-        $pks[0] = $this->getpermissionId();
-        $pks[1] = $this->getroleId();
+        $pks[0] = $this->getPermissionId();
+        $pks[1] = $this->getRoleId();
 
         return $pks;
     }
@@ -947,8 +947,8 @@ abstract class PermissionsRoles implements ActiveRecordInterface
      */
     public function setPrimaryKey($keys)
     {
-        $this->setpermissionId($keys[0]);
-        $this->setroleId($keys[1]);
+        $this->setPermissionId($keys[0]);
+        $this->setRoleId($keys[1]);
     }
 
     /**
@@ -958,7 +958,7 @@ abstract class PermissionsRoles implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return (null === $this->getpermissionId()) && (null === $this->getroleId());
+        return (null === $this->getPermissionId()) && (null === $this->getRoleId());
     }
 
     /**
@@ -974,8 +974,8 @@ abstract class PermissionsRoles implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setpermissionId($this->getpermissionId());
-        $copyObj->setroleId($this->getroleId());
+        $copyObj->setPermissionId($this->getPermissionId());
+        $copyObj->setRoleId($this->getRoleId());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1013,9 +1013,9 @@ abstract class PermissionsRoles implements ActiveRecordInterface
     public function setPermission(ChildPermission $v = null)
     {
         if ($v === null) {
-            $this->setpermissionId(NULL);
+            $this->setPermissionId(NULL);
         } else {
-            $this->setpermissionId($v->getId());
+            $this->setPermissionId($v->getId());
         }
 
         $this->aPermission = $v;
@@ -1064,9 +1064,9 @@ abstract class PermissionsRoles implements ActiveRecordInterface
     public function setRole(ChildRole $v = null)
     {
         if ($v === null) {
-            $this->setroleId(NULL);
+            $this->setRoleId(NULL);
         } else {
-            $this->setroleId($v->getId());
+            $this->setRoleId($v->getId());
         }
 
         $this->aRole = $v;

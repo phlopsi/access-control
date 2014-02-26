@@ -91,7 +91,7 @@ class PermissionsRolesTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('permissionId', 'roleId', ),
+        self::TYPE_PHPNAME       => array('PermissionId', 'RoleId', ),
         self::TYPE_STUDLYPHPNAME => array('permissionId', 'roleId', ),
         self::TYPE_COLNAME       => array(PermissionsRolesTableMap::PERMISSIONS_ID, PermissionsRolesTableMap::ROLES_ID, ),
         self::TYPE_RAW_COLNAME   => array('PERMISSIONS_ID', 'ROLES_ID', ),
@@ -106,7 +106,7 @@ class PermissionsRolesTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('permissionId' => 0, 'roleId' => 1, ),
+        self::TYPE_PHPNAME       => array('PermissionId' => 0, 'RoleId' => 1, ),
         self::TYPE_STUDLYPHPNAME => array('permissionId' => 0, 'roleId' => 1, ),
         self::TYPE_COLNAME       => array(PermissionsRolesTableMap::PERMISSIONS_ID => 0, PermissionsRolesTableMap::ROLES_ID => 1, ),
         self::TYPE_RAW_COLNAME   => array('PERMISSIONS_ID' => 0, 'ROLES_ID' => 1, ),
@@ -129,9 +129,10 @@ class PermissionsRolesTableMap extends TableMap
         $this->setClassName('\\org\\bitbucket\\phlopsi\\access_control\\propel\\PermissionsRoles');
         $this->setPackage('org.bitbucket.phlopsi.access_control.propel');
         $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('PERMISSIONS_ID', 'permissionId', 'INTEGER' , 'permissions', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('ROLES_ID', 'roleId', 'INTEGER' , 'roles', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('PERMISSIONS_ID', 'PermissionId', 'INTEGER' , 'permissions', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('ROLES_ID', 'RoleId', 'INTEGER' , 'roles', 'ID', true, null, null);
     } // initialize()
 
     /**
@@ -158,7 +159,7 @@ class PermissionsRolesTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize(array((string) $obj->getpermissionId(), (string) $obj->getroleId()));
+                $key = serialize(array((string) $obj->getPermissionId(), (string) $obj->getRoleId()));
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -178,7 +179,7 @@ class PermissionsRolesTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles) {
-                $key = serialize(array((string) $value->getpermissionId(), (string) $value->getroleId()));
+                $key = serialize(array((string) $value->getPermissionId(), (string) $value->getRoleId()));
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
@@ -210,11 +211,11 @@ class PermissionsRolesTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('permissionId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('roleId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('PermissionId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('permissionId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('roleId', TableMap::TYPE_PHPNAME, $indexType)]));
+        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('PermissionId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)]));
     }
 
     /**

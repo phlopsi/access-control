@@ -348,7 +348,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getroleId()
+    public function getRoleId()
     {
 
         return $this->roles_id;
@@ -359,7 +359,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getsessionTypeId()
+    public function getSessionTypeId()
     {
 
         return $this->session_types_id;
@@ -371,7 +371,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes The current object (for fluent API support)
      */
-    public function setroleId($v)
+    public function setRoleId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -388,7 +388,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
 
 
         return $this;
-    } // setroleId()
+    } // setRoleId()
 
     /**
      * Set the value of [session_types_id] column.
@@ -396,7 +396,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes The current object (for fluent API support)
      */
-    public function setsessionTypeId($v)
+    public function setSessionTypeId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -413,7 +413,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
 
 
         return $this;
-    } // setsessionTypeId()
+    } // setSessionTypeId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -452,10 +452,10 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RolesSessionTypesTableMap::translateFieldName('roleId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RolesSessionTypesTableMap::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->roles_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RolesSessionTypesTableMap::translateFieldName('sessionTypeId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RolesSessionTypesTableMap::translateFieldName('SessionTypeId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->session_types_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -776,10 +776,10 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getroleId();
+                return $this->getRoleId();
                 break;
             case 1:
-                return $this->getsessionTypeId();
+                return $this->getSessionTypeId();
                 break;
             default:
                 return null;
@@ -810,8 +810,8 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
         $alreadyDumpedObjects['RolesSessionTypes'][serialize($this->getPrimaryKey())] = true;
         $keys = RolesSessionTypesTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getroleId(),
-            $keys[1] => $this->getsessionTypeId(),
+            $keys[0] => $this->getRoleId(),
+            $keys[1] => $this->getSessionTypeId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -860,10 +860,10 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setroleId($value);
+                $this->setRoleId($value);
                 break;
             case 1:
-                $this->setsessionTypeId($value);
+                $this->setSessionTypeId($value);
                 break;
         } // switch()
     }
@@ -889,8 +889,8 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     {
         $keys = RolesSessionTypesTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setroleId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setsessionTypeId($arr[$keys[1]]);
+        if (array_key_exists($keys[0], $arr)) $this->setRoleId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setSessionTypeId($arr[$keys[1]]);
     }
 
     /**
@@ -933,8 +933,8 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     public function getPrimaryKey()
     {
         $pks = array();
-        $pks[0] = $this->getroleId();
-        $pks[1] = $this->getsessionTypeId();
+        $pks[0] = $this->getRoleId();
+        $pks[1] = $this->getSessionTypeId();
 
         return $pks;
     }
@@ -947,8 +947,8 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      */
     public function setPrimaryKey($keys)
     {
-        $this->setroleId($keys[0]);
-        $this->setsessionTypeId($keys[1]);
+        $this->setRoleId($keys[0]);
+        $this->setSessionTypeId($keys[1]);
     }
 
     /**
@@ -958,7 +958,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return (null === $this->getroleId()) && (null === $this->getsessionTypeId());
+        return (null === $this->getRoleId()) && (null === $this->getSessionTypeId());
     }
 
     /**
@@ -974,8 +974,8 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setroleId($this->getroleId());
-        $copyObj->setsessionTypeId($this->getsessionTypeId());
+        $copyObj->setRoleId($this->getRoleId());
+        $copyObj->setSessionTypeId($this->getSessionTypeId());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1013,9 +1013,9 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     public function setRole(ChildRole $v = null)
     {
         if ($v === null) {
-            $this->setroleId(NULL);
+            $this->setRoleId(NULL);
         } else {
-            $this->setroleId($v->getId());
+            $this->setRoleId($v->getId());
         }
 
         $this->aRole = $v;
@@ -1064,9 +1064,9 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     public function setSessionType(ChildSessionType $v = null)
     {
         if ($v === null) {
-            $this->setsessionTypeId(NULL);
+            $this->setSessionTypeId(NULL);
         } else {
-            $this->setsessionTypeId($v->getId());
+            $this->setSessionTypeId($v->getId());
         }
 
         $this->aSessionType = $v;

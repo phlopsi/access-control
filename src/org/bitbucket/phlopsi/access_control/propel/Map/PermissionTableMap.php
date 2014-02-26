@@ -15,7 +15,7 @@ use org\bitbucket\phlopsi\access_control\propel\PermissionQuery;
 
 
 /**
- * This class defines the structure of the 'prohibitions' table.
+ * This class defines the structure of the 'permissions' table.
  *
  *
  *
@@ -42,7 +42,7 @@ class PermissionTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'prohibitions';
+    const TABLE_NAME = 'permissions';
 
     /**
      * The related Propel class for this table
@@ -72,27 +72,27 @@ class PermissionTableMap extends TableMap
     /**
      * the column name for the EXTERNAL_ID field
      */
-    const EXTERNAL_ID = 'prohibitions.EXTERNAL_ID';
+    const EXTERNAL_ID = 'permissions.EXTERNAL_ID';
 
     /**
      * the column name for the TREE_LEFT field
      */
-    const TREE_LEFT = 'prohibitions.TREE_LEFT';
+    const TREE_LEFT = 'permissions.TREE_LEFT';
 
     /**
      * the column name for the TREE_RIGHT field
      */
-    const TREE_RIGHT = 'prohibitions.TREE_RIGHT';
+    const TREE_RIGHT = 'permissions.TREE_RIGHT';
 
     /**
      * the column name for the TREE_LEVEL field
      */
-    const TREE_LEVEL = 'prohibitions.TREE_LEVEL';
+    const TREE_LEVEL = 'permissions.TREE_LEVEL';
 
     /**
      * the column name for the ID field
      */
-    const ID = 'prohibitions.ID';
+    const ID = 'permissions.ID';
 
     /**
      * The default string format for model objects of the related table
@@ -139,7 +139,7 @@ class PermissionTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('prohibitions');
+        $this->setName('permissions');
         $this->setPhpName('Permission');
         $this->setClassName('\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission');
         $this->setPackage('org.bitbucket.phlopsi.access_control.propel');
@@ -157,8 +157,8 @@ class PermissionTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ProhibitionsRoles', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'prohibitions_id', ), null, null, 'ProhibitionsRoless');
-        $this->addRelation('ProhibitionsUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array('id' => 'prohibitions_id', ), null, null, 'ProhibitionsUserss');
+        $this->addRelation('PermissionsRoles', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\PermissionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'permissions_id', ), null, null, 'PermissionsRoless');
+        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
     } // buildRelations()
 
     /**
@@ -390,7 +390,7 @@ class PermissionTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the prohibitions table.
+     * Deletes all rows from the permissions table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

@@ -442,7 +442,7 @@ abstract class SessionTypeQuery extends ModelCriteria
     {
         if ($rolesSessionTypes instanceof \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes) {
             return $this
-                ->addUsingAlias(SessionTypeTableMap::ID, $rolesSessionTypes->getsessionTypeId(), $comparison);
+                ->addUsingAlias(SessionTypeTableMap::ID, $rolesSessionTypes->getSessionTypeId(), $comparison);
         } elseif ($rolesSessionTypes instanceof ObjectCollection) {
             return $this
                 ->useRolesSessionTypesQuery()
@@ -515,7 +515,7 @@ abstract class SessionTypeQuery extends ModelCriteria
     {
         if ($sessions instanceof \org\bitbucket\phlopsi\access_control\propel\Sessions) {
             return $this
-                ->addUsingAlias(SessionTypeTableMap::ID, $sessions->getsessionTypeId(), $comparison);
+                ->addUsingAlias(SessionTypeTableMap::ID, $sessions->getSessionTypeId(), $comparison);
         } elseif ($sessions instanceof ObjectCollection) {
             return $this
                 ->useSessionsQuery()
@@ -574,6 +574,40 @@ abstract class SessionTypeQuery extends ModelCriteria
         return $this
             ->joinSessions($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Sessions', '\org\bitbucket\phlopsi\access_control\propel\SessionsQuery');
+    }
+
+    /**
+     * Filter the query by a related Role object
+     * using the roles_session_types table as cross reference
+     *
+     * @param Role $role the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildSessionTypeQuery The current query, for fluid interface
+     */
+    public function filterByRole($role, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useRolesSessionTypesQuery()
+            ->filterByRole($role, $comparison)
+            ->endUse();
+    }
+
+    /**
+     * Filter the query by a related User object
+     * using the sessions table as cross reference
+     *
+     * @param User $user the related object to use as filter
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return ChildSessionTypeQuery The current query, for fluid interface
+     */
+    public function filterByUser($user, $comparison = Criteria::EQUAL)
+    {
+        return $this
+            ->useSessionsQuery()
+            ->filterByUser($user, $comparison)
+            ->endUse();
     }
 
     /**

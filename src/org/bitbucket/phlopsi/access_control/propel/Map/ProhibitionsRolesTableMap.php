@@ -91,7 +91,7 @@ class ProhibitionsRolesTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('prohibitionId', 'roleId', ),
+        self::TYPE_PHPNAME       => array('ProhibitionId', 'RoleId', ),
         self::TYPE_STUDLYPHPNAME => array('prohibitionId', 'roleId', ),
         self::TYPE_COLNAME       => array(ProhibitionsRolesTableMap::PROHIBITIONS_ID, ProhibitionsRolesTableMap::ROLES_ID, ),
         self::TYPE_RAW_COLNAME   => array('PROHIBITIONS_ID', 'ROLES_ID', ),
@@ -106,7 +106,7 @@ class ProhibitionsRolesTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('prohibitionId' => 0, 'roleId' => 1, ),
+        self::TYPE_PHPNAME       => array('ProhibitionId' => 0, 'RoleId' => 1, ),
         self::TYPE_STUDLYPHPNAME => array('prohibitionId' => 0, 'roleId' => 1, ),
         self::TYPE_COLNAME       => array(ProhibitionsRolesTableMap::PROHIBITIONS_ID => 0, ProhibitionsRolesTableMap::ROLES_ID => 1, ),
         self::TYPE_RAW_COLNAME   => array('PROHIBITIONS_ID' => 0, 'ROLES_ID' => 1, ),
@@ -129,9 +129,10 @@ class ProhibitionsRolesTableMap extends TableMap
         $this->setClassName('\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsRoles');
         $this->setPackage('org.bitbucket.phlopsi.access_control.propel');
         $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('PROHIBITIONS_ID', 'prohibitionId', 'INTEGER' , 'prohibitions', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('ROLES_ID', 'roleId', 'INTEGER' , 'roles', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('PROHIBITIONS_ID', 'ProhibitionId', 'INTEGER' , 'prohibitions', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('ROLES_ID', 'RoleId', 'INTEGER' , 'roles', 'ID', true, null, null);
     } // initialize()
 
     /**
@@ -139,7 +140,7 @@ class ProhibitionsRolesTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Permission', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission', RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id', ), null, null);
+        $this->addRelation('Prohibition', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id', ), null, null);
         $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_ONE, array('roles_id' => 'id', ), null, null);
     } // buildRelations()
 
@@ -158,7 +159,7 @@ class ProhibitionsRolesTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize(array((string) $obj->getprohibitionId(), (string) $obj->getroleId()));
+                $key = serialize(array((string) $obj->getProhibitionId(), (string) $obj->getRoleId()));
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -178,7 +179,7 @@ class ProhibitionsRolesTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles) {
-                $key = serialize(array((string) $value->getprohibitionId(), (string) $value->getroleId()));
+                $key = serialize(array((string) $value->getProhibitionId(), (string) $value->getRoleId()));
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
@@ -210,11 +211,11 @@ class ProhibitionsRolesTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('prohibitionId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('roleId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProhibitionId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('prohibitionId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('roleId', TableMap::TYPE_PHPNAME, $indexType)]));
+        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProhibitionId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)]));
     }
 
     /**

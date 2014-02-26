@@ -161,6 +161,10 @@ class RoleTableMap extends TableMap
         $this->addRelation('ProhibitionsRoles', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'ProhibitionsRoless');
         $this->addRelation('RolesSessionTypes', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesSessionTypes', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesSessionTypess');
         $this->addRelation('RolesUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesUserss');
+        $this->addRelation('Permission', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission', RelationMap::MANY_TO_MANY, array(), null, null, 'Permissions');
+        $this->addRelation('Prohibition', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
+        $this->addRelation('SessionType', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\SessionType', RelationMap::MANY_TO_MANY, array(), null, null, 'SessionTypes');
+        $this->addRelation('User', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
     } // buildRelations()
 
     /**

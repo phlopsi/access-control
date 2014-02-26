@@ -21,14 +21,14 @@ use org\bitbucket\phlopsi\access_control\propel\Map\ProhibitionsUsersTableMap;
  *
  *
  *
- * @method     ChildProhibitionsUsersQuery orderByprohibitionId($order = Criteria::ASC) Order by the prohibitions_id column
- * @method     ChildProhibitionsUsersQuery orderByuserId($order = Criteria::ASC) Order by the users_id column
+ * @method     ChildProhibitionsUsersQuery orderByProhibitionId($order = Criteria::ASC) Order by the prohibitions_id column
+ * @method     ChildProhibitionsUsersQuery orderByUserId($order = Criteria::ASC) Order by the users_id column
  * @method     ChildProhibitionsUsersQuery orderByProhibitedUntil($order = Criteria::ASC) Order by the prohibited_until column
  * @method     ChildProhibitionsUsersQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildProhibitionsUsersQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
- * @method     ChildProhibitionsUsersQuery groupByprohibitionId() Group by the prohibitions_id column
- * @method     ChildProhibitionsUsersQuery groupByuserId() Group by the users_id column
+ * @method     ChildProhibitionsUsersQuery groupByProhibitionId() Group by the prohibitions_id column
+ * @method     ChildProhibitionsUsersQuery groupByUserId() Group by the users_id column
  * @method     ChildProhibitionsUsersQuery groupByProhibitedUntil() Group by the prohibited_until column
  * @method     ChildProhibitionsUsersQuery groupByCreatedAt() Group by the created_at column
  * @method     ChildProhibitionsUsersQuery groupByUpdatedAt() Group by the updated_at column
@@ -37,9 +37,9 @@ use org\bitbucket\phlopsi\access_control\propel\Map\ProhibitionsUsersTableMap;
  * @method     ChildProhibitionsUsersQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildProhibitionsUsersQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildProhibitionsUsersQuery leftJoinPermission($relationAlias = null) Adds a LEFT JOIN clause to the query using the Permission relation
- * @method     ChildProhibitionsUsersQuery rightJoinPermission($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Permission relation
- * @method     ChildProhibitionsUsersQuery innerJoinPermission($relationAlias = null) Adds a INNER JOIN clause to the query using the Permission relation
+ * @method     ChildProhibitionsUsersQuery leftJoinProhibition($relationAlias = null) Adds a LEFT JOIN clause to the query using the Prohibition relation
+ * @method     ChildProhibitionsUsersQuery rightJoinProhibition($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Prohibition relation
+ * @method     ChildProhibitionsUsersQuery innerJoinProhibition($relationAlias = null) Adds a INNER JOIN clause to the query using the Prohibition relation
  *
  * @method     ChildProhibitionsUsersQuery leftJoinUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the User relation
  * @method     ChildProhibitionsUsersQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
@@ -48,14 +48,14 @@ use org\bitbucket\phlopsi\access_control\propel\Map\ProhibitionsUsersTableMap;
  * @method     ChildProhibitionsUsers findOne(ConnectionInterface $con = null) Return the first ChildProhibitionsUsers matching the query
  * @method     ChildProhibitionsUsers findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProhibitionsUsers matching the query, or a new ChildProhibitionsUsers object populated from the query conditions when no match is found
  *
- * @method     ChildProhibitionsUsers findOneByprohibitionId(int $prohibitions_id) Return the first ChildProhibitionsUsers filtered by the prohibitions_id column
- * @method     ChildProhibitionsUsers findOneByuserId(int $users_id) Return the first ChildProhibitionsUsers filtered by the users_id column
+ * @method     ChildProhibitionsUsers findOneByProhibitionId(int $prohibitions_id) Return the first ChildProhibitionsUsers filtered by the prohibitions_id column
+ * @method     ChildProhibitionsUsers findOneByUserId(int $users_id) Return the first ChildProhibitionsUsers filtered by the users_id column
  * @method     ChildProhibitionsUsers findOneByProhibitedUntil(string $prohibited_until) Return the first ChildProhibitionsUsers filtered by the prohibited_until column
  * @method     ChildProhibitionsUsers findOneByCreatedAt(string $created_at) Return the first ChildProhibitionsUsers filtered by the created_at column
  * @method     ChildProhibitionsUsers findOneByUpdatedAt(string $updated_at) Return the first ChildProhibitionsUsers filtered by the updated_at column
  *
- * @method     array findByprohibitionId(int $prohibitions_id) Return ChildProhibitionsUsers objects filtered by the prohibitions_id column
- * @method     array findByuserId(int $users_id) Return ChildProhibitionsUsers objects filtered by the users_id column
+ * @method     array findByProhibitionId(int $prohibitions_id) Return ChildProhibitionsUsers objects filtered by the prohibitions_id column
+ * @method     array findByUserId(int $users_id) Return ChildProhibitionsUsers objects filtered by the users_id column
  * @method     array findByProhibitedUntil(string $prohibited_until) Return ChildProhibitionsUsers objects filtered by the prohibited_until column
  * @method     array findByCreatedAt(string $created_at) Return ChildProhibitionsUsers objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return ChildProhibitionsUsers objects filtered by the updated_at column
@@ -253,12 +253,12 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByprohibitionId(1234); // WHERE prohibitions_id = 1234
-     * $query->filterByprohibitionId(array(12, 34)); // WHERE prohibitions_id IN (12, 34)
-     * $query->filterByprohibitionId(array('min' => 12)); // WHERE prohibitions_id > 12
+     * $query->filterByProhibitionId(1234); // WHERE prohibitions_id = 1234
+     * $query->filterByProhibitionId(array(12, 34)); // WHERE prohibitions_id IN (12, 34)
+     * $query->filterByProhibitionId(array('min' => 12)); // WHERE prohibitions_id > 12
      * </code>
      *
-     * @see       filterByPermission()
+     * @see       filterByProhibition()
      *
      * @param     mixed $prohibitionId The value to use as filter.
      *              Use scalar values for equality.
@@ -268,7 +268,7 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
      *
      * @return ChildProhibitionsUsersQuery The current query, for fluid interface
      */
-    public function filterByprohibitionId($prohibitionId = null, $comparison = null)
+    public function filterByProhibitionId($prohibitionId = null, $comparison = null)
     {
         if (is_array($prohibitionId)) {
             $useMinMax = false;
@@ -296,9 +296,9 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByuserId(1234); // WHERE users_id = 1234
-     * $query->filterByuserId(array(12, 34)); // WHERE users_id IN (12, 34)
-     * $query->filterByuserId(array('min' => 12)); // WHERE users_id > 12
+     * $query->filterByUserId(1234); // WHERE users_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE users_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE users_id > 12
      * </code>
      *
      * @see       filterByUser()
@@ -311,7 +311,7 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
      *
      * @return ChildProhibitionsUsersQuery The current query, for fluid interface
      */
-    public function filterByuserId($userId = null, $comparison = null)
+    public function filterByUserId($userId = null, $comparison = null)
     {
         if (is_array($userId)) {
             $useMinMax = false;
@@ -464,42 +464,42 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\Permission object
+     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\Prohibition object
      *
-     * @param \org\bitbucket\phlopsi\access_control\propel\Permission|ObjectCollection $permission The related object(s) to use as filter
+     * @param \org\bitbucket\phlopsi\access_control\propel\Prohibition|ObjectCollection $prohibition The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildProhibitionsUsersQuery The current query, for fluid interface
      */
-    public function filterByPermission($permission, $comparison = null)
+    public function filterByProhibition($prohibition, $comparison = null)
     {
-        if ($permission instanceof \org\bitbucket\phlopsi\access_control\propel\Permission) {
+        if ($prohibition instanceof \org\bitbucket\phlopsi\access_control\propel\Prohibition) {
             return $this
-                ->addUsingAlias(ProhibitionsUsersTableMap::PROHIBITIONS_ID, $permission->getId(), $comparison);
-        } elseif ($permission instanceof ObjectCollection) {
+                ->addUsingAlias(ProhibitionsUsersTableMap::PROHIBITIONS_ID, $prohibition->getId(), $comparison);
+        } elseif ($prohibition instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ProhibitionsUsersTableMap::PROHIBITIONS_ID, $permission->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(ProhibitionsUsersTableMap::PROHIBITIONS_ID, $prohibition->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByPermission() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\Permission or Collection');
+            throw new PropelException('filterByProhibition() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\Prohibition or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Permission relation
+     * Adds a JOIN clause to the query using the Prohibition relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return ChildProhibitionsUsersQuery The current query, for fluid interface
      */
-    public function joinPermission($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinProhibition($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Permission');
+        $relationMap = $tableMap->getRelation('Prohibition');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -514,14 +514,14 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Permission');
+            $this->addJoinObject($join, 'Prohibition');
         }
 
         return $this;
     }
 
     /**
-     * Use the Permission relation Permission object
+     * Use the Prohibition relation Prohibition object
      *
      * @see useQuery()
      *
@@ -529,13 +529,13 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \org\bitbucket\phlopsi\access_control\propel\PermissionQuery A secondary query class using the current class as primary query
+     * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery A secondary query class using the current class as primary query
      */
-    public function usePermissionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useProhibitionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinPermission($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Permission', '\org\bitbucket\phlopsi\access_control\propel\PermissionQuery');
+            ->joinProhibition($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Prohibition', '\org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery');
     }
 
     /**
@@ -623,8 +623,8 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
     public function prune($prohibitionsUsers = null)
     {
         if ($prohibitionsUsers) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(ProhibitionsUsersTableMap::PROHIBITIONS_ID), $prohibitionsUsers->getprohibitionId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(ProhibitionsUsersTableMap::USERS_ID), $prohibitionsUsers->getuserId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(ProhibitionsUsersTableMap::PROHIBITIONS_ID), $prohibitionsUsers->getProhibitionId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(ProhibitionsUsersTableMap::USERS_ID), $prohibitionsUsers->getUserId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

@@ -21,11 +21,11 @@ use org\bitbucket\phlopsi\access_control\propel\Map\RolesSessionTypesTableMap;
  *
  *
  *
- * @method     ChildRolesSessionTypesQuery orderByroleId($order = Criteria::ASC) Order by the roles_id column
- * @method     ChildRolesSessionTypesQuery orderBysessionTypeId($order = Criteria::ASC) Order by the session_types_id column
+ * @method     ChildRolesSessionTypesQuery orderByRoleId($order = Criteria::ASC) Order by the roles_id column
+ * @method     ChildRolesSessionTypesQuery orderBySessionTypeId($order = Criteria::ASC) Order by the session_types_id column
  *
- * @method     ChildRolesSessionTypesQuery groupByroleId() Group by the roles_id column
- * @method     ChildRolesSessionTypesQuery groupBysessionTypeId() Group by the session_types_id column
+ * @method     ChildRolesSessionTypesQuery groupByRoleId() Group by the roles_id column
+ * @method     ChildRolesSessionTypesQuery groupBySessionTypeId() Group by the session_types_id column
  *
  * @method     ChildRolesSessionTypesQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildRolesSessionTypesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -42,11 +42,11 @@ use org\bitbucket\phlopsi\access_control\propel\Map\RolesSessionTypesTableMap;
  * @method     ChildRolesSessionTypes findOne(ConnectionInterface $con = null) Return the first ChildRolesSessionTypes matching the query
  * @method     ChildRolesSessionTypes findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRolesSessionTypes matching the query, or a new ChildRolesSessionTypes object populated from the query conditions when no match is found
  *
- * @method     ChildRolesSessionTypes findOneByroleId(int $roles_id) Return the first ChildRolesSessionTypes filtered by the roles_id column
- * @method     ChildRolesSessionTypes findOneBysessionTypeId(int $session_types_id) Return the first ChildRolesSessionTypes filtered by the session_types_id column
+ * @method     ChildRolesSessionTypes findOneByRoleId(int $roles_id) Return the first ChildRolesSessionTypes filtered by the roles_id column
+ * @method     ChildRolesSessionTypes findOneBySessionTypeId(int $session_types_id) Return the first ChildRolesSessionTypes filtered by the session_types_id column
  *
- * @method     array findByroleId(int $roles_id) Return ChildRolesSessionTypes objects filtered by the roles_id column
- * @method     array findBysessionTypeId(int $session_types_id) Return ChildRolesSessionTypes objects filtered by the session_types_id column
+ * @method     array findByRoleId(int $roles_id) Return ChildRolesSessionTypes objects filtered by the roles_id column
+ * @method     array findBySessionTypeId(int $session_types_id) Return ChildRolesSessionTypes objects filtered by the session_types_id column
  *
  */
 abstract class RolesSessionTypesQuery extends ModelCriteria
@@ -241,9 +241,9 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByroleId(1234); // WHERE roles_id = 1234
-     * $query->filterByroleId(array(12, 34)); // WHERE roles_id IN (12, 34)
-     * $query->filterByroleId(array('min' => 12)); // WHERE roles_id > 12
+     * $query->filterByRoleId(1234); // WHERE roles_id = 1234
+     * $query->filterByRoleId(array(12, 34)); // WHERE roles_id IN (12, 34)
+     * $query->filterByRoleId(array('min' => 12)); // WHERE roles_id > 12
      * </code>
      *
      * @see       filterByRole()
@@ -256,7 +256,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * @return ChildRolesSessionTypesQuery The current query, for fluid interface
      */
-    public function filterByroleId($roleId = null, $comparison = null)
+    public function filterByRoleId($roleId = null, $comparison = null)
     {
         if (is_array($roleId)) {
             $useMinMax = false;
@@ -284,9 +284,9 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterBysessionTypeId(1234); // WHERE session_types_id = 1234
-     * $query->filterBysessionTypeId(array(12, 34)); // WHERE session_types_id IN (12, 34)
-     * $query->filterBysessionTypeId(array('min' => 12)); // WHERE session_types_id > 12
+     * $query->filterBySessionTypeId(1234); // WHERE session_types_id = 1234
+     * $query->filterBySessionTypeId(array(12, 34)); // WHERE session_types_id IN (12, 34)
+     * $query->filterBySessionTypeId(array('min' => 12)); // WHERE session_types_id > 12
      * </code>
      *
      * @see       filterBySessionType()
@@ -299,7 +299,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * @return ChildRolesSessionTypesQuery The current query, for fluid interface
      */
-    public function filterBysessionTypeId($sessionTypeId = null, $comparison = null)
+    public function filterBySessionTypeId($sessionTypeId = null, $comparison = null)
     {
         if (is_array($sessionTypeId)) {
             $useMinMax = false;
@@ -482,8 +482,8 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
     public function prune($rolesSessionTypes = null)
     {
         if ($rolesSessionTypes) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(RolesSessionTypesTableMap::ROLES_ID), $rolesSessionTypes->getroleId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(RolesSessionTypesTableMap::SESSION_TYPES_ID), $rolesSessionTypes->getsessionTypeId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(RolesSessionTypesTableMap::ROLES_ID), $rolesSessionTypes->getRoleId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(RolesSessionTypesTableMap::SESSION_TYPES_ID), $rolesSessionTypes->getSessionTypeId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

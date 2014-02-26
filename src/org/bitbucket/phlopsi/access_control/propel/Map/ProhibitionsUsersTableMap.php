@@ -106,7 +106,7 @@ class ProhibitionsUsersTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('prohibitionId', 'userId', 'ProhibitedUntil', 'CreatedAt', 'UpdatedAt', ),
+        self::TYPE_PHPNAME       => array('ProhibitionId', 'UserId', 'ProhibitedUntil', 'CreatedAt', 'UpdatedAt', ),
         self::TYPE_STUDLYPHPNAME => array('prohibitionId', 'userId', 'prohibitedUntil', 'createdAt', 'updatedAt', ),
         self::TYPE_COLNAME       => array(ProhibitionsUsersTableMap::PROHIBITIONS_ID, ProhibitionsUsersTableMap::USERS_ID, ProhibitionsUsersTableMap::PROHIBITED_UNTIL, ProhibitionsUsersTableMap::CREATED_AT, ProhibitionsUsersTableMap::UPDATED_AT, ),
         self::TYPE_RAW_COLNAME   => array('PROHIBITIONS_ID', 'USERS_ID', 'PROHIBITED_UNTIL', 'CREATED_AT', 'UPDATED_AT', ),
@@ -121,7 +121,7 @@ class ProhibitionsUsersTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('prohibitionId' => 0, 'userId' => 1, 'ProhibitedUntil' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
+        self::TYPE_PHPNAME       => array('ProhibitionId' => 0, 'UserId' => 1, 'ProhibitedUntil' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
         self::TYPE_STUDLYPHPNAME => array('prohibitionId' => 0, 'userId' => 1, 'prohibitedUntil' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
         self::TYPE_COLNAME       => array(ProhibitionsUsersTableMap::PROHIBITIONS_ID => 0, ProhibitionsUsersTableMap::USERS_ID => 1, ProhibitionsUsersTableMap::PROHIBITED_UNTIL => 2, ProhibitionsUsersTableMap::CREATED_AT => 3, ProhibitionsUsersTableMap::UPDATED_AT => 4, ),
         self::TYPE_RAW_COLNAME   => array('PROHIBITIONS_ID' => 0, 'USERS_ID' => 1, 'PROHIBITED_UNTIL' => 2, 'CREATED_AT' => 3, 'UPDATED_AT' => 4, ),
@@ -144,9 +144,10 @@ class ProhibitionsUsersTableMap extends TableMap
         $this->setClassName('\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsUsers');
         $this->setPackage('org.bitbucket.phlopsi.access_control.propel');
         $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('PROHIBITIONS_ID', 'prohibitionId', 'INTEGER' , 'prohibitions', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('USERS_ID', 'userId', 'INTEGER' , 'users', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('PROHIBITIONS_ID', 'ProhibitionId', 'INTEGER' , 'prohibitions', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('USERS_ID', 'UserId', 'INTEGER' , 'users', 'ID', true, null, null);
         $this->addColumn('PROHIBITED_UNTIL', 'ProhibitedUntil', 'TIMESTAMP', false, null, null);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
@@ -157,7 +158,7 @@ class ProhibitionsUsersTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Permission', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission', RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id', ), null, null);
+        $this->addRelation('Prohibition', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id', ), null, null);
         $this->addRelation('User', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_ONE, array('users_id' => 'id', ), null, null);
     } // buildRelations()
 
@@ -189,7 +190,7 @@ class ProhibitionsUsersTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize(array((string) $obj->getprohibitionId(), (string) $obj->getuserId()));
+                $key = serialize(array((string) $obj->getProhibitionId(), (string) $obj->getUserId()));
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -209,7 +210,7 @@ class ProhibitionsUsersTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers) {
-                $key = serialize(array((string) $value->getprohibitionId(), (string) $value->getuserId()));
+                $key = serialize(array((string) $value->getProhibitionId(), (string) $value->getUserId()));
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
@@ -241,11 +242,11 @@ class ProhibitionsUsersTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('prohibitionId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('userId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProhibitionId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('prohibitionId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('userId', TableMap::TYPE_PHPNAME, $indexType)]));
+        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProhibitionId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]));
     }
 
     /**

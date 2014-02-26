@@ -21,19 +21,19 @@ use org\bitbucket\phlopsi\access_control\propel\Map\ProhibitionsRolesTableMap;
  *
  *
  *
- * @method     ChildProhibitionsRolesQuery orderByprohibitionId($order = Criteria::ASC) Order by the prohibitions_id column
- * @method     ChildProhibitionsRolesQuery orderByroleId($order = Criteria::ASC) Order by the roles_id column
+ * @method     ChildProhibitionsRolesQuery orderByProhibitionId($order = Criteria::ASC) Order by the prohibitions_id column
+ * @method     ChildProhibitionsRolesQuery orderByRoleId($order = Criteria::ASC) Order by the roles_id column
  *
- * @method     ChildProhibitionsRolesQuery groupByprohibitionId() Group by the prohibitions_id column
- * @method     ChildProhibitionsRolesQuery groupByroleId() Group by the roles_id column
+ * @method     ChildProhibitionsRolesQuery groupByProhibitionId() Group by the prohibitions_id column
+ * @method     ChildProhibitionsRolesQuery groupByRoleId() Group by the roles_id column
  *
  * @method     ChildProhibitionsRolesQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildProhibitionsRolesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildProhibitionsRolesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildProhibitionsRolesQuery leftJoinPermission($relationAlias = null) Adds a LEFT JOIN clause to the query using the Permission relation
- * @method     ChildProhibitionsRolesQuery rightJoinPermission($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Permission relation
- * @method     ChildProhibitionsRolesQuery innerJoinPermission($relationAlias = null) Adds a INNER JOIN clause to the query using the Permission relation
+ * @method     ChildProhibitionsRolesQuery leftJoinProhibition($relationAlias = null) Adds a LEFT JOIN clause to the query using the Prohibition relation
+ * @method     ChildProhibitionsRolesQuery rightJoinProhibition($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Prohibition relation
+ * @method     ChildProhibitionsRolesQuery innerJoinProhibition($relationAlias = null) Adds a INNER JOIN clause to the query using the Prohibition relation
  *
  * @method     ChildProhibitionsRolesQuery leftJoinRole($relationAlias = null) Adds a LEFT JOIN clause to the query using the Role relation
  * @method     ChildProhibitionsRolesQuery rightJoinRole($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Role relation
@@ -42,11 +42,11 @@ use org\bitbucket\phlopsi\access_control\propel\Map\ProhibitionsRolesTableMap;
  * @method     ChildProhibitionsRoles findOne(ConnectionInterface $con = null) Return the first ChildProhibitionsRoles matching the query
  * @method     ChildProhibitionsRoles findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProhibitionsRoles matching the query, or a new ChildProhibitionsRoles object populated from the query conditions when no match is found
  *
- * @method     ChildProhibitionsRoles findOneByprohibitionId(int $prohibitions_id) Return the first ChildProhibitionsRoles filtered by the prohibitions_id column
- * @method     ChildProhibitionsRoles findOneByroleId(int $roles_id) Return the first ChildProhibitionsRoles filtered by the roles_id column
+ * @method     ChildProhibitionsRoles findOneByProhibitionId(int $prohibitions_id) Return the first ChildProhibitionsRoles filtered by the prohibitions_id column
+ * @method     ChildProhibitionsRoles findOneByRoleId(int $roles_id) Return the first ChildProhibitionsRoles filtered by the roles_id column
  *
- * @method     array findByprohibitionId(int $prohibitions_id) Return ChildProhibitionsRoles objects filtered by the prohibitions_id column
- * @method     array findByroleId(int $roles_id) Return ChildProhibitionsRoles objects filtered by the roles_id column
+ * @method     array findByProhibitionId(int $prohibitions_id) Return ChildProhibitionsRoles objects filtered by the prohibitions_id column
+ * @method     array findByRoleId(int $roles_id) Return ChildProhibitionsRoles objects filtered by the roles_id column
  *
  */
 abstract class ProhibitionsRolesQuery extends ModelCriteria
@@ -241,12 +241,12 @@ abstract class ProhibitionsRolesQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByprohibitionId(1234); // WHERE prohibitions_id = 1234
-     * $query->filterByprohibitionId(array(12, 34)); // WHERE prohibitions_id IN (12, 34)
-     * $query->filterByprohibitionId(array('min' => 12)); // WHERE prohibitions_id > 12
+     * $query->filterByProhibitionId(1234); // WHERE prohibitions_id = 1234
+     * $query->filterByProhibitionId(array(12, 34)); // WHERE prohibitions_id IN (12, 34)
+     * $query->filterByProhibitionId(array('min' => 12)); // WHERE prohibitions_id > 12
      * </code>
      *
-     * @see       filterByPermission()
+     * @see       filterByProhibition()
      *
      * @param     mixed $prohibitionId The value to use as filter.
      *              Use scalar values for equality.
@@ -256,7 +256,7 @@ abstract class ProhibitionsRolesQuery extends ModelCriteria
      *
      * @return ChildProhibitionsRolesQuery The current query, for fluid interface
      */
-    public function filterByprohibitionId($prohibitionId = null, $comparison = null)
+    public function filterByProhibitionId($prohibitionId = null, $comparison = null)
     {
         if (is_array($prohibitionId)) {
             $useMinMax = false;
@@ -284,9 +284,9 @@ abstract class ProhibitionsRolesQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByroleId(1234); // WHERE roles_id = 1234
-     * $query->filterByroleId(array(12, 34)); // WHERE roles_id IN (12, 34)
-     * $query->filterByroleId(array('min' => 12)); // WHERE roles_id > 12
+     * $query->filterByRoleId(1234); // WHERE roles_id = 1234
+     * $query->filterByRoleId(array(12, 34)); // WHERE roles_id IN (12, 34)
+     * $query->filterByRoleId(array('min' => 12)); // WHERE roles_id > 12
      * </code>
      *
      * @see       filterByRole()
@@ -299,7 +299,7 @@ abstract class ProhibitionsRolesQuery extends ModelCriteria
      *
      * @return ChildProhibitionsRolesQuery The current query, for fluid interface
      */
-    public function filterByroleId($roleId = null, $comparison = null)
+    public function filterByRoleId($roleId = null, $comparison = null)
     {
         if (is_array($roleId)) {
             $useMinMax = false;
@@ -323,42 +323,42 @@ abstract class ProhibitionsRolesQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\Permission object
+     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\Prohibition object
      *
-     * @param \org\bitbucket\phlopsi\access_control\propel\Permission|ObjectCollection $permission The related object(s) to use as filter
+     * @param \org\bitbucket\phlopsi\access_control\propel\Prohibition|ObjectCollection $prohibition The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildProhibitionsRolesQuery The current query, for fluid interface
      */
-    public function filterByPermission($permission, $comparison = null)
+    public function filterByProhibition($prohibition, $comparison = null)
     {
-        if ($permission instanceof \org\bitbucket\phlopsi\access_control\propel\Permission) {
+        if ($prohibition instanceof \org\bitbucket\phlopsi\access_control\propel\Prohibition) {
             return $this
-                ->addUsingAlias(ProhibitionsRolesTableMap::PROHIBITIONS_ID, $permission->getId(), $comparison);
-        } elseif ($permission instanceof ObjectCollection) {
+                ->addUsingAlias(ProhibitionsRolesTableMap::PROHIBITIONS_ID, $prohibition->getId(), $comparison);
+        } elseif ($prohibition instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(ProhibitionsRolesTableMap::PROHIBITIONS_ID, $permission->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(ProhibitionsRolesTableMap::PROHIBITIONS_ID, $prohibition->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByPermission() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\Permission or Collection');
+            throw new PropelException('filterByProhibition() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\Prohibition or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Permission relation
+     * Adds a JOIN clause to the query using the Prohibition relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return ChildProhibitionsRolesQuery The current query, for fluid interface
      */
-    public function joinPermission($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinProhibition($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Permission');
+        $relationMap = $tableMap->getRelation('Prohibition');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -373,14 +373,14 @@ abstract class ProhibitionsRolesQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Permission');
+            $this->addJoinObject($join, 'Prohibition');
         }
 
         return $this;
     }
 
     /**
-     * Use the Permission relation Permission object
+     * Use the Prohibition relation Prohibition object
      *
      * @see useQuery()
      *
@@ -388,13 +388,13 @@ abstract class ProhibitionsRolesQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \org\bitbucket\phlopsi\access_control\propel\PermissionQuery A secondary query class using the current class as primary query
+     * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery A secondary query class using the current class as primary query
      */
-    public function usePermissionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useProhibitionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinPermission($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Permission', '\org\bitbucket\phlopsi\access_control\propel\PermissionQuery');
+            ->joinProhibition($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Prohibition', '\org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery');
     }
 
     /**
@@ -482,8 +482,8 @@ abstract class ProhibitionsRolesQuery extends ModelCriteria
     public function prune($prohibitionsRoles = null)
     {
         if ($prohibitionsRoles) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(ProhibitionsRolesTableMap::PROHIBITIONS_ID), $prohibitionsRoles->getprohibitionId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(ProhibitionsRolesTableMap::ROLES_ID), $prohibitionsRoles->getroleId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(ProhibitionsRolesTableMap::PROHIBITIONS_ID), $prohibitionsRoles->getProhibitionId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(ProhibitionsRolesTableMap::ROLES_ID), $prohibitionsRoles->getRoleId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

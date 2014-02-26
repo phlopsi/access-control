@@ -381,7 +381,7 @@ abstract class Sessions implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getsessionTypeId()
+    public function getSessionTypeId()
     {
 
         return $this->session_types_id;
@@ -392,7 +392,7 @@ abstract class Sessions implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getuserId()
+    public function getUserId()
     {
 
         return $this->users_id;
@@ -486,7 +486,7 @@ abstract class Sessions implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\Sessions The current object (for fluent API support)
      */
-    public function setsessionTypeId($v)
+    public function setSessionTypeId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -503,7 +503,7 @@ abstract class Sessions implements ActiveRecordInterface
 
 
         return $this;
-    } // setsessionTypeId()
+    } // setSessionTypeId()
 
     /**
      * Set the value of [users_id] column.
@@ -511,7 +511,7 @@ abstract class Sessions implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\Sessions The current object (for fluent API support)
      */
-    public function setuserId($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -528,7 +528,7 @@ abstract class Sessions implements ActiveRecordInterface
 
 
         return $this;
-    } // setuserId()
+    } // setUserId()
 
     /**
      * Set the value of [key] column.
@@ -676,10 +676,10 @@ abstract class Sessions implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SessionsTableMap::translateFieldName('sessionTypeId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SessionsTableMap::translateFieldName('SessionTypeId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->session_types_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SessionsTableMap::translateFieldName('userId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SessionsTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->users_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SessionsTableMap::translateFieldName('Key', TableMap::TYPE_PHPNAME, $indexType)];
@@ -1068,10 +1068,10 @@ abstract class Sessions implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getsessionTypeId();
+                return $this->getSessionTypeId();
                 break;
             case 1:
-                return $this->getuserId();
+                return $this->getUserId();
                 break;
             case 2:
                 return $this->getKey();
@@ -1117,8 +1117,8 @@ abstract class Sessions implements ActiveRecordInterface
         $alreadyDumpedObjects['Sessions'][$this->getPrimaryKey()] = true;
         $keys = SessionsTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getsessionTypeId(),
-            $keys[1] => $this->getuserId(),
+            $keys[0] => $this->getSessionTypeId(),
+            $keys[1] => $this->getUserId(),
             $keys[2] => $this->getKey(),
             $keys[3] => $this->getSessionDuration(),
             $keys[4] => $this->getsimulatedUserId(),
@@ -1172,10 +1172,10 @@ abstract class Sessions implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setsessionTypeId($value);
+                $this->setSessionTypeId($value);
                 break;
             case 1:
-                $this->setuserId($value);
+                $this->setUserId($value);
                 break;
             case 2:
                 $this->setKey($value);
@@ -1216,8 +1216,8 @@ abstract class Sessions implements ActiveRecordInterface
     {
         $keys = SessionsTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setsessionTypeId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setuserId($arr[$keys[1]]);
+        if (array_key_exists($keys[0], $arr)) $this->setSessionTypeId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setUserId($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setKey($arr[$keys[2]]);
         if (array_key_exists($keys[3], $arr)) $this->setSessionDuration($arr[$keys[3]]);
         if (array_key_exists($keys[4], $arr)) $this->setsimulatedUserId($arr[$keys[4]]);
@@ -1304,8 +1304,8 @@ abstract class Sessions implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setsessionTypeId($this->getsessionTypeId());
-        $copyObj->setuserId($this->getuserId());
+        $copyObj->setSessionTypeId($this->getSessionTypeId());
+        $copyObj->setUserId($this->getUserId());
         $copyObj->setKey($this->getKey());
         $copyObj->setSessionDuration($this->getSessionDuration());
         $copyObj->setsimulatedUserId($this->getsimulatedUserId());
@@ -1348,9 +1348,9 @@ abstract class Sessions implements ActiveRecordInterface
     public function setSessionType(ChildSessionType $v = null)
     {
         if ($v === null) {
-            $this->setsessionTypeId(NULL);
+            $this->setSessionTypeId(NULL);
         } else {
-            $this->setsessionTypeId($v->getId());
+            $this->setSessionTypeId($v->getId());
         }
 
         $this->aSessionType = $v;
@@ -1399,9 +1399,9 @@ abstract class Sessions implements ActiveRecordInterface
     public function setUser(ChildUser $v = null)
     {
         if ($v === null) {
-            $this->setuserId(NULL);
+            $this->setUserId(NULL);
         } else {
-            $this->setuserId($v->getId());
+            $this->setUserId($v->getId());
         }
 
         if ($v === null) {

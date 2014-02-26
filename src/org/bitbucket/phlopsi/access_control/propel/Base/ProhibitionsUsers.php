@@ -16,8 +16,8 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
-use org\bitbucket\phlopsi\access_control\propel\Permission as ChildPermission;
-use org\bitbucket\phlopsi\access_control\propel\PermissionQuery as ChildPermissionQuery;
+use org\bitbucket\phlopsi\access_control\propel\Prohibition as ChildProhibition;
+use org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery as ChildProhibitionQuery;
 use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers as ChildProhibitionsUsers;
 use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery as ChildProhibitionsUsersQuery;
 use org\bitbucket\phlopsi\access_control\propel\User as ChildUser;
@@ -89,9 +89,9 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        Permission
+     * @var        Prohibition
      */
-    protected $aPermission;
+    protected $aProhibition;
 
     /**
      * @var        User
@@ -369,7 +369,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getprohibitionId()
+    public function getProhibitionId()
     {
 
         return $this->prohibitions_id;
@@ -380,7 +380,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getuserId()
+    public function getUserId()
     {
 
         return $this->users_id;
@@ -452,7 +452,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      */
-    public function setprohibitionId($v)
+    public function setProhibitionId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -463,13 +463,13 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             $this->modifiedColumns[] = ProhibitionsUsersTableMap::PROHIBITIONS_ID;
         }
 
-        if ($this->aPermission !== null && $this->aPermission->getId() !== $v) {
-            $this->aPermission = null;
+        if ($this->aProhibition !== null && $this->aProhibition->getId() !== $v) {
+            $this->aProhibition = null;
         }
 
 
         return $this;
-    } // setprohibitionId()
+    } // setProhibitionId()
 
     /**
      * Set the value of [users_id] column.
@@ -477,7 +477,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      */
-    public function setuserId($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -494,7 +494,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
 
 
         return $this;
-    } // setuserId()
+    } // setUserId()
 
     /**
      * Sets the value of [prohibited_until] column to a normalized version of the date/time value specified.
@@ -596,10 +596,10 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProhibitionsUsersTableMap::translateFieldName('prohibitionId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProhibitionsUsersTableMap::translateFieldName('ProhibitionId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->prohibitions_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProhibitionsUsersTableMap::translateFieldName('userId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProhibitionsUsersTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->users_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProhibitionsUsersTableMap::translateFieldName('ProhibitedUntil', TableMap::TYPE_PHPNAME, $indexType)];
@@ -649,8 +649,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aPermission !== null && $this->prohibitions_id !== $this->aPermission->getId()) {
-            $this->aPermission = null;
+        if ($this->aProhibition !== null && $this->prohibitions_id !== $this->aProhibition->getId()) {
+            $this->aProhibition = null;
         }
         if ($this->aUser !== null && $this->users_id !== $this->aUser->getId()) {
             $this->aUser = null;
@@ -694,7 +694,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aPermission = null;
+            $this->aProhibition = null;
             $this->aUser = null;
         } // if (deep)
     }
@@ -823,11 +823,11 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aPermission !== null) {
-                if ($this->aPermission->isModified() || $this->aPermission->isNew()) {
-                    $affectedRows += $this->aPermission->save($con);
+            if ($this->aProhibition !== null) {
+                if ($this->aProhibition->isModified() || $this->aProhibition->isNew()) {
+                    $affectedRows += $this->aProhibition->save($con);
                 }
-                $this->setPermission($this->aPermission);
+                $this->setProhibition($this->aProhibition);
             }
 
             if ($this->aUser !== null) {
@@ -967,10 +967,10 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getprohibitionId();
+                return $this->getProhibitionId();
                 break;
             case 1:
-                return $this->getuserId();
+                return $this->getUserId();
                 break;
             case 2:
                 return $this->getProhibitedUntil();
@@ -1010,8 +1010,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         $alreadyDumpedObjects['ProhibitionsUsers'][serialize($this->getPrimaryKey())] = true;
         $keys = ProhibitionsUsersTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getprohibitionId(),
-            $keys[1] => $this->getuserId(),
+            $keys[0] => $this->getProhibitionId(),
+            $keys[1] => $this->getUserId(),
             $keys[2] => $this->getProhibitedUntil(),
             $keys[3] => $this->getCreatedAt(),
             $keys[4] => $this->getUpdatedAt(),
@@ -1022,8 +1022,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aPermission) {
-                $result['Permission'] = $this->aPermission->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            if (null !== $this->aProhibition) {
+                $result['Prohibition'] = $this->aProhibition->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aUser) {
                 $result['User'] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1063,10 +1063,10 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setprohibitionId($value);
+                $this->setProhibitionId($value);
                 break;
             case 1:
-                $this->setuserId($value);
+                $this->setUserId($value);
                 break;
             case 2:
                 $this->setProhibitedUntil($value);
@@ -1101,8 +1101,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     {
         $keys = ProhibitionsUsersTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setprohibitionId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setuserId($arr[$keys[1]]);
+        if (array_key_exists($keys[0], $arr)) $this->setProhibitionId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setUserId($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setProhibitedUntil($arr[$keys[2]]);
         if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
         if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
@@ -1151,8 +1151,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     public function getPrimaryKey()
     {
         $pks = array();
-        $pks[0] = $this->getprohibitionId();
-        $pks[1] = $this->getuserId();
+        $pks[0] = $this->getProhibitionId();
+        $pks[1] = $this->getUserId();
 
         return $pks;
     }
@@ -1165,8 +1165,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function setPrimaryKey($keys)
     {
-        $this->setprohibitionId($keys[0]);
-        $this->setuserId($keys[1]);
+        $this->setProhibitionId($keys[0]);
+        $this->setUserId($keys[1]);
     }
 
     /**
@@ -1176,7 +1176,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return (null === $this->getprohibitionId()) && (null === $this->getuserId());
+        return (null === $this->getProhibitionId()) && (null === $this->getUserId());
     }
 
     /**
@@ -1192,8 +1192,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setprohibitionId($this->getprohibitionId());
-        $copyObj->setuserId($this->getuserId());
+        $copyObj->setProhibitionId($this->getProhibitionId());
+        $copyObj->setUserId($this->getUserId());
         $copyObj->setProhibitedUntil($this->getProhibitedUntil());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -1225,24 +1225,24 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildPermission object.
+     * Declares an association between this object and a ChildProhibition object.
      *
-     * @param                  ChildPermission $v
+     * @param                  ChildProhibition $v
      * @return                 \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setPermission(ChildPermission $v = null)
+    public function setProhibition(ChildProhibition $v = null)
     {
         if ($v === null) {
-            $this->setprohibitionId(NULL);
+            $this->setProhibitionId(NULL);
         } else {
-            $this->setprohibitionId($v->getId());
+            $this->setProhibitionId($v->getId());
         }
 
-        $this->aPermission = $v;
+        $this->aProhibition = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildPermission object, it will not be re-added.
+        // If this object has already been added to the ChildProhibition object, it will not be re-added.
         if ($v !== null) {
             $v->addProhibitionsUsers($this);
         }
@@ -1253,26 +1253,26 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildPermission object
+     * Get the associated ChildProhibition object
      *
      * @param      ConnectionInterface $con Optional Connection object.
-     * @return                 ChildPermission The associated ChildPermission object.
+     * @return                 ChildProhibition The associated ChildProhibition object.
      * @throws PropelException
      */
-    public function getPermission(ConnectionInterface $con = null)
+    public function getProhibition(ConnectionInterface $con = null)
     {
-        if ($this->aPermission === null && ($this->prohibitions_id !== null)) {
-            $this->aPermission = ChildPermissionQuery::create()->findPk($this->prohibitions_id, $con);
+        if ($this->aProhibition === null && ($this->prohibitions_id !== null)) {
+            $this->aProhibition = ChildProhibitionQuery::create()->findPk($this->prohibitions_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aPermission->addProhibitionsUserss($this);
+                $this->aProhibition->addProhibitionsUserss($this);
              */
         }
 
-        return $this->aPermission;
+        return $this->aProhibition;
     }
 
     /**
@@ -1285,9 +1285,9 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     public function setUser(ChildUser $v = null)
     {
         if ($v === null) {
-            $this->setuserId(NULL);
+            $this->setUserId(NULL);
         } else {
-            $this->setuserId($v->getId());
+            $this->setUserId($v->getId());
         }
 
         $this->aUser = $v;
@@ -1357,7 +1357,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aPermission = null;
+        $this->aProhibition = null;
         $this->aUser = null;
     }
 

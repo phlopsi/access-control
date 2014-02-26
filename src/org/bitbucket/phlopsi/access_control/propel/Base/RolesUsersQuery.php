@@ -21,11 +21,11 @@ use org\bitbucket\phlopsi\access_control\propel\Map\RolesUsersTableMap;
  *
  *
  *
- * @method     ChildRolesUsersQuery orderByroleId($order = Criteria::ASC) Order by the roles_id column
- * @method     ChildRolesUsersQuery orderByuserId($order = Criteria::ASC) Order by the users_id column
+ * @method     ChildRolesUsersQuery orderByRoleId($order = Criteria::ASC) Order by the roles_id column
+ * @method     ChildRolesUsersQuery orderByUserId($order = Criteria::ASC) Order by the users_id column
  *
- * @method     ChildRolesUsersQuery groupByroleId() Group by the roles_id column
- * @method     ChildRolesUsersQuery groupByuserId() Group by the users_id column
+ * @method     ChildRolesUsersQuery groupByRoleId() Group by the roles_id column
+ * @method     ChildRolesUsersQuery groupByUserId() Group by the users_id column
  *
  * @method     ChildRolesUsersQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildRolesUsersQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -42,11 +42,11 @@ use org\bitbucket\phlopsi\access_control\propel\Map\RolesUsersTableMap;
  * @method     ChildRolesUsers findOne(ConnectionInterface $con = null) Return the first ChildRolesUsers matching the query
  * @method     ChildRolesUsers findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRolesUsers matching the query, or a new ChildRolesUsers object populated from the query conditions when no match is found
  *
- * @method     ChildRolesUsers findOneByroleId(int $roles_id) Return the first ChildRolesUsers filtered by the roles_id column
- * @method     ChildRolesUsers findOneByuserId(int $users_id) Return the first ChildRolesUsers filtered by the users_id column
+ * @method     ChildRolesUsers findOneByRoleId(int $roles_id) Return the first ChildRolesUsers filtered by the roles_id column
+ * @method     ChildRolesUsers findOneByUserId(int $users_id) Return the first ChildRolesUsers filtered by the users_id column
  *
- * @method     array findByroleId(int $roles_id) Return ChildRolesUsers objects filtered by the roles_id column
- * @method     array findByuserId(int $users_id) Return ChildRolesUsers objects filtered by the users_id column
+ * @method     array findByRoleId(int $roles_id) Return ChildRolesUsers objects filtered by the roles_id column
+ * @method     array findByUserId(int $users_id) Return ChildRolesUsers objects filtered by the users_id column
  *
  */
 abstract class RolesUsersQuery extends ModelCriteria
@@ -241,9 +241,9 @@ abstract class RolesUsersQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByroleId(1234); // WHERE roles_id = 1234
-     * $query->filterByroleId(array(12, 34)); // WHERE roles_id IN (12, 34)
-     * $query->filterByroleId(array('min' => 12)); // WHERE roles_id > 12
+     * $query->filterByRoleId(1234); // WHERE roles_id = 1234
+     * $query->filterByRoleId(array(12, 34)); // WHERE roles_id IN (12, 34)
+     * $query->filterByRoleId(array('min' => 12)); // WHERE roles_id > 12
      * </code>
      *
      * @see       filterByRole()
@@ -256,7 +256,7 @@ abstract class RolesUsersQuery extends ModelCriteria
      *
      * @return ChildRolesUsersQuery The current query, for fluid interface
      */
-    public function filterByroleId($roleId = null, $comparison = null)
+    public function filterByRoleId($roleId = null, $comparison = null)
     {
         if (is_array($roleId)) {
             $useMinMax = false;
@@ -284,9 +284,9 @@ abstract class RolesUsersQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByuserId(1234); // WHERE users_id = 1234
-     * $query->filterByuserId(array(12, 34)); // WHERE users_id IN (12, 34)
-     * $query->filterByuserId(array('min' => 12)); // WHERE users_id > 12
+     * $query->filterByUserId(1234); // WHERE users_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE users_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE users_id > 12
      * </code>
      *
      * @see       filterByUser()
@@ -299,7 +299,7 @@ abstract class RolesUsersQuery extends ModelCriteria
      *
      * @return ChildRolesUsersQuery The current query, for fluid interface
      */
-    public function filterByuserId($userId = null, $comparison = null)
+    public function filterByUserId($userId = null, $comparison = null)
     {
         if (is_array($userId)) {
             $useMinMax = false;
@@ -482,8 +482,8 @@ abstract class RolesUsersQuery extends ModelCriteria
     public function prune($rolesUsers = null)
     {
         if ($rolesUsers) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(RolesUsersTableMap::ROLES_ID), $rolesUsers->getroleId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(RolesUsersTableMap::USERS_ID), $rolesUsers->getuserId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(RolesUsersTableMap::ROLES_ID), $rolesUsers->getRoleId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(RolesUsersTableMap::USERS_ID), $rolesUsers->getUserId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

@@ -159,6 +159,8 @@ class SessionTypeTableMap extends TableMap
     {
         $this->addRelation('RolesSessionTypes', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesSessionTypes', RelationMap::ONE_TO_MANY, array('id' => 'session_types_id', ), null, null, 'RolesSessionTypess');
         $this->addRelation('Sessions', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Sessions', RelationMap::ONE_TO_MANY, array('id' => 'session_types_id', ), null, null, 'Sessionss');
+        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
+        $this->addRelation('User', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
     } // buildRelations()
 
     /**

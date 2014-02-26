@@ -21,16 +21,16 @@ use org\bitbucket\phlopsi\access_control\propel\Map\SessionsTableMap;
  *
  *
  *
- * @method     ChildSessionsQuery orderBysessionTypeId($order = Criteria::ASC) Order by the session_types_id column
- * @method     ChildSessionsQuery orderByuserId($order = Criteria::ASC) Order by the users_id column
+ * @method     ChildSessionsQuery orderBySessionTypeId($order = Criteria::ASC) Order by the session_types_id column
+ * @method     ChildSessionsQuery orderByUserId($order = Criteria::ASC) Order by the users_id column
  * @method     ChildSessionsQuery orderByKey($order = Criteria::ASC) Order by the key column
  * @method     ChildSessionsQuery orderBySessionDuration($order = Criteria::ASC) Order by the session_duration column
  * @method     ChildSessionsQuery orderBysimulatedUserId($order = Criteria::ASC) Order by the simulated_users_id column
  * @method     ChildSessionsQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     ChildSessionsQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
- * @method     ChildSessionsQuery groupBysessionTypeId() Group by the session_types_id column
- * @method     ChildSessionsQuery groupByuserId() Group by the users_id column
+ * @method     ChildSessionsQuery groupBySessionTypeId() Group by the session_types_id column
+ * @method     ChildSessionsQuery groupByUserId() Group by the users_id column
  * @method     ChildSessionsQuery groupByKey() Group by the key column
  * @method     ChildSessionsQuery groupBySessionDuration() Group by the session_duration column
  * @method     ChildSessionsQuery groupBysimulatedUserId() Group by the simulated_users_id column
@@ -52,16 +52,16 @@ use org\bitbucket\phlopsi\access_control\propel\Map\SessionsTableMap;
  * @method     ChildSessions findOne(ConnectionInterface $con = null) Return the first ChildSessions matching the query
  * @method     ChildSessions findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSessions matching the query, or a new ChildSessions object populated from the query conditions when no match is found
  *
- * @method     ChildSessions findOneBysessionTypeId(int $session_types_id) Return the first ChildSessions filtered by the session_types_id column
- * @method     ChildSessions findOneByuserId(int $users_id) Return the first ChildSessions filtered by the users_id column
+ * @method     ChildSessions findOneBySessionTypeId(int $session_types_id) Return the first ChildSessions filtered by the session_types_id column
+ * @method     ChildSessions findOneByUserId(int $users_id) Return the first ChildSessions filtered by the users_id column
  * @method     ChildSessions findOneByKey(string $key) Return the first ChildSessions filtered by the key column
  * @method     ChildSessions findOneBySessionDuration(string $session_duration) Return the first ChildSessions filtered by the session_duration column
  * @method     ChildSessions findOneBysimulatedUserId(int $simulated_users_id) Return the first ChildSessions filtered by the simulated_users_id column
  * @method     ChildSessions findOneByCreatedAt(string $created_at) Return the first ChildSessions filtered by the created_at column
  * @method     ChildSessions findOneByUpdatedAt(string $updated_at) Return the first ChildSessions filtered by the updated_at column
  *
- * @method     array findBysessionTypeId(int $session_types_id) Return ChildSessions objects filtered by the session_types_id column
- * @method     array findByuserId(int $users_id) Return ChildSessions objects filtered by the users_id column
+ * @method     array findBySessionTypeId(int $session_types_id) Return ChildSessions objects filtered by the session_types_id column
+ * @method     array findByUserId(int $users_id) Return ChildSessions objects filtered by the users_id column
  * @method     array findByKey(string $key) Return ChildSessions objects filtered by the key column
  * @method     array findBySessionDuration(string $session_duration) Return ChildSessions objects filtered by the session_duration column
  * @method     array findBysimulatedUserId(int $simulated_users_id) Return ChildSessions objects filtered by the simulated_users_id column
@@ -249,9 +249,9 @@ abstract class SessionsQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterBysessionTypeId(1234); // WHERE session_types_id = 1234
-     * $query->filterBysessionTypeId(array(12, 34)); // WHERE session_types_id IN (12, 34)
-     * $query->filterBysessionTypeId(array('min' => 12)); // WHERE session_types_id > 12
+     * $query->filterBySessionTypeId(1234); // WHERE session_types_id = 1234
+     * $query->filterBySessionTypeId(array(12, 34)); // WHERE session_types_id IN (12, 34)
+     * $query->filterBySessionTypeId(array('min' => 12)); // WHERE session_types_id > 12
      * </code>
      *
      * @see       filterBySessionType()
@@ -264,7 +264,7 @@ abstract class SessionsQuery extends ModelCriteria
      *
      * @return ChildSessionsQuery The current query, for fluid interface
      */
-    public function filterBysessionTypeId($sessionTypeId = null, $comparison = null)
+    public function filterBySessionTypeId($sessionTypeId = null, $comparison = null)
     {
         if (is_array($sessionTypeId)) {
             $useMinMax = false;
@@ -292,9 +292,9 @@ abstract class SessionsQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByuserId(1234); // WHERE users_id = 1234
-     * $query->filterByuserId(array(12, 34)); // WHERE users_id IN (12, 34)
-     * $query->filterByuserId(array('min' => 12)); // WHERE users_id > 12
+     * $query->filterByUserId(1234); // WHERE users_id = 1234
+     * $query->filterByUserId(array(12, 34)); // WHERE users_id IN (12, 34)
+     * $query->filterByUserId(array('min' => 12)); // WHERE users_id > 12
      * </code>
      *
      * @see       filterByUser()
@@ -307,7 +307,7 @@ abstract class SessionsQuery extends ModelCriteria
      *
      * @return ChildSessionsQuery The current query, for fluid interface
      */
-    public function filterByuserId($userId = null, $comparison = null)
+    public function filterByUserId($userId = null, $comparison = null)
     {
         if (is_array($userId)) {
             $useMinMax = false;

@@ -24,6 +24,7 @@
  */
 namespace org\bitbucket\phlopsi\access_control;
 
+use org\bitbucket\phlopsi\access_control\propel\PermissionQuery as PropelPermissionQuery;
 use org\bitbucket\phlopsi\access_control\propel\User as PropelUser;
 
 class User
@@ -35,12 +36,37 @@ class User
         $this->user = $user;
     }
 
-    public function hasPermission($permission)
+    public function hasPermission($permission_id)
     {
-        $permission = (string) $permission;
+        $permission_id = (string) $permission_id;
 
-        if (empty($permission)) {
+        if (empty($permission_id)) {
             throw new \InvalidArgumentException('$permission converts to an empty string!');
+        }
+
+        $roles = $this->user->getRoles();
+
+        //TODO more efficiency!
+        foreach ($roles as $role) {
+            $permission = PropelPermissionQuery::create()
+                ->filterByRole($role)
+                ->findByExternalId($permission_id);
+
+            if (!is_null($permission)) {
+                return true;
+            }
+
+            $descendant_roles = $role->getDescendants();
+
+            foreach ($descendant_roles as $descendant_role) {
+                $permission = PropelPermissionQuery::create()
+                    ->filterByRole($descendant_role)
+                    ->findByExternalId($permission_id);
+
+                if (!is_null($permission)) {
+                    return true;
+                }
+            }
         }
 
         return false;

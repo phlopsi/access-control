@@ -91,7 +91,7 @@ class RolesSessionTypesTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('roleId', 'sessionTypeId', ),
+        self::TYPE_PHPNAME       => array('RoleId', 'SessionTypeId', ),
         self::TYPE_STUDLYPHPNAME => array('roleId', 'sessionTypeId', ),
         self::TYPE_COLNAME       => array(RolesSessionTypesTableMap::ROLES_ID, RolesSessionTypesTableMap::SESSION_TYPES_ID, ),
         self::TYPE_RAW_COLNAME   => array('ROLES_ID', 'SESSION_TYPES_ID', ),
@@ -106,7 +106,7 @@ class RolesSessionTypesTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('roleId' => 0, 'sessionTypeId' => 1, ),
+        self::TYPE_PHPNAME       => array('RoleId' => 0, 'SessionTypeId' => 1, ),
         self::TYPE_STUDLYPHPNAME => array('roleId' => 0, 'sessionTypeId' => 1, ),
         self::TYPE_COLNAME       => array(RolesSessionTypesTableMap::ROLES_ID => 0, RolesSessionTypesTableMap::SESSION_TYPES_ID => 1, ),
         self::TYPE_RAW_COLNAME   => array('ROLES_ID' => 0, 'SESSION_TYPES_ID' => 1, ),
@@ -129,9 +129,10 @@ class RolesSessionTypesTableMap extends TableMap
         $this->setClassName('\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesSessionTypes');
         $this->setPackage('org.bitbucket.phlopsi.access_control.propel');
         $this->setUseIdGenerator(false);
+        $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('ROLES_ID', 'roleId', 'INTEGER' , 'roles', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('SESSION_TYPES_ID', 'sessionTypeId', 'INTEGER' , 'session_types', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('ROLES_ID', 'RoleId', 'INTEGER' , 'roles', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('SESSION_TYPES_ID', 'SessionTypeId', 'INTEGER' , 'session_types', 'ID', true, null, null);
     } // initialize()
 
     /**
@@ -158,7 +159,7 @@ class RolesSessionTypesTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize(array((string) $obj->getroleId(), (string) $obj->getsessionTypeId()));
+                $key = serialize(array((string) $obj->getRoleId(), (string) $obj->getSessionTypeId()));
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -178,7 +179,7 @@ class RolesSessionTypesTableMap extends TableMap
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes) {
-                $key = serialize(array((string) $value->getroleId(), (string) $value->getsessionTypeId()));
+                $key = serialize(array((string) $value->getRoleId(), (string) $value->getSessionTypeId()));
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
@@ -210,11 +211,11 @@ class RolesSessionTypesTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('roleId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('sessionTypeId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('SessionTypeId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('roleId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('sessionTypeId', TableMap::TYPE_PHPNAME, $indexType)]));
+        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('SessionTypeId', TableMap::TYPE_PHPNAME, $indexType)]));
     }
 
     /**

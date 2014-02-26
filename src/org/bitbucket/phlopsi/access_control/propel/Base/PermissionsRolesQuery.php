@@ -21,11 +21,11 @@ use org\bitbucket\phlopsi\access_control\propel\Map\PermissionsRolesTableMap;
  *
  *
  *
- * @method     ChildPermissionsRolesQuery orderBypermissionId($order = Criteria::ASC) Order by the permissions_id column
- * @method     ChildPermissionsRolesQuery orderByroleId($order = Criteria::ASC) Order by the roles_id column
+ * @method     ChildPermissionsRolesQuery orderByPermissionId($order = Criteria::ASC) Order by the permissions_id column
+ * @method     ChildPermissionsRolesQuery orderByRoleId($order = Criteria::ASC) Order by the roles_id column
  *
- * @method     ChildPermissionsRolesQuery groupBypermissionId() Group by the permissions_id column
- * @method     ChildPermissionsRolesQuery groupByroleId() Group by the roles_id column
+ * @method     ChildPermissionsRolesQuery groupByPermissionId() Group by the permissions_id column
+ * @method     ChildPermissionsRolesQuery groupByRoleId() Group by the roles_id column
  *
  * @method     ChildPermissionsRolesQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildPermissionsRolesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -42,11 +42,11 @@ use org\bitbucket\phlopsi\access_control\propel\Map\PermissionsRolesTableMap;
  * @method     ChildPermissionsRoles findOne(ConnectionInterface $con = null) Return the first ChildPermissionsRoles matching the query
  * @method     ChildPermissionsRoles findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPermissionsRoles matching the query, or a new ChildPermissionsRoles object populated from the query conditions when no match is found
  *
- * @method     ChildPermissionsRoles findOneBypermissionId(int $permissions_id) Return the first ChildPermissionsRoles filtered by the permissions_id column
- * @method     ChildPermissionsRoles findOneByroleId(int $roles_id) Return the first ChildPermissionsRoles filtered by the roles_id column
+ * @method     ChildPermissionsRoles findOneByPermissionId(int $permissions_id) Return the first ChildPermissionsRoles filtered by the permissions_id column
+ * @method     ChildPermissionsRoles findOneByRoleId(int $roles_id) Return the first ChildPermissionsRoles filtered by the roles_id column
  *
- * @method     array findBypermissionId(int $permissions_id) Return ChildPermissionsRoles objects filtered by the permissions_id column
- * @method     array findByroleId(int $roles_id) Return ChildPermissionsRoles objects filtered by the roles_id column
+ * @method     array findByPermissionId(int $permissions_id) Return ChildPermissionsRoles objects filtered by the permissions_id column
+ * @method     array findByRoleId(int $roles_id) Return ChildPermissionsRoles objects filtered by the roles_id column
  *
  */
 abstract class PermissionsRolesQuery extends ModelCriteria
@@ -241,9 +241,9 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterBypermissionId(1234); // WHERE permissions_id = 1234
-     * $query->filterBypermissionId(array(12, 34)); // WHERE permissions_id IN (12, 34)
-     * $query->filterBypermissionId(array('min' => 12)); // WHERE permissions_id > 12
+     * $query->filterByPermissionId(1234); // WHERE permissions_id = 1234
+     * $query->filterByPermissionId(array(12, 34)); // WHERE permissions_id IN (12, 34)
+     * $query->filterByPermissionId(array('min' => 12)); // WHERE permissions_id > 12
      * </code>
      *
      * @see       filterByPermission()
@@ -256,7 +256,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *
      * @return ChildPermissionsRolesQuery The current query, for fluid interface
      */
-    public function filterBypermissionId($permissionId = null, $comparison = null)
+    public function filterByPermissionId($permissionId = null, $comparison = null)
     {
         if (is_array($permissionId)) {
             $useMinMax = false;
@@ -284,9 +284,9 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByroleId(1234); // WHERE roles_id = 1234
-     * $query->filterByroleId(array(12, 34)); // WHERE roles_id IN (12, 34)
-     * $query->filterByroleId(array('min' => 12)); // WHERE roles_id > 12
+     * $query->filterByRoleId(1234); // WHERE roles_id = 1234
+     * $query->filterByRoleId(array(12, 34)); // WHERE roles_id IN (12, 34)
+     * $query->filterByRoleId(array('min' => 12)); // WHERE roles_id > 12
      * </code>
      *
      * @see       filterByRole()
@@ -299,7 +299,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *
      * @return ChildPermissionsRolesQuery The current query, for fluid interface
      */
-    public function filterByroleId($roleId = null, $comparison = null)
+    public function filterByRoleId($roleId = null, $comparison = null)
     {
         if (is_array($roleId)) {
             $useMinMax = false;
@@ -482,8 +482,8 @@ abstract class PermissionsRolesQuery extends ModelCriteria
     public function prune($permissionsRoles = null)
     {
         if ($permissionsRoles) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(PermissionsRolesTableMap::PERMISSIONS_ID), $permissionsRoles->getpermissionId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(PermissionsRolesTableMap::ROLES_ID), $permissionsRoles->getroleId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(PermissionsRolesTableMap::PERMISSIONS_ID), $permissionsRoles->getPermissionId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(PermissionsRolesTableMap::ROLES_ID), $permissionsRoles->getRoleId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 

@@ -348,7 +348,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getroleId()
+    public function getRoleId()
     {
 
         return $this->roles_id;
@@ -359,7 +359,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      *
      * @return   int
      */
-    public function getuserId()
+    public function getUserId()
     {
 
         return $this->users_id;
@@ -371,7 +371,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\RolesUsers The current object (for fluent API support)
      */
-    public function setroleId($v)
+    public function setRoleId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -388,7 +388,7 @@ abstract class RolesUsers implements ActiveRecordInterface
 
 
         return $this;
-    } // setroleId()
+    } // setRoleId()
 
     /**
      * Set the value of [users_id] column.
@@ -396,7 +396,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * @param      int $v new value
      * @return   \org\bitbucket\phlopsi\access_control\propel\RolesUsers The current object (for fluent API support)
      */
-    public function setuserId($v)
+    public function setUserId($v)
     {
         if ($v !== null) {
             $v = (int) $v;
@@ -413,7 +413,7 @@ abstract class RolesUsers implements ActiveRecordInterface
 
 
         return $this;
-    } // setuserId()
+    } // setUserId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -452,10 +452,10 @@ abstract class RolesUsers implements ActiveRecordInterface
         try {
 
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RolesUsersTableMap::translateFieldName('roleId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RolesUsersTableMap::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->roles_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RolesUsersTableMap::translateFieldName('userId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RolesUsersTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->users_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -776,10 +776,10 @@ abstract class RolesUsers implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                return $this->getroleId();
+                return $this->getRoleId();
                 break;
             case 1:
-                return $this->getuserId();
+                return $this->getUserId();
                 break;
             default:
                 return null;
@@ -810,8 +810,8 @@ abstract class RolesUsers implements ActiveRecordInterface
         $alreadyDumpedObjects['RolesUsers'][serialize($this->getPrimaryKey())] = true;
         $keys = RolesUsersTableMap::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getroleId(),
-            $keys[1] => $this->getuserId(),
+            $keys[0] => $this->getRoleId(),
+            $keys[1] => $this->getUserId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -860,10 +860,10 @@ abstract class RolesUsers implements ActiveRecordInterface
     {
         switch ($pos) {
             case 0:
-                $this->setroleId($value);
+                $this->setRoleId($value);
                 break;
             case 1:
-                $this->setuserId($value);
+                $this->setUserId($value);
                 break;
         } // switch()
     }
@@ -889,8 +889,8 @@ abstract class RolesUsers implements ActiveRecordInterface
     {
         $keys = RolesUsersTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setroleId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setuserId($arr[$keys[1]]);
+        if (array_key_exists($keys[0], $arr)) $this->setRoleId($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setUserId($arr[$keys[1]]);
     }
 
     /**
@@ -933,8 +933,8 @@ abstract class RolesUsers implements ActiveRecordInterface
     public function getPrimaryKey()
     {
         $pks = array();
-        $pks[0] = $this->getroleId();
-        $pks[1] = $this->getuserId();
+        $pks[0] = $this->getRoleId();
+        $pks[1] = $this->getUserId();
 
         return $pks;
     }
@@ -947,8 +947,8 @@ abstract class RolesUsers implements ActiveRecordInterface
      */
     public function setPrimaryKey($keys)
     {
-        $this->setroleId($keys[0]);
-        $this->setuserId($keys[1]);
+        $this->setRoleId($keys[0]);
+        $this->setUserId($keys[1]);
     }
 
     /**
@@ -958,7 +958,7 @@ abstract class RolesUsers implements ActiveRecordInterface
     public function isPrimaryKeyNull()
     {
 
-        return (null === $this->getroleId()) && (null === $this->getuserId());
+        return (null === $this->getRoleId()) && (null === $this->getUserId());
     }
 
     /**
@@ -974,8 +974,8 @@ abstract class RolesUsers implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setroleId($this->getroleId());
-        $copyObj->setuserId($this->getuserId());
+        $copyObj->setRoleId($this->getRoleId());
+        $copyObj->setUserId($this->getUserId());
         if ($makeNew) {
             $copyObj->setNew(true);
         }
@@ -1013,9 +1013,9 @@ abstract class RolesUsers implements ActiveRecordInterface
     public function setRole(ChildRole $v = null)
     {
         if ($v === null) {
-            $this->setroleId(NULL);
+            $this->setRoleId(NULL);
         } else {
-            $this->setroleId($v->getId());
+            $this->setRoleId($v->getId());
         }
 
         $this->aRole = $v;
@@ -1064,9 +1064,9 @@ abstract class RolesUsers implements ActiveRecordInterface
     public function setUser(ChildUser $v = null)
     {
         if ($v === null) {
-            $this->setuserId(NULL);
+            $this->setUserId(NULL);
         } else {
-            $this->setuserId($v->getId());
+            $this->setUserId($v->getId());
         }
 
         $this->aUser = $v;

@@ -1,6 +1,12 @@
 {
-    "name": "phlopsi/rbac",
+    "name": "phlopsi/access-control",
     "description": "Access control API",
+    "license": "MIT",
+    "support": {
+        "email": "nbphobos@gmail.com",
+        "issues": "https://bitbucket.org/Phlopsi/access-control/issues",
+        "source": "https://bitbucket.org/Phlopsi/access-control/src"
+    },
     "require": {
         "propel/propel": "~2.0@alpha"
     },

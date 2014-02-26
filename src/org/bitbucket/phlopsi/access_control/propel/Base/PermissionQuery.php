@@ -18,7 +18,7 @@ use org\bitbucket\phlopsi\access_control\propel\PermissionQuery as ChildPermissi
 use org\bitbucket\phlopsi\access_control\propel\Map\PermissionTableMap;
 
 /**
- * Base class that represents a query for the 'prohibitions' table.
+ * Base class that represents a query for the 'permissions' table.
  *
  *
  *
@@ -38,13 +38,9 @@ use org\bitbucket\phlopsi\access_control\propel\Map\PermissionTableMap;
  * @method     ChildPermissionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildPermissionQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildPermissionQuery leftJoinProhibitionsRoles($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProhibitionsRoles relation
- * @method     ChildPermissionQuery rightJoinProhibitionsRoles($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProhibitionsRoles relation
- * @method     ChildPermissionQuery innerJoinProhibitionsRoles($relationAlias = null) Adds a INNER JOIN clause to the query using the ProhibitionsRoles relation
- *
- * @method     ChildPermissionQuery leftJoinProhibitionsUsers($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProhibitionsUsers relation
- * @method     ChildPermissionQuery rightJoinProhibitionsUsers($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProhibitionsUsers relation
- * @method     ChildPermissionQuery innerJoinProhibitionsUsers($relationAlias = null) Adds a INNER JOIN clause to the query using the ProhibitionsUsers relation
+ * @method     ChildPermissionQuery leftJoinPermissionsRoles($relationAlias = null) Adds a LEFT JOIN clause to the query using the PermissionsRoles relation
+ * @method     ChildPermissionQuery rightJoinPermissionsRoles($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PermissionsRoles relation
+ * @method     ChildPermissionQuery innerJoinPermissionsRoles($relationAlias = null) Adds a INNER JOIN clause to the query using the PermissionsRoles relation
  *
  * @method     ChildPermission findOne(ConnectionInterface $con = null) Return the first ChildPermission matching the query
  * @method     ChildPermission findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPermission matching the query, or a new ChildPermission object populated from the query conditions when no match is found
@@ -148,7 +144,7 @@ abstract class PermissionQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT EXTERNAL_ID, TREE_LEFT, TREE_RIGHT, TREE_LEVEL, ID FROM prohibitions WHERE ID = :p0';
+        $sql = 'SELECT EXTERNAL_ID, TREE_LEFT, TREE_RIGHT, TREE_LEVEL, ID FROM permissions WHERE ID = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -431,40 +427,40 @@ abstract class PermissionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles object
+     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles object
      *
-     * @param \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles|ObjectCollection $prohibitionsRoles  the related object to use as filter
+     * @param \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles|ObjectCollection $permissionsRoles  the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildPermissionQuery The current query, for fluid interface
      */
-    public function filterByProhibitionsRoles($prohibitionsRoles, $comparison = null)
+    public function filterByPermissionsRoles($permissionsRoles, $comparison = null)
     {
-        if ($prohibitionsRoles instanceof \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles) {
+        if ($permissionsRoles instanceof \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles) {
             return $this
-                ->addUsingAlias(PermissionTableMap::ID, $prohibitionsRoles->getprohibitionId(), $comparison);
-        } elseif ($prohibitionsRoles instanceof ObjectCollection) {
+                ->addUsingAlias(PermissionTableMap::ID, $permissionsRoles->getPermissionId(), $comparison);
+        } elseif ($permissionsRoles instanceof ObjectCollection) {
             return $this
-                ->useProhibitionsRolesQuery()
-                ->filterByPrimaryKeys($prohibitionsRoles->getPrimaryKeys())
+                ->usePermissionsRolesQuery()
+                ->filterByPrimaryKeys($permissionsRoles->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByProhibitionsRoles() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles or Collection');
+            throw new PropelException('filterByPermissionsRoles() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the ProhibitionsRoles relation
+     * Adds a JOIN clause to the query using the PermissionsRoles relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return ChildPermissionQuery The current query, for fluid interface
      */
-    public function joinProhibitionsRoles($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinPermissionsRoles($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ProhibitionsRoles');
+        $relationMap = $tableMap->getRelation('PermissionsRoles');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -479,14 +475,14 @@ abstract class PermissionQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'ProhibitionsRoles');
+            $this->addJoinObject($join, 'PermissionsRoles');
         }
 
         return $this;
     }
 
     /**
-     * Use the ProhibitionsRoles relation ProhibitionsRoles object
+     * Use the PermissionsRoles relation PermissionsRoles object
      *
      * @see useQuery()
      *
@@ -494,86 +490,30 @@ abstract class PermissionQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery A secondary query class using the current class as primary query
+     * @return   \org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery A secondary query class using the current class as primary query
      */
-    public function useProhibitionsRolesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function usePermissionsRolesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinProhibitionsRoles($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProhibitionsRoles', '\org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery');
+            ->joinPermissionsRoles($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PermissionsRoles', '\org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery');
     }
 
     /**
-     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers object
+     * Filter the query by a related Role object
+     * using the permissions_roles table as cross reference
      *
-     * @param \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers|ObjectCollection $prohibitionsUsers  the related object to use as filter
+     * @param Role $role the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildPermissionQuery The current query, for fluid interface
      */
-    public function filterByProhibitionsUsers($prohibitionsUsers, $comparison = null)
-    {
-        if ($prohibitionsUsers instanceof \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers) {
-            return $this
-                ->addUsingAlias(PermissionTableMap::ID, $prohibitionsUsers->getprohibitionId(), $comparison);
-        } elseif ($prohibitionsUsers instanceof ObjectCollection) {
-            return $this
-                ->useProhibitionsUsersQuery()
-                ->filterByPrimaryKeys($prohibitionsUsers->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByProhibitionsUsers() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the ProhibitionsUsers relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return ChildPermissionQuery The current query, for fluid interface
-     */
-    public function joinProhibitionsUsers($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ProhibitionsUsers');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'ProhibitionsUsers');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the ProhibitionsUsers relation ProhibitionsUsers object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery A secondary query class using the current class as primary query
-     */
-    public function useProhibitionsUsersQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function filterByRole($role, $comparison = Criteria::EQUAL)
     {
         return $this
-            ->joinProhibitionsUsers($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProhibitionsUsers', '\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery');
+            ->usePermissionsRolesQuery()
+            ->filterByRole($role, $comparison)
+            ->endUse();
     }
 
     /**
@@ -593,7 +533,7 @@ abstract class PermissionQuery extends ModelCriteria
     }
 
     /**
-     * Deletes all rows from the prohibitions table.
+     * Deletes all rows from the permissions table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).

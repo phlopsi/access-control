@@ -18,10 +18,10 @@ use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use org\bitbucket\phlopsi\access_control\propel\Permission as ChildPermission;
 use org\bitbucket\phlopsi\access_control\propel\PermissionQuery as ChildPermissionQuery;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles as ChildProhibitionsRoles;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery as ChildProhibitionsRolesQuery;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers as ChildProhibitionsUsers;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery as ChildProhibitionsUsersQuery;
+use org\bitbucket\phlopsi\access_control\propel\PermissionsRoles as ChildPermissionsRoles;
+use org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery as ChildPermissionsRolesQuery;
+use org\bitbucket\phlopsi\access_control\propel\Role as ChildRole;
+use org\bitbucket\phlopsi\access_control\propel\RoleQuery as ChildRoleQuery;
 use org\bitbucket\phlopsi\access_control\propel\Map\PermissionTableMap;
 
 abstract class Permission implements ActiveRecordInterface
@@ -89,16 +89,15 @@ abstract class Permission implements ActiveRecordInterface
     protected $id;
 
     /**
-     * @var        ObjectCollection|ChildProhibitionsRoles[] Collection to store aggregation of ChildProhibitionsRoles objects.
+     * @var        ObjectCollection|ChildPermissionsRoles[] Collection to store aggregation of ChildPermissionsRoles objects.
      */
-    protected $collProhibitionsRoless;
-    protected $collProhibitionsRolessPartial;
+    protected $collPermissionsRoless;
+    protected $collPermissionsRolessPartial;
 
     /**
-     * @var        ObjectCollection|ChildProhibitionsUsers[] Collection to store aggregation of ChildProhibitionsUsers objects.
+     * @var        ChildRole[] Collection to store aggregation of ChildRole objects.
      */
-    protected $collProhibitionsUserss;
-    protected $collProhibitionsUserssPartial;
+    protected $collRoles;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -131,29 +130,29 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Left column for the set
      */
-    const LEFT_COL = 'prohibitions.tree_left';
+    const LEFT_COL = 'permissions.tree_left';
 
     /**
      * Right column for the set
      */
-    const RIGHT_COL = 'prohibitions.tree_right';
+    const RIGHT_COL = 'permissions.tree_right';
 
     /**
      * Level column for the set
      */
-    const LEVEL_COL = 'prohibitions.tree_level';
+    const LEVEL_COL = 'permissions.tree_level';
 
     /**
      * An array of objects scheduled for deletion.
      * @var ObjectCollection
      */
-    protected $prohibitionsRolessScheduledForDeletion = null;
+    protected $rolesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
      * @var ObjectCollection
      */
-    protected $prohibitionsUserssScheduledForDeletion = null;
+    protected $permissionsRolessScheduledForDeletion = null;
 
     /**
      * Initializes internal state of org\bitbucket\phlopsi\access_control\propel\Base\Permission object.
@@ -693,10 +692,9 @@ abstract class Permission implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collProhibitionsRoless = null;
+            $this->collPermissionsRoless = null;
 
-            $this->collProhibitionsUserss = null;
-
+            $this->collRoles = null;
         } // if (deep)
     }
 
@@ -845,34 +843,44 @@ abstract class Permission implements ActiveRecordInterface
                 $this->resetModified();
             }
 
-            if ($this->prohibitionsRolessScheduledForDeletion !== null) {
-                if (!$this->prohibitionsRolessScheduledForDeletion->isEmpty()) {
-                    \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery::create()
-                        ->filterByPrimaryKeys($this->prohibitionsRolessScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->prohibitionsRolessScheduledForDeletion = null;
-                }
-            }
+            if ($this->rolesScheduledForDeletion !== null) {
+                if (!$this->rolesScheduledForDeletion->isEmpty()) {
+                    $pks = array();
+                    $pk  = $this->getPrimaryKey();
+                    foreach ($this->rolesScheduledForDeletion->getPrimaryKeys(false) as $remotePk) {
+                        $pks[] = array($pk, $remotePk);
+                    }
 
-                if ($this->collProhibitionsRoless !== null) {
-            foreach ($this->collProhibitionsRoless as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
+                    PermissionsRolesQuery::create()
+                        ->filterByPrimaryKeys($pks)
+                        ->delete($con);
+                    $this->rolesScheduledForDeletion = null;
+                }
+
+                foreach ($this->getRoles() as $role) {
+                    if ($role->isModified()) {
+                        $role->save($con);
+                    }
+                }
+            } elseif ($this->collRoles) {
+                foreach ($this->collRoles as $role) {
+                    if ($role->isModified()) {
+                        $role->save($con);
                     }
                 }
             }
 
-            if ($this->prohibitionsUserssScheduledForDeletion !== null) {
-                if (!$this->prohibitionsUserssScheduledForDeletion->isEmpty()) {
-                    \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery::create()
-                        ->filterByPrimaryKeys($this->prohibitionsUserssScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->permissionsRolessScheduledForDeletion !== null) {
+                if (!$this->permissionsRolessScheduledForDeletion->isEmpty()) {
+                    \org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery::create()
+                        ->filterByPrimaryKeys($this->permissionsRolessScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->prohibitionsUserssScheduledForDeletion = null;
+                    $this->permissionsRolessScheduledForDeletion = null;
                 }
             }
 
-                if ($this->collProhibitionsUserss !== null) {
-            foreach ($this->collProhibitionsUserss as $referrerFK) {
+                if ($this->collPermissionsRoless !== null) {
+            foreach ($this->collPermissionsRoless as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -922,7 +930,7 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         $sql = sprintf(
-            'INSERT INTO prohibitions (%s) VALUES (%s)',
+            'INSERT INTO permissions (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1064,11 +1072,8 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collProhibitionsRoless) {
-                $result['ProhibitionsRoless'] = $this->collProhibitionsRoless->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collProhibitionsUserss) {
-                $result['ProhibitionsUserss'] = $this->collProhibitionsUserss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            if (null !== $this->collPermissionsRoless) {
+                $result['PermissionsRoless'] = $this->collPermissionsRoless->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1237,15 +1242,9 @@ abstract class Permission implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getProhibitionsRoless() as $relObj) {
+            foreach ($this->getPermissionsRoless() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addProhibitionsRoles($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getProhibitionsUserss() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addProhibitionsUsers($relObj->copy($deepCopy));
+                    $copyObj->addPermissionsRoles($relObj->copy($deepCopy));
                 }
             }
 
@@ -1290,40 +1289,37 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('ProhibitionsRoles' == $relationName) {
-            return $this->initProhibitionsRoless();
-        }
-        if ('ProhibitionsUsers' == $relationName) {
-            return $this->initProhibitionsUserss();
+        if ('PermissionsRoles' == $relationName) {
+            return $this->initPermissionsRoless();
         }
     }
 
     /**
-     * Clears out the collProhibitionsRoless collection
+     * Clears out the collPermissionsRoless collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addProhibitionsRoless()
+     * @see        addPermissionsRoless()
      */
-    public function clearProhibitionsRoless()
+    public function clearPermissionsRoless()
     {
-        $this->collProhibitionsRoless = null; // important to set this to NULL since that means it is uninitialized
+        $this->collPermissionsRoless = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collProhibitionsRoless collection loaded partially.
+     * Reset is the collPermissionsRoless collection loaded partially.
      */
-    public function resetPartialProhibitionsRoless($v = true)
+    public function resetPartialPermissionsRoless($v = true)
     {
-        $this->collProhibitionsRolessPartial = $v;
+        $this->collPermissionsRolessPartial = $v;
     }
 
     /**
-     * Initializes the collProhibitionsRoless collection.
+     * Initializes the collPermissionsRoless collection.
      *
-     * By default this just sets the collProhibitionsRoless collection to an empty array (like clearcollProhibitionsRoless());
+     * By default this just sets the collPermissionsRoless collection to an empty array (like clearcollPermissionsRoless());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1332,17 +1328,17 @@ abstract class Permission implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initProhibitionsRoless($overrideExisting = true)
+    public function initPermissionsRoless($overrideExisting = true)
     {
-        if (null !== $this->collProhibitionsRoless && !$overrideExisting) {
+        if (null !== $this->collPermissionsRoless && !$overrideExisting) {
             return;
         }
-        $this->collProhibitionsRoless = new ObjectCollection();
-        $this->collProhibitionsRoless->setModel('\org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles');
+        $this->collPermissionsRoless = new ObjectCollection();
+        $this->collPermissionsRoless->setModel('\org\bitbucket\phlopsi\access_control\propel\PermissionsRoles');
     }
 
     /**
-     * Gets an array of ChildProhibitionsRoles objects which contain a foreign key that references this object.
+     * Gets an array of ChildPermissionsRoles objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1352,112 +1348,112 @@ abstract class Permission implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildProhibitionsRoles[] List of ChildProhibitionsRoles objects
+     * @return Collection|ChildPermissionsRoles[] List of ChildPermissionsRoles objects
      * @throws PropelException
      */
-    public function getProhibitionsRoless($criteria = null, ConnectionInterface $con = null)
+    public function getPermissionsRoless($criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collProhibitionsRolessPartial && !$this->isNew();
-        if (null === $this->collProhibitionsRoless || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collProhibitionsRoless) {
+        $partial = $this->collPermissionsRolessPartial && !$this->isNew();
+        if (null === $this->collPermissionsRoless || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPermissionsRoless) {
                 // return empty collection
-                $this->initProhibitionsRoless();
+                $this->initPermissionsRoless();
             } else {
-                $collProhibitionsRoless = ChildProhibitionsRolesQuery::create(null, $criteria)
+                $collPermissionsRoless = ChildPermissionsRolesQuery::create(null, $criteria)
                     ->filterByPermission($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collProhibitionsRolessPartial && count($collProhibitionsRoless)) {
-                        $this->initProhibitionsRoless(false);
+                    if (false !== $this->collPermissionsRolessPartial && count($collPermissionsRoless)) {
+                        $this->initPermissionsRoless(false);
 
-                        foreach ($collProhibitionsRoless as $obj) {
-                            if (false == $this->collProhibitionsRoless->contains($obj)) {
-                                $this->collProhibitionsRoless->append($obj);
+                        foreach ($collPermissionsRoless as $obj) {
+                            if (false == $this->collPermissionsRoless->contains($obj)) {
+                                $this->collPermissionsRoless->append($obj);
                             }
                         }
 
-                        $this->collProhibitionsRolessPartial = true;
+                        $this->collPermissionsRolessPartial = true;
                     }
 
-                    $collProhibitionsRoless->getInternalIterator()->rewind();
+                    $collPermissionsRoless->getInternalIterator()->rewind();
 
-                    return $collProhibitionsRoless;
+                    return $collPermissionsRoless;
                 }
 
-                if ($partial && $this->collProhibitionsRoless) {
-                    foreach ($this->collProhibitionsRoless as $obj) {
+                if ($partial && $this->collPermissionsRoless) {
+                    foreach ($this->collPermissionsRoless as $obj) {
                         if ($obj->isNew()) {
-                            $collProhibitionsRoless[] = $obj;
+                            $collPermissionsRoless[] = $obj;
                         }
                     }
                 }
 
-                $this->collProhibitionsRoless = $collProhibitionsRoless;
-                $this->collProhibitionsRolessPartial = false;
+                $this->collPermissionsRoless = $collPermissionsRoless;
+                $this->collPermissionsRolessPartial = false;
             }
         }
 
-        return $this->collProhibitionsRoless;
+        return $this->collPermissionsRoless;
     }
 
     /**
-     * Sets a collection of ProhibitionsRoles objects related by a one-to-many relationship
+     * Sets a collection of PermissionsRoles objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $prohibitionsRoless A Propel collection.
+     * @param      Collection $permissionsRoless A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return   ChildPermission The current object (for fluent API support)
      */
-    public function setProhibitionsRoless(Collection $prohibitionsRoless, ConnectionInterface $con = null)
+    public function setPermissionsRoless(Collection $permissionsRoless, ConnectionInterface $con = null)
     {
-        $prohibitionsRolessToDelete = $this->getProhibitionsRoless(new Criteria(), $con)->diff($prohibitionsRoless);
+        $permissionsRolessToDelete = $this->getPermissionsRoless(new Criteria(), $con)->diff($permissionsRoless);
 
 
         //since at least one column in the foreign key is at the same time a PK
         //we can not just set a PK to NULL in the lines below. We have to store
         //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->prohibitionsRolessScheduledForDeletion = clone $prohibitionsRolessToDelete;
+        $this->permissionsRolessScheduledForDeletion = clone $permissionsRolessToDelete;
 
-        foreach ($prohibitionsRolessToDelete as $prohibitionsRolesRemoved) {
-            $prohibitionsRolesRemoved->setPermission(null);
+        foreach ($permissionsRolessToDelete as $permissionsRolesRemoved) {
+            $permissionsRolesRemoved->setPermission(null);
         }
 
-        $this->collProhibitionsRoless = null;
-        foreach ($prohibitionsRoless as $prohibitionsRoles) {
-            $this->addProhibitionsRoles($prohibitionsRoles);
+        $this->collPermissionsRoless = null;
+        foreach ($permissionsRoless as $permissionsRoles) {
+            $this->addPermissionsRoles($permissionsRoles);
         }
 
-        $this->collProhibitionsRoless = $prohibitionsRoless;
-        $this->collProhibitionsRolessPartial = false;
+        $this->collPermissionsRoless = $permissionsRoless;
+        $this->collPermissionsRolessPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related ProhibitionsRoles objects.
+     * Returns the number of related PermissionsRoles objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related ProhibitionsRoles objects.
+     * @return int             Count of related PermissionsRoles objects.
      * @throws PropelException
      */
-    public function countProhibitionsRoless(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countPermissionsRoless(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collProhibitionsRolessPartial && !$this->isNew();
-        if (null === $this->collProhibitionsRoless || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collProhibitionsRoless) {
+        $partial = $this->collPermissionsRolessPartial && !$this->isNew();
+        if (null === $this->collPermissionsRoless || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPermissionsRoless) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getProhibitionsRoless());
+                return count($this->getPermissionsRoless());
             }
 
-            $query = ChildProhibitionsRolesQuery::create(null, $criteria);
+            $query = ChildPermissionsRolesQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -1467,53 +1463,53 @@ abstract class Permission implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collProhibitionsRoless);
+        return count($this->collPermissionsRoless);
     }
 
     /**
-     * Method called to associate a ChildProhibitionsRoles object to this object
-     * through the ChildProhibitionsRoles foreign key attribute.
+     * Method called to associate a ChildPermissionsRoles object to this object
+     * through the ChildPermissionsRoles foreign key attribute.
      *
-     * @param    ChildProhibitionsRoles $l ChildProhibitionsRoles
+     * @param    ChildPermissionsRoles $l ChildPermissionsRoles
      * @return   \org\bitbucket\phlopsi\access_control\propel\Permission The current object (for fluent API support)
      */
-    public function addProhibitionsRoles(ChildProhibitionsRoles $l)
+    public function addPermissionsRoles(ChildPermissionsRoles $l)
     {
-        if ($this->collProhibitionsRoless === null) {
-            $this->initProhibitionsRoless();
-            $this->collProhibitionsRolessPartial = true;
+        if ($this->collPermissionsRoless === null) {
+            $this->initPermissionsRoless();
+            $this->collPermissionsRolessPartial = true;
         }
 
-        if (!in_array($l, $this->collProhibitionsRoless->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddProhibitionsRoles($l);
+        if (!in_array($l, $this->collPermissionsRoless->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddPermissionsRoles($l);
         }
 
         return $this;
     }
 
     /**
-     * @param ProhibitionsRoles $prohibitionsRoles The prohibitionsRoles object to add.
+     * @param PermissionsRoles $permissionsRoles The permissionsRoles object to add.
      */
-    protected function doAddProhibitionsRoles($prohibitionsRoles)
+    protected function doAddPermissionsRoles($permissionsRoles)
     {
-        $this->collProhibitionsRoless[]= $prohibitionsRoles;
-        $prohibitionsRoles->setPermission($this);
+        $this->collPermissionsRoless[]= $permissionsRoles;
+        $permissionsRoles->setPermission($this);
     }
 
     /**
-     * @param  ProhibitionsRoles $prohibitionsRoles The prohibitionsRoles object to remove.
+     * @param  PermissionsRoles $permissionsRoles The permissionsRoles object to remove.
      * @return ChildPermission The current object (for fluent API support)
      */
-    public function removeProhibitionsRoles($prohibitionsRoles)
+    public function removePermissionsRoles($permissionsRoles)
     {
-        if ($this->getProhibitionsRoless()->contains($prohibitionsRoles)) {
-            $this->collProhibitionsRoless->remove($this->collProhibitionsRoless->search($prohibitionsRoles));
-            if (null === $this->prohibitionsRolessScheduledForDeletion) {
-                $this->prohibitionsRolessScheduledForDeletion = clone $this->collProhibitionsRoless;
-                $this->prohibitionsRolessScheduledForDeletion->clear();
+        if ($this->getPermissionsRoless()->contains($permissionsRoles)) {
+            $this->collPermissionsRoless->remove($this->collPermissionsRoless->search($permissionsRoles));
+            if (null === $this->permissionsRolessScheduledForDeletion) {
+                $this->permissionsRolessScheduledForDeletion = clone $this->collPermissionsRoless;
+                $this->permissionsRolessScheduledForDeletion->clear();
             }
-            $this->prohibitionsRolessScheduledForDeletion[]= clone $prohibitionsRoles;
-            $prohibitionsRoles->setPermission(null);
+            $this->permissionsRolessScheduledForDeletion[]= clone $permissionsRoles;
+            $permissionsRoles->setPermission(null);
         }
 
         return $this;
@@ -1525,7 +1521,7 @@ abstract class Permission implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Permission is new, it will return
      * an empty collection; or if this Permission has previously
-     * been saved, it will retrieve related ProhibitionsRoless from storage.
+     * been saved, it will retrieve related PermissionsRoless from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -1534,61 +1530,49 @@ abstract class Permission implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return Collection|ChildProhibitionsRoles[] List of ChildProhibitionsRoles objects
+     * @return Collection|ChildPermissionsRoles[] List of ChildPermissionsRoles objects
      */
-    public function getProhibitionsRolessJoinRole($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getPermissionsRolessJoinRole($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildProhibitionsRolesQuery::create(null, $criteria);
+        $query = ChildPermissionsRolesQuery::create(null, $criteria);
         $query->joinWith('Role', $joinBehavior);
 
-        return $this->getProhibitionsRoless($query, $con);
+        return $this->getPermissionsRoless($query, $con);
     }
 
     /**
-     * Clears out the collProhibitionsUserss collection
+     * Clears out the collRoles collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addProhibitionsUserss()
+     * @see        addRoles()
      */
-    public function clearProhibitionsUserss()
+    public function clearRoles()
     {
-        $this->collProhibitionsUserss = null; // important to set this to NULL since that means it is uninitialized
+        $this->collRoles = null; // important to set this to NULL since that means it is uninitialized
+        $this->collRolesPartial = null;
     }
 
     /**
-     * Reset is the collProhibitionsUserss collection loaded partially.
-     */
-    public function resetPartialProhibitionsUserss($v = true)
-    {
-        $this->collProhibitionsUserssPartial = $v;
-    }
-
-    /**
-     * Initializes the collProhibitionsUserss collection.
+     * Initializes the collRoles collection.
      *
-     * By default this just sets the collProhibitionsUserss collection to an empty array (like clearcollProhibitionsUserss());
+     * By default this just sets the collRoles collection to an empty collection (like clearRoles());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
      * @return void
      */
-    public function initProhibitionsUserss($overrideExisting = true)
+    public function initRoles()
     {
-        if (null !== $this->collProhibitionsUserss && !$overrideExisting) {
-            return;
-        }
-        $this->collProhibitionsUserss = new ObjectCollection();
-        $this->collProhibitionsUserss->setModel('\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers');
+        $this->collRoles = new ObjectCollection();
+        $this->collRoles->setModel('\org\bitbucket\phlopsi\access_control\propel\Role');
     }
 
     /**
-     * Gets an array of ChildProhibitionsUsers objects which contain a foreign key that references this object.
+     * Gets a collection of ChildRole objects related by a many-to-many relationship
+     * to the current object by way of the permissions_roles cross-reference table.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1596,198 +1580,147 @@ abstract class Permission implements ActiveRecordInterface
      * If this ChildPermission is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildProhibitionsUsers[] List of ChildProhibitionsUsers objects
-     * @throws PropelException
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return ObjectCollection|ChildRole[] List of ChildRole objects
      */
-    public function getProhibitionsUserss($criteria = null, ConnectionInterface $con = null)
+    public function getRoles($criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collProhibitionsUserssPartial && !$this->isNew();
-        if (null === $this->collProhibitionsUserss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collProhibitionsUserss) {
+        if (null === $this->collRoles || null !== $criteria) {
+            if ($this->isNew() && null === $this->collRoles) {
                 // return empty collection
-                $this->initProhibitionsUserss();
+                $this->initRoles();
             } else {
-                $collProhibitionsUserss = ChildProhibitionsUsersQuery::create(null, $criteria)
+                $collRoles = ChildRoleQuery::create(null, $criteria)
                     ->filterByPermission($this)
                     ->find($con);
-
                 if (null !== $criteria) {
-                    if (false !== $this->collProhibitionsUserssPartial && count($collProhibitionsUserss)) {
-                        $this->initProhibitionsUserss(false);
-
-                        foreach ($collProhibitionsUserss as $obj) {
-                            if (false == $this->collProhibitionsUserss->contains($obj)) {
-                                $this->collProhibitionsUserss->append($obj);
-                            }
-                        }
-
-                        $this->collProhibitionsUserssPartial = true;
-                    }
-
-                    $collProhibitionsUserss->getInternalIterator()->rewind();
-
-                    return $collProhibitionsUserss;
+                    return $collRoles;
                 }
-
-                if ($partial && $this->collProhibitionsUserss) {
-                    foreach ($this->collProhibitionsUserss as $obj) {
-                        if ($obj->isNew()) {
-                            $collProhibitionsUserss[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collProhibitionsUserss = $collProhibitionsUserss;
-                $this->collProhibitionsUserssPartial = false;
+                $this->collRoles = $collRoles;
             }
         }
 
-        return $this->collProhibitionsUserss;
+        return $this->collRoles;
     }
 
     /**
-     * Sets a collection of ProhibitionsUsers objects related by a one-to-many relationship
-     * to the current object.
+     * Sets a collection of Role objects related by a many-to-many relationship
+     * to the current object by way of the permissions_roles cross-reference table.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $prohibitionsUserss A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return   ChildPermission The current object (for fluent API support)
-     */
-    public function setProhibitionsUserss(Collection $prohibitionsUserss, ConnectionInterface $con = null)
-    {
-        $prohibitionsUserssToDelete = $this->getProhibitionsUserss(new Criteria(), $con)->diff($prohibitionsUserss);
-
-
-        //since at least one column in the foreign key is at the same time a PK
-        //we can not just set a PK to NULL in the lines below. We have to store
-        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->prohibitionsUserssScheduledForDeletion = clone $prohibitionsUserssToDelete;
-
-        foreach ($prohibitionsUserssToDelete as $prohibitionsUsersRemoved) {
-            $prohibitionsUsersRemoved->setPermission(null);
-        }
-
-        $this->collProhibitionsUserss = null;
-        foreach ($prohibitionsUserss as $prohibitionsUsers) {
-            $this->addProhibitionsUsers($prohibitionsUsers);
-        }
-
-        $this->collProhibitionsUserss = $prohibitionsUserss;
-        $this->collProhibitionsUserssPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related ProhibitionsUsers objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related ProhibitionsUsers objects.
-     * @throws PropelException
-     */
-    public function countProhibitionsUserss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collProhibitionsUserssPartial && !$this->isNew();
-        if (null === $this->collProhibitionsUserss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collProhibitionsUserss) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getProhibitionsUserss());
-            }
-
-            $query = ChildProhibitionsUsersQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByPermission($this)
-                ->count($con);
-        }
-
-        return count($this->collProhibitionsUserss);
-    }
-
-    /**
-     * Method called to associate a ChildProhibitionsUsers object to this object
-     * through the ChildProhibitionsUsers foreign key attribute.
-     *
-     * @param    ChildProhibitionsUsers $l ChildProhibitionsUsers
-     * @return   \org\bitbucket\phlopsi\access_control\propel\Permission The current object (for fluent API support)
-     */
-    public function addProhibitionsUsers(ChildProhibitionsUsers $l)
-    {
-        if ($this->collProhibitionsUserss === null) {
-            $this->initProhibitionsUserss();
-            $this->collProhibitionsUserssPartial = true;
-        }
-
-        if (!in_array($l, $this->collProhibitionsUserss->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddProhibitionsUsers($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ProhibitionsUsers $prohibitionsUsers The prohibitionsUsers object to add.
-     */
-    protected function doAddProhibitionsUsers($prohibitionsUsers)
-    {
-        $this->collProhibitionsUserss[]= $prohibitionsUsers;
-        $prohibitionsUsers->setPermission($this);
-    }
-
-    /**
-     * @param  ProhibitionsUsers $prohibitionsUsers The prohibitionsUsers object to remove.
+     * @param  Collection $roles A Propel collection.
+     * @param  ConnectionInterface $con Optional connection object
      * @return ChildPermission The current object (for fluent API support)
      */
-    public function removeProhibitionsUsers($prohibitionsUsers)
+    public function setRoles(Collection $roles, ConnectionInterface $con = null)
     {
-        if ($this->getProhibitionsUserss()->contains($prohibitionsUsers)) {
-            $this->collProhibitionsUserss->remove($this->collProhibitionsUserss->search($prohibitionsUsers));
-            if (null === $this->prohibitionsUserssScheduledForDeletion) {
-                $this->prohibitionsUserssScheduledForDeletion = clone $this->collProhibitionsUserss;
-                $this->prohibitionsUserssScheduledForDeletion->clear();
+        $this->clearRoles();
+        $currentRoles = $this->getRoles();
+
+        $this->rolesScheduledForDeletion = $currentRoles->diff($roles);
+
+        foreach ($roles as $role) {
+            if (!$currentRoles->contains($role)) {
+                $this->doAddRole($role);
             }
-            $this->prohibitionsUserssScheduledForDeletion[]= clone $prohibitionsUsers;
-            $prohibitionsUsers->setPermission(null);
+        }
+
+        $this->collRoles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * Gets the number of ChildRole objects related by a many-to-many relationship
+     * to the current object by way of the permissions_roles cross-reference table.
+     *
+     * @param      Criteria $criteria Optional query object to filter the query
+     * @param      boolean $distinct Set to true to force count distinct
+     * @param      ConnectionInterface $con Optional connection object
+     *
+     * @return int the number of related ChildRole objects
+     */
+    public function countRoles($criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        if (null === $this->collRoles || null !== $criteria) {
+            if ($this->isNew() && null === $this->collRoles) {
+                return 0;
+            } else {
+                $query = ChildRoleQuery::create(null, $criteria);
+                if ($distinct) {
+                    $query->distinct();
+                }
+
+                return $query
+                    ->filterByPermission($this)
+                    ->count($con);
+            }
+        } else {
+            return count($this->collRoles);
+        }
+    }
+
+    /**
+     * Associate a ChildRole object to this object
+     * through the permissions_roles cross reference table.
+     *
+     * @param  ChildRole $role The ChildPermissionsRoles object to relate
+     * @return ChildPermission The current object (for fluent API support)
+     */
+    public function addRole(ChildRole $role)
+    {
+        if ($this->collRoles === null) {
+            $this->initRoles();
+        }
+
+        if (!$this->collRoles->contains($role)) { // only add it if the **same** object is not already associated
+            $this->doAddRole($role);
+            $this->collRoles[] = $role;
         }
 
         return $this;
     }
 
+    /**
+     * @param    Role $role The role object to add.
+     */
+    protected function doAddRole($role)
+    {
+        $permissionsRoles = new ChildPermissionsRoles();
+        $permissionsRoles->setRole($role);
+        $this->addPermissionsRoles($permissionsRoles);
+        // set the back reference to this object directly as using provided method either results
+        // in endless loop or in multiple relations
+        if (!$role->getPermissions()->contains($this)) {
+            $foreignCollection   = $role->getPermissions();
+            $foreignCollection[] = $this;
+        }
+    }
 
     /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Permission is new, it will return
-     * an empty collection; or if this Permission has previously
-     * been saved, it will retrieve related ProhibitionsUserss from storage.
+     * Remove a ChildRole object to this object
+     * through the permissions_roles cross reference table.
      *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Permission.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return Collection|ChildProhibitionsUsers[] List of ChildProhibitionsUsers objects
+     * @param ChildRole $role The ChildPermissionsRoles object to relate
+     * @return ChildPermission The current object (for fluent API support)
      */
-    public function getProhibitionsUserssJoinUser($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function removeRole(ChildRole $role)
     {
-        $query = ChildProhibitionsUsersQuery::create(null, $criteria);
-        $query->joinWith('User', $joinBehavior);
+        if ($this->getRoles()->contains($role)) {
+            $this->collRoles->remove($this->collRoles->search($role));
 
-        return $this->getProhibitionsUserss($query, $con);
+            if (null === $this->rolesScheduledForDeletion) {
+                $this->rolesScheduledForDeletion = clone $this->collRoles;
+                $this->rolesScheduledForDeletion->clear();
+            }
+
+            $this->rolesScheduledForDeletion[] = $role;
+        }
+
+        return $this;
     }
 
     /**
@@ -1819,13 +1752,13 @@ abstract class Permission implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collProhibitionsRoless) {
-                foreach ($this->collProhibitionsRoless as $o) {
+            if ($this->collPermissionsRoless) {
+                foreach ($this->collPermissionsRoless as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collProhibitionsUserss) {
-                foreach ($this->collProhibitionsUserss as $o) {
+            if ($this->collRoles) {
+                foreach ($this->collRoles as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -1834,14 +1767,14 @@ abstract class Permission implements ActiveRecordInterface
         // nested_set behavior
         $this->collNestedSetChildren = null;
         $this->aNestedSetParent = null;
-        if ($this->collProhibitionsRoless instanceof Collection) {
-            $this->collProhibitionsRoless->clearIterator();
+        if ($this->collPermissionsRoless instanceof Collection) {
+            $this->collPermissionsRoless->clearIterator();
         }
-        $this->collProhibitionsRoless = null;
-        if ($this->collProhibitionsUserss instanceof Collection) {
-            $this->collProhibitionsUserss->clearIterator();
+        $this->collPermissionsRoless = null;
+        if ($this->collRoles instanceof Collection) {
+            $this->collRoles->clearIterator();
         }
-        $this->collProhibitionsUserss = null;
+        $this->collRoles = null;
     }
 
     /**
