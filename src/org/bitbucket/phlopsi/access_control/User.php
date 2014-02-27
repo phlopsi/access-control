@@ -25,6 +25,7 @@
 namespace org\bitbucket\phlopsi\access_control;
 
 use org\bitbucket\phlopsi\access_control\propel\PermissionQuery as PropelPermissionQuery;
+use org\bitbucket\phlopsi\access_control\propel\RoleQuery as PropelRoleQuery;
 use org\bitbucket\phlopsi\access_control\propel\User as PropelUser;
 
 class User
@@ -36,17 +37,34 @@ class User
         $this->user = $user;
     }
 
+    public function addRole($role_id)
+    {
+        $role_id = (string) $role_id;
+
+        if (empty($role_id)) {
+            throw new \InvalidArgumentException('$role_id converts to an empty string!');
+        }
+
+        $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
+
+        if (is_null($role)) {
+            throw new EntityNotFoundException('Role "' . $role_id . '" not found!');
+        }
+
+        $this->role->addPermission($role);
+    }
+
     public function hasPermission($permission_id)
     {
         $permission_id = (string) $permission_id;
 
         if (empty($permission_id)) {
-            throw new \InvalidArgumentException('$permission converts to an empty string!');
+            throw new \InvalidArgumentException('$permission_id converts to an empty string!');
         }
 
+        //TODO more efficiency!
         $roles = $this->user->getRoles();
 
-        //TODO more efficiency!
         foreach ($roles as $role) {
             $permission = PropelPermissionQuery::create()
                 ->filterByRole($role)
@@ -70,6 +88,23 @@ class User
         }
 
         return false;
+    }
+
+    public function removeRole($role_id)
+    {
+        $role_id = (string) $role_id;
+
+        if (empty($role_id)) {
+            throw new \InvalidArgumentException('$role_id converts to an empty string!');
+        }
+
+        $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
+
+        if (is_null($role)) {
+            throw new EntityNotFoundException('Role "' . $role_id . '" not found!');
+        }
+
+        $this->user->removeRole($role);
     }
 
 }

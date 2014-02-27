@@ -40,6 +40,10 @@ class Role
     {
         $permission_id = (string) $permission_id;
 
+        if (empty($permission_id)) {
+            throw new \InvalidArgumentException('$permission_id converts to an empty string!');
+        }
+
         $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
 
         if (is_null($permission)) {
@@ -51,6 +55,12 @@ class Role
 
     public function removePermission($permission_id)
     {
+        $permission_id = (string) $permission_id;
+
+        if (empty($permission_id)) {
+            throw new \InvalidArgumentException('$permission_id converts to an empty string!');
+        }
+
         $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
 
         if (is_null($permission)) {
