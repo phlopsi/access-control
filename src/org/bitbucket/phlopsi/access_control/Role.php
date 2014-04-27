@@ -70,14 +70,4 @@ class Role
         $this->role->removePermission($permission);
     }
 
-    public function removeRedundantPermissions()
-    {
-        
-    }
-
-    public function retrievePermissions()
-    {
-        
-    }
-
 }
