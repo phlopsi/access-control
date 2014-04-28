@@ -220,6 +220,27 @@ class AccessControl
         return $this->roles[$role_id];
     }
 
+    public function retrieveSessionType($session_type_id)
+    {
+        $session_type_id = (string) $session_type_id;
+
+        if (empty($session_type_id)) {
+            throw new \InvalidArgumentException('$session_type_id converts to an empty string!');
+        }
+
+        if (!\array_key_exists($session_type_id, $this->session_types)) {
+            $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
+
+            if (is_null($session_type)) {
+                throw new EntityNotFoundException('SessionType "' . $session_type_id . '" not found!');
+            }
+
+            $this->session_types[$session_type_id] = new Role($session_type);
+        }
+
+        return $this->session_types[$session_type_id];
+    }
+
     public function retrieveUser($user_id)
     {
         $user_id = (string) $user_id;
