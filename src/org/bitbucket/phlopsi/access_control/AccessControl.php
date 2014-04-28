@@ -235,7 +235,7 @@ class AccessControl
                 throw new EntityNotFoundException('SessionType "' . $session_type_id . '" not found!');
             }
 
-            $this->session_types[$session_type_id] = new Role($session_type);
+            $this->session_types[$session_type_id] = new SessionType($session_type);
         }
 
         return $this->session_types[$session_type_id];
