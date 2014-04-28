@@ -28,12 +28,15 @@ use org\bitbucket\phlopsi\access_control\propel\Permission as PropelPermission;
 use org\bitbucket\phlopsi\access_control\propel\PermissionQuery as PropelPermissionQuery;
 use org\bitbucket\phlopsi\access_control\propel\Role as PropelRole;
 use org\bitbucket\phlopsi\access_control\propel\RoleQuery as PropelRoleQuery;
+use org\bitbucket\phlopsi\access_control\propel\SessionType as PropelSessionType;
+use org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery as PropelSessionTypeQuery;
 use org\bitbucket\phlopsi\access_control\propel\User as PropelUser;
 use org\bitbucket\phlopsi\access_control\propel\UserQuery as PropelUserQuery;
 
 class AccessControl
 {
     private $roles = [];
+    private $session_types = [];
     private $users = [];
 
     public function createPermission($permission_id)
@@ -80,6 +83,33 @@ class AccessControl
         $this->roles[$role_id] = new Role($new_role);
 
         return $this->roles[$role_id];
+    }
+
+    public function createSessionType($session_type_id)
+    {
+        $session_type_id = (string) $session_type_id;
+
+        if (empty($session_type_id)) {
+            throw new \InvalidArgumentException('$session_type_id converts to an empty string!');
+        }
+
+        if (\array_key_exists($session_type_id, $this->session_types)) {
+            throw new EntityAlreadyExistsException('SessionType "' . $session_type_id . '" already exists!');
+        }
+
+        $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
+
+        if (!is_null($session_type)) {
+            throw new EntityAlreadyExistsException('SessionType "' . $session_type . '" already exists!');
+        }
+
+        $new_session_type = new PropelSessionType();
+        $new_session_type->setExternalId($session_type_id);
+        $new_session_type->save();
+
+        $this->session_types[$session_type_id] = new SessionType($new_session_type);
+
+        return $this->session_types[$session_type_id];
     }
 
     public function createUser($user_id)
@@ -136,6 +166,19 @@ class AccessControl
 
         PropelRoleQuery::create()
             ->findOneByExternalId($role_id)
+            ->delete();
+    }
+
+    public function deleteSessionType($session_type_id)
+    {
+        $session_type_id = (string) $session_type_id;
+
+        if (empty($session_type_id)) {
+            throw new \InvalidArgumentException('$session_type_id converts to an empty string!');
+        }
+
+        PropelSessionTypeQuery::create()
+            ->findOneByExternalId($session_type_id)
             ->delete();
     }
 
