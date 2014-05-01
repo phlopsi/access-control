@@ -1,18 +1,17 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel\Map;
 
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
+use Propel\Runtime\DataFetcher\DataFetcherInterface;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
 use org\bitbucket\phlopsi\access_control\propel\Prohibition;
 use org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery;
-
 
 /**
  * This class defines the structure of the 'prohibitions' table.
@@ -28,7 +27,7 @@ use org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery;
 class ProhibitionTableMap extends TableMap
 {
     use InstancePoolTrait;
-    use TableMapTrait;
+use TableMapTrait;
     /**
      * The (dot-path) name of this class
      */
@@ -72,27 +71,27 @@ class ProhibitionTableMap extends TableMap
     /**
      * the column name for the EXTERNAL_ID field
      */
-    const EXTERNAL_ID = 'prohibitions.EXTERNAL_ID';
+    const COL_EXTERNAL_ID = 'prohibitions.EXTERNAL_ID';
 
     /**
      * the column name for the TREE_LEFT field
      */
-    const TREE_LEFT = 'prohibitions.TREE_LEFT';
+    const COL_TREE_LEFT = 'prohibitions.TREE_LEFT';
 
     /**
      * the column name for the TREE_RIGHT field
      */
-    const TREE_RIGHT = 'prohibitions.TREE_RIGHT';
+    const COL_TREE_RIGHT = 'prohibitions.TREE_RIGHT';
 
     /**
      * the column name for the TREE_LEVEL field
      */
-    const TREE_LEVEL = 'prohibitions.TREE_LEVEL';
+    const COL_TREE_LEVEL = 'prohibitions.TREE_LEVEL';
 
     /**
      * the column name for the ID field
      */
-    const ID = 'prohibitions.ID';
+    const COL_ID = 'prohibitions.ID';
 
     /**
      * The default string format for model objects of the related table
@@ -105,13 +104,14 @@ class ProhibitionTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ExternalId', 'TreeLeft', 'TreeRight', 'TreeLevel', 'Id', ),
-        self::TYPE_STUDLYPHPNAME => array('externalId', 'treeLeft', 'treeRight', 'treeLevel', 'id', ),
-        self::TYPE_COLNAME       => array(ProhibitionTableMap::EXTERNAL_ID, ProhibitionTableMap::TREE_LEFT, ProhibitionTableMap::TREE_RIGHT, ProhibitionTableMap::TREE_LEVEL, ProhibitionTableMap::ID, ),
-        self::TYPE_RAW_COLNAME   => array('EXTERNAL_ID', 'TREE_LEFT', 'TREE_RIGHT', 'TREE_LEVEL', 'ID', ),
-        self::TYPE_FIELDNAME     => array('external_id', 'tree_left', 'tree_right', 'tree_level', 'id', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+    protected static $fieldNames = array(
+        self::TYPE_PHPNAME => array('ExternalId', 'TreeLeft', 'TreeRight', 'TreeLevel', 'Id',),
+        self::TYPE_STUDLYPHPNAME => array('externalId', 'treeLeft', 'treeRight', 'treeLevel', 'id',),
+        self::TYPE_COLNAME => array(ProhibitionTableMap::COL_EXTERNAL_ID, ProhibitionTableMap::COL_TREE_LEFT, ProhibitionTableMap::COL_TREE_RIGHT,
+            ProhibitionTableMap::COL_TREE_LEVEL, ProhibitionTableMap::COL_ID,),
+        self::TYPE_RAW_COLNAME => array('COL_EXTERNAL_ID', 'COL_TREE_LEFT', 'COL_TREE_RIGHT', 'COL_TREE_LEVEL', 'COL_ID',),
+        self::TYPE_FIELDNAME => array('external_id', 'tree_left', 'tree_right', 'tree_level', 'id',),
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -120,13 +120,15 @@ class ProhibitionTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ExternalId' => 0, 'TreeLeft' => 1, 'TreeRight' => 2, 'TreeLevel' => 3, 'Id' => 4, ),
-        self::TYPE_STUDLYPHPNAME => array('externalId' => 0, 'treeLeft' => 1, 'treeRight' => 2, 'treeLevel' => 3, 'id' => 4, ),
-        self::TYPE_COLNAME       => array(ProhibitionTableMap::EXTERNAL_ID => 0, ProhibitionTableMap::TREE_LEFT => 1, ProhibitionTableMap::TREE_RIGHT => 2, ProhibitionTableMap::TREE_LEVEL => 3, ProhibitionTableMap::ID => 4, ),
-        self::TYPE_RAW_COLNAME   => array('EXTERNAL_ID' => 0, 'TREE_LEFT' => 1, 'TREE_RIGHT' => 2, 'TREE_LEVEL' => 3, 'ID' => 4, ),
-        self::TYPE_FIELDNAME     => array('external_id' => 0, 'tree_left' => 1, 'tree_right' => 2, 'tree_level' => 3, 'id' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+    protected static $fieldKeys = array(
+        self::TYPE_PHPNAME => array('ExternalId' => 0, 'TreeLeft' => 1, 'TreeRight' => 2, 'TreeLevel' => 3, 'Id' => 4,),
+        self::TYPE_STUDLYPHPNAME => array('externalId' => 0, 'treeLeft' => 1, 'treeRight' => 2, 'treeLevel' => 3, 'id' => 4,),
+        self::TYPE_COLNAME => array(ProhibitionTableMap::COL_EXTERNAL_ID => 0, ProhibitionTableMap::COL_TREE_LEFT => 1, ProhibitionTableMap::COL_TREE_RIGHT => 2,
+            ProhibitionTableMap::COL_TREE_LEVEL => 3, ProhibitionTableMap::COL_ID => 4,),
+        self::TYPE_RAW_COLNAME => array('COL_EXTERNAL_ID' => 0, 'COL_TREE_LEFT' => 1, 'COL_TREE_RIGHT' => 2, 'COL_TREE_LEVEL' => 3,
+            'COL_ID' => 4,),
+        self::TYPE_FIELDNAME => array('external_id' => 0, 'tree_left' => 1, 'tree_right' => 2, 'tree_level' => 3, 'id' => 4,),
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -150,19 +152,25 @@ class ProhibitionTableMap extends TableMap
         $this->addColumn('TREE_RIGHT', 'TreeRight', 'INTEGER', false, null, null);
         $this->addColumn('TREE_LEVEL', 'TreeLevel', 'INTEGER', false, null, null);
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-    } // initialize()
+    }
 
+// initialize()
     /**
      * Build the RelationMap objects for this table relationships
      */
     public function buildRelations()
     {
-        $this->addRelation('ProhibitionsRoles', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'prohibitions_id', ), null, null, 'ProhibitionsRoless');
-        $this->addRelation('ProhibitionsUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array('id' => 'prohibitions_id', ), null, null, 'ProhibitionsUserss');
-        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
-        $this->addRelation('User', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
-    } // buildRelations()
+        $this->addRelation('ProhibitionsRoles', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsRoles',
+            RelationMap::ONE_TO_MANY, array('id' => 'prohibitions_id',), null, null, 'ProhibitionsRoless');
+        $this->addRelation('ProhibitionsUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsUsers',
+            RelationMap::ONE_TO_MANY, array('id' => 'prohibitions_id',), null, null, 'ProhibitionsUserss');
+        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY,
+            array(), null, null, 'Roles');
+        $this->addRelation('User', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_MANY,
+            array(), null, null, 'Users');
+    }
 
+// buildRelations()
     /**
      *
      * Gets the list of behaviors registered for this table
@@ -172,11 +180,13 @@ class ProhibitionTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'nested_set' => array('left_column' => 'tree_left', 'right_column' => 'tree_right', 'level_column' => 'tree_level', 'use_scope' => 'false', 'scope_column' => 'tree_scope', 'method_proxies' => 'false', ),
-            'auto_add_pk' => array('name' => 'id', 'autoIncrement' => 'true', 'type' => 'INTEGER', ),
+            'nested_set' => array('left_column' => 'tree_left', 'right_column' => 'tree_right', 'level_column' => 'tree_level',
+                'use_scope' => 'false', 'scope_column' => 'tree_scope', 'method_proxies' => 'false',),
+            'auto_add_pk' => array('name' => 'id', 'autoIncrement' => 'true', 'type' => 'INTEGER',),
         );
-    } // getBehaviors()
+    }
 
+// getBehaviors()
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
      *
@@ -187,15 +197,19 @@ class ProhibitionTableMap extends TableMap
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
+     *
+     * @return string The primary key hash of the row
      */
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 4 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 4 + $offset : static::translateFieldName('Id',
+                    TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return (string) $row[TableMap::TYPE_NUM == $indexType ? 4 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return (string) $row[TableMap::TYPE_NUM == $indexType ? 4 + $offset : static::translateFieldName('Id',
+                    TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -212,12 +226,10 @@ class ProhibitionTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-
-            return (int) $row[
-                            $indexType == TableMap::TYPE_NUM
-                            ? 4 + $offset
-                            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
-                        ];
+        return (int) $row[
+            $indexType == TableMap::TYPE_NUM ? 4 + $offset : self::translateFieldName('Id', TableMap::TYPE_PHPNAME,
+                    $indexType)
+        ];
     }
 
     /**
@@ -242,12 +254,12 @@ class ProhibitionTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+      One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
-     * @return array (Prohibition object, last column rank)
+     *                         rethrown wrapped into a PropelException.
+     * @return array           (Prohibition object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
@@ -259,6 +271,7 @@ class ProhibitionTableMap extends TableMap
             $col = $offset + ProhibitionTableMap::NUM_HYDRATE_COLUMNS;
         } else {
             $cls = ProhibitionTableMap::OM_CLASS;
+            /** @var Prohibition $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
             ProhibitionTableMap::addInstanceToPool($obj, $key);
@@ -274,7 +287,7 @@ class ProhibitionTableMap extends TableMap
      * @param DataFetcherInterface $dataFetcher
      * @return array
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function populateObjects(DataFetcherInterface $dataFetcher)
     {
@@ -291,6 +304,7 @@ class ProhibitionTableMap extends TableMap
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
+                /** @var Prohibition $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
@@ -300,6 +314,7 @@ class ProhibitionTableMap extends TableMap
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -310,16 +325,16 @@ class ProhibitionTableMap extends TableMap
      * @param Criteria $criteria object containing the columns to add.
      * @param string   $alias    optional table alias
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ProhibitionTableMap::EXTERNAL_ID);
-            $criteria->addSelectColumn(ProhibitionTableMap::TREE_LEFT);
-            $criteria->addSelectColumn(ProhibitionTableMap::TREE_RIGHT);
-            $criteria->addSelectColumn(ProhibitionTableMap::TREE_LEVEL);
-            $criteria->addSelectColumn(ProhibitionTableMap::ID);
+            $criteria->addSelectColumn(ProhibitionTableMap::COL_EXTERNAL_ID);
+            $criteria->addSelectColumn(ProhibitionTableMap::COL_TREE_LEFT);
+            $criteria->addSelectColumn(ProhibitionTableMap::COL_TREE_RIGHT);
+            $criteria->addSelectColumn(ProhibitionTableMap::COL_TREE_LEVEL);
+            $criteria->addSelectColumn(ProhibitionTableMap::COL_ID);
         } else {
             $criteria->addSelectColumn($alias . '.EXTERNAL_ID');
             $criteria->addSelectColumn($alias . '.TREE_LEFT');
@@ -334,7 +349,7 @@ class ProhibitionTableMap extends TableMap
      * This method is not needed for general use but a specific application could have a need.
      * @return TableMap
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function getTableMap()
     {
@@ -346,10 +361,10 @@ class ProhibitionTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProhibitionTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(ProhibitionTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new ProhibitionTableMap());
-      }
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProhibitionTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(ProhibitionTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new ProhibitionTableMap());
+        }
     }
 
     /**
@@ -357,14 +372,14 @@ class ProhibitionTableMap extends TableMap
      *
      * @param mixed               $values Criteria or Prohibition object or primary key or array of primary keys
      *              which is used to create the DELETE statement
-     * @param ConnectionInterface $con the connection to use
-     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                if supported by native driver or if emulated using Propel.
+     * @param  ConnectionInterface $con the connection to use
+     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
-     public static function doDelete($values, ConnectionInterface $con = null)
-     {
+    public static function doDelete($values, ConnectionInterface $con = null)
+    {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(ProhibitionTableMap::DATABASE_NAME);
         }
@@ -377,14 +392,16 @@ class ProhibitionTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(ProhibitionTableMap::DATABASE_NAME);
-            $criteria->add(ProhibitionTableMap::ID, (array) $values, Criteria::IN);
+            $criteria->add(ProhibitionTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
         $query = ProhibitionQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) { ProhibitionTableMap::clearInstancePool();
+        if ($values instanceof Criteria) {
+            ProhibitionTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { ProhibitionTableMap::removeInstanceFromPool($singleval);
+            foreach ((array) $values as $singleval) {
+                ProhibitionTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -409,7 +426,7 @@ class ProhibitionTableMap extends TableMap
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
@@ -423,29 +440,24 @@ class ProhibitionTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from Prohibition object
         }
 
-        if ($criteria->containsKey(ProhibitionTableMap::ID) && $criteria->keyContainsValue(ProhibitionTableMap::ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ProhibitionTableMap::ID.')');
+        if ($criteria->containsKey(ProhibitionTableMap::COL_ID) && $criteria->keyContainsValue(ProhibitionTableMap::COL_ID)) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProhibitionTableMap::COL_ID . ')');
         }
 
 
         // Set the correct dbName
         $query = ProhibitionQuery::create()->mergeWith($criteria);
 
-        try {
-            // use transaction because $criteria could contain info
-            // for more than one table (I guess, conceivably)
-            $con->beginTransaction();
-            $pk = $query->doInsert($con);
-            $con->commit();
-        } catch (PropelException $e) {
-            $con->rollBack();
-            throw $e;
-        }
-
-        return $pk;
+        // use transaction because $criteria could contain info
+        // for more than one table (I guess, conceivably)
+        return $con->transaction(function () use ($con, $query) {
+                return $query->doInsert($con);
+            });
     }
 
-} // ProhibitionTableMap
+}
+
+// ProhibitionTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
 ProhibitionTableMap::buildTableMap();

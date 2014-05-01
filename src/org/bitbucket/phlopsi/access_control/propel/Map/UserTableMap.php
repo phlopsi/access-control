@@ -1,18 +1,17 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel\Map;
 
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
+use Propel\Runtime\DataFetcher\DataFetcherInterface;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
 use org\bitbucket\phlopsi\access_control\propel\User;
 use org\bitbucket\phlopsi\access_control\propel\UserQuery;
-
 
 /**
  * This class defines the structure of the 'users' table.
@@ -28,7 +27,7 @@ use org\bitbucket\phlopsi\access_control\propel\UserQuery;
 class UserTableMap extends TableMap
 {
     use InstancePoolTrait;
-    use TableMapTrait;
+use TableMapTrait;
     /**
      * The (dot-path) name of this class
      */
@@ -72,12 +71,12 @@ class UserTableMap extends TableMap
     /**
      * the column name for the EXTERNAL_ID field
      */
-    const EXTERNAL_ID = 'users.EXTERNAL_ID';
+    const COL_EXTERNAL_ID = 'users.EXTERNAL_ID';
 
     /**
      * the column name for the ID field
      */
-    const ID = 'users.ID';
+    const COL_ID = 'users.ID';
 
     /**
      * The default string format for model objects of the related table
@@ -90,13 +89,13 @@ class UserTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ExternalId', 'Id', ),
-        self::TYPE_STUDLYPHPNAME => array('externalId', 'id', ),
-        self::TYPE_COLNAME       => array(UserTableMap::EXTERNAL_ID, UserTableMap::ID, ),
-        self::TYPE_RAW_COLNAME   => array('EXTERNAL_ID', 'ID', ),
-        self::TYPE_FIELDNAME     => array('external_id', 'id', ),
-        self::TYPE_NUM           => array(0, 1, )
+    protected static $fieldNames = array(
+        self::TYPE_PHPNAME => array('ExternalId', 'Id',),
+        self::TYPE_STUDLYPHPNAME => array('externalId', 'id',),
+        self::TYPE_COLNAME => array(UserTableMap::COL_EXTERNAL_ID, UserTableMap::COL_ID,),
+        self::TYPE_RAW_COLNAME => array('COL_EXTERNAL_ID', 'COL_ID',),
+        self::TYPE_FIELDNAME => array('external_id', 'id',),
+        self::TYPE_NUM => array(0, 1,)
     );
 
     /**
@@ -105,13 +104,13 @@ class UserTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ExternalId' => 0, 'Id' => 1, ),
-        self::TYPE_STUDLYPHPNAME => array('externalId' => 0, 'id' => 1, ),
-        self::TYPE_COLNAME       => array(UserTableMap::EXTERNAL_ID => 0, UserTableMap::ID => 1, ),
-        self::TYPE_RAW_COLNAME   => array('EXTERNAL_ID' => 0, 'ID' => 1, ),
-        self::TYPE_FIELDNAME     => array('external_id' => 0, 'id' => 1, ),
-        self::TYPE_NUM           => array(0, 1, )
+    protected static $fieldKeys = array(
+        self::TYPE_PHPNAME => array('ExternalId' => 0, 'Id' => 1,),
+        self::TYPE_STUDLYPHPNAME => array('externalId' => 0, 'id' => 1,),
+        self::TYPE_COLNAME => array(UserTableMap::COL_EXTERNAL_ID => 0, UserTableMap::COL_ID => 1,),
+        self::TYPE_RAW_COLNAME => array('COL_EXTERNAL_ID' => 0, 'COL_ID' => 1,),
+        self::TYPE_FIELDNAME => array('external_id' => 0, 'id' => 1,),
+        self::TYPE_NUM => array(0, 1,)
     );
 
     /**
@@ -132,21 +131,25 @@ class UserTableMap extends TableMap
         // columns
         $this->addColumn('EXTERNAL_ID', 'ExternalId', 'LONGVARCHAR', true, null, null);
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-    } // initialize()
+    }
 
+// initialize()
     /**
      * Build the RelationMap objects for this table relationships
      */
     public function buildRelations()
     {
-        $this->addRelation('ProhibitionsUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'ProhibitionsUserss');
-        $this->addRelation('RolesUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'RolesUserss');
-        $this->addRelation('Sessions', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Sessions', RelationMap::ONE_TO_MANY, array('id' => 'simulated_users_id', ), null, null, 'Sessionss');
-        $this->addRelation('Prohibition', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
-        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
-        $this->addRelation('SessionType', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\SessionType', RelationMap::MANY_TO_MANY, array(), null, null, 'SessionTypes');
-    } // buildRelations()
+        $this->addRelation('ProhibitionsUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsUsers',
+            RelationMap::ONE_TO_MANY, array('id' => 'users_id',), null, null, 'ProhibitionsUserss');
+        $this->addRelation('RolesUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesUsers',
+            RelationMap::ONE_TO_MANY, array('id' => 'users_id',), null, null, 'RolesUserss');
+        $this->addRelation('Prohibition', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition',
+            RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
+        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY,
+            array(), null, null, 'Roles');
+    }
 
+// buildRelations()
     /**
      *
      * Gets the list of behaviors registered for this table
@@ -156,10 +159,11 @@ class UserTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'auto_add_pk' => array('name' => 'id', 'autoIncrement' => 'true', 'type' => 'INTEGER', ),
+            'auto_add_pk' => array('name' => 'id', 'autoIncrement' => 'true', 'type' => 'INTEGER',),
         );
-    } // getBehaviors()
+    }
 
+// getBehaviors()
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
      *
@@ -170,15 +174,19 @@ class UserTableMap extends TableMap
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
+     *
+     * @return string The primary key hash of the row
      */
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Id',
+                    TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Id',
+                    TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -195,12 +203,10 @@ class UserTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-
-            return (int) $row[
-                            $indexType == TableMap::TYPE_NUM
-                            ? 1 + $offset
-                            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
-                        ];
+        return (int) $row[
+            $indexType == TableMap::TYPE_NUM ? 1 + $offset : self::translateFieldName('Id', TableMap::TYPE_PHPNAME,
+                    $indexType)
+        ];
     }
 
     /**
@@ -225,12 +231,12 @@ class UserTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+      One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
-     * @return array (User object, last column rank)
+     *                         rethrown wrapped into a PropelException.
+     * @return array           (User object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
@@ -242,6 +248,7 @@ class UserTableMap extends TableMap
             $col = $offset + UserTableMap::NUM_HYDRATE_COLUMNS;
         } else {
             $cls = UserTableMap::OM_CLASS;
+            /** @var User $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
             UserTableMap::addInstanceToPool($obj, $key);
@@ -257,7 +264,7 @@ class UserTableMap extends TableMap
      * @param DataFetcherInterface $dataFetcher
      * @return array
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function populateObjects(DataFetcherInterface $dataFetcher)
     {
@@ -274,6 +281,7 @@ class UserTableMap extends TableMap
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
+                /** @var User $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
@@ -283,6 +291,7 @@ class UserTableMap extends TableMap
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -293,13 +302,13 @@ class UserTableMap extends TableMap
      * @param Criteria $criteria object containing the columns to add.
      * @param string   $alias    optional table alias
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(UserTableMap::EXTERNAL_ID);
-            $criteria->addSelectColumn(UserTableMap::ID);
+            $criteria->addSelectColumn(UserTableMap::COL_EXTERNAL_ID);
+            $criteria->addSelectColumn(UserTableMap::COL_ID);
         } else {
             $criteria->addSelectColumn($alias . '.EXTERNAL_ID');
             $criteria->addSelectColumn($alias . '.ID');
@@ -311,7 +320,7 @@ class UserTableMap extends TableMap
      * This method is not needed for general use but a specific application could have a need.
      * @return TableMap
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function getTableMap()
     {
@@ -323,10 +332,10 @@ class UserTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(UserTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(UserTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new UserTableMap());
-      }
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(UserTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(UserTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new UserTableMap());
+        }
     }
 
     /**
@@ -334,14 +343,14 @@ class UserTableMap extends TableMap
      *
      * @param mixed               $values Criteria or User object or primary key or array of primary keys
      *              which is used to create the DELETE statement
-     * @param ConnectionInterface $con the connection to use
-     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                if supported by native driver or if emulated using Propel.
+     * @param  ConnectionInterface $con the connection to use
+     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
-     public static function doDelete($values, ConnectionInterface $con = null)
-     {
+    public static function doDelete($values, ConnectionInterface $con = null)
+    {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
         }
@@ -354,14 +363,16 @@ class UserTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(UserTableMap::DATABASE_NAME);
-            $criteria->add(UserTableMap::ID, (array) $values, Criteria::IN);
+            $criteria->add(UserTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
         $query = UserQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) { UserTableMap::clearInstancePool();
+        if ($values instanceof Criteria) {
+            UserTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { UserTableMap::removeInstanceFromPool($singleval);
+            foreach ((array) $values as $singleval) {
+                UserTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -386,7 +397,7 @@ class UserTableMap extends TableMap
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
@@ -400,29 +411,24 @@ class UserTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from User object
         }
 
-        if ($criteria->containsKey(UserTableMap::ID) && $criteria->keyContainsValue(UserTableMap::ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.UserTableMap::ID.')');
+        if ($criteria->containsKey(UserTableMap::COL_ID) && $criteria->keyContainsValue(UserTableMap::COL_ID)) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . UserTableMap::COL_ID . ')');
         }
 
 
         // Set the correct dbName
         $query = UserQuery::create()->mergeWith($criteria);
 
-        try {
-            // use transaction because $criteria could contain info
-            // for more than one table (I guess, conceivably)
-            $con->beginTransaction();
-            $pk = $query->doInsert($con);
-            $con->commit();
-        } catch (PropelException $e) {
-            $con->rollBack();
-            throw $e;
-        }
-
-        return $pk;
+        // use transaction because $criteria could contain info
+        // for more than one table (I guess, conceivably)
+        return $con->transaction(function () use ($con, $query) {
+                return $query->doInsert($con);
+            });
     }
 
-} // UserTableMap
+}
+
+// UserTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
 UserTableMap::buildTableMap();

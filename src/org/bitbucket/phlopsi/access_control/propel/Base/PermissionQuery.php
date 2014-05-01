@@ -1,5 +1,4 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel\Base;
 
 use \Exception;
@@ -8,7 +7,6 @@ use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
-use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -42,6 +40,8 @@ use org\bitbucket\phlopsi\access_control\propel\Map\PermissionTableMap;
  * @method     ChildPermissionQuery rightJoinPermissionsRoles($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PermissionsRoles relation
  * @method     ChildPermissionQuery innerJoinPermissionsRoles($relationAlias = null) Adds a INNER JOIN clause to the query using the PermissionsRoles relation
  *
+ * @method     \org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ *
  * @method     ChildPermission findOne(ConnectionInterface $con = null) Return the first ChildPermission matching the query
  * @method     ChildPermission findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPermission matching the query, or a new ChildPermission object populated from the query conditions when no match is found
  *
@@ -51,16 +51,17 @@ use org\bitbucket\phlopsi\access_control\propel\Map\PermissionTableMap;
  * @method     ChildPermission findOneByTreeLevel(int $tree_level) Return the first ChildPermission filtered by the tree_level column
  * @method     ChildPermission findOneById(int $id) Return the first ChildPermission filtered by the id column
  *
- * @method     array findByExternalId(string $external_id) Return ChildPermission objects filtered by the external_id column
- * @method     array findByTreeLeft(int $tree_left) Return ChildPermission objects filtered by the tree_left column
- * @method     array findByTreeRight(int $tree_right) Return ChildPermission objects filtered by the tree_right column
- * @method     array findByTreeLevel(int $tree_level) Return ChildPermission objects filtered by the tree_level column
- * @method     array findById(int $id) Return ChildPermission objects filtered by the id column
+ * @method     ChildPermission[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPermission objects based on current ModelCriteria
+ * @method     ChildPermission[]|ObjectCollection findByExternalId(string $external_id) Return ChildPermission objects filtered by the external_id column
+ * @method     ChildPermission[]|ObjectCollection findByTreeLeft(int $tree_left) Return ChildPermission objects filtered by the tree_left column
+ * @method     ChildPermission[]|ObjectCollection findByTreeRight(int $tree_right) Return ChildPermission objects filtered by the tree_right column
+ * @method     ChildPermission[]|ObjectCollection findByTreeLevel(int $tree_level) Return ChildPermission objects filtered by the tree_level column
+ * @method     ChildPermission[]|ObjectCollection findById(int $id) Return ChildPermission objects filtered by the id column
+ * @method     ChildPermission[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
 abstract class PermissionQuery extends ModelCriteria
 {
-
     /**
      * Initializes internal state of \org\bitbucket\phlopsi\access_control\propel\Base\PermissionQuery object.
      *
@@ -68,7 +69,8 @@ abstract class PermissionQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission', $modelAlias = null)
+    public function __construct($dbName = 'access_control',
+        $modelName = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -81,12 +83,12 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @return ChildPermissionQuery
      */
-    public static function create($modelAlias = null, $criteria = null)
+    public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof \org\bitbucket\phlopsi\access_control\propel\PermissionQuery) {
+        if ($criteria instanceof ChildPermissionQuery) {
             return $criteria;
         }
-        $query = new \org\bitbucket\phlopsi\access_control\propel\PermissionQuery();
+        $query = new ChildPermissionQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -111,7 +113,7 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @return ChildPermission|array|mixed the result, formatted by the current formatter
      */
-    public function findPk($key, $con = null)
+    public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
             return null;
@@ -124,9 +126,7 @@ abstract class PermissionQuery extends ModelCriteria
             $con = Propel::getServiceContainer()->getReadConnection(PermissionTableMap::DATABASE_NAME);
         }
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+        if ($this->formatter || $this->modelAlias || $this->with || $this->select || $this->selectColumns || $this->asColumns || $this->selectModifiers || $this->map || $this->having || $this->joins) {
             return $this->findPkComplex($key, $con);
         } else {
             return $this->findPkSimple($key, $con);
@@ -140,9 +140,9 @@ abstract class PermissionQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return   ChildPermission A model object, or null if the key is not found
+     * @return ChildPermission A model object, or null if the key is not found
      */
-    protected function findPkSimple($key, $con)
+    protected function findPkSimple($key, ConnectionInterface $con)
     {
         $sql = 'SELECT EXTERNAL_ID, TREE_LEFT, TREE_RIGHT, TREE_LEVEL, ID FROM permissions WHERE ID = :p0';
         try {
@@ -155,6 +155,7 @@ abstract class PermissionQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+            /** @var ChildPermission $obj */
             $obj = new ChildPermission();
             $obj->hydrate($row);
             PermissionTableMap::addInstanceToPool($obj, (string) $key);
@@ -172,7 +173,7 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @return ChildPermission|array|mixed the result, formatted by the current formatter
      */
-    protected function findPkComplex($key, $con)
+    protected function findPkComplex($key, ConnectionInterface $con)
     {
         // As the query uses a PK condition, no limit(1) is necessary.
         $criteria = $this->isKeepQuery() ? clone $this : $this;
@@ -193,7 +194,7 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
      */
-    public function findPks($keys, $con = null)
+    public function findPks($keys, ConnectionInterface $con = null)
     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
@@ -212,12 +213,12 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return ChildPermissionQuery The current query, for fluid interface
+     * @return $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(PermissionTableMap::ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(PermissionTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -225,12 +226,12 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return ChildPermissionQuery The current query, for fluid interface
+     * @return $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(PermissionTableMap::ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(PermissionTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
@@ -246,7 +247,7 @@ abstract class PermissionQuery extends ModelCriteria
      *              Accepts wildcards (* and % trigger a LIKE)
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildPermissionQuery The current query, for fluid interface
+     * @return $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function filterByExternalId($externalId = null, $comparison = null)
     {
@@ -259,7 +260,7 @@ abstract class PermissionQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PermissionTableMap::EXTERNAL_ID, $externalId, $comparison);
+        return $this->addUsingAlias(PermissionTableMap::COL_EXTERNAL_ID, $externalId, $comparison);
     }
 
     /**
@@ -278,18 +279,18 @@ abstract class PermissionQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildPermissionQuery The current query, for fluid interface
+     * @return $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function filterByTreeLeft($treeLeft = null, $comparison = null)
     {
         if (is_array($treeLeft)) {
             $useMinMax = false;
             if (isset($treeLeft['min'])) {
-                $this->addUsingAlias(PermissionTableMap::TREE_LEFT, $treeLeft['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(PermissionTableMap::COL_TREE_LEFT, $treeLeft['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($treeLeft['max'])) {
-                $this->addUsingAlias(PermissionTableMap::TREE_LEFT, $treeLeft['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(PermissionTableMap::COL_TREE_LEFT, $treeLeft['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -300,7 +301,7 @@ abstract class PermissionQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PermissionTableMap::TREE_LEFT, $treeLeft, $comparison);
+        return $this->addUsingAlias(PermissionTableMap::COL_TREE_LEFT, $treeLeft, $comparison);
     }
 
     /**
@@ -319,18 +320,18 @@ abstract class PermissionQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildPermissionQuery The current query, for fluid interface
+     * @return $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function filterByTreeRight($treeRight = null, $comparison = null)
     {
         if (is_array($treeRight)) {
             $useMinMax = false;
             if (isset($treeRight['min'])) {
-                $this->addUsingAlias(PermissionTableMap::TREE_RIGHT, $treeRight['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(PermissionTableMap::COL_TREE_RIGHT, $treeRight['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($treeRight['max'])) {
-                $this->addUsingAlias(PermissionTableMap::TREE_RIGHT, $treeRight['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(PermissionTableMap::COL_TREE_RIGHT, $treeRight['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -341,7 +342,7 @@ abstract class PermissionQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PermissionTableMap::TREE_RIGHT, $treeRight, $comparison);
+        return $this->addUsingAlias(PermissionTableMap::COL_TREE_RIGHT, $treeRight, $comparison);
     }
 
     /**
@@ -360,18 +361,18 @@ abstract class PermissionQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildPermissionQuery The current query, for fluid interface
+     * @return $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function filterByTreeLevel($treeLevel = null, $comparison = null)
     {
         if (is_array($treeLevel)) {
             $useMinMax = false;
             if (isset($treeLevel['min'])) {
-                $this->addUsingAlias(PermissionTableMap::TREE_LEVEL, $treeLevel['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(PermissionTableMap::COL_TREE_LEVEL, $treeLevel['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($treeLevel['max'])) {
-                $this->addUsingAlias(PermissionTableMap::TREE_LEVEL, $treeLevel['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(PermissionTableMap::COL_TREE_LEVEL, $treeLevel['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -382,7 +383,7 @@ abstract class PermissionQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PermissionTableMap::TREE_LEVEL, $treeLevel, $comparison);
+        return $this->addUsingAlias(PermissionTableMap::COL_TREE_LEVEL, $treeLevel, $comparison);
     }
 
     /**
@@ -401,18 +402,18 @@ abstract class PermissionQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildPermissionQuery The current query, for fluid interface
+     * @return $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id['min'])) {
-                $this->addUsingAlias(PermissionTableMap::ID, $id['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(PermissionTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id['max'])) {
-                $this->addUsingAlias(PermissionTableMap::ID, $id['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(PermissionTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -423,7 +424,7 @@ abstract class PermissionQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PermissionTableMap::ID, $id, $comparison);
+        return $this->addUsingAlias(PermissionTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -438,12 +439,12 @@ abstract class PermissionQuery extends ModelCriteria
     {
         if ($permissionsRoles instanceof \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles) {
             return $this
-                ->addUsingAlias(PermissionTableMap::ID, $permissionsRoles->getPermissionId(), $comparison);
+                    ->addUsingAlias(PermissionTableMap::COL_ID, $permissionsRoles->getPermissionId(), $comparison);
         } elseif ($permissionsRoles instanceof ObjectCollection) {
             return $this
-                ->usePermissionsRolesQuery()
-                ->filterByPrimaryKeys($permissionsRoles->getPrimaryKeys())
-                ->endUse();
+                    ->usePermissionsRolesQuery()
+                    ->filterByPrimaryKeys($permissionsRoles->getPrimaryKeys())
+                    ->endUse();
         } else {
             throw new PropelException('filterByPermissionsRoles() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles or Collection');
         }
@@ -455,7 +456,7 @@ abstract class PermissionQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return ChildPermissionQuery The current query, for fluid interface
+     * @return $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function joinPermissionsRoles($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -490,13 +491,14 @@ abstract class PermissionQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery A secondary query class using the current class as primary query
+     * @return \org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery A secondary query class using the current class as primary query
      */
     public function usePermissionsRolesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinPermissionsRoles($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'PermissionsRoles', '\org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery');
+                ->joinPermissionsRoles($relationAlias, $joinType)
+                ->useQuery($relationAlias ? $relationAlias : 'PermissionsRoles',
+                    '\org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery');
     }
 
     /**
@@ -511,9 +513,9 @@ abstract class PermissionQuery extends ModelCriteria
     public function filterByRole($role, $comparison = Criteria::EQUAL)
     {
         return $this
-            ->usePermissionsRolesQuery()
-            ->filterByRole($role, $comparison)
-            ->endUse();
+                ->usePermissionsRolesQuery()
+                ->filterByRole($role, $comparison)
+                ->endUse();
     }
 
     /**
@@ -521,12 +523,12 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param   ChildPermission $permission Object to remove from the list of results
      *
-     * @return ChildPermissionQuery The current query, for fluid interface
+     * @return $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function prune($permission = null)
     {
         if ($permission) {
-            $this->addUsingAlias(PermissionTableMap::ID, $permission->getId(), Criteria::NOT_EQUAL);
+            $this->addUsingAlias(PermissionTableMap::COL_ID, $permission->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;
@@ -543,40 +545,33 @@ abstract class PermissionQuery extends ModelCriteria
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(PermissionTableMap::DATABASE_NAME);
         }
-        $affectedRows = 0; // initialize var to track total num of affected rows
-        try {
-            // use transaction because $criteria could contain info
-            // for more than one table or we could emulating ON DELETE CASCADE, etc.
-            $con->beginTransaction();
-            $affectedRows += parent::doDeleteAll($con);
-            // Because this db requires some delete cascade/set null emulation, we have to
-            // clear the cached instance *after* the emulation has happened (since
-            // instances get re-added by the select statement contained therein).
-            PermissionTableMap::clearInstancePool();
-            PermissionTableMap::clearRelatedInstancePool();
 
-            $con->commit();
-        } catch (PropelException $e) {
-            $con->rollBack();
-            throw $e;
-        }
+        // use transaction because $criteria could contain info
+        // for more than one table or we could emulating ON DELETE CASCADE, etc.
+        return $con->transaction(function () use ($con) {
+                $affectedRows = 0; // initialize var to track total num of affected rows
+                $affectedRows += parent::doDeleteAll($con);
+                // Because this db requires some delete cascade/set null emulation, we have to
+                // clear the cached instance *after* the emulation has happened (since
+                // instances get re-added by the select statement contained therein).
+                PermissionTableMap::clearInstancePool();
+                PermissionTableMap::clearRelatedInstancePool();
 
-        return $affectedRows;
+                return $affectedRows;
+            });
     }
 
     /**
-     * Performs a DELETE on the database, given a ChildPermission or Criteria object OR a primary key value.
+     * Performs a DELETE on the database based on the current ModelCriteria
      *
-     * @param mixed               $values Criteria or ChildPermission object or primary key or array of primary keys
-     *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
-     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                if supported by native driver or if emulated using Propel.
+     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
-     public function delete(ConnectionInterface $con = null)
-     {
+    public function delete(ConnectionInterface $con = null)
+    {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(PermissionTableMap::DATABASE_NAME);
         }
@@ -586,29 +581,21 @@ abstract class PermissionQuery extends ModelCriteria
         // Set the correct dbName
         $criteria->setDbName(PermissionTableMap::DATABASE_NAME);
 
-        $affectedRows = 0; // initialize var to track total num of affected rows
+        // use transaction because $criteria could contain info
+        // for more than one table or we could emulating ON DELETE CASCADE, etc.
+        return $con->transaction(function () use ($con, $criteria) {
+                $affectedRows = 0; // initialize var to track total num of affected rows
 
-        try {
-            // use transaction because $criteria could contain info
-            // for more than one table or we could emulating ON DELETE CASCADE, etc.
-            $con->beginTransaction();
+                PermissionTableMap::removeInstanceFromPool($criteria);
 
+                $affectedRows += ModelCriteria::delete($con);
+                PermissionTableMap::clearRelatedInstancePool();
 
-        PermissionTableMap::removeInstanceFromPool($criteria);
-
-            $affectedRows += ModelCriteria::delete($con);
-            PermissionTableMap::clearRelatedInstancePool();
-            $con->commit();
-
-            return $affectedRows;
-        } catch (PropelException $e) {
-            $con->rollBack();
-            throw $e;
-        }
+                return $affectedRows;
+            });
     }
 
     // nested_set behavior
-
     /**
      * Filter the query to restrict the result to descendants of an object
      *
@@ -619,8 +606,8 @@ abstract class PermissionQuery extends ModelCriteria
     public function descendantsOf($permission)
     {
         return $this
-            ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::GREATER_THAN)
-            ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getRightValue(), Criteria::LESS_THAN);
+                ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::GREATER_THAN)
+                ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getRightValue(), Criteria::LESS_THAN);
     }
 
     /**
@@ -634,8 +621,8 @@ abstract class PermissionQuery extends ModelCriteria
     public function branchOf($permission)
     {
         return $this
-            ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::GREATER_EQUAL)
-            ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getRightValue(), Criteria::LESS_EQUAL);
+                ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::GREATER_EQUAL)
+                ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getRightValue(), Criteria::LESS_EQUAL);
     }
 
     /**
@@ -643,13 +630,13 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param     ChildPermission $permission The object to use for child search
      *
-     * @return    ChildPermissionQuery The current query, for fluid interface
+     * @return    $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function childrenOf($permission)
     {
         return $this
-            ->descendantsOf($permission)
-            ->addUsingAlias(ChildPermission::LEVEL_COL, $permission->getLevel() + 1, Criteria::EQUAL);
+                ->descendantsOf($permission)
+                ->addUsingAlias(ChildPermission::LEVEL_COL, $permission->getLevel() + 1, Criteria::EQUAL);
     }
 
     /**
@@ -659,17 +646,17 @@ abstract class PermissionQuery extends ModelCriteria
      * @param     ChildPermission $permission The object to use for sibling search
      * @param      ConnectionInterface $con Connection to use.
      *
-     * @return    ChildPermissionQuery The current query, for fluid interface
+     * @return    $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function siblingsOf($permission, ConnectionInterface $con = null)
     {
         if ($permission->isRoot()) {
             return $this->
-                add(ChildPermission::LEVEL_COL, '1<>1', Criteria::CUSTOM);
+                    add(ChildPermission::LEVEL_COL, '1<>1', Criteria::CUSTOM);
         } else {
             return $this
-                ->childrenOf($permission->getParent($con))
-                ->prune($permission);
+                    ->childrenOf($permission->getParent($con))
+                    ->prune($permission);
         }
     }
 
@@ -683,8 +670,8 @@ abstract class PermissionQuery extends ModelCriteria
     public function ancestorsOf($permission)
     {
         return $this
-            ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::LESS_THAN)
-            ->addUsingAlias(ChildPermission::RIGHT_COL, $permission->getRightValue(), Criteria::GREATER_THAN);
+                ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::LESS_THAN)
+                ->addUsingAlias(ChildPermission::RIGHT_COL, $permission->getRightValue(), Criteria::GREATER_THAN);
     }
 
     /**
@@ -698,8 +685,8 @@ abstract class PermissionQuery extends ModelCriteria
     public function rootsOf($permission)
     {
         return $this
-            ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::LESS_EQUAL)
-            ->addUsingAlias(ChildPermission::RIGHT_COL, $permission->getRightValue(), Criteria::GREATER_EQUAL);
+                ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::LESS_EQUAL)
+                ->addUsingAlias(ChildPermission::RIGHT_COL, $permission->getRightValue(), Criteria::GREATER_EQUAL);
     }
 
     /**
@@ -713,10 +700,10 @@ abstract class PermissionQuery extends ModelCriteria
     {
         if ($reverse) {
             return $this
-                ->addDescendingOrderByColumn(ChildPermission::LEFT_COL);
+                    ->addDescendingOrderByColumn(ChildPermission::LEFT_COL);
         } else {
             return $this
-                ->addAscendingOrderByColumn(ChildPermission::LEFT_COL);
+                    ->addAscendingOrderByColumn(ChildPermission::LEFT_COL);
         }
     }
 
@@ -731,10 +718,12 @@ abstract class PermissionQuery extends ModelCriteria
     {
         if ($reverse) {
             return $this
-                ->addAscendingOrderByColumn(ChildPermission::RIGHT_COL);
+                    ->addDescendingOrderByColumn(ChildPermission::LEVEL_COL)
+                    ->addDescendingOrderByColumn(ChildPermission::LEFT_COL);
         } else {
             return $this
-                ->addDescendingOrderByColumn(ChildPermission::RIGHT_COL);
+                    ->addAscendingOrderByColumn(ChildPermission::LEVEL_COL)
+                    ->addAscendingOrderByColumn(ChildPermission::LEFT_COL);
         }
     }
 
@@ -748,8 +737,8 @@ abstract class PermissionQuery extends ModelCriteria
     public function findRoot($con = null)
     {
         return $this
-            ->addUsingAlias(ChildPermission::LEFT_COL, 1, Criteria::EQUAL)
-            ->findOne($con);
+                ->addUsingAlias(ChildPermission::LEFT_COL, 1, Criteria::EQUAL)
+                ->findOne($con);
     }
 
     /**
@@ -762,8 +751,8 @@ abstract class PermissionQuery extends ModelCriteria
     public function findTree($con = null)
     {
         return $this
-            ->orderByBranch()
-            ->find($con);
+                ->orderByBranch()
+                ->find($con);
     }
 
     /**
@@ -849,7 +838,8 @@ abstract class PermissionQuery extends ModelCriteria
         $whereCriteria->add($criterion);
 
         $valuesCriteria = new Criteria(PermissionTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildPermission::LEFT_COL, array('raw' => ChildPermission::LEFT_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
+        $valuesCriteria->add(ChildPermission::LEFT_COL,
+            array('raw' => ChildPermission::LEFT_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
 
         $whereCriteria->doUpdate($valuesCriteria, $con);
 
@@ -862,7 +852,8 @@ abstract class PermissionQuery extends ModelCriteria
         $whereCriteria->add($criterion);
 
         $valuesCriteria = new Criteria(PermissionTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildPermission::RIGHT_COL, array('raw' => ChildPermission::RIGHT_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
+        $valuesCriteria->add(ChildPermission::RIGHT_COL,
+            array('raw' => ChildPermission::RIGHT_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
 
         $whereCriteria->doUpdate($valuesCriteria, $con);
     }
@@ -887,7 +878,8 @@ abstract class PermissionQuery extends ModelCriteria
         $whereCriteria->add(ChildPermission::RIGHT_COL, $last, Criteria::LESS_EQUAL);
 
         $valuesCriteria = new Criteria(PermissionTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildPermission::LEVEL_COL, array('raw' => ChildPermission::LEVEL_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
+        $valuesCriteria->add(ChildPermission::LEVEL_COL,
+            array('raw' => ChildPermission::LEVEL_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
 
         $whereCriteria->doUpdate($valuesCriteria, $con);
     }
@@ -912,7 +904,7 @@ abstract class PermissionQuery extends ModelCriteria
                 // We don't need to alter the object instance pool; we're just modifying these ones
                 // already in the pool.
                 $criteria = new Criteria(PermissionTableMap::DATABASE_NAME);
-                $criteria->add(PermissionTableMap::ID, $keys, Criteria::IN);
+                $criteria->add(PermissionTableMap::COL_ID, $keys, Criteria::IN);
                 $dataFetcher = ChildPermissionQuery::create(null, $criteria)->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
                 while ($row = $dataFetcher->fetch()) {
                     $key = PermissionTableMap::getPrimaryKeyHashFromRow($row, 0);
@@ -1011,4 +1003,6 @@ abstract class PermissionQuery extends ModelCriteria
         $whereCriteria->doUpdate($valuesCriteria, $con);
     }
 
-} // PermissionQuery
+}
+
+// PermissionQuery

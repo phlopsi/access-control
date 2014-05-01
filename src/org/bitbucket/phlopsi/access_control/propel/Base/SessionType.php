@@ -1,5 +1,4 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel\Base;
 
 use \Exception;
@@ -13,6 +12,7 @@ use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
+use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
@@ -22,10 +22,6 @@ use org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes as ChildRolesS
 use org\bitbucket\phlopsi\access_control\propel\RolesSessionTypesQuery as ChildRolesSessionTypesQuery;
 use org\bitbucket\phlopsi\access_control\propel\SessionType as ChildSessionType;
 use org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery as ChildSessionTypeQuery;
-use org\bitbucket\phlopsi\access_control\propel\Sessions as ChildSessions;
-use org\bitbucket\phlopsi\access_control\propel\SessionsQuery as ChildSessionsQuery;
-use org\bitbucket\phlopsi\access_control\propel\User as ChildUser;
-use org\bitbucket\phlopsi\access_control\propel\UserQuery as ChildUserQuery;
 use org\bitbucket\phlopsi\access_control\propel\Map\SessionTypeTableMap;
 
 abstract class SessionType implements ActiveRecordInterface
@@ -34,7 +30,6 @@ abstract class SessionType implements ActiveRecordInterface
      * TableMap class name
      */
     const TABLE_MAP = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Map\\SessionTypeTableMap';
-
 
     /**
      * attribute to determine if this object has previously been saved.
@@ -99,20 +94,14 @@ abstract class SessionType implements ActiveRecordInterface
     protected $collRolesSessionTypessPartial;
 
     /**
-     * @var        ObjectCollection|ChildSessions[] Collection to store aggregation of ChildSessions objects.
-     */
-    protected $collSessionss;
-    protected $collSessionssPartial;
-
-    /**
-     * @var        ChildRole[] Collection to store aggregation of ChildRole objects.
+     * @var        ObjectCollection|ChildRole[] Cross Collection to store aggregation of ChildRole objects.
      */
     protected $collRoles;
 
     /**
-     * @var        ChildUser[] Collection to store aggregation of ChildUser objects.
+     * @var bool
      */
-    protected $collUsers;
+    protected $collRolesPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -159,33 +148,22 @@ abstract class SessionType implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection
+     * @var ObjectCollection|ChildRole[]
      */
     protected $rolesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection
-     */
-    protected $usersScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection
+     * @var ObjectCollection|ChildRolesSessionTypes[]
      */
     protected $rolesSessionTypessScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection
-     */
-    protected $sessionssScheduledForDeletion = null;
 
     /**
      * Initializes internal state of org\bitbucket\phlopsi\access_control\propel\Base\SessionType object.
      */
     public function __construct()
     {
+        
     }
 
     /**
@@ -195,7 +173,7 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function isModified()
     {
-        return !empty($this->modifiedColumns);
+        return !!$this->modifiedColumns;
     }
 
     /**
@@ -206,7 +184,7 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function isColumnModified($col)
     {
-        return in_array($col, $this->modifiedColumns);
+        return $this->modifiedColumns && isset($this->modifiedColumns[$col]);
     }
 
     /**
@@ -215,7 +193,7 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function getModifiedColumns()
     {
-        return array_unique($this->modifiedColumns);
+        return $this->modifiedColumns ? array_keys($this->modifiedColumns) : [];
     }
 
     /**
@@ -238,7 +216,7 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function setNew($b)
     {
-        $this->new = (Boolean) $b;
+        $this->new = (boolean) $b;
     }
 
     /**
@@ -257,7 +235,7 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function setDeleted($b)
     {
-        $this->deleted = (Boolean) $b;
+        $this->deleted = (boolean) $b;
     }
 
     /**
@@ -268,8 +246,8 @@ abstract class SessionType implements ActiveRecordInterface
     public function resetModified($col = null)
     {
         if (null !== $col) {
-            while (false !== ($offset = array_search($col, $this->modifiedColumns))) {
-                array_splice($this->modifiedColumns, $offset, 1);
+            if (isset($this->modifiedColumns[$col])) {
+                unset($this->modifiedColumns[$col]);
             }
         } else {
             $this->modifiedColumns = array();
@@ -286,8 +264,7 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function equals($obj)
     {
-        $thisclazz = get_class($this);
-        if (!is_object($obj) || !($obj instanceof $thisclazz)) {
+        if (!$obj instanceof static) {
             return false;
         }
 
@@ -295,27 +272,11 @@ abstract class SessionType implements ActiveRecordInterface
             return true;
         }
 
-        if (null === $this->getPrimaryKey()
-            || null === $obj->getPrimaryKey())  {
+        if (null === $this->getPrimaryKey() || null === $obj->getPrimaryKey()) {
             return false;
         }
 
         return $this->getPrimaryKey() === $obj->getPrimaryKey();
-    }
-
-    /**
-     * If the primary key is not null, return the hashcode of the
-     * primary key. Otherwise, return the hash code of the object.
-     *
-     * @return int Hashcode
-     */
-    public function hashCode()
-    {
-        if (null !== $this->getPrimaryKey()) {
-            return crc32(serialize($this->getPrimaryKey()));
-        }
-
-        return crc32(serialize(clone $this));
     }
 
     /**
@@ -362,7 +323,7 @@ abstract class SessionType implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return SessionType The current object, for fluid interface
+     * @return $this|SessionType The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -381,30 +342,6 @@ abstract class SessionType implements ActiveRecordInterface
     protected function log($msg, $priority = Propel::LOG_INFO)
     {
         return Propel::log(get_class($this) . ': ' . $msg, $priority);
-    }
-
-    /**
-     * Populate the current object from a string, using a given parser format
-     * <code>
-     * $book = new Book();
-     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
-     * </code>
-     *
-     * @param mixed $parser A AbstractParser instance,
-     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param string $data The source data to import from
-     *
-     * @return SessionType The current object, for fluid interface
-     */
-    public function importFrom($parser, $data)
-    {
-        if (!$parser instanceof AbstractParser) {
-            $parser = AbstractParser::getParser($parser);
-        }
-
-        $this->fromArray($parser->toArray($data), TableMap::TYPE_PHPNAME);
-
-        return $this;
     }
 
     /**
@@ -442,162 +379,52 @@ abstract class SessionType implements ActiveRecordInterface
     /**
      * Get the [external_id] column value.
      *
-     * @return   string
+     * @return string
      */
     public function getExternalId()
     {
-
         return $this->external_id;
     }
 
     /**
      * Get the [tree_left] column value.
      *
-     * @return   int
+     * @return int
      */
     public function getTreeLeft()
     {
-
         return $this->tree_left;
     }
 
     /**
      * Get the [tree_right] column value.
      *
-     * @return   int
+     * @return int
      */
     public function getTreeRight()
     {
-
         return $this->tree_right;
     }
 
     /**
      * Get the [tree_level] column value.
      *
-     * @return   int
+     * @return int
      */
     public function getTreeLevel()
     {
-
         return $this->tree_level;
     }
 
     /**
      * Get the [id] column value.
      *
-     * @return   int
+     * @return int
      */
     public function getId()
     {
-
         return $this->id;
     }
-
-    /**
-     * Set the value of [external_id] column.
-     *
-     * @param      string $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
-     */
-    public function setExternalId($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->external_id !== $v) {
-            $this->external_id = $v;
-            $this->modifiedColumns[] = SessionTypeTableMap::EXTERNAL_ID;
-        }
-
-
-        return $this;
-    } // setExternalId()
-
-    /**
-     * Set the value of [tree_left] column.
-     *
-     * @param      int $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
-     */
-    public function setTreeLeft($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_left !== $v) {
-            $this->tree_left = $v;
-            $this->modifiedColumns[] = SessionTypeTableMap::TREE_LEFT;
-        }
-
-
-        return $this;
-    } // setTreeLeft()
-
-    /**
-     * Set the value of [tree_right] column.
-     *
-     * @param      int $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
-     */
-    public function setTreeRight($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_right !== $v) {
-            $this->tree_right = $v;
-            $this->modifiedColumns[] = SessionTypeTableMap::TREE_RIGHT;
-        }
-
-
-        return $this;
-    } // setTreeRight()
-
-    /**
-     * Set the value of [tree_level] column.
-     *
-     * @param      int $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
-     */
-    public function setTreeLevel($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_level !== $v) {
-            $this->tree_level = $v;
-            $this->modifiedColumns[] = SessionTypeTableMap::TREE_LEVEL;
-        }
-
-
-        return $this;
-    } // setTreeLevel()
-
-    /**
-     * Set the value of [id] column.
-     *
-     * @param      int $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
-     */
-    public function setId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->id !== $v) {
-            $this->id = $v;
-            $this->modifiedColumns[] = SessionTypeTableMap::ID;
-        }
-
-
-        return $this;
-    } // setId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -611,8 +438,9 @@ abstract class SessionType implements ActiveRecordInterface
     {
         // otherwise, everything was equal, so return TRUE
         return true;
-    } // hasOnlyDefaultValues()
+    }
 
+// hasOnlyDefaultValues()
     /**
      * Hydrates (populates) the object variables with values from the database resultset.
      *
@@ -625,7 +453,7 @@ abstract class SessionType implements ActiveRecordInterface
      * @param int     $startcol  0-based offset column which indicates which restultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @param string  $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+      One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @return int             next starting column
@@ -635,20 +463,24 @@ abstract class SessionType implements ActiveRecordInterface
     {
         try {
 
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SessionTypeTableMap::translateFieldName('ExternalId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : SessionTypeTableMap::translateFieldName('ExternalId',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->external_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SessionTypeTableMap::translateFieldName('TreeLeft', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : SessionTypeTableMap::translateFieldName('TreeLeft',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->tree_left = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SessionTypeTableMap::translateFieldName('TreeRight', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : SessionTypeTableMap::translateFieldName('TreeRight',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->tree_right = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : SessionTypeTableMap::translateFieldName('TreeLevel', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : SessionTypeTableMap::translateFieldName('TreeLevel',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->tree_level = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : SessionTypeTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : SessionTypeTableMap::translateFieldName('Id',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -659,9 +491,9 @@ abstract class SessionType implements ActiveRecordInterface
             }
 
             return $startcol + 5; // 5 = SessionTypeTableMap::NUM_HYDRATE_COLUMNS.
-
         } catch (Exception $e) {
-            throw new PropelException("Error populating \org\bitbucket\phlopsi\access_control\propel\SessionType object", 0, $e);
+            throw new PropelException(sprintf('Error populating %s object',
+                '\\org\\bitbucket\\phlopsi\\access_control\\propel\\SessionType'), 0, $e);
         }
     }
 
@@ -680,8 +512,115 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-    } // ensureConsistency
+        
+    }
 
+// ensureConsistency
+    /**
+     * Set the value of [external_id] column.
+     *
+     * @param  string $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
+     */
+    public function setExternalId($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->external_id !== $v) {
+            $this->external_id = $v;
+            $this->modifiedColumns[SessionTypeTableMap::COL_EXTERNAL_ID] = true;
+        }
+
+        return $this;
+    }
+
+// setExternalId()
+    /**
+     * Set the value of [tree_left] column.
+     *
+     * @param  int $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
+     */
+    public function setTreeLeft($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->tree_left !== $v) {
+            $this->tree_left = $v;
+            $this->modifiedColumns[SessionTypeTableMap::COL_TREE_LEFT] = true;
+        }
+
+        return $this;
+    }
+
+// setTreeLeft()
+    /**
+     * Set the value of [tree_right] column.
+     *
+     * @param  int $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
+     */
+    public function setTreeRight($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->tree_right !== $v) {
+            $this->tree_right = $v;
+            $this->modifiedColumns[SessionTypeTableMap::COL_TREE_RIGHT] = true;
+        }
+
+        return $this;
+    }
+
+// setTreeRight()
+    /**
+     * Set the value of [tree_level] column.
+     *
+     * @param  int $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
+     */
+    public function setTreeLevel($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->tree_level !== $v) {
+            $this->tree_level = $v;
+            $this->modifiedColumns[SessionTypeTableMap::COL_TREE_LEVEL] = true;
+        }
+
+        return $this;
+    }
+
+// setTreeLevel()
+    /**
+     * Set the value of [id] column.
+     *
+     * @param  int $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
+     */
+    public function setId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->id !== $v) {
+            $this->id = $v;
+            $this->modifiedColumns[SessionTypeTableMap::COL_ID] = true;
+        }
+
+        return $this;
+    }
+
+// setId()
     /**
      * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
      *
@@ -718,13 +657,9 @@ abstract class SessionType implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
             $this->collRolesSessionTypess = null;
 
-            $this->collSessionss = null;
-
             $this->collRoles = null;
-            $this->collUsers = null;
         } // if (deep)
     }
 
@@ -747,8 +682,7 @@ abstract class SessionType implements ActiveRecordInterface
             $con = Propel::getServiceContainer()->getWriteConnection(SessionTypeTableMap::DATABASE_NAME);
         }
 
-        $con->beginTransaction();
-        try {
+        $con->transaction(function () use ($con) {
             $deleteQuery = ChildSessionTypeQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
@@ -770,15 +704,9 @@ abstract class SessionType implements ActiveRecordInterface
                     ChildSessionTypeQuery::shiftRLValues(-2, $this->getRightValue() + 1, null, $con);
                 }
 
-                $con->commit();
                 $this->setDeleted(true);
-            } else {
-                $con->commit();
             }
-        } catch (Exception $e) {
-            $con->rollBack();
-            throw $e;
-        }
+        });
     }
 
     /**
@@ -804,45 +732,40 @@ abstract class SessionType implements ActiveRecordInterface
             $con = Propel::getServiceContainer()->getWriteConnection(SessionTypeTableMap::DATABASE_NAME);
         }
 
-        $con->beginTransaction();
-        $isInsert = $this->isNew();
-        try {
-            $ret = $this->preSave($con);
-            // nested_set behavior
-            if ($this->isNew() && $this->isRoot()) {
-                // check if no other root exist in, the tree
-                $nbRoots = ChildSessionTypeQuery::create()
-                    ->addUsingAlias(ChildSessionType::LEFT_COL, 1, Criteria::EQUAL)
-                    ->count($con);
-                if ($nbRoots > 0) {
+        return $con->transaction(function () use ($con) {
+                $isInsert = $this->isNew();
+                $ret = $this->preSave($con);
+                // nested_set behavior
+                if ($this->isNew() && $this->isRoot()) {
+                    // check if no other root exist in, the tree
+                    $nbRoots = ChildSessionTypeQuery::create()
+                        ->addUsingAlias(ChildSessionType::LEFT_COL, 1, Criteria::EQUAL)
+                        ->count($con);
+                    if ($nbRoots > 0) {
                         throw new PropelException('A root node already exists in this tree. To allow multiple root nodes, add the `use_scope` parameter in the nested_set behavior tag.');
+                    }
                 }
-            }
-            $this->processNestedSetQueries($con);
-            if ($isInsert) {
-                $ret = $ret && $this->preInsert($con);
-            } else {
-                $ret = $ret && $this->preUpdate($con);
-            }
-            if ($ret) {
-                $affectedRows = $this->doSave($con);
+                $this->processNestedSetQueries($con);
                 if ($isInsert) {
-                    $this->postInsert($con);
+                    $ret = $ret && $this->preInsert($con);
                 } else {
-                    $this->postUpdate($con);
+                    $ret = $ret && $this->preUpdate($con);
                 }
-                $this->postSave($con);
-                SessionTypeTableMap::addInstanceToPool($this);
-            } else {
-                $affectedRows = 0;
-            }
-            $con->commit();
+                if ($ret) {
+                    $affectedRows = $this->doSave($con);
+                    if ($isInsert) {
+                        $this->postInsert($con);
+                    } else {
+                        $this->postUpdate($con);
+                    }
+                    $this->postSave($con);
+                    SessionTypeTableMap::addInstanceToPool($this);
+                } else {
+                    $affectedRows = 0;
+                }
 
-            return $affectedRows;
-        } catch (Exception $e) {
-            $con->rollBack();
-            throw $e;
-        }
+                return $affectedRows;
+            });
     }
 
     /**
@@ -876,56 +799,30 @@ abstract class SessionType implements ActiveRecordInterface
             if ($this->rolesScheduledForDeletion !== null) {
                 if (!$this->rolesScheduledForDeletion->isEmpty()) {
                     $pks = array();
-                    $pk  = $this->getPrimaryKey();
-                    foreach ($this->rolesScheduledForDeletion->getPrimaryKeys(false) as $remotePk) {
-                        $pks[] = array($remotePk, $pk);
+                    foreach ($this->rolesScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[1] = $this->getId();
+                        $entryPk[0] = $entry->getId();
+                        $pks[] = $entryPk;
                     }
 
-                    RolesSessionTypesQuery::create()
+                    \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypesQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
+
                     $this->rolesScheduledForDeletion = null;
                 }
+            }
 
-                foreach ($this->getRoles() as $role) {
-                    if ($role->isModified()) {
-                        $role->save($con);
-                    }
-                }
-            } elseif ($this->collRoles) {
+            if ($this->collRoles) {
                 foreach ($this->collRoles as $role) {
-                    if ($role->isModified()) {
+                    if (!$role->isDeleted() && ($role->isNew() || $role->isModified())) {
                         $role->save($con);
                     }
                 }
             }
 
-            if ($this->usersScheduledForDeletion !== null) {
-                if (!$this->usersScheduledForDeletion->isEmpty()) {
-                    $pks = array();
-                    $pk  = $this->getPrimaryKey();
-                    foreach ($this->usersScheduledForDeletion->getPrimaryKeys(false) as $remotePk) {
-                        $pks[] = array($pk, $remotePk);
-                    }
-
-                    SessionsQuery::create()
-                        ->filterByPrimaryKeys($pks)
-                        ->delete($con);
-                    $this->usersScheduledForDeletion = null;
-                }
-
-                foreach ($this->getUsers() as $user) {
-                    if ($user->isModified()) {
-                        $user->save($con);
-                    }
-                }
-            } elseif ($this->collUsers) {
-                foreach ($this->collUsers as $user) {
-                    if ($user->isModified()) {
-                        $user->save($con);
-                    }
-                }
-            }
 
             if ($this->rolesSessionTypessScheduledForDeletion !== null) {
                 if (!$this->rolesSessionTypessScheduledForDeletion->isEmpty()) {
@@ -936,25 +833,8 @@ abstract class SessionType implements ActiveRecordInterface
                 }
             }
 
-                if ($this->collRolesSessionTypess !== null) {
-            foreach ($this->collRolesSessionTypess as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->sessionssScheduledForDeletion !== null) {
-                if (!$this->sessionssScheduledForDeletion->isEmpty()) {
-                    \org\bitbucket\phlopsi\access_control\propel\SessionsQuery::create()
-                        ->filterByPrimaryKeys($this->sessionssScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->sessionssScheduledForDeletion = null;
-                }
-            }
-
-                if ($this->collSessionss !== null) {
-            foreach ($this->collSessionss as $referrerFK) {
+            if ($this->collRolesSessionTypess !== null) {
+                foreach ($this->collRolesSessionTypess as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -962,12 +842,12 @@ abstract class SessionType implements ActiveRecordInterface
             }
 
             $this->alreadyInSave = false;
-
         }
 
         return $affectedRows;
-    } // doSave()
+    }
 
+// doSave()
     /**
      * Insert the row in the database.
      *
@@ -981,31 +861,30 @@ abstract class SessionType implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[] = SessionTypeTableMap::ID;
+        $this->modifiedColumns[SessionTypeTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . SessionTypeTableMap::ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . SessionTypeTableMap::COL_ID . ')');
         }
 
-         // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(SessionTypeTableMap::EXTERNAL_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'EXTERNAL_ID';
+        // check the columns in natural order for more readable SQL queries
+        if ($this->isColumnModified(SessionTypeTableMap::COL_EXTERNAL_ID)) {
+            $modifiedColumns[':p' . $index++] = 'EXTERNAL_ID';
         }
-        if ($this->isColumnModified(SessionTypeTableMap::TREE_LEFT)) {
-            $modifiedColumns[':p' . $index++]  = 'TREE_LEFT';
+        if ($this->isColumnModified(SessionTypeTableMap::COL_TREE_LEFT)) {
+            $modifiedColumns[':p' . $index++] = 'TREE_LEFT';
         }
-        if ($this->isColumnModified(SessionTypeTableMap::TREE_RIGHT)) {
-            $modifiedColumns[':p' . $index++]  = 'TREE_RIGHT';
+        if ($this->isColumnModified(SessionTypeTableMap::COL_TREE_RIGHT)) {
+            $modifiedColumns[':p' . $index++] = 'TREE_RIGHT';
         }
-        if ($this->isColumnModified(SessionTypeTableMap::TREE_LEVEL)) {
-            $modifiedColumns[':p' . $index++]  = 'TREE_LEVEL';
+        if ($this->isColumnModified(SessionTypeTableMap::COL_TREE_LEVEL)) {
+            $modifiedColumns[':p' . $index++] = 'TREE_LEVEL';
         }
-        if ($this->isColumnModified(SessionTypeTableMap::ID)) {
-            $modifiedColumns[':p' . $index++]  = 'ID';
+        if ($this->isColumnModified(SessionTypeTableMap::COL_ID)) {
+            $modifiedColumns[':p' . $index++] = 'ID';
         }
 
         $sql = sprintf(
-            'INSERT INTO session_types (%s) VALUES (%s)',
-            implode(', ', $modifiedColumns),
+            'INSERT INTO session_types (%s) VALUES (%s)', implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
 
@@ -1126,7 +1005,8 @@ abstract class SessionType implements ActiveRecordInterface
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true,
+        $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
         if (isset($alreadyDumpedObjects['SessionType'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
@@ -1147,10 +1027,8 @@ abstract class SessionType implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->collRolesSessionTypess) {
-                $result['RolesSessionTypess'] = $this->collRolesSessionTypess->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collSessionss) {
-                $result['Sessionss'] = $this->collSessionss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result['RolesSessionTypess'] = $this->collRolesSessionTypess->toArray(null, true, $keyType,
+                    $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1160,13 +1038,13 @@ abstract class SessionType implements ActiveRecordInterface
     /**
      * Sets a field from the object by name passed in as a string.
      *
-     * @param      string $name
-     * @param      mixed  $value field value
-     * @param      string $type The type of fieldname the $name is of:
-     *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
-     *                     TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-     *                     Defaults to TableMap::TYPE_PHPNAME.
-     * @return void
+     * @param  string $name
+     * @param  mixed  $value field value
+     * @param  string $type The type of fieldname the $name is of:
+     *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     *                Defaults to TableMap::TYPE_PHPNAME.
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\SessionType
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
@@ -1179,9 +1057,9 @@ abstract class SessionType implements ActiveRecordInterface
      * Sets a field from the object by Position as specified in the xml schema.
      * Zero-based.
      *
-     * @param      int $pos position in xml schema
-     * @param      mixed $value field value
-     * @return void
+     * @param  int $pos position in xml schema
+     * @param  mixed $value field value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\SessionType
      */
     public function setByPosition($pos, $value)
     {
@@ -1202,6 +1080,8 @@ abstract class SessionType implements ActiveRecordInterface
                 $this->setId($value);
                 break;
         } // switch()
+
+        return $this;
     }
 
     /**
@@ -1225,11 +1105,45 @@ abstract class SessionType implements ActiveRecordInterface
     {
         $keys = SessionTypeTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setExternalId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setTreeLeft($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setTreeRight($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setTreeLevel($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setId($arr[$keys[4]]);
+        if (array_key_exists($keys[0], $arr)) {
+            $this->setExternalId($arr[$keys[0]]);
+        }
+        if (array_key_exists($keys[1], $arr)) {
+            $this->setTreeLeft($arr[$keys[1]]);
+        }
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setTreeRight($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setTreeLevel($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setId($arr[$keys[4]]);
+        }
+    }
+
+    /**
+     * Populate the current object from a string, using a given parser format
+     * <code>
+     * $book = new Book();
+     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
+     * </code>
+     *
+     * @param mixed $parser A AbstractParser instance,
+     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param string $data The source data to import from
+     *
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\SessionType The current object, for fluid interface
+     */
+    public function importFrom($parser, $data)
+    {
+        if (!$parser instanceof AbstractParser) {
+            $parser = AbstractParser::getParser($parser);
+        }
+
+        $this->fromArray($parser->toArray($data), TableMap::TYPE_PHPNAME);
+
+        return $this;
     }
 
     /**
@@ -1241,11 +1155,21 @@ abstract class SessionType implements ActiveRecordInterface
     {
         $criteria = new Criteria(SessionTypeTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(SessionTypeTableMap::EXTERNAL_ID)) $criteria->add(SessionTypeTableMap::EXTERNAL_ID, $this->external_id);
-        if ($this->isColumnModified(SessionTypeTableMap::TREE_LEFT)) $criteria->add(SessionTypeTableMap::TREE_LEFT, $this->tree_left);
-        if ($this->isColumnModified(SessionTypeTableMap::TREE_RIGHT)) $criteria->add(SessionTypeTableMap::TREE_RIGHT, $this->tree_right);
-        if ($this->isColumnModified(SessionTypeTableMap::TREE_LEVEL)) $criteria->add(SessionTypeTableMap::TREE_LEVEL, $this->tree_level);
-        if ($this->isColumnModified(SessionTypeTableMap::ID)) $criteria->add(SessionTypeTableMap::ID, $this->id);
+        if ($this->isColumnModified(SessionTypeTableMap::COL_EXTERNAL_ID)) {
+            $criteria->add(SessionTypeTableMap::COL_EXTERNAL_ID, $this->external_id);
+        }
+        if ($this->isColumnModified(SessionTypeTableMap::COL_TREE_LEFT)) {
+            $criteria->add(SessionTypeTableMap::COL_TREE_LEFT, $this->tree_left);
+        }
+        if ($this->isColumnModified(SessionTypeTableMap::COL_TREE_RIGHT)) {
+            $criteria->add(SessionTypeTableMap::COL_TREE_RIGHT, $this->tree_right);
+        }
+        if ($this->isColumnModified(SessionTypeTableMap::COL_TREE_LEVEL)) {
+            $criteria->add(SessionTypeTableMap::COL_TREE_LEVEL, $this->tree_level);
+        }
+        if ($this->isColumnModified(SessionTypeTableMap::COL_ID)) {
+            $criteria->add(SessionTypeTableMap::COL_ID, $this->id);
+        }
 
         return $criteria;
     }
@@ -1256,19 +1180,43 @@ abstract class SessionType implements ActiveRecordInterface
      * Unlike buildCriteria() this method includes the primary key values regardless
      * of whether or not they have been modified.
      *
+     * @throws LogicException if no primary key is defined
+     *
      * @return Criteria The Criteria object containing value(s) for primary key(s).
      */
     public function buildPkeyCriteria()
     {
         $criteria = new Criteria(SessionTypeTableMap::DATABASE_NAME);
-        $criteria->add(SessionTypeTableMap::ID, $this->id);
+        $criteria->add(SessionTypeTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
 
     /**
+     * If the primary key is not null, return the hashcode of the
+     * primary key. Otherwise, return the hash code of the object.
+     *
+     * @return int Hashcode
+     */
+    public function hashCode()
+    {
+        $validPk = null !== $this->getId();
+
+        $validPrimaryKeyFKs = 0;
+        $primaryKeyFKs = [];
+
+        if ($validPk) {
+            return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
+        } elseif ($validPrimaryKeyFKs) {
+            return crc32(json_encode($primaryKeyFKs, JSON_UNESCAPED_UNICODE));
+        }
+
+        return spl_object_hash($this);
+    }
+
+    /**
      * Returns the primary key for this object (row).
-     * @return   int
+     * @return int
      */
     public function getPrimaryKey()
     {
@@ -1292,7 +1240,6 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-
         return null === $this->getId();
     }
 
@@ -1324,13 +1271,6 @@ abstract class SessionType implements ActiveRecordInterface
                     $copyObj->addRolesSessionTypes($relObj->copy($deepCopy));
                 }
             }
-
-            foreach ($this->getSessionss() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addSessions($relObj->copy($deepCopy));
-                }
-            }
-
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1347,8 +1287,8 @@ abstract class SessionType implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \org\bitbucket\phlopsi\access_control\propel\SessionType Clone of current object.
+     * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+     * @return \org\bitbucket\phlopsi\access_control\propel\SessionType Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1360,7 +1300,6 @@ abstract class SessionType implements ActiveRecordInterface
 
         return $copyObj;
     }
-
 
     /**
      * Initializes a collection based on the name of a relation.
@@ -1374,9 +1313,6 @@ abstract class SessionType implements ActiveRecordInterface
     {
         if ('RolesSessionTypes' == $relationName) {
             return $this->initRolesSessionTypess();
-        }
-        if ('Sessions' == $relationName) {
-            return $this->initSessionss();
         }
     }
 
@@ -1434,13 +1370,13 @@ abstract class SessionType implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildRolesSessionTypes[] List of ChildRolesSessionTypes objects
+     * @return ObjectCollection|ChildRolesSessionTypes[] List of ChildRolesSessionTypes objects
      * @throws PropelException
      */
-    public function getRolesSessionTypess($criteria = null, ConnectionInterface $con = null)
+    public function getRolesSessionTypess(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         $partial = $this->collRolesSessionTypessPartial && !$this->isNew();
-        if (null === $this->collRolesSessionTypess || null !== $criteria  || $partial) {
+        if (null === $this->collRolesSessionTypess || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collRolesSessionTypess) {
                 // return empty collection
                 $this->initRolesSessionTypess();
@@ -1462,8 +1398,6 @@ abstract class SessionType implements ActiveRecordInterface
                         $this->collRolesSessionTypessPartial = true;
                     }
 
-                    $collRolesSessionTypess->getInternalIterator()->rewind();
-
                     return $collRolesSessionTypess;
                 }
 
@@ -1484,17 +1418,18 @@ abstract class SessionType implements ActiveRecordInterface
     }
 
     /**
-     * Sets a collection of RolesSessionTypes objects related by a one-to-many relationship
+     * Sets a collection of ChildRolesSessionTypes objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
      * @param      Collection $rolesSessionTypess A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return   ChildSessionType The current object (for fluent API support)
+     * @return $this|ChildSessionType The current object (for fluent API support)
      */
     public function setRolesSessionTypess(Collection $rolesSessionTypess, ConnectionInterface $con = null)
     {
+        /** @var ChildRolesSessionTypes[] $rolesSessionTypessToDelete */
         $rolesSessionTypessToDelete = $this->getRolesSessionTypess(new Criteria(), $con)->diff($rolesSessionTypess);
 
 
@@ -1527,7 +1462,8 @@ abstract class SessionType implements ActiveRecordInterface
      * @return int             Count of related RolesSessionTypes objects.
      * @throws PropelException
      */
-    public function countRolesSessionTypess(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countRolesSessionTypess(Criteria $criteria = null, $distinct = false,
+        ConnectionInterface $con = null)
     {
         $partial = $this->collRolesSessionTypessPartial && !$this->isNew();
         if (null === $this->collRolesSessionTypess || null !== $criteria || $partial) {
@@ -1545,8 +1481,8 @@ abstract class SessionType implements ActiveRecordInterface
             }
 
             return $query
-                ->filterBySessionType($this)
-                ->count($con);
+                    ->filterBySessionType($this)
+                    ->count($con);
         }
 
         return count($this->collRolesSessionTypess);
@@ -1556,8 +1492,8 @@ abstract class SessionType implements ActiveRecordInterface
      * Method called to associate a ChildRolesSessionTypes object to this object
      * through the ChildRolesSessionTypes foreign key attribute.
      *
-     * @param    ChildRolesSessionTypes $l ChildRolesSessionTypes
-     * @return   \org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
+     * @param  ChildRolesSessionTypes $l ChildRolesSessionTypes
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
      */
     public function addRolesSessionTypes(ChildRolesSessionTypes $l)
     {
@@ -1566,7 +1502,7 @@ abstract class SessionType implements ActiveRecordInterface
             $this->collRolesSessionTypessPartial = true;
         }
 
-        if (!in_array($l, $this->collRolesSessionTypess->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collRolesSessionTypess->contains($l)) {
             $this->doAddRolesSessionTypes($l);
         }
 
@@ -1574,33 +1510,33 @@ abstract class SessionType implements ActiveRecordInterface
     }
 
     /**
-     * @param RolesSessionTypes $rolesSessionTypes The rolesSessionTypes object to add.
+     * @param ChildRolesSessionTypes $rolesSessionTypes The ChildRolesSessionTypes object to add.
      */
-    protected function doAddRolesSessionTypes($rolesSessionTypes)
+    protected function doAddRolesSessionTypes(ChildRolesSessionTypes $rolesSessionTypes)
     {
-        $this->collRolesSessionTypess[]= $rolesSessionTypes;
+        $this->collRolesSessionTypess[] = $rolesSessionTypes;
         $rolesSessionTypes->setSessionType($this);
     }
 
     /**
-     * @param  RolesSessionTypes $rolesSessionTypes The rolesSessionTypes object to remove.
-     * @return ChildSessionType The current object (for fluent API support)
+     * @param  ChildRolesSessionTypes $rolesSessionTypes The ChildRolesSessionTypes object to remove.
+     * @return $this|ChildSessionType The current object (for fluent API support)
      */
-    public function removeRolesSessionTypes($rolesSessionTypes)
+    public function removeRolesSessionTypes(ChildRolesSessionTypes $rolesSessionTypes)
     {
         if ($this->getRolesSessionTypess()->contains($rolesSessionTypes)) {
-            $this->collRolesSessionTypess->remove($this->collRolesSessionTypess->search($rolesSessionTypes));
+            $pos = $this->collRolesSessionTypess->search($rolesSessionTypes);
+            $this->collRolesSessionTypess->remove($pos);
             if (null === $this->rolesSessionTypessScheduledForDeletion) {
                 $this->rolesSessionTypessScheduledForDeletion = clone $this->collRolesSessionTypess;
                 $this->rolesSessionTypessScheduledForDeletion->clear();
             }
-            $this->rolesSessionTypessScheduledForDeletion[]= clone $rolesSessionTypes;
+            $this->rolesSessionTypessScheduledForDeletion[] = clone $rolesSessionTypes;
             $rolesSessionTypes->setSessionType(null);
         }
 
         return $this;
     }
-
 
     /**
      * If this collection has already been initialized with
@@ -1616,257 +1552,15 @@ abstract class SessionType implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return Collection|ChildRolesSessionTypes[] List of ChildRolesSessionTypes objects
+     * @return ObjectCollection|ChildRolesSessionTypes[] List of ChildRolesSessionTypes objects
      */
-    public function getRolesSessionTypessJoinRole($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getRolesSessionTypessJoinRole(Criteria $criteria = null, ConnectionInterface $con = null,
+        $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildRolesSessionTypesQuery::create(null, $criteria);
         $query->joinWith('Role', $joinBehavior);
 
         return $this->getRolesSessionTypess($query, $con);
-    }
-
-    /**
-     * Clears out the collSessionss collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addSessionss()
-     */
-    public function clearSessionss()
-    {
-        $this->collSessionss = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collSessionss collection loaded partially.
-     */
-    public function resetPartialSessionss($v = true)
-    {
-        $this->collSessionssPartial = $v;
-    }
-
-    /**
-     * Initializes the collSessionss collection.
-     *
-     * By default this just sets the collSessionss collection to an empty array (like clearcollSessionss());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initSessionss($overrideExisting = true)
-    {
-        if (null !== $this->collSessionss && !$overrideExisting) {
-            return;
-        }
-        $this->collSessionss = new ObjectCollection();
-        $this->collSessionss->setModel('\org\bitbucket\phlopsi\access_control\propel\Sessions');
-    }
-
-    /**
-     * Gets an array of ChildSessions objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildSessionType is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildSessions[] List of ChildSessions objects
-     * @throws PropelException
-     */
-    public function getSessionss($criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collSessionssPartial && !$this->isNew();
-        if (null === $this->collSessionss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collSessionss) {
-                // return empty collection
-                $this->initSessionss();
-            } else {
-                $collSessionss = ChildSessionsQuery::create(null, $criteria)
-                    ->filterBySessionType($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collSessionssPartial && count($collSessionss)) {
-                        $this->initSessionss(false);
-
-                        foreach ($collSessionss as $obj) {
-                            if (false == $this->collSessionss->contains($obj)) {
-                                $this->collSessionss->append($obj);
-                            }
-                        }
-
-                        $this->collSessionssPartial = true;
-                    }
-
-                    $collSessionss->getInternalIterator()->rewind();
-
-                    return $collSessionss;
-                }
-
-                if ($partial && $this->collSessionss) {
-                    foreach ($this->collSessionss as $obj) {
-                        if ($obj->isNew()) {
-                            $collSessionss[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collSessionss = $collSessionss;
-                $this->collSessionssPartial = false;
-            }
-        }
-
-        return $this->collSessionss;
-    }
-
-    /**
-     * Sets a collection of Sessions objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $sessionss A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return   ChildSessionType The current object (for fluent API support)
-     */
-    public function setSessionss(Collection $sessionss, ConnectionInterface $con = null)
-    {
-        $sessionssToDelete = $this->getSessionss(new Criteria(), $con)->diff($sessionss);
-
-
-        $this->sessionssScheduledForDeletion = $sessionssToDelete;
-
-        foreach ($sessionssToDelete as $sessionsRemoved) {
-            $sessionsRemoved->setSessionType(null);
-        }
-
-        $this->collSessionss = null;
-        foreach ($sessionss as $sessions) {
-            $this->addSessions($sessions);
-        }
-
-        $this->collSessionss = $sessionss;
-        $this->collSessionssPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related Sessions objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related Sessions objects.
-     * @throws PropelException
-     */
-    public function countSessionss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collSessionssPartial && !$this->isNew();
-        if (null === $this->collSessionss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collSessionss) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getSessionss());
-            }
-
-            $query = ChildSessionsQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterBySessionType($this)
-                ->count($con);
-        }
-
-        return count($this->collSessionss);
-    }
-
-    /**
-     * Method called to associate a ChildSessions object to this object
-     * through the ChildSessions foreign key attribute.
-     *
-     * @param    ChildSessions $l ChildSessions
-     * @return   \org\bitbucket\phlopsi\access_control\propel\SessionType The current object (for fluent API support)
-     */
-    public function addSessions(ChildSessions $l)
-    {
-        if ($this->collSessionss === null) {
-            $this->initSessionss();
-            $this->collSessionssPartial = true;
-        }
-
-        if (!in_array($l, $this->collSessionss->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->doAddSessions($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Sessions $sessions The sessions object to add.
-     */
-    protected function doAddSessions($sessions)
-    {
-        $this->collSessionss[]= $sessions;
-        $sessions->setSessionType($this);
-    }
-
-    /**
-     * @param  Sessions $sessions The sessions object to remove.
-     * @return ChildSessionType The current object (for fluent API support)
-     */
-    public function removeSessions($sessions)
-    {
-        if ($this->getSessionss()->contains($sessions)) {
-            $this->collSessionss->remove($this->collSessionss->search($sessions));
-            if (null === $this->sessionssScheduledForDeletion) {
-                $this->sessionssScheduledForDeletion = clone $this->collSessionss;
-                $this->sessionssScheduledForDeletion->clear();
-            }
-            $this->sessionssScheduledForDeletion[]= clone $sessions;
-            $sessions->setSessionType(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this SessionType is new, it will return
-     * an empty collection; or if this SessionType has previously
-     * been saved, it will retrieve related Sessionss from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in SessionType.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return Collection|ChildSessions[] List of ChildSessions objects
-     */
-    public function getSessionssJoinUser($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildSessionsQuery::create(null, $criteria);
-        $query->joinWith('User', $joinBehavior);
-
-        return $this->getSessionss($query, $con);
     }
 
     /**
@@ -1881,7 +1575,6 @@ abstract class SessionType implements ActiveRecordInterface
     public function clearRoles()
     {
         $this->collRoles = null; // important to set this to NULL since that means it is uninitialized
-        $this->collRolesPartial = null;
     }
 
     /**
@@ -1896,7 +1589,19 @@ abstract class SessionType implements ActiveRecordInterface
     public function initRoles()
     {
         $this->collRoles = new ObjectCollection();
+        $this->collRolesPartial = true;
+
         $this->collRoles->setModel('\org\bitbucket\phlopsi\access_control\propel\Role');
+    }
+
+    /**
+     * Checks if the collRoles collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRolesLoaded()
+    {
+        return null !== $this->collRoles;
     }
 
     /**
@@ -1914,20 +1619,35 @@ abstract class SessionType implements ActiveRecordInterface
      *
      * @return ObjectCollection|ChildRole[] List of ChildRole objects
      */
-    public function getRoles($criteria = null, ConnectionInterface $con = null)
+    public function getRoles(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        if (null === $this->collRoles || null !== $criteria) {
-            if ($this->isNew() && null === $this->collRoles) {
+        $partial = $this->collRolesPartial && !$this->isNew();
+        if (null === $this->collRoles || null !== $criteria || $partial) {
+            if ($this->isNew()) {
                 // return empty collection
-                $this->initRoles();
+                if (null === $this->collRoles) {
+                    $this->initRoles();
+                }
             } else {
-                $collRoles = ChildRoleQuery::create(null, $criteria)
-                    ->filterBySessionType($this)
-                    ->find($con);
+
+                $query = ChildRoleQuery::create(null, $criteria)
+                    ->filterBySessionType($this);
+                $collRoles = $query->find($con);
                 if (null !== $criteria) {
                     return $collRoles;
                 }
+
+                if ($partial && $this->collRoles) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRoles as $obj) {
+                        if (!$collRoles->contains($obj)) {
+                            $collRoles[] = $obj;
+                        }
+                    }
+                }
+
                 $this->collRoles = $collRoles;
+                $this->collRolesPartial = false;
             }
         }
 
@@ -1942,14 +1662,18 @@ abstract class SessionType implements ActiveRecordInterface
      *
      * @param  Collection $roles A Propel collection.
      * @param  ConnectionInterface $con Optional connection object
-     * @return ChildSessionType The current object (for fluent API support)
+     * @return $this|ChildSessionType The current object (for fluent API support)
      */
     public function setRoles(Collection $roles, ConnectionInterface $con = null)
     {
         $this->clearRoles();
         $currentRoles = $this->getRoles();
 
-        $this->rolesScheduledForDeletion = $currentRoles->diff($roles);
+        $rolesScheduledForDeletion = $currentRoles->diff($roles);
+
+        foreach ($rolesScheduledForDeletion as $toDelete) {
+            $this->removeRole($toDelete);
+        }
 
         foreach ($roles as $role) {
             if (!$currentRoles->contains($role)) {
@@ -1957,35 +1681,42 @@ abstract class SessionType implements ActiveRecordInterface
             }
         }
 
+        $this->collRolesPartial = false;
         $this->collRoles = $roles;
 
         return $this;
     }
 
     /**
-     * Gets the number of ChildRole objects related by a many-to-many relationship
+     * Gets the number of Role objects related by a many-to-many relationship
      * to the current object by way of the roles_session_types cross-reference table.
      *
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      boolean $distinct Set to true to force count distinct
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return int the number of related ChildRole objects
+     * @return int the number of related Role objects
      */
-    public function countRoles($criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countRoles(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        if (null === $this->collRoles || null !== $criteria) {
+        $partial = $this->collRolesPartial && !$this->isNew();
+        if (null === $this->collRoles || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collRoles) {
                 return 0;
             } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRoles());
+                }
+
                 $query = ChildRoleQuery::create(null, $criteria);
                 if ($distinct) {
                     $query->distinct();
                 }
 
                 return $query
-                    ->filterBySessionType($this)
-                    ->count($con);
+                        ->filterBySessionType($this)
+                        ->count($con);
             }
         } else {
             return count($this->collRoles);
@@ -1993,10 +1724,10 @@ abstract class SessionType implements ActiveRecordInterface
     }
 
     /**
-     * Associate a ChildRole object to this object
+     * Associate a ChildRole to this object
      * through the roles_session_types cross reference table.
      *
-     * @param  ChildRole $role The ChildRolesSessionTypes object to relate
+     * @param ChildRole $role
      * @return ChildSessionType The current object (for fluent API support)
      */
     public function addRole(ChildRole $role)
@@ -2005,40 +1736,61 @@ abstract class SessionType implements ActiveRecordInterface
             $this->initRoles();
         }
 
-        if (!$this->collRoles->contains($role)) { // only add it if the **same** object is not already associated
+        if (!$this->getRoles()->contains($role)) {
+            // only add it if the **same** object is not already associated
+            $this->collRoles->push($role);
             $this->doAddRole($role);
-            $this->collRoles[] = $role;
         }
 
         return $this;
     }
 
     /**
-     * @param    Role $role The role object to add.
+     *
+     * @param ChildRole $role
      */
-    protected function doAddRole($role)
+    protected function doAddRole(ChildRole $role)
     {
         $rolesSessionTypes = new ChildRolesSessionTypes();
+
         $rolesSessionTypes->setRole($role);
+
+        $rolesSessionTypes->setSessionType($this);
+
         $this->addRolesSessionTypes($rolesSessionTypes);
+
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
-        if (!$role->getSessionTypes()->contains($this)) {
-            $foreignCollection   = $role->getSessionTypes();
-            $foreignCollection[] = $this;
+        if (!$role->isSessionTypesLoaded()) {
+            $role->initSessionTypes();
+            $role->getSessionTypes()->push($this);
+        } elseif (!$role->getSessionTypes()->contains($this)) {
+            $role->getSessionTypes()->push($this);
         }
     }
 
     /**
-     * Remove a ChildRole object to this object
+     * Remove role of this object
      * through the roles_session_types cross reference table.
      *
-     * @param ChildRole $role The ChildRolesSessionTypes object to relate
+     * @param ChildRole $role
      * @return ChildSessionType The current object (for fluent API support)
      */
     public function removeRole(ChildRole $role)
     {
         if ($this->getRoles()->contains($role)) {
+            $rolesSessionTypes = new ChildRolesSessionTypes();
+
+            $rolesSessionTypes->setRole($role);
+            if ($role->isSessionTypesLoaded()) {
+                //remove the back reference if available
+                $role->getSessionTypes()->removeObject($this);
+            }
+
+            $rolesSessionTypes->setSessionType($this);
+            $this->removeRolesSessionTypes(clone $rolesSessionTypes);
+            $rolesSessionTypes->clear();
+
             $this->collRoles->remove($this->collRoles->search($role));
 
             if (null === $this->rolesScheduledForDeletion) {
@@ -2046,197 +1798,17 @@ abstract class SessionType implements ActiveRecordInterface
                 $this->rolesScheduledForDeletion->clear();
             }
 
-            $this->rolesScheduledForDeletion[] = $role;
+            $this->rolesScheduledForDeletion->push($role);
         }
+
 
         return $this;
     }
 
     /**
-     * Clears out the collUsers collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addUsers()
-     */
-    public function clearUsers()
-    {
-        $this->collUsers = null; // important to set this to NULL since that means it is uninitialized
-        $this->collUsersPartial = null;
-    }
-
-    /**
-     * Initializes the collUsers collection.
-     *
-     * By default this just sets the collUsers collection to an empty collection (like clearUsers());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @return void
-     */
-    public function initUsers()
-    {
-        $this->collUsers = new ObjectCollection();
-        $this->collUsers->setModel('\org\bitbucket\phlopsi\access_control\propel\User');
-    }
-
-    /**
-     * Gets a collection of ChildUser objects related by a many-to-many relationship
-     * to the current object by way of the sessions cross-reference table.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildSessionType is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return ObjectCollection|ChildUser[] List of ChildUser objects
-     */
-    public function getUsers($criteria = null, ConnectionInterface $con = null)
-    {
-        if (null === $this->collUsers || null !== $criteria) {
-            if ($this->isNew() && null === $this->collUsers) {
-                // return empty collection
-                $this->initUsers();
-            } else {
-                $collUsers = ChildUserQuery::create(null, $criteria)
-                    ->filterBySessionType($this)
-                    ->find($con);
-                if (null !== $criteria) {
-                    return $collUsers;
-                }
-                $this->collUsers = $collUsers;
-            }
-        }
-
-        return $this->collUsers;
-    }
-
-    /**
-     * Sets a collection of User objects related by a many-to-many relationship
-     * to the current object by way of the sessions cross-reference table.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param  Collection $users A Propel collection.
-     * @param  ConnectionInterface $con Optional connection object
-     * @return ChildSessionType The current object (for fluent API support)
-     */
-    public function setUsers(Collection $users, ConnectionInterface $con = null)
-    {
-        $this->clearUsers();
-        $currentUsers = $this->getUsers();
-
-        $this->usersScheduledForDeletion = $currentUsers->diff($users);
-
-        foreach ($users as $user) {
-            if (!$currentUsers->contains($user)) {
-                $this->doAddUser($user);
-            }
-        }
-
-        $this->collUsers = $users;
-
-        return $this;
-    }
-
-    /**
-     * Gets the number of ChildUser objects related by a many-to-many relationship
-     * to the current object by way of the sessions cross-reference table.
-     *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      boolean $distinct Set to true to force count distinct
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return int the number of related ChildUser objects
-     */
-    public function countUsers($criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        if (null === $this->collUsers || null !== $criteria) {
-            if ($this->isNew() && null === $this->collUsers) {
-                return 0;
-            } else {
-                $query = ChildUserQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterBySessionType($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collUsers);
-        }
-    }
-
-    /**
-     * Associate a ChildUser object to this object
-     * through the sessions cross reference table.
-     *
-     * @param  ChildUser $user The ChildSessions object to relate
-     * @return ChildSessionType The current object (for fluent API support)
-     */
-    public function addUser(ChildUser $user)
-    {
-        if ($this->collUsers === null) {
-            $this->initUsers();
-        }
-
-        if (!$this->collUsers->contains($user)) { // only add it if the **same** object is not already associated
-            $this->doAddUser($user);
-            $this->collUsers[] = $user;
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param    User $user The user object to add.
-     */
-    protected function doAddUser($user)
-    {
-        $sessions = new ChildSessions();
-        $sessions->setUser($user);
-        $this->addSessions($sessions);
-        // set the back reference to this object directly as using provided method either results
-        // in endless loop or in multiple relations
-        if (!$user->getSessionTypes()->contains($this)) {
-            $foreignCollection   = $user->getSessionTypes();
-            $foreignCollection[] = $this;
-        }
-    }
-
-    /**
-     * Remove a ChildUser object to this object
-     * through the sessions cross reference table.
-     *
-     * @param ChildUser $user The ChildSessions object to relate
-     * @return ChildSessionType The current object (for fluent API support)
-     */
-    public function removeUser(ChildUser $user)
-    {
-        if ($this->getUsers()->contains($user)) {
-            $this->collUsers->remove($this->collUsers->search($user));
-
-            if (null === $this->usersScheduledForDeletion) {
-                $this->usersScheduledForDeletion = clone $this->collUsers;
-                $this->usersScheduledForDeletion->clear();
-            }
-
-            $this->usersScheduledForDeletion[] = $user;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Clears the current object and sets all attributes to their default values
+     * Clears the current object, sets all attributes to their default values and removes
+     * outgoing references as well as back-references (from other objects to this one. Results probably in a database
+     * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
@@ -2253,11 +1825,10 @@ abstract class SessionType implements ActiveRecordInterface
     }
 
     /**
-     * Resets all references to other model objects or collections of model objects.
+     * Resets all references and back-references to other model objects or collections of model objects.
      *
-     * This method is a user-space workaround for PHP's inability to garbage collect
-     * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volume/high-memory operations.
+     * This method is used to reset all php object references (not the actual reference in the database).
+     * Necessary for object serialisation.
      *
      * @param      boolean $deep Whether to also clear the references on all referrer objects.
      */
@@ -2269,42 +1840,17 @@ abstract class SessionType implements ActiveRecordInterface
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collSessionss) {
-                foreach ($this->collSessionss as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
             if ($this->collRoles) {
                 foreach ($this->collRoles as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collUsers) {
-                foreach ($this->collUsers as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
-
         // nested_set behavior
         $this->collNestedSetChildren = null;
         $this->aNestedSetParent = null;
-        if ($this->collRolesSessionTypess instanceof Collection) {
-            $this->collRolesSessionTypess->clearIterator();
-        }
         $this->collRolesSessionTypess = null;
-        if ($this->collSessionss instanceof Collection) {
-            $this->collSessionss->clearIterator();
-        }
-        $this->collSessionss = null;
-        if ($this->collRoles instanceof Collection) {
-            $this->collRoles->clearIterator();
-        }
         $this->collRoles = null;
-        if ($this->collUsers instanceof Collection) {
-            $this->collUsers->clearIterator();
-        }
-        $this->collUsers = null;
     }
 
     /**
@@ -2318,14 +1864,13 @@ abstract class SessionType implements ActiveRecordInterface
     }
 
     // nested_set behavior
-
     /**
      * Execute queries that were saved to be run inside the save transaction
      */
     protected function processNestedSetQueries($con)
     {
         foreach ($this->nestedSetQueries as $query) {
-            $query['arguments'][]= $con;
+            $query['arguments'][] = $con;
             call_user_func_array($query['callable'], $query['arguments']);
         }
         $this->nestedSetQueries = array();
@@ -2369,7 +1914,7 @@ abstract class SessionType implements ActiveRecordInterface
      * It provides a generic way to set the value, whatever the actual column name is.
      *
      * @param  int $v The nested set left value
-     * @return ChildSessionType The current object (for fluent API support)
+     * @return $this|ChildSessionType The current object (for fluent API support)
      */
     public function setLeftValue($v)
     {
@@ -2381,7 +1926,7 @@ abstract class SessionType implements ActiveRecordInterface
      * It provides a generic way to set the value, whatever the actual column name is.
      *
      * @param      int $v The nested set right value
-     * @return     ChildSessionType The current object (for fluent API support)
+     * @return     $this|ChildSessionType The current object (for fluent API support)
      */
     public function setRightValue($v)
     {
@@ -2393,7 +1938,7 @@ abstract class SessionType implements ActiveRecordInterface
      * It provides a generic way to set the value, whatever the actual column name is.
      *
      * @param      int $v The nested set level value
-     * @return     ChildSessionType The current object (for fluent API support)
+     * @return     $this|ChildSessionType The current object (for fluent API support)
      */
     public function setLevel($v)
     {
@@ -2403,7 +1948,7 @@ abstract class SessionType implements ActiveRecordInterface
     /**
      * Creates the supplied node as the root node.
      *
-     * @return     ChildSessionType The current object (for fluent API support)
+     * @return     $this|ChildSessionType The current object (for fluent API support)
      * @throws     PropelException
      */
     public function makeRoot()
@@ -2446,7 +1991,7 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function isLeaf()
     {
-        return $this->isInTree() &&  ($this->getRightValue() - $this->getLeftValue()) == 1;
+        return $this->isInTree() && ($this->getRightValue() - $this->getLeftValue()) == 1;
     }
 
     /**
@@ -2488,7 +2033,7 @@ abstract class SessionType implements ActiveRecordInterface
      * Use moveTofirstChildOf() or moveToLastChildOf() for that purpose
      *
      * @param      ChildSessionType $parent
-     * @return     ChildSessionType The current object, for fluid interface
+     * @return     $this|ChildSessionType The current object, for fluid interface
      */
     public function setParent($parent = null)
     {
@@ -2502,7 +2047,7 @@ abstract class SessionType implements ActiveRecordInterface
      * The result is cached so further calls to the same method don't issue any queries
      *
      * @param  ConnectionInterface $con Connection to use.
-     * @return mixed Propel object if exists else false
+     * @return self|boolean Propel object if exists else false
      */
     public function getParent(ConnectionInterface $con = null)
     {
@@ -2529,8 +2074,8 @@ abstract class SessionType implements ActiveRecordInterface
         }
 
         return ChildSessionTypeQuery::create()
-            ->filterByTreeRight($this->getLeftValue() - 1)
-            ->count($con) > 0;
+                ->filterByTreeRight($this->getLeftValue() - 1)
+                ->count($con) > 0;
     }
 
     /**
@@ -2542,8 +2087,8 @@ abstract class SessionType implements ActiveRecordInterface
     public function getPrevSibling(ConnectionInterface $con = null)
     {
         return ChildSessionTypeQuery::create()
-            ->filterByTreeRight($this->getLeftValue() - 1)
-            ->findOne($con);
+                ->filterByTreeRight($this->getLeftValue() - 1)
+                ->findOne($con);
     }
 
     /**
@@ -2559,8 +2104,8 @@ abstract class SessionType implements ActiveRecordInterface
         }
 
         return ChildSessionTypeQuery::create()
-            ->filterByTreeLeft($this->getRightValue() + 1)
-            ->count($con) > 0;
+                ->filterByTreeLeft($this->getRightValue() + 1)
+                ->count($con) > 0;
     }
 
     /**
@@ -2572,8 +2117,8 @@ abstract class SessionType implements ActiveRecordInterface
     public function getNextSibling(ConnectionInterface $con = null)
     {
         return ChildSessionTypeQuery::create()
-            ->filterByTreeLeft($this->getRightValue() + 1)
-            ->findOne($con);
+                ->filterByTreeLeft($this->getRightValue() + 1)
+                ->findOne($con);
     }
 
     /**
@@ -2615,7 +2160,7 @@ abstract class SessionType implements ActiveRecordInterface
             $this->initNestedSetChildren();
         }
         if (!in_array($sessionType, $this->collNestedSetChildren->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->collNestedSetChildren[]= $sessionType;
+            $this->collNestedSetChildren[] = $sessionType;
             $sessionType->setParent($this);
         }
     }
@@ -2645,8 +2190,8 @@ abstract class SessionType implements ActiveRecordInterface
                 $this->initNestedSetChildren();
             } else {
                 $collNestedSetChildren = ChildSessionTypeQuery::create(null, $criteria)
-                  ->childrenOf($this)
-                  ->orderByBranch()
+                    ->childrenOf($this)
+                    ->orderByBranch()
                     ->find($con);
                 if (null !== $criteria) {
                     return $collNestedSetChildren;
@@ -2672,8 +2217,8 @@ abstract class SessionType implements ActiveRecordInterface
                 return 0;
             } else {
                 return ChildSessionTypeQuery::create(null, $criteria)
-                    ->childrenOf($this)
-                    ->count($con);
+                        ->childrenOf($this)
+                        ->count($con);
             }
         } else {
             return count($this->collNestedSetChildren);
@@ -2693,9 +2238,9 @@ abstract class SessionType implements ActiveRecordInterface
             return array();
         } else {
             return ChildSessionTypeQuery::create(null, $query)
-                ->childrenOf($this)
-                ->orderByBranch()
-                ->findOne($con);
+                    ->childrenOf($this)
+                    ->orderByBranch()
+                    ->findOne($con);
         }
     }
 
@@ -2712,9 +2257,9 @@ abstract class SessionType implements ActiveRecordInterface
             return array();
         } else {
             return ChildSessionTypeQuery::create(null, $query)
-                ->childrenOf($this)
-                ->orderByBranch(true)
-                ->findOne($con);
+                    ->childrenOf($this)
+                    ->orderByBranch(true)
+                    ->findOne($con);
         }
     }
 
@@ -2732,9 +2277,9 @@ abstract class SessionType implements ActiveRecordInterface
         if ($this->isRoot()) {
             return array();
         } else {
-             $query = ChildSessionTypeQuery::create(null, $query)
-                    ->childrenOf($this->getParent($con))
-                    ->orderByBranch();
+            $query = ChildSessionTypeQuery::create(null, $query)
+                ->childrenOf($this->getParent($con))
+                ->orderByBranch();
             if (!$includeNode) {
                 $query->prune($this);
             }
@@ -2756,9 +2301,9 @@ abstract class SessionType implements ActiveRecordInterface
             return array();
         } else {
             return ChildSessionTypeQuery::create(null, $query)
-                ->descendantsOf($this)
-                ->orderByBranch()
-                ->find($con);
+                    ->descendantsOf($this)
+                    ->orderByBranch()
+                    ->find($con);
         }
     }
 
@@ -2776,8 +2321,8 @@ abstract class SessionType implements ActiveRecordInterface
             return 0;
         } else {
             return ChildSessionTypeQuery::create(null, $query)
-                ->descendantsOf($this)
-                ->count($con);
+                    ->descendantsOf($this)
+                    ->count($con);
         }
     }
 
@@ -2791,9 +2336,9 @@ abstract class SessionType implements ActiveRecordInterface
     public function getBranch($query = null, ConnectionInterface $con = null)
     {
         return ChildSessionTypeQuery::create(null, $query)
-            ->branchOf($this)
-            ->orderByBranch()
-            ->find($con);
+                ->branchOf($this)
+                ->orderByBranch()
+                ->find($con);
     }
 
     /**
@@ -2811,9 +2356,9 @@ abstract class SessionType implements ActiveRecordInterface
             return array();
         } else {
             return ChildSessionTypeQuery::create(null, $query)
-                ->ancestorsOf($this)
-                ->orderByBranch()
-                ->find($con);
+                    ->ancestorsOf($this)
+                    ->orderByBranch()
+                    ->find($con);
         }
     }
 
@@ -2824,7 +2369,7 @@ abstract class SessionType implements ActiveRecordInterface
      *
      * @param      ChildSessionType $child    Propel object for child node
      *
-     * @return     ChildSessionType The current Propel object
+     * @return     $this|ChildSessionType The current Propel object
      */
     public function addChild(ChildSessionType $child)
     {
@@ -2843,7 +2388,7 @@ abstract class SessionType implements ActiveRecordInterface
      *
      * @param      ChildSessionType $parent    Propel object for parent node
      *
-     * @return     ChildSessionType The current Propel object
+     * @return     $this|ChildSessionType The current Propel object
      */
     public function insertAsFirstChildOf($parent)
     {
@@ -2859,8 +2404,8 @@ abstract class SessionType implements ActiveRecordInterface
         $parent->addNestedSetChild($this);
 
         // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery', 'makeRoomForLeaf'),
+        $this->nestedSetQueries [] = array(
+            'callable' => array('\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2873,13 +2418,13 @@ abstract class SessionType implements ActiveRecordInterface
      * are not persisted until the current object is saved.
      *
      * @param  ChildSessionType $parent Propel object for parent node
-     * @return ChildSessionType The current Propel object
+     * @return $this|ChildSessionType The current Propel object
      */
     public function insertAsLastChildOf($parent)
     {
         if ($this->isInTree()) {
-           throw new PropelException(
-                'A ChildSessionType object must not already be in the tree to be inserted. Use the moveToLastChildOf() instead.'
+            throw new PropelException(
+            'A ChildSessionType object must not already be in the tree to be inserted. Use the moveToLastChildOf() instead.'
             );
         }
 
@@ -2893,8 +2438,8 @@ abstract class SessionType implements ActiveRecordInterface
         $parent->addNestedSetChild($this);
 
         // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery', 'makeRoomForLeaf'),
+        $this->nestedSetQueries [] = array(
+            'callable' => array('\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2908,7 +2453,7 @@ abstract class SessionType implements ActiveRecordInterface
      *
      * @param      ChildSessionType $sibling    Propel object for parent node
      *
-     * @return     ChildSessionType The current Propel object
+     * @return     $this|ChildSessionType The current Propel object
      */
     public function insertAsPrevSiblingOf($sibling)
     {
@@ -2921,8 +2466,8 @@ abstract class SessionType implements ActiveRecordInterface
         $this->setRightValue($left + 1);
         $this->setLevel($sibling->getLevel());
         // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery', 'makeRoomForLeaf'),
+        $this->nestedSetQueries [] = array(
+            'callable' => array('\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2936,7 +2481,7 @@ abstract class SessionType implements ActiveRecordInterface
      *
      * @param      ChildSessionType $sibling    Propel object for parent node
      *
-     * @return     ChildSessionType The current Propel object
+     * @return     $this|ChildSessionType The current Propel object
      */
     public function insertAsNextSiblingOf($sibling)
     {
@@ -2949,8 +2494,8 @@ abstract class SessionType implements ActiveRecordInterface
         $this->setRightValue($left + 1);
         $this->setLevel($sibling->getLevel());
         // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery', 'makeRoomForLeaf'),
+        $this->nestedSetQueries [] = array(
+            'callable' => array('\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2964,7 +2509,7 @@ abstract class SessionType implements ActiveRecordInterface
      * @param      ChildSessionType $parent    Propel object for parent node
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     ChildSessionType The current Propel object
+     * @return     $this|ChildSessionType The current Propel object
      */
     public function moveToFirstChildOf($parent, ConnectionInterface $con = null)
     {
@@ -2987,7 +2532,7 @@ abstract class SessionType implements ActiveRecordInterface
      * @param      ChildSessionType $parent    Propel object for parent node
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     ChildSessionType The current Propel object
+     * @return     $this|ChildSessionType The current Propel object
      */
     public function moveToLastChildOf($parent, ConnectionInterface $con = null)
     {
@@ -3010,7 +2555,7 @@ abstract class SessionType implements ActiveRecordInterface
      * @param      ChildSessionType $sibling    Propel object for sibling node
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     ChildSessionType The current Propel object
+     * @return     $this|ChildSessionType The current Propel object
      */
     public function moveToPrevSiblingOf($sibling, ConnectionInterface $con = null)
     {
@@ -3036,7 +2581,7 @@ abstract class SessionType implements ActiveRecordInterface
      * @param      ChildSessionType $sibling    Propel object for sibling node
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     ChildSessionType The current Propel object
+     * @return     $this|ChildSessionType The current Propel object
      */
     public function moveToNextSiblingOf($sibling, ConnectionInterface $con = null)
     {
@@ -3064,19 +2609,19 @@ abstract class SessionType implements ActiveRecordInterface
      */
     protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null)
     {
-        $preventDefault = false;
-        $left  = $this->getLeftValue();
+        $left = $this->getLeftValue();
         $right = $this->getRightValue();
 
 
-        $treeSize = $right - $left +1;
+        $treeSize = $right - $left + 1;
 
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(SessionTypeTableMap::DATABASE_NAME);
         }
 
-        $con->beginTransaction();
-        try {
+        $con->transaction(function () use ($con, $treeSize, $destLeft, $left, $right, $levelDelta) {
+            $preventDefault = false;
+
             // make room next to the target for the subtree
             ChildSessionTypeQuery::shiftRLValues($treeSize, $destLeft, null, $con);
 
@@ -3104,12 +2649,7 @@ abstract class SessionType implements ActiveRecordInterface
 
             // update all loaded nodes
             ChildSessionTypeQuery::updateLoadedNodes(null, $con);
-
-            $con->commit();
-        } catch (PropelException $e) {
-            $con->rollback();
-            throw $e;
-        }
+        });
     }
 
     /**
@@ -3132,26 +2672,21 @@ abstract class SessionType implements ActiveRecordInterface
         }
         $left = $this->getLeftValue();
         $right = $this->getRightValue();
-        $con->beginTransaction();
-        try {
-            // delete descendant nodes (will empty the instance pool)
-            $ret = ChildSessionTypeQuery::create()
-                ->descendantsOf($this)
-                ->delete($con);
 
-            // fill up the room that was used by descendants
-            ChildSessionTypeQuery::shiftRLValues($left - $right + 1, $right, null, $con);
+        return $con->transaction(function () use ($con, $left, $right) {
+                // delete descendant nodes (will empty the instance pool)
+                $ret = ChildSessionTypeQuery::create()
+                    ->descendantsOf($this)
+                    ->delete($con);
 
-            // fix the right value for the current node, which is now a leaf
-            $this->setRightValue($left + 1);
+                // fill up the room that was used by descendants
+                ChildSessionTypeQuery::shiftRLValues($left - $right + 1, $right, null, $con);
 
-            $con->commit();
-        } catch (Exception $e) {
-            $con->rollback();
-            throw $e;
-        }
+                // fix the right value for the current node, which is now a leaf
+                $this->setRightValue($left + 1);
 
-        return $ret;
+                return $ret;
+            });
     }
 
     /**
@@ -3180,7 +2715,7 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        
     }
 
     /**
@@ -3199,7 +2734,7 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        
     }
 
     /**
@@ -3218,7 +2753,7 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        
     }
 
     /**
@@ -3237,9 +2772,8 @@ abstract class SessionType implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        
     }
-
 
     /**
      * Derived method to catches calls to undefined methods.

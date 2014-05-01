@@ -1,18 +1,17 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel\Map;
 
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
+use Propel\Runtime\DataFetcher\DataFetcherInterface;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
 use org\bitbucket\phlopsi\access_control\propel\Permission;
 use org\bitbucket\phlopsi\access_control\propel\PermissionQuery;
-
 
 /**
  * This class defines the structure of the 'permissions' table.
@@ -28,7 +27,7 @@ use org\bitbucket\phlopsi\access_control\propel\PermissionQuery;
 class PermissionTableMap extends TableMap
 {
     use InstancePoolTrait;
-    use TableMapTrait;
+use TableMapTrait;
     /**
      * The (dot-path) name of this class
      */
@@ -72,27 +71,27 @@ class PermissionTableMap extends TableMap
     /**
      * the column name for the EXTERNAL_ID field
      */
-    const EXTERNAL_ID = 'permissions.EXTERNAL_ID';
+    const COL_EXTERNAL_ID = 'permissions.EXTERNAL_ID';
 
     /**
      * the column name for the TREE_LEFT field
      */
-    const TREE_LEFT = 'permissions.TREE_LEFT';
+    const COL_TREE_LEFT = 'permissions.TREE_LEFT';
 
     /**
      * the column name for the TREE_RIGHT field
      */
-    const TREE_RIGHT = 'permissions.TREE_RIGHT';
+    const COL_TREE_RIGHT = 'permissions.TREE_RIGHT';
 
     /**
      * the column name for the TREE_LEVEL field
      */
-    const TREE_LEVEL = 'permissions.TREE_LEVEL';
+    const COL_TREE_LEVEL = 'permissions.TREE_LEVEL';
 
     /**
      * the column name for the ID field
      */
-    const ID = 'permissions.ID';
+    const COL_ID = 'permissions.ID';
 
     /**
      * The default string format for model objects of the related table
@@ -105,13 +104,14 @@ class PermissionTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ExternalId', 'TreeLeft', 'TreeRight', 'TreeLevel', 'Id', ),
-        self::TYPE_STUDLYPHPNAME => array('externalId', 'treeLeft', 'treeRight', 'treeLevel', 'id', ),
-        self::TYPE_COLNAME       => array(PermissionTableMap::EXTERNAL_ID, PermissionTableMap::TREE_LEFT, PermissionTableMap::TREE_RIGHT, PermissionTableMap::TREE_LEVEL, PermissionTableMap::ID, ),
-        self::TYPE_RAW_COLNAME   => array('EXTERNAL_ID', 'TREE_LEFT', 'TREE_RIGHT', 'TREE_LEVEL', 'ID', ),
-        self::TYPE_FIELDNAME     => array('external_id', 'tree_left', 'tree_right', 'tree_level', 'id', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+    protected static $fieldNames = array(
+        self::TYPE_PHPNAME => array('ExternalId', 'TreeLeft', 'TreeRight', 'TreeLevel', 'Id',),
+        self::TYPE_STUDLYPHPNAME => array('externalId', 'treeLeft', 'treeRight', 'treeLevel', 'id',),
+        self::TYPE_COLNAME => array(PermissionTableMap::COL_EXTERNAL_ID, PermissionTableMap::COL_TREE_LEFT, PermissionTableMap::COL_TREE_RIGHT,
+            PermissionTableMap::COL_TREE_LEVEL, PermissionTableMap::COL_ID,),
+        self::TYPE_RAW_COLNAME => array('COL_EXTERNAL_ID', 'COL_TREE_LEFT', 'COL_TREE_RIGHT', 'COL_TREE_LEVEL', 'COL_ID',),
+        self::TYPE_FIELDNAME => array('external_id', 'tree_left', 'tree_right', 'tree_level', 'id',),
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -120,13 +120,15 @@ class PermissionTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ExternalId' => 0, 'TreeLeft' => 1, 'TreeRight' => 2, 'TreeLevel' => 3, 'Id' => 4, ),
-        self::TYPE_STUDLYPHPNAME => array('externalId' => 0, 'treeLeft' => 1, 'treeRight' => 2, 'treeLevel' => 3, 'id' => 4, ),
-        self::TYPE_COLNAME       => array(PermissionTableMap::EXTERNAL_ID => 0, PermissionTableMap::TREE_LEFT => 1, PermissionTableMap::TREE_RIGHT => 2, PermissionTableMap::TREE_LEVEL => 3, PermissionTableMap::ID => 4, ),
-        self::TYPE_RAW_COLNAME   => array('EXTERNAL_ID' => 0, 'TREE_LEFT' => 1, 'TREE_RIGHT' => 2, 'TREE_LEVEL' => 3, 'ID' => 4, ),
-        self::TYPE_FIELDNAME     => array('external_id' => 0, 'tree_left' => 1, 'tree_right' => 2, 'tree_level' => 3, 'id' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+    protected static $fieldKeys = array(
+        self::TYPE_PHPNAME => array('ExternalId' => 0, 'TreeLeft' => 1, 'TreeRight' => 2, 'TreeLevel' => 3, 'Id' => 4,),
+        self::TYPE_STUDLYPHPNAME => array('externalId' => 0, 'treeLeft' => 1, 'treeRight' => 2, 'treeLevel' => 3, 'id' => 4,),
+        self::TYPE_COLNAME => array(PermissionTableMap::COL_EXTERNAL_ID => 0, PermissionTableMap::COL_TREE_LEFT => 1, PermissionTableMap::COL_TREE_RIGHT => 2,
+            PermissionTableMap::COL_TREE_LEVEL => 3, PermissionTableMap::COL_ID => 4,),
+        self::TYPE_RAW_COLNAME => array('COL_EXTERNAL_ID' => 0, 'COL_TREE_LEFT' => 1, 'COL_TREE_RIGHT' => 2, 'COL_TREE_LEVEL' => 3,
+            'COL_ID' => 4,),
+        self::TYPE_FIELDNAME => array('external_id' => 0, 'tree_left' => 1, 'tree_right' => 2, 'tree_level' => 3, 'id' => 4,),
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -150,17 +152,21 @@ class PermissionTableMap extends TableMap
         $this->addColumn('TREE_RIGHT', 'TreeRight', 'INTEGER', false, null, null);
         $this->addColumn('TREE_LEVEL', 'TreeLevel', 'INTEGER', false, null, null);
         $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-    } // initialize()
+    }
 
+// initialize()
     /**
      * Build the RelationMap objects for this table relationships
      */
     public function buildRelations()
     {
-        $this->addRelation('PermissionsRoles', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\PermissionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'permissions_id', ), null, null, 'PermissionsRoless');
-        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
-    } // buildRelations()
+        $this->addRelation('PermissionsRoles', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\PermissionsRoles',
+            RelationMap::ONE_TO_MANY, array('id' => 'permissions_id',), null, null, 'PermissionsRoless');
+        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY,
+            array(), null, null, 'Roles');
+    }
 
+// buildRelations()
     /**
      *
      * Gets the list of behaviors registered for this table
@@ -170,11 +176,13 @@ class PermissionTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'nested_set' => array('left_column' => 'tree_left', 'right_column' => 'tree_right', 'level_column' => 'tree_level', 'use_scope' => 'false', 'scope_column' => 'tree_scope', 'method_proxies' => 'false', ),
-            'auto_add_pk' => array('name' => 'id', 'autoIncrement' => 'true', 'type' => 'INTEGER', ),
+            'nested_set' => array('left_column' => 'tree_left', 'right_column' => 'tree_right', 'level_column' => 'tree_level',
+                'use_scope' => 'false', 'scope_column' => 'tree_scope', 'method_proxies' => 'false',),
+            'auto_add_pk' => array('name' => 'id', 'autoIncrement' => 'true', 'type' => 'INTEGER',),
         );
-    } // getBehaviors()
+    }
 
+// getBehaviors()
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
      *
@@ -185,15 +193,19 @@ class PermissionTableMap extends TableMap
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
+     *
+     * @return string The primary key hash of the row
      */
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 4 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 4 + $offset : static::translateFieldName('Id',
+                    TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return (string) $row[TableMap::TYPE_NUM == $indexType ? 4 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return (string) $row[TableMap::TYPE_NUM == $indexType ? 4 + $offset : static::translateFieldName('Id',
+                    TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -210,12 +222,10 @@ class PermissionTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-
-            return (int) $row[
-                            $indexType == TableMap::TYPE_NUM
-                            ? 4 + $offset
-                            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
-                        ];
+        return (int) $row[
+            $indexType == TableMap::TYPE_NUM ? 4 + $offset : self::translateFieldName('Id', TableMap::TYPE_PHPNAME,
+                    $indexType)
+        ];
     }
 
     /**
@@ -240,12 +250,12 @@ class PermissionTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+      One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
-     * @return array (Permission object, last column rank)
+     *                         rethrown wrapped into a PropelException.
+     * @return array           (Permission object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
@@ -257,6 +267,7 @@ class PermissionTableMap extends TableMap
             $col = $offset + PermissionTableMap::NUM_HYDRATE_COLUMNS;
         } else {
             $cls = PermissionTableMap::OM_CLASS;
+            /** @var Permission $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
             PermissionTableMap::addInstanceToPool($obj, $key);
@@ -272,7 +283,7 @@ class PermissionTableMap extends TableMap
      * @param DataFetcherInterface $dataFetcher
      * @return array
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function populateObjects(DataFetcherInterface $dataFetcher)
     {
@@ -289,6 +300,7 @@ class PermissionTableMap extends TableMap
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
+                /** @var Permission $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
@@ -298,6 +310,7 @@ class PermissionTableMap extends TableMap
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -308,16 +321,16 @@ class PermissionTableMap extends TableMap
      * @param Criteria $criteria object containing the columns to add.
      * @param string   $alias    optional table alias
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(PermissionTableMap::EXTERNAL_ID);
-            $criteria->addSelectColumn(PermissionTableMap::TREE_LEFT);
-            $criteria->addSelectColumn(PermissionTableMap::TREE_RIGHT);
-            $criteria->addSelectColumn(PermissionTableMap::TREE_LEVEL);
-            $criteria->addSelectColumn(PermissionTableMap::ID);
+            $criteria->addSelectColumn(PermissionTableMap::COL_EXTERNAL_ID);
+            $criteria->addSelectColumn(PermissionTableMap::COL_TREE_LEFT);
+            $criteria->addSelectColumn(PermissionTableMap::COL_TREE_RIGHT);
+            $criteria->addSelectColumn(PermissionTableMap::COL_TREE_LEVEL);
+            $criteria->addSelectColumn(PermissionTableMap::COL_ID);
         } else {
             $criteria->addSelectColumn($alias . '.EXTERNAL_ID');
             $criteria->addSelectColumn($alias . '.TREE_LEFT');
@@ -332,7 +345,7 @@ class PermissionTableMap extends TableMap
      * This method is not needed for general use but a specific application could have a need.
      * @return TableMap
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function getTableMap()
     {
@@ -344,10 +357,10 @@ class PermissionTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(PermissionTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(PermissionTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new PermissionTableMap());
-      }
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(PermissionTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(PermissionTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new PermissionTableMap());
+        }
     }
 
     /**
@@ -355,14 +368,14 @@ class PermissionTableMap extends TableMap
      *
      * @param mixed               $values Criteria or Permission object or primary key or array of primary keys
      *              which is used to create the DELETE statement
-     * @param ConnectionInterface $con the connection to use
-     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                if supported by native driver or if emulated using Propel.
+     * @param  ConnectionInterface $con the connection to use
+     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
-     public static function doDelete($values, ConnectionInterface $con = null)
-     {
+    public static function doDelete($values, ConnectionInterface $con = null)
+    {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(PermissionTableMap::DATABASE_NAME);
         }
@@ -375,14 +388,16 @@ class PermissionTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(PermissionTableMap::DATABASE_NAME);
-            $criteria->add(PermissionTableMap::ID, (array) $values, Criteria::IN);
+            $criteria->add(PermissionTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
         $query = PermissionQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) { PermissionTableMap::clearInstancePool();
+        if ($values instanceof Criteria) {
+            PermissionTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { PermissionTableMap::removeInstanceFromPool($singleval);
+            foreach ((array) $values as $singleval) {
+                PermissionTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -407,7 +422,7 @@ class PermissionTableMap extends TableMap
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
@@ -421,29 +436,24 @@ class PermissionTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from Permission object
         }
 
-        if ($criteria->containsKey(PermissionTableMap::ID) && $criteria->keyContainsValue(PermissionTableMap::ID) ) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key ('.PermissionTableMap::ID.')');
+        if ($criteria->containsKey(PermissionTableMap::COL_ID) && $criteria->keyContainsValue(PermissionTableMap::COL_ID)) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . PermissionTableMap::COL_ID . ')');
         }
 
 
         // Set the correct dbName
         $query = PermissionQuery::create()->mergeWith($criteria);
 
-        try {
-            // use transaction because $criteria could contain info
-            // for more than one table (I guess, conceivably)
-            $con->beginTransaction();
-            $pk = $query->doInsert($con);
-            $con->commit();
-        } catch (PropelException $e) {
-            $con->rollBack();
-            throw $e;
-        }
-
-        return $pk;
+        // use transaction because $criteria could contain info
+        // for more than one table (I guess, conceivably)
+        return $con->transaction(function () use ($con, $query) {
+                return $query->doInsert($con);
+            });
     }
 
-} // PermissionTableMap
+}
+
+// PermissionTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
 PermissionTableMap::buildTableMap();

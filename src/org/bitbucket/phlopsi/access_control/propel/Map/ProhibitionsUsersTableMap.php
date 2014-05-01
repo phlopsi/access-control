@@ -1,18 +1,17 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel\Map;
 
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
 use Propel\Runtime\Connection\ConnectionInterface;
+use Propel\Runtime\DataFetcher\DataFetcherInterface;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
 use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers;
 use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery;
-
 
 /**
  * This class defines the structure of the 'prohibitions_users' table.
@@ -28,7 +27,7 @@ use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery;
 class ProhibitionsUsersTableMap extends TableMap
 {
     use InstancePoolTrait;
-    use TableMapTrait;
+use TableMapTrait;
     /**
      * The (dot-path) name of this class
      */
@@ -72,27 +71,27 @@ class ProhibitionsUsersTableMap extends TableMap
     /**
      * the column name for the PROHIBITIONS_ID field
      */
-    const PROHIBITIONS_ID = 'prohibitions_users.PROHIBITIONS_ID';
+    const COL_PROHIBITIONS_ID = 'prohibitions_users.PROHIBITIONS_ID';
 
     /**
      * the column name for the USERS_ID field
      */
-    const USERS_ID = 'prohibitions_users.USERS_ID';
+    const COL_USERS_ID = 'prohibitions_users.USERS_ID';
 
     /**
      * the column name for the PROHIBITED_UNTIL field
      */
-    const PROHIBITED_UNTIL = 'prohibitions_users.PROHIBITED_UNTIL';
+    const COL_PROHIBITED_UNTIL = 'prohibitions_users.PROHIBITED_UNTIL';
 
     /**
      * the column name for the CREATED_AT field
      */
-    const CREATED_AT = 'prohibitions_users.CREATED_AT';
+    const COL_CREATED_AT = 'prohibitions_users.CREATED_AT';
 
     /**
      * the column name for the UPDATED_AT field
      */
-    const UPDATED_AT = 'prohibitions_users.UPDATED_AT';
+    const COL_UPDATED_AT = 'prohibitions_users.UPDATED_AT';
 
     /**
      * The default string format for model objects of the related table
@@ -105,13 +104,15 @@ class ProhibitionsUsersTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
-    protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ProhibitionId', 'UserId', 'ProhibitedUntil', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_STUDLYPHPNAME => array('prohibitionId', 'userId', 'prohibitedUntil', 'createdAt', 'updatedAt', ),
-        self::TYPE_COLNAME       => array(ProhibitionsUsersTableMap::PROHIBITIONS_ID, ProhibitionsUsersTableMap::USERS_ID, ProhibitionsUsersTableMap::PROHIBITED_UNTIL, ProhibitionsUsersTableMap::CREATED_AT, ProhibitionsUsersTableMap::UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('PROHIBITIONS_ID', 'USERS_ID', 'PROHIBITED_UNTIL', 'CREATED_AT', 'UPDATED_AT', ),
-        self::TYPE_FIELDNAME     => array('prohibitions_id', 'users_id', 'prohibited_until', 'created_at', 'updated_at', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+    protected static $fieldNames = array(
+        self::TYPE_PHPNAME => array('ProhibitionId', 'UserId', 'ProhibitedUntil', 'CreatedAt', 'UpdatedAt',),
+        self::TYPE_STUDLYPHPNAME => array('prohibitionId', 'userId', 'prohibitedUntil', 'createdAt', 'updatedAt',),
+        self::TYPE_COLNAME => array(ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID, ProhibitionsUsersTableMap::COL_USERS_ID,
+            ProhibitionsUsersTableMap::COL_PROHIBITED_UNTIL, ProhibitionsUsersTableMap::COL_CREATED_AT, ProhibitionsUsersTableMap::COL_UPDATED_AT,),
+        self::TYPE_RAW_COLNAME => array('COL_PROHIBITIONS_ID', 'COL_USERS_ID', 'COL_PROHIBITED_UNTIL', 'COL_CREATED_AT',
+            'COL_UPDATED_AT',),
+        self::TYPE_FIELDNAME => array('prohibitions_id', 'users_id', 'prohibited_until', 'created_at', 'updated_at',),
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -120,13 +121,17 @@ class ProhibitionsUsersTableMap extends TableMap
      * first dimension keys are the type constants
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
-    protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ProhibitionId' => 0, 'UserId' => 1, 'ProhibitedUntil' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
-        self::TYPE_STUDLYPHPNAME => array('prohibitionId' => 0, 'userId' => 1, 'prohibitedUntil' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
-        self::TYPE_COLNAME       => array(ProhibitionsUsersTableMap::PROHIBITIONS_ID => 0, ProhibitionsUsersTableMap::USERS_ID => 1, ProhibitionsUsersTableMap::PROHIBITED_UNTIL => 2, ProhibitionsUsersTableMap::CREATED_AT => 3, ProhibitionsUsersTableMap::UPDATED_AT => 4, ),
-        self::TYPE_RAW_COLNAME   => array('PROHIBITIONS_ID' => 0, 'USERS_ID' => 1, 'PROHIBITED_UNTIL' => 2, 'CREATED_AT' => 3, 'UPDATED_AT' => 4, ),
-        self::TYPE_FIELDNAME     => array('prohibitions_id' => 0, 'users_id' => 1, 'prohibited_until' => 2, 'created_at' => 3, 'updated_at' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+    protected static $fieldKeys = array(
+        self::TYPE_PHPNAME => array('ProhibitionId' => 0, 'UserId' => 1, 'ProhibitedUntil' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4,),
+        self::TYPE_STUDLYPHPNAME => array('prohibitionId' => 0, 'userId' => 1, 'prohibitedUntil' => 2, 'createdAt' => 3,
+            'updatedAt' => 4,),
+        self::TYPE_COLNAME => array(ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID => 0, ProhibitionsUsersTableMap::COL_USERS_ID => 1,
+            ProhibitionsUsersTableMap::COL_PROHIBITED_UNTIL => 2, ProhibitionsUsersTableMap::COL_CREATED_AT => 3, ProhibitionsUsersTableMap::COL_UPDATED_AT => 4,),
+        self::TYPE_RAW_COLNAME => array('COL_PROHIBITIONS_ID' => 0, 'COL_USERS_ID' => 1, 'COL_PROHIBITED_UNTIL' => 2, 'COL_CREATED_AT' => 3,
+            'COL_UPDATED_AT' => 4,),
+        self::TYPE_FIELDNAME => array('prohibitions_id' => 0, 'users_id' => 1, 'prohibited_until' => 2, 'created_at' => 3,
+            'updated_at' => 4,),
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -146,22 +151,27 @@ class ProhibitionsUsersTableMap extends TableMap
         $this->setUseIdGenerator(false);
         $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('PROHIBITIONS_ID', 'ProhibitionId', 'INTEGER' , 'prohibitions', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('USERS_ID', 'UserId', 'INTEGER' , 'users', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('PROHIBITIONS_ID', 'ProhibitionId', 'INTEGER', 'prohibitions', 'ID', true, null,
+            null);
+        $this->addForeignPrimaryKey('USERS_ID', 'UserId', 'INTEGER', 'users', 'ID', true, null, null);
         $this->addColumn('PROHIBITED_UNTIL', 'ProhibitedUntil', 'TIMESTAMP', false, null, null);
         $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
         $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
-    } // initialize()
+    }
 
+// initialize()
     /**
      * Build the RelationMap objects for this table relationships
      */
     public function buildRelations()
     {
-        $this->addRelation('Prohibition', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id', ), null, null);
-        $this->addRelation('User', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_ONE, array('users_id' => 'id', ), null, null);
-    } // buildRelations()
+        $this->addRelation('Prohibition', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition',
+            RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id',), null, null);
+        $this->addRelation('User', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_ONE,
+            array('users_id' => 'id',), null, null);
+    }
 
+// buildRelations()
     /**
      *
      * Gets the list of behaviors registered for this table
@@ -171,10 +181,12 @@ class ProhibitionsUsersTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+            'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', 'disable_created_at' => 'false',
+                'disable_updated_at' => 'false',),
         );
-    } // getBehaviors()
+    }
 
+// getBehaviors()
     /**
      * Adds an object to the instance pool.
      *
@@ -211,7 +223,6 @@ class ProhibitionsUsersTableMap extends TableMap
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
             if (is_object($value) && $value instanceof \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers) {
                 $key = serialize(array((string) $value->getProhibitionId(), (string) $value->getUserId()));
-
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
                 $key = serialize(array((string) $value[0], (string) $value[1]));
@@ -220,7 +231,8 @@ class ProhibitionsUsersTableMap extends TableMap
 
                 return;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,
+                            true)));
                 throw $e;
             }
 
@@ -238,15 +250,21 @@ class ProhibitionsUsersTableMap extends TableMap
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
+     *
+     * @return string The primary key hash of the row
      */
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProhibitionId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProhibitionId',
+                    TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId',
+                    TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProhibitionId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)]));
+        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('ProhibitionId',
+                    TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('UserId',
+                    TableMap::TYPE_PHPNAME, $indexType)]));
     }
 
     /**
@@ -263,8 +281,18 @@ class ProhibitionsUsersTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
+        $pks = [];
 
-            return $pks;
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM ? 0 + $offset : self::translateFieldName('ProhibitionId',
+                    TableMap::TYPE_PHPNAME, $indexType)
+        ];
+        $pks[] = (int) $row[
+            $indexType == TableMap::TYPE_NUM ? 1 + $offset : self::translateFieldName('UserId', TableMap::TYPE_PHPNAME,
+                    $indexType)
+        ];
+
+        return $pks;
     }
 
     /**
@@ -289,12 +317,12 @@ class ProhibitionsUsersTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+      One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
-     * @return array (ProhibitionsUsers object, last column rank)
+     *                         rethrown wrapped into a PropelException.
+     * @return array           (ProhibitionsUsers object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
@@ -306,6 +334,7 @@ class ProhibitionsUsersTableMap extends TableMap
             $col = $offset + ProhibitionsUsersTableMap::NUM_HYDRATE_COLUMNS;
         } else {
             $cls = ProhibitionsUsersTableMap::OM_CLASS;
+            /** @var ProhibitionsUsers $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
             ProhibitionsUsersTableMap::addInstanceToPool($obj, $key);
@@ -321,7 +350,7 @@ class ProhibitionsUsersTableMap extends TableMap
      * @param DataFetcherInterface $dataFetcher
      * @return array
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function populateObjects(DataFetcherInterface $dataFetcher)
     {
@@ -338,6 +367,7 @@ class ProhibitionsUsersTableMap extends TableMap
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
+                /** @var ProhibitionsUsers $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
@@ -347,6 +377,7 @@ class ProhibitionsUsersTableMap extends TableMap
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -357,16 +388,16 @@ class ProhibitionsUsersTableMap extends TableMap
      * @param Criteria $criteria object containing the columns to add.
      * @param string   $alias    optional table alias
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(ProhibitionsUsersTableMap::PROHIBITIONS_ID);
-            $criteria->addSelectColumn(ProhibitionsUsersTableMap::USERS_ID);
-            $criteria->addSelectColumn(ProhibitionsUsersTableMap::PROHIBITED_UNTIL);
-            $criteria->addSelectColumn(ProhibitionsUsersTableMap::CREATED_AT);
-            $criteria->addSelectColumn(ProhibitionsUsersTableMap::UPDATED_AT);
+            $criteria->addSelectColumn(ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID);
+            $criteria->addSelectColumn(ProhibitionsUsersTableMap::COL_USERS_ID);
+            $criteria->addSelectColumn(ProhibitionsUsersTableMap::COL_PROHIBITED_UNTIL);
+            $criteria->addSelectColumn(ProhibitionsUsersTableMap::COL_CREATED_AT);
+            $criteria->addSelectColumn(ProhibitionsUsersTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.PROHIBITIONS_ID');
             $criteria->addSelectColumn($alias . '.USERS_ID');
@@ -381,7 +412,7 @@ class ProhibitionsUsersTableMap extends TableMap
      * This method is not needed for general use but a specific application could have a need.
      * @return TableMap
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function getTableMap()
     {
@@ -393,10 +424,10 @@ class ProhibitionsUsersTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-      $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProhibitionsUsersTableMap::DATABASE_NAME);
-      if (!$dbMap->hasTable(ProhibitionsUsersTableMap::TABLE_NAME)) {
-        $dbMap->addTableObject(new ProhibitionsUsersTableMap());
-      }
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ProhibitionsUsersTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(ProhibitionsUsersTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new ProhibitionsUsersTableMap());
+        }
     }
 
     /**
@@ -404,14 +435,14 @@ class ProhibitionsUsersTableMap extends TableMap
      *
      * @param mixed               $values Criteria or ProhibitionsUsers object or primary key or array of primary keys
      *              which is used to create the DELETE statement
-     * @param ConnectionInterface $con the connection to use
-     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                if supported by native driver or if emulated using Propel.
+     * @param  ConnectionInterface $con the connection to use
+     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
-     public static function doDelete($values, ConnectionInterface $con = null)
-     {
+    public static function doDelete($values, ConnectionInterface $con = null)
+    {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(ProhibitionsUsersTableMap::DATABASE_NAME);
         }
@@ -431,17 +462,19 @@ class ProhibitionsUsersTableMap extends TableMap
                 $values = array($values);
             }
             foreach ($values as $value) {
-                $criterion = $criteria->getNewCriterion(ProhibitionsUsersTableMap::PROHIBITIONS_ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(ProhibitionsUsersTableMap::USERS_ID, $value[1]));
+                $criterion = $criteria->getNewCriterion(ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(ProhibitionsUsersTableMap::COL_USERS_ID, $value[1]));
                 $criteria->addOr($criterion);
             }
         }
 
         $query = ProhibitionsUsersQuery::create()->mergeWith($criteria);
 
-        if ($values instanceof Criteria) { ProhibitionsUsersTableMap::clearInstancePool();
+        if ($values instanceof Criteria) {
+            ProhibitionsUsersTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array) $values as $singleval) { ProhibitionsUsersTableMap::removeInstanceFromPool($singleval);
+            foreach ((array) $values as $singleval) {
+                ProhibitionsUsersTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -466,7 +499,7 @@ class ProhibitionsUsersTableMap extends TableMap
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
@@ -484,21 +517,16 @@ class ProhibitionsUsersTableMap extends TableMap
         // Set the correct dbName
         $query = ProhibitionsUsersQuery::create()->mergeWith($criteria);
 
-        try {
-            // use transaction because $criteria could contain info
-            // for more than one table (I guess, conceivably)
-            $con->beginTransaction();
-            $pk = $query->doInsert($con);
-            $con->commit();
-        } catch (PropelException $e) {
-            $con->rollBack();
-            throw $e;
-        }
-
-        return $pk;
+        // use transaction because $criteria could contain info
+        // for more than one table (I guess, conceivably)
+        return $con->transaction(function () use ($con, $query) {
+                return $query->doInsert($con);
+            });
     }
 
-} // ProhibitionsUsersTableMap
+}
+
+// ProhibitionsUsersTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
 ProhibitionsUsersTableMap::buildTableMap();

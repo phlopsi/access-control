@@ -75,21 +75,6 @@
         <column name="external_id" type="longvarchar" required="true" />
         <behavior name="nested_set" />
     </table>
-    <table name="sessions" isCrossRef="true">
-        <column name="session_types_id" phpName="SessionTypeId" type="integer" required="true" />
-        <column name="users_id" phpName="UserId" type="integer" required="true" />
-        <column name="key" type="varchar" size="127" required="true" primaryKey="true" />
-        <column name="session_duration" type="timestamp" />
-        <column name="simulated_users_id" phpName="simulatedUserId" type="integer" />
-        <behavior name="timestampable" />
-        <foreign-key foreignTable="session_types">
-            <reference local="session_types_id" foreign="id" />
-        </foreign-key>
-        <foreign-key foreignTable="users">
-            <reference local="users_id" foreign="id" />
-            <reference local="simulated_users_id" foreign="id" />
-        </foreign-key>
-    </table>
     <table name="users" phpName="User">
         <column name="external_id" type="longvarchar" required="true" />
     </table>

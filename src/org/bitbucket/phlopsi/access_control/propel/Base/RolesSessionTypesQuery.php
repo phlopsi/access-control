@@ -1,5 +1,4 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel\Base;
 
 use \Exception;
@@ -8,7 +7,6 @@ use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveQuery\ModelJoin;
-use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
@@ -39,19 +37,22 @@ use org\bitbucket\phlopsi\access_control\propel\Map\RolesSessionTypesTableMap;
  * @method     ChildRolesSessionTypesQuery rightJoinSessionType($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SessionType relation
  * @method     ChildRolesSessionTypesQuery innerJoinSessionType($relationAlias = null) Adds a INNER JOIN clause to the query using the SessionType relation
  *
+ * @method     \org\bitbucket\phlopsi\access_control\propel\RoleQuery|\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ *
  * @method     ChildRolesSessionTypes findOne(ConnectionInterface $con = null) Return the first ChildRolesSessionTypes matching the query
  * @method     ChildRolesSessionTypes findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRolesSessionTypes matching the query, or a new ChildRolesSessionTypes object populated from the query conditions when no match is found
  *
  * @method     ChildRolesSessionTypes findOneByRoleId(int $roles_id) Return the first ChildRolesSessionTypes filtered by the roles_id column
  * @method     ChildRolesSessionTypes findOneBySessionTypeId(int $session_types_id) Return the first ChildRolesSessionTypes filtered by the session_types_id column
  *
- * @method     array findByRoleId(int $roles_id) Return ChildRolesSessionTypes objects filtered by the roles_id column
- * @method     array findBySessionTypeId(int $session_types_id) Return ChildRolesSessionTypes objects filtered by the session_types_id column
+ * @method     ChildRolesSessionTypes[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildRolesSessionTypes objects based on current ModelCriteria
+ * @method     ChildRolesSessionTypes[]|ObjectCollection findByRoleId(int $roles_id) Return ChildRolesSessionTypes objects filtered by the roles_id column
+ * @method     ChildRolesSessionTypes[]|ObjectCollection findBySessionTypeId(int $session_types_id) Return ChildRolesSessionTypes objects filtered by the session_types_id column
+ * @method     ChildRolesSessionTypes[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
 abstract class RolesSessionTypesQuery extends ModelCriteria
 {
-
     /**
      * Initializes internal state of \org\bitbucket\phlopsi\access_control\propel\Base\RolesSessionTypesQuery object.
      *
@@ -59,7 +60,8 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesSessionTypes', $modelAlias = null)
+    public function __construct($dbName = 'access_control',
+        $modelName = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesSessionTypes', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -72,12 +74,12 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * @return ChildRolesSessionTypesQuery
      */
-    public static function create($modelAlias = null, $criteria = null)
+    public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypesQuery) {
+        if ($criteria instanceof ChildRolesSessionTypesQuery) {
             return $criteria;
         }
-        $query = new \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypesQuery();
+        $query = new ChildRolesSessionTypesQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -102,7 +104,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * @return ChildRolesSessionTypes|array|mixed the result, formatted by the current formatter
      */
-    public function findPk($key, $con = null)
+    public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
             return null;
@@ -115,9 +117,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
             $con = Propel::getServiceContainer()->getReadConnection(RolesSessionTypesTableMap::DATABASE_NAME);
         }
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+        if ($this->formatter || $this->modelAlias || $this->with || $this->select || $this->selectColumns || $this->asColumns || $this->selectModifiers || $this->map || $this->having || $this->joins) {
             return $this->findPkComplex($key, $con);
         } else {
             return $this->findPkSimple($key, $con);
@@ -131,9 +131,9 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return   ChildRolesSessionTypes A model object, or null if the key is not found
+     * @return ChildRolesSessionTypes A model object, or null if the key is not found
      */
-    protected function findPkSimple($key, $con)
+    protected function findPkSimple($key, ConnectionInterface $con)
     {
         $sql = 'SELECT ROLES_ID, SESSION_TYPES_ID FROM roles_session_types WHERE ROLES_ID = :p0 AND SESSION_TYPES_ID = :p1';
         try {
@@ -147,6 +147,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+            /** @var ChildRolesSessionTypes $obj */
             $obj = new ChildRolesSessionTypes();
             $obj->hydrate($row);
             RolesSessionTypesTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
@@ -164,7 +165,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * @return ChildRolesSessionTypes|array|mixed the result, formatted by the current formatter
      */
-    protected function findPkComplex($key, $con)
+    protected function findPkComplex($key, ConnectionInterface $con)
     {
         // As the query uses a PK condition, no limit(1) is necessary.
         $criteria = $this->isKeepQuery() ? clone $this : $this;
@@ -185,7 +186,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * @return ObjectCollection|array|mixed the list of results, formatted by the current formatter
      */
-    public function findPks($keys, $con = null)
+    public function findPks($keys, ConnectionInterface $con = null)
     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
@@ -204,12 +205,12 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return ChildRolesSessionTypesQuery The current query, for fluid interface
+     * @return $this|ChildRolesSessionTypesQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-        $this->addUsingAlias(RolesSessionTypesTableMap::ROLES_ID, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(RolesSessionTypesTableMap::SESSION_TYPES_ID, $key[1], Criteria::EQUAL);
+        $this->addUsingAlias(RolesSessionTypesTableMap::COL_ROLES_ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID, $key[1], Criteria::EQUAL);
 
         return $this;
     }
@@ -219,7 +220,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return ChildRolesSessionTypesQuery The current query, for fluid interface
+     * @return $this|ChildRolesSessionTypesQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
@@ -227,8 +228,8 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
             return $this->add(null, '1<>1', Criteria::CUSTOM);
         }
         foreach ($keys as $key) {
-            $cton0 = $this->getNewCriterion(RolesSessionTypesTableMap::ROLES_ID, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(RolesSessionTypesTableMap::SESSION_TYPES_ID, $key[1], Criteria::EQUAL);
+            $cton0 = $this->getNewCriterion(RolesSessionTypesTableMap::COL_ROLES_ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID, $key[1], Criteria::EQUAL);
             $cton0->addAnd($cton1);
             $this->addOr($cton0);
         }
@@ -254,18 +255,18 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildRolesSessionTypesQuery The current query, for fluid interface
+     * @return $this|ChildRolesSessionTypesQuery The current query, for fluid interface
      */
     public function filterByRoleId($roleId = null, $comparison = null)
     {
         if (is_array($roleId)) {
             $useMinMax = false;
             if (isset($roleId['min'])) {
-                $this->addUsingAlias(RolesSessionTypesTableMap::ROLES_ID, $roleId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(RolesSessionTypesTableMap::COL_ROLES_ID, $roleId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($roleId['max'])) {
-                $this->addUsingAlias(RolesSessionTypesTableMap::ROLES_ID, $roleId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(RolesSessionTypesTableMap::COL_ROLES_ID, $roleId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -276,7 +277,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(RolesSessionTypesTableMap::ROLES_ID, $roleId, $comparison);
+        return $this->addUsingAlias(RolesSessionTypesTableMap::COL_ROLES_ID, $roleId, $comparison);
     }
 
     /**
@@ -297,18 +298,20 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildRolesSessionTypesQuery The current query, for fluid interface
+     * @return $this|ChildRolesSessionTypesQuery The current query, for fluid interface
      */
     public function filterBySessionTypeId($sessionTypeId = null, $comparison = null)
     {
         if (is_array($sessionTypeId)) {
             $useMinMax = false;
             if (isset($sessionTypeId['min'])) {
-                $this->addUsingAlias(RolesSessionTypesTableMap::SESSION_TYPES_ID, $sessionTypeId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID, $sessionTypeId['min'],
+                    Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($sessionTypeId['max'])) {
-                $this->addUsingAlias(RolesSessionTypesTableMap::SESSION_TYPES_ID, $sessionTypeId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID, $sessionTypeId['max'],
+                    Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -319,7 +322,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(RolesSessionTypesTableMap::SESSION_TYPES_ID, $sessionTypeId, $comparison);
+        return $this->addUsingAlias(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID, $sessionTypeId, $comparison);
     }
 
     /**
@@ -334,14 +337,15 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
     {
         if ($role instanceof \org\bitbucket\phlopsi\access_control\propel\Role) {
             return $this
-                ->addUsingAlias(RolesSessionTypesTableMap::ROLES_ID, $role->getId(), $comparison);
+                    ->addUsingAlias(RolesSessionTypesTableMap::COL_ROLES_ID, $role->getId(), $comparison);
         } elseif ($role instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(RolesSessionTypesTableMap::ROLES_ID, $role->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                    ->addUsingAlias(RolesSessionTypesTableMap::COL_ROLES_ID, $role->toKeyValue('PrimaryKey', 'Id'),
+                        $comparison);
         } else {
             throw new PropelException('filterByRole() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\Role or Collection');
         }
@@ -353,7 +357,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return ChildRolesSessionTypesQuery The current query, for fluid interface
+     * @return $this|ChildRolesSessionTypesQuery The current query, for fluid interface
      */
     public function joinRole($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -388,13 +392,14 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \org\bitbucket\phlopsi\access_control\propel\RoleQuery A secondary query class using the current class as primary query
+     * @return \org\bitbucket\phlopsi\access_control\propel\RoleQuery A secondary query class using the current class as primary query
      */
     public function useRoleQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinRole($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Role', '\org\bitbucket\phlopsi\access_control\propel\RoleQuery');
+                ->joinRole($relationAlias, $joinType)
+                ->useQuery($relationAlias ? $relationAlias : 'Role',
+                    '\org\bitbucket\phlopsi\access_control\propel\RoleQuery');
     }
 
     /**
@@ -409,14 +414,15 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
     {
         if ($sessionType instanceof \org\bitbucket\phlopsi\access_control\propel\SessionType) {
             return $this
-                ->addUsingAlias(RolesSessionTypesTableMap::SESSION_TYPES_ID, $sessionType->getId(), $comparison);
+                    ->addUsingAlias(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID, $sessionType->getId(), $comparison);
         } elseif ($sessionType instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(RolesSessionTypesTableMap::SESSION_TYPES_ID, $sessionType->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                    ->addUsingAlias(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID,
+                        $sessionType->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterBySessionType() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\SessionType or Collection');
         }
@@ -428,7 +434,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return ChildRolesSessionTypesQuery The current query, for fluid interface
+     * @return $this|ChildRolesSessionTypesQuery The current query, for fluid interface
      */
     public function joinSessionType($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -463,13 +469,14 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return   \org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery A secondary query class using the current class as primary query
+     * @return \org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery A secondary query class using the current class as primary query
      */
     public function useSessionTypeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinSessionType($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'SessionType', '\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery');
+                ->joinSessionType($relationAlias, $joinType)
+                ->useQuery($relationAlias ? $relationAlias : 'SessionType',
+                    '\org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery');
     }
 
     /**
@@ -477,13 +484,15 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * @param   ChildRolesSessionTypes $rolesSessionTypes Object to remove from the list of results
      *
-     * @return ChildRolesSessionTypesQuery The current query, for fluid interface
+     * @return $this|ChildRolesSessionTypesQuery The current query, for fluid interface
      */
     public function prune($rolesSessionTypes = null)
     {
         if ($rolesSessionTypes) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(RolesSessionTypesTableMap::ROLES_ID), $rolesSessionTypes->getRoleId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(RolesSessionTypesTableMap::SESSION_TYPES_ID), $rolesSessionTypes->getSessionTypeId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond0', $this->getAliasedColName(RolesSessionTypesTableMap::COL_ROLES_ID),
+                $rolesSessionTypes->getRoleId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID),
+                $rolesSessionTypes->getSessionTypeId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
@@ -501,40 +510,33 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(RolesSessionTypesTableMap::DATABASE_NAME);
         }
-        $affectedRows = 0; // initialize var to track total num of affected rows
-        try {
-            // use transaction because $criteria could contain info
-            // for more than one table or we could emulating ON DELETE CASCADE, etc.
-            $con->beginTransaction();
-            $affectedRows += parent::doDeleteAll($con);
-            // Because this db requires some delete cascade/set null emulation, we have to
-            // clear the cached instance *after* the emulation has happened (since
-            // instances get re-added by the select statement contained therein).
-            RolesSessionTypesTableMap::clearInstancePool();
-            RolesSessionTypesTableMap::clearRelatedInstancePool();
 
-            $con->commit();
-        } catch (PropelException $e) {
-            $con->rollBack();
-            throw $e;
-        }
+        // use transaction because $criteria could contain info
+        // for more than one table or we could emulating ON DELETE CASCADE, etc.
+        return $con->transaction(function () use ($con) {
+                $affectedRows = 0; // initialize var to track total num of affected rows
+                $affectedRows += parent::doDeleteAll($con);
+                // Because this db requires some delete cascade/set null emulation, we have to
+                // clear the cached instance *after* the emulation has happened (since
+                // instances get re-added by the select statement contained therein).
+                RolesSessionTypesTableMap::clearInstancePool();
+                RolesSessionTypesTableMap::clearRelatedInstancePool();
 
-        return $affectedRows;
+                return $affectedRows;
+            });
     }
 
     /**
-     * Performs a DELETE on the database, given a ChildRolesSessionTypes or Criteria object OR a primary key value.
+     * Performs a DELETE on the database based on the current ModelCriteria
      *
-     * @param mixed               $values Criteria or ChildRolesSessionTypes object or primary key or array of primary keys
-     *              which is used to create the DELETE statement
      * @param ConnectionInterface $con the connection to use
-     * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
-     *                if supported by native driver or if emulated using Propel.
+     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
-     *         rethrown wrapped into a PropelException.
+     *                         rethrown wrapped into a PropelException.
      */
-     public function delete(ConnectionInterface $con = null)
-     {
+    public function delete(ConnectionInterface $con = null)
+    {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(RolesSessionTypesTableMap::DATABASE_NAME);
         }
@@ -544,25 +546,20 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
         // Set the correct dbName
         $criteria->setDbName(RolesSessionTypesTableMap::DATABASE_NAME);
 
-        $affectedRows = 0; // initialize var to track total num of affected rows
+        // use transaction because $criteria could contain info
+        // for more than one table or we could emulating ON DELETE CASCADE, etc.
+        return $con->transaction(function () use ($con, $criteria) {
+                $affectedRows = 0; // initialize var to track total num of affected rows
 
-        try {
-            // use transaction because $criteria could contain info
-            // for more than one table or we could emulating ON DELETE CASCADE, etc.
-            $con->beginTransaction();
+                RolesSessionTypesTableMap::removeInstanceFromPool($criteria);
 
+                $affectedRows += ModelCriteria::delete($con);
+                RolesSessionTypesTableMap::clearRelatedInstancePool();
 
-        RolesSessionTypesTableMap::removeInstanceFromPool($criteria);
-
-            $affectedRows += ModelCriteria::delete($con);
-            RolesSessionTypesTableMap::clearRelatedInstancePool();
-            $con->commit();
-
-            return $affectedRows;
-        } catch (PropelException $e) {
-            $con->rollBack();
-            throw $e;
-        }
+                return $affectedRows;
+            });
     }
 
-} // RolesSessionTypesQuery
+}
+
+// RolesSessionTypesQuery

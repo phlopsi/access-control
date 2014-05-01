@@ -1,9 +1,7 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel;
 
 use org\bitbucket\phlopsi\access_control\propel\Base\ProhibitionQuery as BaseProhibitionQuery;
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'prohibitions' table.
@@ -17,5 +15,7 @@ use org\bitbucket\phlopsi\access_control\propel\Base\ProhibitionQuery as BasePro
  */
 class ProhibitionQuery extends BaseProhibitionQuery
 {
+    
+}
 
-} // ProhibitionQuery
+// ProhibitionQuery

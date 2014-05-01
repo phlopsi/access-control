@@ -1,9 +1,7 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel;
 
 use org\bitbucket\phlopsi\access_control\propel\Base\RolesSessionTypesQuery as BaseRolesSessionTypesQuery;
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'roles_session_types' table.
@@ -17,5 +15,7 @@ use org\bitbucket\phlopsi\access_control\propel\Base\RolesSessionTypesQuery as B
  */
 class RolesSessionTypesQuery extends BaseRolesSessionTypesQuery
 {
+    
+}
 
-} // RolesSessionTypesQuery
+// RolesSessionTypesQuery

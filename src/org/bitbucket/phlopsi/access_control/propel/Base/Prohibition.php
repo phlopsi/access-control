@@ -1,5 +1,4 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel\Base;
 
 use \Exception;
@@ -13,6 +12,7 @@ use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
+use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
@@ -34,7 +34,6 @@ abstract class Prohibition implements ActiveRecordInterface
      * TableMap class name
      */
     const TABLE_MAP = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Map\\ProhibitionTableMap';
-
 
     /**
      * attribute to determine if this object has previously been saved.
@@ -105,14 +104,24 @@ abstract class Prohibition implements ActiveRecordInterface
     protected $collProhibitionsUserssPartial;
 
     /**
-     * @var        ChildRole[] Collection to store aggregation of ChildRole objects.
+     * @var        ObjectCollection|ChildRole[] Cross Collection to store aggregation of ChildRole objects.
      */
     protected $collRoles;
 
     /**
-     * @var        ChildUser[] Collection to store aggregation of ChildUser objects.
+     * @var bool
+     */
+    protected $collRolesPartial;
+
+    /**
+     * @var        ObjectCollection|ChildUser[] Cross Collection to store aggregation of ChildUser objects.
      */
     protected $collUsers;
+
+    /**
+     * @var bool
+     */
+    protected $collUsersPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -159,25 +168,25 @@ abstract class Prohibition implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection
+     * @var ObjectCollection|ChildRole[]
      */
     protected $rolesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection
+     * @var ObjectCollection|ChildUser[]
      */
     protected $usersScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection
+     * @var ObjectCollection|ChildProhibitionsRoles[]
      */
     protected $prohibitionsRolessScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection
+     * @var ObjectCollection|ChildProhibitionsUsers[]
      */
     protected $prohibitionsUserssScheduledForDeletion = null;
 
@@ -186,6 +195,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function __construct()
     {
+        
     }
 
     /**
@@ -195,7 +205,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function isModified()
     {
-        return !empty($this->modifiedColumns);
+        return !!$this->modifiedColumns;
     }
 
     /**
@@ -206,7 +216,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function isColumnModified($col)
     {
-        return in_array($col, $this->modifiedColumns);
+        return $this->modifiedColumns && isset($this->modifiedColumns[$col]);
     }
 
     /**
@@ -215,7 +225,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function getModifiedColumns()
     {
-        return array_unique($this->modifiedColumns);
+        return $this->modifiedColumns ? array_keys($this->modifiedColumns) : [];
     }
 
     /**
@@ -238,7 +248,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function setNew($b)
     {
-        $this->new = (Boolean) $b;
+        $this->new = (boolean) $b;
     }
 
     /**
@@ -257,7 +267,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function setDeleted($b)
     {
-        $this->deleted = (Boolean) $b;
+        $this->deleted = (boolean) $b;
     }
 
     /**
@@ -268,8 +278,8 @@ abstract class Prohibition implements ActiveRecordInterface
     public function resetModified($col = null)
     {
         if (null !== $col) {
-            while (false !== ($offset = array_search($col, $this->modifiedColumns))) {
-                array_splice($this->modifiedColumns, $offset, 1);
+            if (isset($this->modifiedColumns[$col])) {
+                unset($this->modifiedColumns[$col]);
             }
         } else {
             $this->modifiedColumns = array();
@@ -286,8 +296,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function equals($obj)
     {
-        $thisclazz = get_class($this);
-        if (!is_object($obj) || !($obj instanceof $thisclazz)) {
+        if (!$obj instanceof static) {
             return false;
         }
 
@@ -295,27 +304,11 @@ abstract class Prohibition implements ActiveRecordInterface
             return true;
         }
 
-        if (null === $this->getPrimaryKey()
-            || null === $obj->getPrimaryKey())  {
+        if (null === $this->getPrimaryKey() || null === $obj->getPrimaryKey()) {
             return false;
         }
 
         return $this->getPrimaryKey() === $obj->getPrimaryKey();
-    }
-
-    /**
-     * If the primary key is not null, return the hashcode of the
-     * primary key. Otherwise, return the hash code of the object.
-     *
-     * @return int Hashcode
-     */
-    public function hashCode()
-    {
-        if (null !== $this->getPrimaryKey()) {
-            return crc32(serialize($this->getPrimaryKey()));
-        }
-
-        return crc32(serialize(clone $this));
     }
 
     /**
@@ -362,7 +355,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return Prohibition The current object, for fluid interface
+     * @return $this|Prohibition The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -381,30 +374,6 @@ abstract class Prohibition implements ActiveRecordInterface
     protected function log($msg, $priority = Propel::LOG_INFO)
     {
         return Propel::log(get_class($this) . ': ' . $msg, $priority);
-    }
-
-    /**
-     * Populate the current object from a string, using a given parser format
-     * <code>
-     * $book = new Book();
-     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
-     * </code>
-     *
-     * @param mixed $parser A AbstractParser instance,
-     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param string $data The source data to import from
-     *
-     * @return Prohibition The current object, for fluid interface
-     */
-    public function importFrom($parser, $data)
-    {
-        if (!$parser instanceof AbstractParser) {
-            $parser = AbstractParser::getParser($parser);
-        }
-
-        $this->fromArray($parser->toArray($data), TableMap::TYPE_PHPNAME);
-
-        return $this;
     }
 
     /**
@@ -442,162 +411,52 @@ abstract class Prohibition implements ActiveRecordInterface
     /**
      * Get the [external_id] column value.
      *
-     * @return   string
+     * @return string
      */
     public function getExternalId()
     {
-
         return $this->external_id;
     }
 
     /**
      * Get the [tree_left] column value.
      *
-     * @return   int
+     * @return int
      */
     public function getTreeLeft()
     {
-
         return $this->tree_left;
     }
 
     /**
      * Get the [tree_right] column value.
      *
-     * @return   int
+     * @return int
      */
     public function getTreeRight()
     {
-
         return $this->tree_right;
     }
 
     /**
      * Get the [tree_level] column value.
      *
-     * @return   int
+     * @return int
      */
     public function getTreeLevel()
     {
-
         return $this->tree_level;
     }
 
     /**
      * Get the [id] column value.
      *
-     * @return   int
+     * @return int
      */
     public function getId()
     {
-
         return $this->id;
     }
-
-    /**
-     * Set the value of [external_id] column.
-     *
-     * @param      string $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
-     */
-    public function setExternalId($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->external_id !== $v) {
-            $this->external_id = $v;
-            $this->modifiedColumns[] = ProhibitionTableMap::EXTERNAL_ID;
-        }
-
-
-        return $this;
-    } // setExternalId()
-
-    /**
-     * Set the value of [tree_left] column.
-     *
-     * @param      int $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
-     */
-    public function setTreeLeft($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_left !== $v) {
-            $this->tree_left = $v;
-            $this->modifiedColumns[] = ProhibitionTableMap::TREE_LEFT;
-        }
-
-
-        return $this;
-    } // setTreeLeft()
-
-    /**
-     * Set the value of [tree_right] column.
-     *
-     * @param      int $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
-     */
-    public function setTreeRight($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_right !== $v) {
-            $this->tree_right = $v;
-            $this->modifiedColumns[] = ProhibitionTableMap::TREE_RIGHT;
-        }
-
-
-        return $this;
-    } // setTreeRight()
-
-    /**
-     * Set the value of [tree_level] column.
-     *
-     * @param      int $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
-     */
-    public function setTreeLevel($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_level !== $v) {
-            $this->tree_level = $v;
-            $this->modifiedColumns[] = ProhibitionTableMap::TREE_LEVEL;
-        }
-
-
-        return $this;
-    } // setTreeLevel()
-
-    /**
-     * Set the value of [id] column.
-     *
-     * @param      int $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
-     */
-    public function setId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->id !== $v) {
-            $this->id = $v;
-            $this->modifiedColumns[] = ProhibitionTableMap::ID;
-        }
-
-
-        return $this;
-    } // setId()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -611,8 +470,9 @@ abstract class Prohibition implements ActiveRecordInterface
     {
         // otherwise, everything was equal, so return TRUE
         return true;
-    } // hasOnlyDefaultValues()
+    }
 
+// hasOnlyDefaultValues()
     /**
      * Hydrates (populates) the object variables with values from the database resultset.
      *
@@ -625,7 +485,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * @param int     $startcol  0-based offset column which indicates which restultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @param string  $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+      One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @return int             next starting column
@@ -635,20 +495,24 @@ abstract class Prohibition implements ActiveRecordInterface
     {
         try {
 
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProhibitionTableMap::translateFieldName('ExternalId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProhibitionTableMap::translateFieldName('ExternalId',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->external_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProhibitionTableMap::translateFieldName('TreeLeft', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProhibitionTableMap::translateFieldName('TreeLeft',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->tree_left = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProhibitionTableMap::translateFieldName('TreeRight', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProhibitionTableMap::translateFieldName('TreeRight',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->tree_right = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProhibitionTableMap::translateFieldName('TreeLevel', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProhibitionTableMap::translateFieldName('TreeLevel',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->tree_level = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProhibitionTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProhibitionTableMap::translateFieldName('Id',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -659,9 +523,9 @@ abstract class Prohibition implements ActiveRecordInterface
             }
 
             return $startcol + 5; // 5 = ProhibitionTableMap::NUM_HYDRATE_COLUMNS.
-
         } catch (Exception $e) {
-            throw new PropelException("Error populating \org\bitbucket\phlopsi\access_control\propel\Prohibition object", 0, $e);
+            throw new PropelException(sprintf('Error populating %s object',
+                '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition'), 0, $e);
         }
     }
 
@@ -680,8 +544,115 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-    } // ensureConsistency
+        
+    }
 
+// ensureConsistency
+    /**
+     * Set the value of [external_id] column.
+     *
+     * @param  string $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
+     */
+    public function setExternalId($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->external_id !== $v) {
+            $this->external_id = $v;
+            $this->modifiedColumns[ProhibitionTableMap::COL_EXTERNAL_ID] = true;
+        }
+
+        return $this;
+    }
+
+// setExternalId()
+    /**
+     * Set the value of [tree_left] column.
+     *
+     * @param  int $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
+     */
+    public function setTreeLeft($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->tree_left !== $v) {
+            $this->tree_left = $v;
+            $this->modifiedColumns[ProhibitionTableMap::COL_TREE_LEFT] = true;
+        }
+
+        return $this;
+    }
+
+// setTreeLeft()
+    /**
+     * Set the value of [tree_right] column.
+     *
+     * @param  int $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
+     */
+    public function setTreeRight($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->tree_right !== $v) {
+            $this->tree_right = $v;
+            $this->modifiedColumns[ProhibitionTableMap::COL_TREE_RIGHT] = true;
+        }
+
+        return $this;
+    }
+
+// setTreeRight()
+    /**
+     * Set the value of [tree_level] column.
+     *
+     * @param  int $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
+     */
+    public function setTreeLevel($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->tree_level !== $v) {
+            $this->tree_level = $v;
+            $this->modifiedColumns[ProhibitionTableMap::COL_TREE_LEVEL] = true;
+        }
+
+        return $this;
+    }
+
+// setTreeLevel()
+    /**
+     * Set the value of [id] column.
+     *
+     * @param  int $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
+     */
+    public function setId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->id !== $v) {
+            $this->id = $v;
+            $this->modifiedColumns[ProhibitionTableMap::COL_ID] = true;
+        }
+
+        return $this;
+    }
+
+// setId()
     /**
      * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
      *
@@ -718,7 +689,6 @@ abstract class Prohibition implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
             $this->collProhibitionsRoless = null;
 
             $this->collProhibitionsUserss = null;
@@ -747,8 +717,7 @@ abstract class Prohibition implements ActiveRecordInterface
             $con = Propel::getServiceContainer()->getWriteConnection(ProhibitionTableMap::DATABASE_NAME);
         }
 
-        $con->beginTransaction();
-        try {
+        $con->transaction(function () use ($con) {
             $deleteQuery = ChildProhibitionQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
@@ -770,15 +739,9 @@ abstract class Prohibition implements ActiveRecordInterface
                     ChildProhibitionQuery::shiftRLValues(-2, $this->getRightValue() + 1, null, $con);
                 }
 
-                $con->commit();
                 $this->setDeleted(true);
-            } else {
-                $con->commit();
             }
-        } catch (Exception $e) {
-            $con->rollBack();
-            throw $e;
-        }
+        });
     }
 
     /**
@@ -804,45 +767,40 @@ abstract class Prohibition implements ActiveRecordInterface
             $con = Propel::getServiceContainer()->getWriteConnection(ProhibitionTableMap::DATABASE_NAME);
         }
 
-        $con->beginTransaction();
-        $isInsert = $this->isNew();
-        try {
-            $ret = $this->preSave($con);
-            // nested_set behavior
-            if ($this->isNew() && $this->isRoot()) {
-                // check if no other root exist in, the tree
-                $nbRoots = ChildProhibitionQuery::create()
-                    ->addUsingAlias(ChildProhibition::LEFT_COL, 1, Criteria::EQUAL)
-                    ->count($con);
-                if ($nbRoots > 0) {
+        return $con->transaction(function () use ($con) {
+                $isInsert = $this->isNew();
+                $ret = $this->preSave($con);
+                // nested_set behavior
+                if ($this->isNew() && $this->isRoot()) {
+                    // check if no other root exist in, the tree
+                    $nbRoots = ChildProhibitionQuery::create()
+                        ->addUsingAlias(ChildProhibition::LEFT_COL, 1, Criteria::EQUAL)
+                        ->count($con);
+                    if ($nbRoots > 0) {
                         throw new PropelException('A root node already exists in this tree. To allow multiple root nodes, add the `use_scope` parameter in the nested_set behavior tag.');
+                    }
                 }
-            }
-            $this->processNestedSetQueries($con);
-            if ($isInsert) {
-                $ret = $ret && $this->preInsert($con);
-            } else {
-                $ret = $ret && $this->preUpdate($con);
-            }
-            if ($ret) {
-                $affectedRows = $this->doSave($con);
+                $this->processNestedSetQueries($con);
                 if ($isInsert) {
-                    $this->postInsert($con);
+                    $ret = $ret && $this->preInsert($con);
                 } else {
-                    $this->postUpdate($con);
+                    $ret = $ret && $this->preUpdate($con);
                 }
-                $this->postSave($con);
-                ProhibitionTableMap::addInstanceToPool($this);
-            } else {
-                $affectedRows = 0;
-            }
-            $con->commit();
+                if ($ret) {
+                    $affectedRows = $this->doSave($con);
+                    if ($isInsert) {
+                        $this->postInsert($con);
+                    } else {
+                        $this->postUpdate($con);
+                    }
+                    $this->postSave($con);
+                    ProhibitionTableMap::addInstanceToPool($this);
+                } else {
+                    $affectedRows = 0;
+                }
 
-            return $affectedRows;
-        } catch (Exception $e) {
-            $con->rollBack();
-            throw $e;
-        }
+                return $affectedRows;
+            });
     }
 
     /**
@@ -876,56 +834,58 @@ abstract class Prohibition implements ActiveRecordInterface
             if ($this->rolesScheduledForDeletion !== null) {
                 if (!$this->rolesScheduledForDeletion->isEmpty()) {
                     $pks = array();
-                    $pk  = $this->getPrimaryKey();
-                    foreach ($this->rolesScheduledForDeletion->getPrimaryKeys(false) as $remotePk) {
-                        $pks[] = array($pk, $remotePk);
+                    foreach ($this->rolesScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[0] = $this->getId();
+                        $entryPk[1] = $entry->getId();
+                        $pks[] = $entryPk;
                     }
 
-                    ProhibitionsRolesQuery::create()
+                    \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
+
                     $this->rolesScheduledForDeletion = null;
                 }
+            }
 
-                foreach ($this->getRoles() as $role) {
-                    if ($role->isModified()) {
-                        $role->save($con);
-                    }
-                }
-            } elseif ($this->collRoles) {
+            if ($this->collRoles) {
                 foreach ($this->collRoles as $role) {
-                    if ($role->isModified()) {
+                    if (!$role->isDeleted() && ($role->isNew() || $role->isModified())) {
                         $role->save($con);
                     }
                 }
             }
+
 
             if ($this->usersScheduledForDeletion !== null) {
                 if (!$this->usersScheduledForDeletion->isEmpty()) {
                     $pks = array();
-                    $pk  = $this->getPrimaryKey();
-                    foreach ($this->usersScheduledForDeletion->getPrimaryKeys(false) as $remotePk) {
-                        $pks[] = array($pk, $remotePk);
+                    foreach ($this->usersScheduledForDeletion as $entry) {
+                        $entryPk = [];
+
+                        $entryPk[0] = $this->getId();
+                        $entryPk[1] = $entry->getId();
+                        $pks[] = $entryPk;
                     }
 
-                    ProhibitionsUsersQuery::create()
+                    \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
+
                     $this->usersScheduledForDeletion = null;
                 }
+            }
 
-                foreach ($this->getUsers() as $user) {
-                    if ($user->isModified()) {
-                        $user->save($con);
-                    }
-                }
-            } elseif ($this->collUsers) {
+            if ($this->collUsers) {
                 foreach ($this->collUsers as $user) {
-                    if ($user->isModified()) {
+                    if (!$user->isDeleted() && ($user->isNew() || $user->isModified())) {
                         $user->save($con);
                     }
                 }
             }
+
 
             if ($this->prohibitionsRolessScheduledForDeletion !== null) {
                 if (!$this->prohibitionsRolessScheduledForDeletion->isEmpty()) {
@@ -936,8 +896,8 @@ abstract class Prohibition implements ActiveRecordInterface
                 }
             }
 
-                if ($this->collProhibitionsRoless !== null) {
-            foreach ($this->collProhibitionsRoless as $referrerFK) {
+            if ($this->collProhibitionsRoless !== null) {
+                foreach ($this->collProhibitionsRoless as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -953,8 +913,8 @@ abstract class Prohibition implements ActiveRecordInterface
                 }
             }
 
-                if ($this->collProhibitionsUserss !== null) {
-            foreach ($this->collProhibitionsUserss as $referrerFK) {
+            if ($this->collProhibitionsUserss !== null) {
+                foreach ($this->collProhibitionsUserss as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -962,12 +922,12 @@ abstract class Prohibition implements ActiveRecordInterface
             }
 
             $this->alreadyInSave = false;
-
         }
 
         return $affectedRows;
-    } // doSave()
+    }
 
+// doSave()
     /**
      * Insert the row in the database.
      *
@@ -981,31 +941,30 @@ abstract class Prohibition implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[] = ProhibitionTableMap::ID;
+        $this->modifiedColumns[ProhibitionTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProhibitionTableMap::ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ProhibitionTableMap::COL_ID . ')');
         }
 
-         // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ProhibitionTableMap::EXTERNAL_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'EXTERNAL_ID';
+        // check the columns in natural order for more readable SQL queries
+        if ($this->isColumnModified(ProhibitionTableMap::COL_EXTERNAL_ID)) {
+            $modifiedColumns[':p' . $index++] = 'EXTERNAL_ID';
         }
-        if ($this->isColumnModified(ProhibitionTableMap::TREE_LEFT)) {
-            $modifiedColumns[':p' . $index++]  = 'TREE_LEFT';
+        if ($this->isColumnModified(ProhibitionTableMap::COL_TREE_LEFT)) {
+            $modifiedColumns[':p' . $index++] = 'TREE_LEFT';
         }
-        if ($this->isColumnModified(ProhibitionTableMap::TREE_RIGHT)) {
-            $modifiedColumns[':p' . $index++]  = 'TREE_RIGHT';
+        if ($this->isColumnModified(ProhibitionTableMap::COL_TREE_RIGHT)) {
+            $modifiedColumns[':p' . $index++] = 'TREE_RIGHT';
         }
-        if ($this->isColumnModified(ProhibitionTableMap::TREE_LEVEL)) {
-            $modifiedColumns[':p' . $index++]  = 'TREE_LEVEL';
+        if ($this->isColumnModified(ProhibitionTableMap::COL_TREE_LEVEL)) {
+            $modifiedColumns[':p' . $index++] = 'TREE_LEVEL';
         }
-        if ($this->isColumnModified(ProhibitionTableMap::ID)) {
-            $modifiedColumns[':p' . $index++]  = 'ID';
+        if ($this->isColumnModified(ProhibitionTableMap::COL_ID)) {
+            $modifiedColumns[':p' . $index++] = 'ID';
         }
 
         $sql = sprintf(
-            'INSERT INTO prohibitions (%s) VALUES (%s)',
-            implode(', ', $modifiedColumns),
+            'INSERT INTO prohibitions (%s) VALUES (%s)', implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
 
@@ -1126,7 +1085,8 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true,
+        $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
         if (isset($alreadyDumpedObjects['Prohibition'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
@@ -1147,10 +1107,12 @@ abstract class Prohibition implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->collProhibitionsRoless) {
-                $result['ProhibitionsRoless'] = $this->collProhibitionsRoless->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result['ProhibitionsRoless'] = $this->collProhibitionsRoless->toArray(null, true, $keyType,
+                    $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collProhibitionsUserss) {
-                $result['ProhibitionsUserss'] = $this->collProhibitionsUserss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+                $result['ProhibitionsUserss'] = $this->collProhibitionsUserss->toArray(null, true, $keyType,
+                    $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1160,13 +1122,13 @@ abstract class Prohibition implements ActiveRecordInterface
     /**
      * Sets a field from the object by name passed in as a string.
      *
-     * @param      string $name
-     * @param      mixed  $value field value
-     * @param      string $type The type of fieldname the $name is of:
-     *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
-     *                     TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-     *                     Defaults to TableMap::TYPE_PHPNAME.
-     * @return void
+     * @param  string $name
+     * @param  mixed  $value field value
+     * @param  string $type The type of fieldname the $name is of:
+     *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     *                Defaults to TableMap::TYPE_PHPNAME.
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Prohibition
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
@@ -1179,9 +1141,9 @@ abstract class Prohibition implements ActiveRecordInterface
      * Sets a field from the object by Position as specified in the xml schema.
      * Zero-based.
      *
-     * @param      int $pos position in xml schema
-     * @param      mixed $value field value
-     * @return void
+     * @param  int $pos position in xml schema
+     * @param  mixed $value field value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Prohibition
      */
     public function setByPosition($pos, $value)
     {
@@ -1202,6 +1164,8 @@ abstract class Prohibition implements ActiveRecordInterface
                 $this->setId($value);
                 break;
         } // switch()
+
+        return $this;
     }
 
     /**
@@ -1225,11 +1189,45 @@ abstract class Prohibition implements ActiveRecordInterface
     {
         $keys = ProhibitionTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setExternalId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setTreeLeft($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setTreeRight($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setTreeLevel($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setId($arr[$keys[4]]);
+        if (array_key_exists($keys[0], $arr)) {
+            $this->setExternalId($arr[$keys[0]]);
+        }
+        if (array_key_exists($keys[1], $arr)) {
+            $this->setTreeLeft($arr[$keys[1]]);
+        }
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setTreeRight($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setTreeLevel($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setId($arr[$keys[4]]);
+        }
+    }
+
+    /**
+     * Populate the current object from a string, using a given parser format
+     * <code>
+     * $book = new Book();
+     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
+     * </code>
+     *
+     * @param mixed $parser A AbstractParser instance,
+     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param string $data The source data to import from
+     *
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Prohibition The current object, for fluid interface
+     */
+    public function importFrom($parser, $data)
+    {
+        if (!$parser instanceof AbstractParser) {
+            $parser = AbstractParser::getParser($parser);
+        }
+
+        $this->fromArray($parser->toArray($data), TableMap::TYPE_PHPNAME);
+
+        return $this;
     }
 
     /**
@@ -1241,11 +1239,21 @@ abstract class Prohibition implements ActiveRecordInterface
     {
         $criteria = new Criteria(ProhibitionTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ProhibitionTableMap::EXTERNAL_ID)) $criteria->add(ProhibitionTableMap::EXTERNAL_ID, $this->external_id);
-        if ($this->isColumnModified(ProhibitionTableMap::TREE_LEFT)) $criteria->add(ProhibitionTableMap::TREE_LEFT, $this->tree_left);
-        if ($this->isColumnModified(ProhibitionTableMap::TREE_RIGHT)) $criteria->add(ProhibitionTableMap::TREE_RIGHT, $this->tree_right);
-        if ($this->isColumnModified(ProhibitionTableMap::TREE_LEVEL)) $criteria->add(ProhibitionTableMap::TREE_LEVEL, $this->tree_level);
-        if ($this->isColumnModified(ProhibitionTableMap::ID)) $criteria->add(ProhibitionTableMap::ID, $this->id);
+        if ($this->isColumnModified(ProhibitionTableMap::COL_EXTERNAL_ID)) {
+            $criteria->add(ProhibitionTableMap::COL_EXTERNAL_ID, $this->external_id);
+        }
+        if ($this->isColumnModified(ProhibitionTableMap::COL_TREE_LEFT)) {
+            $criteria->add(ProhibitionTableMap::COL_TREE_LEFT, $this->tree_left);
+        }
+        if ($this->isColumnModified(ProhibitionTableMap::COL_TREE_RIGHT)) {
+            $criteria->add(ProhibitionTableMap::COL_TREE_RIGHT, $this->tree_right);
+        }
+        if ($this->isColumnModified(ProhibitionTableMap::COL_TREE_LEVEL)) {
+            $criteria->add(ProhibitionTableMap::COL_TREE_LEVEL, $this->tree_level);
+        }
+        if ($this->isColumnModified(ProhibitionTableMap::COL_ID)) {
+            $criteria->add(ProhibitionTableMap::COL_ID, $this->id);
+        }
 
         return $criteria;
     }
@@ -1256,19 +1264,43 @@ abstract class Prohibition implements ActiveRecordInterface
      * Unlike buildCriteria() this method includes the primary key values regardless
      * of whether or not they have been modified.
      *
+     * @throws LogicException if no primary key is defined
+     *
      * @return Criteria The Criteria object containing value(s) for primary key(s).
      */
     public function buildPkeyCriteria()
     {
         $criteria = new Criteria(ProhibitionTableMap::DATABASE_NAME);
-        $criteria->add(ProhibitionTableMap::ID, $this->id);
+        $criteria->add(ProhibitionTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
 
     /**
+     * If the primary key is not null, return the hashcode of the
+     * primary key. Otherwise, return the hash code of the object.
+     *
+     * @return int Hashcode
+     */
+    public function hashCode()
+    {
+        $validPk = null !== $this->getId();
+
+        $validPrimaryKeyFKs = 0;
+        $primaryKeyFKs = [];
+
+        if ($validPk) {
+            return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
+        } elseif ($validPrimaryKeyFKs) {
+            return crc32(json_encode($primaryKeyFKs, JSON_UNESCAPED_UNICODE));
+        }
+
+        return spl_object_hash($this);
+    }
+
+    /**
      * Returns the primary key for this object (row).
-     * @return   int
+     * @return int
      */
     public function getPrimaryKey()
     {
@@ -1292,7 +1324,6 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-
         return null === $this->getId();
     }
 
@@ -1330,7 +1361,6 @@ abstract class Prohibition implements ActiveRecordInterface
                     $copyObj->addProhibitionsUsers($relObj->copy($deepCopy));
                 }
             }
-
         } // if ($deepCopy)
 
         if ($makeNew) {
@@ -1347,8 +1377,8 @@ abstract class Prohibition implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \org\bitbucket\phlopsi\access_control\propel\Prohibition Clone of current object.
+     * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+     * @return \org\bitbucket\phlopsi\access_control\propel\Prohibition Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1360,7 +1390,6 @@ abstract class Prohibition implements ActiveRecordInterface
 
         return $copyObj;
     }
-
 
     /**
      * Initializes a collection based on the name of a relation.
@@ -1434,13 +1463,13 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildProhibitionsRoles[] List of ChildProhibitionsRoles objects
+     * @return ObjectCollection|ChildProhibitionsRoles[] List of ChildProhibitionsRoles objects
      * @throws PropelException
      */
-    public function getProhibitionsRoless($criteria = null, ConnectionInterface $con = null)
+    public function getProhibitionsRoless(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         $partial = $this->collProhibitionsRolessPartial && !$this->isNew();
-        if (null === $this->collProhibitionsRoless || null !== $criteria  || $partial) {
+        if (null === $this->collProhibitionsRoless || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collProhibitionsRoless) {
                 // return empty collection
                 $this->initProhibitionsRoless();
@@ -1462,8 +1491,6 @@ abstract class Prohibition implements ActiveRecordInterface
                         $this->collProhibitionsRolessPartial = true;
                     }
 
-                    $collProhibitionsRoless->getInternalIterator()->rewind();
-
                     return $collProhibitionsRoless;
                 }
 
@@ -1484,17 +1511,18 @@ abstract class Prohibition implements ActiveRecordInterface
     }
 
     /**
-     * Sets a collection of ProhibitionsRoles objects related by a one-to-many relationship
+     * Sets a collection of ChildProhibitionsRoles objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
      * @param      Collection $prohibitionsRoless A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return   ChildProhibition The current object (for fluent API support)
+     * @return $this|ChildProhibition The current object (for fluent API support)
      */
     public function setProhibitionsRoless(Collection $prohibitionsRoless, ConnectionInterface $con = null)
     {
+        /** @var ChildProhibitionsRoles[] $prohibitionsRolessToDelete */
         $prohibitionsRolessToDelete = $this->getProhibitionsRoless(new Criteria(), $con)->diff($prohibitionsRoless);
 
 
@@ -1527,7 +1555,8 @@ abstract class Prohibition implements ActiveRecordInterface
      * @return int             Count of related ProhibitionsRoles objects.
      * @throws PropelException
      */
-    public function countProhibitionsRoless(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countProhibitionsRoless(Criteria $criteria = null, $distinct = false,
+        ConnectionInterface $con = null)
     {
         $partial = $this->collProhibitionsRolessPartial && !$this->isNew();
         if (null === $this->collProhibitionsRoless || null !== $criteria || $partial) {
@@ -1545,8 +1574,8 @@ abstract class Prohibition implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByProhibition($this)
-                ->count($con);
+                    ->filterByProhibition($this)
+                    ->count($con);
         }
 
         return count($this->collProhibitionsRoless);
@@ -1556,8 +1585,8 @@ abstract class Prohibition implements ActiveRecordInterface
      * Method called to associate a ChildProhibitionsRoles object to this object
      * through the ChildProhibitionsRoles foreign key attribute.
      *
-     * @param    ChildProhibitionsRoles $l ChildProhibitionsRoles
-     * @return   \org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
+     * @param  ChildProhibitionsRoles $l ChildProhibitionsRoles
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
      */
     public function addProhibitionsRoles(ChildProhibitionsRoles $l)
     {
@@ -1566,7 +1595,7 @@ abstract class Prohibition implements ActiveRecordInterface
             $this->collProhibitionsRolessPartial = true;
         }
 
-        if (!in_array($l, $this->collProhibitionsRoless->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collProhibitionsRoless->contains($l)) {
             $this->doAddProhibitionsRoles($l);
         }
 
@@ -1574,33 +1603,33 @@ abstract class Prohibition implements ActiveRecordInterface
     }
 
     /**
-     * @param ProhibitionsRoles $prohibitionsRoles The prohibitionsRoles object to add.
+     * @param ChildProhibitionsRoles $prohibitionsRoles The ChildProhibitionsRoles object to add.
      */
-    protected function doAddProhibitionsRoles($prohibitionsRoles)
+    protected function doAddProhibitionsRoles(ChildProhibitionsRoles $prohibitionsRoles)
     {
-        $this->collProhibitionsRoless[]= $prohibitionsRoles;
+        $this->collProhibitionsRoless[] = $prohibitionsRoles;
         $prohibitionsRoles->setProhibition($this);
     }
 
     /**
-     * @param  ProhibitionsRoles $prohibitionsRoles The prohibitionsRoles object to remove.
-     * @return ChildProhibition The current object (for fluent API support)
+     * @param  ChildProhibitionsRoles $prohibitionsRoles The ChildProhibitionsRoles object to remove.
+     * @return $this|ChildProhibition The current object (for fluent API support)
      */
-    public function removeProhibitionsRoles($prohibitionsRoles)
+    public function removeProhibitionsRoles(ChildProhibitionsRoles $prohibitionsRoles)
     {
         if ($this->getProhibitionsRoless()->contains($prohibitionsRoles)) {
-            $this->collProhibitionsRoless->remove($this->collProhibitionsRoless->search($prohibitionsRoles));
+            $pos = $this->collProhibitionsRoless->search($prohibitionsRoles);
+            $this->collProhibitionsRoless->remove($pos);
             if (null === $this->prohibitionsRolessScheduledForDeletion) {
                 $this->prohibitionsRolessScheduledForDeletion = clone $this->collProhibitionsRoless;
                 $this->prohibitionsRolessScheduledForDeletion->clear();
             }
-            $this->prohibitionsRolessScheduledForDeletion[]= clone $prohibitionsRoles;
+            $this->prohibitionsRolessScheduledForDeletion[] = clone $prohibitionsRoles;
             $prohibitionsRoles->setProhibition(null);
         }
 
         return $this;
     }
-
 
     /**
      * If this collection has already been initialized with
@@ -1616,9 +1645,10 @@ abstract class Prohibition implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return Collection|ChildProhibitionsRoles[] List of ChildProhibitionsRoles objects
+     * @return ObjectCollection|ChildProhibitionsRoles[] List of ChildProhibitionsRoles objects
      */
-    public function getProhibitionsRolessJoinRole($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getProhibitionsRolessJoinRole(Criteria $criteria = null, ConnectionInterface $con = null,
+        $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildProhibitionsRolesQuery::create(null, $criteria);
         $query->joinWith('Role', $joinBehavior);
@@ -1680,13 +1710,13 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return Collection|ChildProhibitionsUsers[] List of ChildProhibitionsUsers objects
+     * @return ObjectCollection|ChildProhibitionsUsers[] List of ChildProhibitionsUsers objects
      * @throws PropelException
      */
-    public function getProhibitionsUserss($criteria = null, ConnectionInterface $con = null)
+    public function getProhibitionsUserss(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         $partial = $this->collProhibitionsUserssPartial && !$this->isNew();
-        if (null === $this->collProhibitionsUserss || null !== $criteria  || $partial) {
+        if (null === $this->collProhibitionsUserss || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collProhibitionsUserss) {
                 // return empty collection
                 $this->initProhibitionsUserss();
@@ -1708,8 +1738,6 @@ abstract class Prohibition implements ActiveRecordInterface
                         $this->collProhibitionsUserssPartial = true;
                     }
 
-                    $collProhibitionsUserss->getInternalIterator()->rewind();
-
                     return $collProhibitionsUserss;
                 }
 
@@ -1730,17 +1758,18 @@ abstract class Prohibition implements ActiveRecordInterface
     }
 
     /**
-     * Sets a collection of ProhibitionsUsers objects related by a one-to-many relationship
+     * Sets a collection of ChildProhibitionsUsers objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
      * @param      Collection $prohibitionsUserss A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
-     * @return   ChildProhibition The current object (for fluent API support)
+     * @return $this|ChildProhibition The current object (for fluent API support)
      */
     public function setProhibitionsUserss(Collection $prohibitionsUserss, ConnectionInterface $con = null)
     {
+        /** @var ChildProhibitionsUsers[] $prohibitionsUserssToDelete */
         $prohibitionsUserssToDelete = $this->getProhibitionsUserss(new Criteria(), $con)->diff($prohibitionsUserss);
 
 
@@ -1773,7 +1802,8 @@ abstract class Prohibition implements ActiveRecordInterface
      * @return int             Count of related ProhibitionsUsers objects.
      * @throws PropelException
      */
-    public function countProhibitionsUserss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countProhibitionsUserss(Criteria $criteria = null, $distinct = false,
+        ConnectionInterface $con = null)
     {
         $partial = $this->collProhibitionsUserssPartial && !$this->isNew();
         if (null === $this->collProhibitionsUserss || null !== $criteria || $partial) {
@@ -1791,8 +1821,8 @@ abstract class Prohibition implements ActiveRecordInterface
             }
 
             return $query
-                ->filterByProhibition($this)
-                ->count($con);
+                    ->filterByProhibition($this)
+                    ->count($con);
         }
 
         return count($this->collProhibitionsUserss);
@@ -1802,8 +1832,8 @@ abstract class Prohibition implements ActiveRecordInterface
      * Method called to associate a ChildProhibitionsUsers object to this object
      * through the ChildProhibitionsUsers foreign key attribute.
      *
-     * @param    ChildProhibitionsUsers $l ChildProhibitionsUsers
-     * @return   \org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
+     * @param  ChildProhibitionsUsers $l ChildProhibitionsUsers
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Prohibition The current object (for fluent API support)
      */
     public function addProhibitionsUsers(ChildProhibitionsUsers $l)
     {
@@ -1812,7 +1842,7 @@ abstract class Prohibition implements ActiveRecordInterface
             $this->collProhibitionsUserssPartial = true;
         }
 
-        if (!in_array($l, $this->collProhibitionsUserss->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+        if (!$this->collProhibitionsUserss->contains($l)) {
             $this->doAddProhibitionsUsers($l);
         }
 
@@ -1820,33 +1850,33 @@ abstract class Prohibition implements ActiveRecordInterface
     }
 
     /**
-     * @param ProhibitionsUsers $prohibitionsUsers The prohibitionsUsers object to add.
+     * @param ChildProhibitionsUsers $prohibitionsUsers The ChildProhibitionsUsers object to add.
      */
-    protected function doAddProhibitionsUsers($prohibitionsUsers)
+    protected function doAddProhibitionsUsers(ChildProhibitionsUsers $prohibitionsUsers)
     {
-        $this->collProhibitionsUserss[]= $prohibitionsUsers;
+        $this->collProhibitionsUserss[] = $prohibitionsUsers;
         $prohibitionsUsers->setProhibition($this);
     }
 
     /**
-     * @param  ProhibitionsUsers $prohibitionsUsers The prohibitionsUsers object to remove.
-     * @return ChildProhibition The current object (for fluent API support)
+     * @param  ChildProhibitionsUsers $prohibitionsUsers The ChildProhibitionsUsers object to remove.
+     * @return $this|ChildProhibition The current object (for fluent API support)
      */
-    public function removeProhibitionsUsers($prohibitionsUsers)
+    public function removeProhibitionsUsers(ChildProhibitionsUsers $prohibitionsUsers)
     {
         if ($this->getProhibitionsUserss()->contains($prohibitionsUsers)) {
-            $this->collProhibitionsUserss->remove($this->collProhibitionsUserss->search($prohibitionsUsers));
+            $pos = $this->collProhibitionsUserss->search($prohibitionsUsers);
+            $this->collProhibitionsUserss->remove($pos);
             if (null === $this->prohibitionsUserssScheduledForDeletion) {
                 $this->prohibitionsUserssScheduledForDeletion = clone $this->collProhibitionsUserss;
                 $this->prohibitionsUserssScheduledForDeletion->clear();
             }
-            $this->prohibitionsUserssScheduledForDeletion[]= clone $prohibitionsUsers;
+            $this->prohibitionsUserssScheduledForDeletion[] = clone $prohibitionsUsers;
             $prohibitionsUsers->setProhibition(null);
         }
 
         return $this;
     }
-
 
     /**
      * If this collection has already been initialized with
@@ -1862,9 +1892,10 @@ abstract class Prohibition implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return Collection|ChildProhibitionsUsers[] List of ChildProhibitionsUsers objects
+     * @return ObjectCollection|ChildProhibitionsUsers[] List of ChildProhibitionsUsers objects
      */
-    public function getProhibitionsUserssJoinUser($criteria = null, $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getProhibitionsUserssJoinUser(Criteria $criteria = null, ConnectionInterface $con = null,
+        $joinBehavior = Criteria::LEFT_JOIN)
     {
         $query = ChildProhibitionsUsersQuery::create(null, $criteria);
         $query->joinWith('User', $joinBehavior);
@@ -1884,7 +1915,6 @@ abstract class Prohibition implements ActiveRecordInterface
     public function clearRoles()
     {
         $this->collRoles = null; // important to set this to NULL since that means it is uninitialized
-        $this->collRolesPartial = null;
     }
 
     /**
@@ -1899,7 +1929,19 @@ abstract class Prohibition implements ActiveRecordInterface
     public function initRoles()
     {
         $this->collRoles = new ObjectCollection();
+        $this->collRolesPartial = true;
+
         $this->collRoles->setModel('\org\bitbucket\phlopsi\access_control\propel\Role');
+    }
+
+    /**
+     * Checks if the collRoles collection is loaded.
+     *
+     * @return bool
+     */
+    public function isRolesLoaded()
+    {
+        return null !== $this->collRoles;
     }
 
     /**
@@ -1917,20 +1959,35 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @return ObjectCollection|ChildRole[] List of ChildRole objects
      */
-    public function getRoles($criteria = null, ConnectionInterface $con = null)
+    public function getRoles(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        if (null === $this->collRoles || null !== $criteria) {
-            if ($this->isNew() && null === $this->collRoles) {
+        $partial = $this->collRolesPartial && !$this->isNew();
+        if (null === $this->collRoles || null !== $criteria || $partial) {
+            if ($this->isNew()) {
                 // return empty collection
-                $this->initRoles();
+                if (null === $this->collRoles) {
+                    $this->initRoles();
+                }
             } else {
-                $collRoles = ChildRoleQuery::create(null, $criteria)
-                    ->filterByProhibition($this)
-                    ->find($con);
+
+                $query = ChildRoleQuery::create(null, $criteria)
+                    ->filterByProhibition($this);
+                $collRoles = $query->find($con);
                 if (null !== $criteria) {
                     return $collRoles;
                 }
+
+                if ($partial && $this->collRoles) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collRoles as $obj) {
+                        if (!$collRoles->contains($obj)) {
+                            $collRoles[] = $obj;
+                        }
+                    }
+                }
+
                 $this->collRoles = $collRoles;
+                $this->collRolesPartial = false;
             }
         }
 
@@ -1945,14 +2002,18 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @param  Collection $roles A Propel collection.
      * @param  ConnectionInterface $con Optional connection object
-     * @return ChildProhibition The current object (for fluent API support)
+     * @return $this|ChildProhibition The current object (for fluent API support)
      */
     public function setRoles(Collection $roles, ConnectionInterface $con = null)
     {
         $this->clearRoles();
         $currentRoles = $this->getRoles();
 
-        $this->rolesScheduledForDeletion = $currentRoles->diff($roles);
+        $rolesScheduledForDeletion = $currentRoles->diff($roles);
+
+        foreach ($rolesScheduledForDeletion as $toDelete) {
+            $this->removeRole($toDelete);
+        }
 
         foreach ($roles as $role) {
             if (!$currentRoles->contains($role)) {
@@ -1960,35 +2021,42 @@ abstract class Prohibition implements ActiveRecordInterface
             }
         }
 
+        $this->collRolesPartial = false;
         $this->collRoles = $roles;
 
         return $this;
     }
 
     /**
-     * Gets the number of ChildRole objects related by a many-to-many relationship
+     * Gets the number of Role objects related by a many-to-many relationship
      * to the current object by way of the prohibitions_roles cross-reference table.
      *
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      boolean $distinct Set to true to force count distinct
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return int the number of related ChildRole objects
+     * @return int the number of related Role objects
      */
-    public function countRoles($criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countRoles(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        if (null === $this->collRoles || null !== $criteria) {
+        $partial = $this->collRolesPartial && !$this->isNew();
+        if (null === $this->collRoles || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collRoles) {
                 return 0;
             } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getRoles());
+                }
+
                 $query = ChildRoleQuery::create(null, $criteria);
                 if ($distinct) {
                     $query->distinct();
                 }
 
                 return $query
-                    ->filterByProhibition($this)
-                    ->count($con);
+                        ->filterByProhibition($this)
+                        ->count($con);
             }
         } else {
             return count($this->collRoles);
@@ -1996,10 +2064,10 @@ abstract class Prohibition implements ActiveRecordInterface
     }
 
     /**
-     * Associate a ChildRole object to this object
+     * Associate a ChildRole to this object
      * through the prohibitions_roles cross reference table.
      *
-     * @param  ChildRole $role The ChildProhibitionsRoles object to relate
+     * @param ChildRole $role
      * @return ChildProhibition The current object (for fluent API support)
      */
     public function addRole(ChildRole $role)
@@ -2008,40 +2076,61 @@ abstract class Prohibition implements ActiveRecordInterface
             $this->initRoles();
         }
 
-        if (!$this->collRoles->contains($role)) { // only add it if the **same** object is not already associated
+        if (!$this->getRoles()->contains($role)) {
+            // only add it if the **same** object is not already associated
+            $this->collRoles->push($role);
             $this->doAddRole($role);
-            $this->collRoles[] = $role;
         }
 
         return $this;
     }
 
     /**
-     * @param    Role $role The role object to add.
+     *
+     * @param ChildRole $role
      */
-    protected function doAddRole($role)
+    protected function doAddRole(ChildRole $role)
     {
         $prohibitionsRoles = new ChildProhibitionsRoles();
+
         $prohibitionsRoles->setRole($role);
+
+        $prohibitionsRoles->setProhibition($this);
+
         $this->addProhibitionsRoles($prohibitionsRoles);
+
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
-        if (!$role->getProhibitions()->contains($this)) {
-            $foreignCollection   = $role->getProhibitions();
-            $foreignCollection[] = $this;
+        if (!$role->isProhibitionsLoaded()) {
+            $role->initProhibitions();
+            $role->getProhibitions()->push($this);
+        } elseif (!$role->getProhibitions()->contains($this)) {
+            $role->getProhibitions()->push($this);
         }
     }
 
     /**
-     * Remove a ChildRole object to this object
+     * Remove role of this object
      * through the prohibitions_roles cross reference table.
      *
-     * @param ChildRole $role The ChildProhibitionsRoles object to relate
+     * @param ChildRole $role
      * @return ChildProhibition The current object (for fluent API support)
      */
     public function removeRole(ChildRole $role)
     {
         if ($this->getRoles()->contains($role)) {
+            $prohibitionsRoles = new ChildProhibitionsRoles();
+
+            $prohibitionsRoles->setRole($role);
+            if ($role->isProhibitionsLoaded()) {
+                //remove the back reference if available
+                $role->getProhibitions()->removeObject($this);
+            }
+
+            $prohibitionsRoles->setProhibition($this);
+            $this->removeProhibitionsRoles(clone $prohibitionsRoles);
+            $prohibitionsRoles->clear();
+
             $this->collRoles->remove($this->collRoles->search($role));
 
             if (null === $this->rolesScheduledForDeletion) {
@@ -2049,8 +2138,9 @@ abstract class Prohibition implements ActiveRecordInterface
                 $this->rolesScheduledForDeletion->clear();
             }
 
-            $this->rolesScheduledForDeletion[] = $role;
+            $this->rolesScheduledForDeletion->push($role);
         }
+
 
         return $this;
     }
@@ -2067,7 +2157,6 @@ abstract class Prohibition implements ActiveRecordInterface
     public function clearUsers()
     {
         $this->collUsers = null; // important to set this to NULL since that means it is uninitialized
-        $this->collUsersPartial = null;
     }
 
     /**
@@ -2082,7 +2171,19 @@ abstract class Prohibition implements ActiveRecordInterface
     public function initUsers()
     {
         $this->collUsers = new ObjectCollection();
+        $this->collUsersPartial = true;
+
         $this->collUsers->setModel('\org\bitbucket\phlopsi\access_control\propel\User');
+    }
+
+    /**
+     * Checks if the collUsers collection is loaded.
+     *
+     * @return bool
+     */
+    public function isUsersLoaded()
+    {
+        return null !== $this->collUsers;
     }
 
     /**
@@ -2100,20 +2201,35 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @return ObjectCollection|ChildUser[] List of ChildUser objects
      */
-    public function getUsers($criteria = null, ConnectionInterface $con = null)
+    public function getUsers(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        if (null === $this->collUsers || null !== $criteria) {
-            if ($this->isNew() && null === $this->collUsers) {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria || $partial) {
+            if ($this->isNew()) {
                 // return empty collection
-                $this->initUsers();
+                if (null === $this->collUsers) {
+                    $this->initUsers();
+                }
             } else {
-                $collUsers = ChildUserQuery::create(null, $criteria)
-                    ->filterByProhibition($this)
-                    ->find($con);
+
+                $query = ChildUserQuery::create(null, $criteria)
+                    ->filterByProhibition($this);
+                $collUsers = $query->find($con);
                 if (null !== $criteria) {
                     return $collUsers;
                 }
+
+                if ($partial && $this->collUsers) {
+                    //make sure that already added objects gets added to the list of the database.
+                    foreach ($this->collUsers as $obj) {
+                        if (!$collUsers->contains($obj)) {
+                            $collUsers[] = $obj;
+                        }
+                    }
+                }
+
                 $this->collUsers = $collUsers;
+                $this->collUsersPartial = false;
             }
         }
 
@@ -2128,14 +2244,18 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @param  Collection $users A Propel collection.
      * @param  ConnectionInterface $con Optional connection object
-     * @return ChildProhibition The current object (for fluent API support)
+     * @return $this|ChildProhibition The current object (for fluent API support)
      */
     public function setUsers(Collection $users, ConnectionInterface $con = null)
     {
         $this->clearUsers();
         $currentUsers = $this->getUsers();
 
-        $this->usersScheduledForDeletion = $currentUsers->diff($users);
+        $usersScheduledForDeletion = $currentUsers->diff($users);
+
+        foreach ($usersScheduledForDeletion as $toDelete) {
+            $this->removeUser($toDelete);
+        }
 
         foreach ($users as $user) {
             if (!$currentUsers->contains($user)) {
@@ -2143,35 +2263,42 @@ abstract class Prohibition implements ActiveRecordInterface
             }
         }
 
+        $this->collUsersPartial = false;
         $this->collUsers = $users;
 
         return $this;
     }
 
     /**
-     * Gets the number of ChildUser objects related by a many-to-many relationship
+     * Gets the number of User objects related by a many-to-many relationship
      * to the current object by way of the prohibitions_users cross-reference table.
      *
      * @param      Criteria $criteria Optional query object to filter the query
      * @param      boolean $distinct Set to true to force count distinct
      * @param      ConnectionInterface $con Optional connection object
      *
-     * @return int the number of related ChildUser objects
+     * @return int the number of related User objects
      */
-    public function countUsers($criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        if (null === $this->collUsers || null !== $criteria) {
+        $partial = $this->collUsersPartial && !$this->isNew();
+        if (null === $this->collUsers || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collUsers) {
                 return 0;
             } else {
+
+                if ($partial && !$criteria) {
+                    return count($this->getUsers());
+                }
+
                 $query = ChildUserQuery::create(null, $criteria);
                 if ($distinct) {
                     $query->distinct();
                 }
 
                 return $query
-                    ->filterByProhibition($this)
-                    ->count($con);
+                        ->filterByProhibition($this)
+                        ->count($con);
             }
         } else {
             return count($this->collUsers);
@@ -2179,10 +2306,10 @@ abstract class Prohibition implements ActiveRecordInterface
     }
 
     /**
-     * Associate a ChildUser object to this object
+     * Associate a ChildUser to this object
      * through the prohibitions_users cross reference table.
      *
-     * @param  ChildUser $user The ChildProhibitionsUsers object to relate
+     * @param ChildUser $user
      * @return ChildProhibition The current object (for fluent API support)
      */
     public function addUser(ChildUser $user)
@@ -2191,40 +2318,61 @@ abstract class Prohibition implements ActiveRecordInterface
             $this->initUsers();
         }
 
-        if (!$this->collUsers->contains($user)) { // only add it if the **same** object is not already associated
+        if (!$this->getUsers()->contains($user)) {
+            // only add it if the **same** object is not already associated
+            $this->collUsers->push($user);
             $this->doAddUser($user);
-            $this->collUsers[] = $user;
         }
 
         return $this;
     }
 
     /**
-     * @param    User $user The user object to add.
+     *
+     * @param ChildUser $user
      */
-    protected function doAddUser($user)
+    protected function doAddUser(ChildUser $user)
     {
         $prohibitionsUsers = new ChildProhibitionsUsers();
+
         $prohibitionsUsers->setUser($user);
+
+        $prohibitionsUsers->setProhibition($this);
+
         $this->addProhibitionsUsers($prohibitionsUsers);
+
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
-        if (!$user->getProhibitions()->contains($this)) {
-            $foreignCollection   = $user->getProhibitions();
-            $foreignCollection[] = $this;
+        if (!$user->isProhibitionsLoaded()) {
+            $user->initProhibitions();
+            $user->getProhibitions()->push($this);
+        } elseif (!$user->getProhibitions()->contains($this)) {
+            $user->getProhibitions()->push($this);
         }
     }
 
     /**
-     * Remove a ChildUser object to this object
+     * Remove user of this object
      * through the prohibitions_users cross reference table.
      *
-     * @param ChildUser $user The ChildProhibitionsUsers object to relate
+     * @param ChildUser $user
      * @return ChildProhibition The current object (for fluent API support)
      */
     public function removeUser(ChildUser $user)
     {
         if ($this->getUsers()->contains($user)) {
+            $prohibitionsUsers = new ChildProhibitionsUsers();
+
+            $prohibitionsUsers->setUser($user);
+            if ($user->isProhibitionsLoaded()) {
+                //remove the back reference if available
+                $user->getProhibitions()->removeObject($this);
+            }
+
+            $prohibitionsUsers->setProhibition($this);
+            $this->removeProhibitionsUsers(clone $prohibitionsUsers);
+            $prohibitionsUsers->clear();
+
             $this->collUsers->remove($this->collUsers->search($user));
 
             if (null === $this->usersScheduledForDeletion) {
@@ -2232,14 +2380,17 @@ abstract class Prohibition implements ActiveRecordInterface
                 $this->usersScheduledForDeletion->clear();
             }
 
-            $this->usersScheduledForDeletion[] = $user;
+            $this->usersScheduledForDeletion->push($user);
         }
+
 
         return $this;
     }
 
     /**
-     * Clears the current object and sets all attributes to their default values
+     * Clears the current object, sets all attributes to their default values and removes
+     * outgoing references as well as back-references (from other objects to this one. Results probably in a database
+     * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
@@ -2256,11 +2407,10 @@ abstract class Prohibition implements ActiveRecordInterface
     }
 
     /**
-     * Resets all references to other model objects or collections of model objects.
+     * Resets all references and back-references to other model objects or collections of model objects.
      *
-     * This method is a user-space workaround for PHP's inability to garbage collect
-     * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volume/high-memory operations.
+     * This method is used to reset all php object references (not the actual reference in the database).
+     * Necessary for object serialisation.
      *
      * @param      boolean $deep Whether to also clear the references on all referrer objects.
      */
@@ -2288,25 +2438,12 @@ abstract class Prohibition implements ActiveRecordInterface
                 }
             }
         } // if ($deep)
-
         // nested_set behavior
         $this->collNestedSetChildren = null;
         $this->aNestedSetParent = null;
-        if ($this->collProhibitionsRoless instanceof Collection) {
-            $this->collProhibitionsRoless->clearIterator();
-        }
         $this->collProhibitionsRoless = null;
-        if ($this->collProhibitionsUserss instanceof Collection) {
-            $this->collProhibitionsUserss->clearIterator();
-        }
         $this->collProhibitionsUserss = null;
-        if ($this->collRoles instanceof Collection) {
-            $this->collRoles->clearIterator();
-        }
         $this->collRoles = null;
-        if ($this->collUsers instanceof Collection) {
-            $this->collUsers->clearIterator();
-        }
         $this->collUsers = null;
     }
 
@@ -2321,14 +2458,13 @@ abstract class Prohibition implements ActiveRecordInterface
     }
 
     // nested_set behavior
-
     /**
      * Execute queries that were saved to be run inside the save transaction
      */
     protected function processNestedSetQueries($con)
     {
         foreach ($this->nestedSetQueries as $query) {
-            $query['arguments'][]= $con;
+            $query['arguments'][] = $con;
             call_user_func_array($query['callable'], $query['arguments']);
         }
         $this->nestedSetQueries = array();
@@ -2372,7 +2508,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * It provides a generic way to set the value, whatever the actual column name is.
      *
      * @param  int $v The nested set left value
-     * @return ChildProhibition The current object (for fluent API support)
+     * @return $this|ChildProhibition The current object (for fluent API support)
      */
     public function setLeftValue($v)
     {
@@ -2384,7 +2520,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * It provides a generic way to set the value, whatever the actual column name is.
      *
      * @param      int $v The nested set right value
-     * @return     ChildProhibition The current object (for fluent API support)
+     * @return     $this|ChildProhibition The current object (for fluent API support)
      */
     public function setRightValue($v)
     {
@@ -2396,7 +2532,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * It provides a generic way to set the value, whatever the actual column name is.
      *
      * @param      int $v The nested set level value
-     * @return     ChildProhibition The current object (for fluent API support)
+     * @return     $this|ChildProhibition The current object (for fluent API support)
      */
     public function setLevel($v)
     {
@@ -2406,7 +2542,7 @@ abstract class Prohibition implements ActiveRecordInterface
     /**
      * Creates the supplied node as the root node.
      *
-     * @return     ChildProhibition The current object (for fluent API support)
+     * @return     $this|ChildProhibition The current object (for fluent API support)
      * @throws     PropelException
      */
     public function makeRoot()
@@ -2449,7 +2585,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function isLeaf()
     {
-        return $this->isInTree() &&  ($this->getRightValue() - $this->getLeftValue()) == 1;
+        return $this->isInTree() && ($this->getRightValue() - $this->getLeftValue()) == 1;
     }
 
     /**
@@ -2491,7 +2627,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * Use moveTofirstChildOf() or moveToLastChildOf() for that purpose
      *
      * @param      ChildProhibition $parent
-     * @return     ChildProhibition The current object, for fluid interface
+     * @return     $this|ChildProhibition The current object, for fluid interface
      */
     public function setParent($parent = null)
     {
@@ -2505,7 +2641,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * The result is cached so further calls to the same method don't issue any queries
      *
      * @param  ConnectionInterface $con Connection to use.
-     * @return mixed Propel object if exists else false
+     * @return self|boolean Propel object if exists else false
      */
     public function getParent(ConnectionInterface $con = null)
     {
@@ -2532,8 +2668,8 @@ abstract class Prohibition implements ActiveRecordInterface
         }
 
         return ChildProhibitionQuery::create()
-            ->filterByTreeRight($this->getLeftValue() - 1)
-            ->count($con) > 0;
+                ->filterByTreeRight($this->getLeftValue() - 1)
+                ->count($con) > 0;
     }
 
     /**
@@ -2545,8 +2681,8 @@ abstract class Prohibition implements ActiveRecordInterface
     public function getPrevSibling(ConnectionInterface $con = null)
     {
         return ChildProhibitionQuery::create()
-            ->filterByTreeRight($this->getLeftValue() - 1)
-            ->findOne($con);
+                ->filterByTreeRight($this->getLeftValue() - 1)
+                ->findOne($con);
     }
 
     /**
@@ -2562,8 +2698,8 @@ abstract class Prohibition implements ActiveRecordInterface
         }
 
         return ChildProhibitionQuery::create()
-            ->filterByTreeLeft($this->getRightValue() + 1)
-            ->count($con) > 0;
+                ->filterByTreeLeft($this->getRightValue() + 1)
+                ->count($con) > 0;
     }
 
     /**
@@ -2575,8 +2711,8 @@ abstract class Prohibition implements ActiveRecordInterface
     public function getNextSibling(ConnectionInterface $con = null)
     {
         return ChildProhibitionQuery::create()
-            ->filterByTreeLeft($this->getRightValue() + 1)
-            ->findOne($con);
+                ->filterByTreeLeft($this->getRightValue() + 1)
+                ->findOne($con);
     }
 
     /**
@@ -2618,7 +2754,7 @@ abstract class Prohibition implements ActiveRecordInterface
             $this->initNestedSetChildren();
         }
         if (!in_array($prohibition, $this->collNestedSetChildren->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->collNestedSetChildren[]= $prohibition;
+            $this->collNestedSetChildren[] = $prohibition;
             $prohibition->setParent($this);
         }
     }
@@ -2648,8 +2784,8 @@ abstract class Prohibition implements ActiveRecordInterface
                 $this->initNestedSetChildren();
             } else {
                 $collNestedSetChildren = ChildProhibitionQuery::create(null, $criteria)
-                  ->childrenOf($this)
-                  ->orderByBranch()
+                    ->childrenOf($this)
+                    ->orderByBranch()
                     ->find($con);
                 if (null !== $criteria) {
                     return $collNestedSetChildren;
@@ -2675,8 +2811,8 @@ abstract class Prohibition implements ActiveRecordInterface
                 return 0;
             } else {
                 return ChildProhibitionQuery::create(null, $criteria)
-                    ->childrenOf($this)
-                    ->count($con);
+                        ->childrenOf($this)
+                        ->count($con);
             }
         } else {
             return count($this->collNestedSetChildren);
@@ -2696,9 +2832,9 @@ abstract class Prohibition implements ActiveRecordInterface
             return array();
         } else {
             return ChildProhibitionQuery::create(null, $query)
-                ->childrenOf($this)
-                ->orderByBranch()
-                ->findOne($con);
+                    ->childrenOf($this)
+                    ->orderByBranch()
+                    ->findOne($con);
         }
     }
 
@@ -2715,9 +2851,9 @@ abstract class Prohibition implements ActiveRecordInterface
             return array();
         } else {
             return ChildProhibitionQuery::create(null, $query)
-                ->childrenOf($this)
-                ->orderByBranch(true)
-                ->findOne($con);
+                    ->childrenOf($this)
+                    ->orderByBranch(true)
+                    ->findOne($con);
         }
     }
 
@@ -2735,9 +2871,9 @@ abstract class Prohibition implements ActiveRecordInterface
         if ($this->isRoot()) {
             return array();
         } else {
-             $query = ChildProhibitionQuery::create(null, $query)
-                    ->childrenOf($this->getParent($con))
-                    ->orderByBranch();
+            $query = ChildProhibitionQuery::create(null, $query)
+                ->childrenOf($this->getParent($con))
+                ->orderByBranch();
             if (!$includeNode) {
                 $query->prune($this);
             }
@@ -2759,9 +2895,9 @@ abstract class Prohibition implements ActiveRecordInterface
             return array();
         } else {
             return ChildProhibitionQuery::create(null, $query)
-                ->descendantsOf($this)
-                ->orderByBranch()
-                ->find($con);
+                    ->descendantsOf($this)
+                    ->orderByBranch()
+                    ->find($con);
         }
     }
 
@@ -2779,8 +2915,8 @@ abstract class Prohibition implements ActiveRecordInterface
             return 0;
         } else {
             return ChildProhibitionQuery::create(null, $query)
-                ->descendantsOf($this)
-                ->count($con);
+                    ->descendantsOf($this)
+                    ->count($con);
         }
     }
 
@@ -2794,9 +2930,9 @@ abstract class Prohibition implements ActiveRecordInterface
     public function getBranch($query = null, ConnectionInterface $con = null)
     {
         return ChildProhibitionQuery::create(null, $query)
-            ->branchOf($this)
-            ->orderByBranch()
-            ->find($con);
+                ->branchOf($this)
+                ->orderByBranch()
+                ->find($con);
     }
 
     /**
@@ -2814,9 +2950,9 @@ abstract class Prohibition implements ActiveRecordInterface
             return array();
         } else {
             return ChildProhibitionQuery::create(null, $query)
-                ->ancestorsOf($this)
-                ->orderByBranch()
-                ->find($con);
+                    ->ancestorsOf($this)
+                    ->orderByBranch()
+                    ->find($con);
         }
     }
 
@@ -2827,7 +2963,7 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @param      ChildProhibition $child    Propel object for child node
      *
-     * @return     ChildProhibition The current Propel object
+     * @return     $this|ChildProhibition The current Propel object
      */
     public function addChild(ChildProhibition $child)
     {
@@ -2846,7 +2982,7 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @param      ChildProhibition $parent    Propel object for parent node
      *
-     * @return     ChildProhibition The current Propel object
+     * @return     $this|ChildProhibition The current Propel object
      */
     public function insertAsFirstChildOf($parent)
     {
@@ -2862,8 +2998,8 @@ abstract class Prohibition implements ActiveRecordInterface
         $parent->addNestedSetChild($this);
 
         // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery', 'makeRoomForLeaf'),
+        $this->nestedSetQueries [] = array(
+            'callable' => array('\org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2876,13 +3012,13 @@ abstract class Prohibition implements ActiveRecordInterface
      * are not persisted until the current object is saved.
      *
      * @param  ChildProhibition $parent Propel object for parent node
-     * @return ChildProhibition The current Propel object
+     * @return $this|ChildProhibition The current Propel object
      */
     public function insertAsLastChildOf($parent)
     {
         if ($this->isInTree()) {
-           throw new PropelException(
-                'A ChildProhibition object must not already be in the tree to be inserted. Use the moveToLastChildOf() instead.'
+            throw new PropelException(
+            'A ChildProhibition object must not already be in the tree to be inserted. Use the moveToLastChildOf() instead.'
             );
         }
 
@@ -2896,8 +3032,8 @@ abstract class Prohibition implements ActiveRecordInterface
         $parent->addNestedSetChild($this);
 
         // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery', 'makeRoomForLeaf'),
+        $this->nestedSetQueries [] = array(
+            'callable' => array('\org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2911,7 +3047,7 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @param      ChildProhibition $sibling    Propel object for parent node
      *
-     * @return     ChildProhibition The current Propel object
+     * @return     $this|ChildProhibition The current Propel object
      */
     public function insertAsPrevSiblingOf($sibling)
     {
@@ -2924,8 +3060,8 @@ abstract class Prohibition implements ActiveRecordInterface
         $this->setRightValue($left + 1);
         $this->setLevel($sibling->getLevel());
         // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery', 'makeRoomForLeaf'),
+        $this->nestedSetQueries [] = array(
+            'callable' => array('\org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2939,7 +3075,7 @@ abstract class Prohibition implements ActiveRecordInterface
      *
      * @param      ChildProhibition $sibling    Propel object for parent node
      *
-     * @return     ChildProhibition The current Propel object
+     * @return     $this|ChildProhibition The current Propel object
      */
     public function insertAsNextSiblingOf($sibling)
     {
@@ -2952,8 +3088,8 @@ abstract class Prohibition implements ActiveRecordInterface
         $this->setRightValue($left + 1);
         $this->setLevel($sibling->getLevel());
         // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery', 'makeRoomForLeaf'),
+        $this->nestedSetQueries [] = array(
+            'callable' => array('\org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2967,7 +3103,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * @param      ChildProhibition $parent    Propel object for parent node
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     ChildProhibition The current Propel object
+     * @return     $this|ChildProhibition The current Propel object
      */
     public function moveToFirstChildOf($parent, ConnectionInterface $con = null)
     {
@@ -2990,7 +3126,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * @param      ChildProhibition $parent    Propel object for parent node
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     ChildProhibition The current Propel object
+     * @return     $this|ChildProhibition The current Propel object
      */
     public function moveToLastChildOf($parent, ConnectionInterface $con = null)
     {
@@ -3013,7 +3149,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * @param      ChildProhibition $sibling    Propel object for sibling node
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     ChildProhibition The current Propel object
+     * @return     $this|ChildProhibition The current Propel object
      */
     public function moveToPrevSiblingOf($sibling, ConnectionInterface $con = null)
     {
@@ -3039,7 +3175,7 @@ abstract class Prohibition implements ActiveRecordInterface
      * @param      ChildProhibition $sibling    Propel object for sibling node
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     ChildProhibition The current Propel object
+     * @return     $this|ChildProhibition The current Propel object
      */
     public function moveToNextSiblingOf($sibling, ConnectionInterface $con = null)
     {
@@ -3067,19 +3203,19 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null)
     {
-        $preventDefault = false;
-        $left  = $this->getLeftValue();
+        $left = $this->getLeftValue();
         $right = $this->getRightValue();
 
 
-        $treeSize = $right - $left +1;
+        $treeSize = $right - $left + 1;
 
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(ProhibitionTableMap::DATABASE_NAME);
         }
 
-        $con->beginTransaction();
-        try {
+        $con->transaction(function () use ($con, $treeSize, $destLeft, $left, $right, $levelDelta) {
+            $preventDefault = false;
+
             // make room next to the target for the subtree
             ChildProhibitionQuery::shiftRLValues($treeSize, $destLeft, null, $con);
 
@@ -3107,12 +3243,7 @@ abstract class Prohibition implements ActiveRecordInterface
 
             // update all loaded nodes
             ChildProhibitionQuery::updateLoadedNodes(null, $con);
-
-            $con->commit();
-        } catch (PropelException $e) {
-            $con->rollback();
-            throw $e;
-        }
+        });
     }
 
     /**
@@ -3135,26 +3266,21 @@ abstract class Prohibition implements ActiveRecordInterface
         }
         $left = $this->getLeftValue();
         $right = $this->getRightValue();
-        $con->beginTransaction();
-        try {
-            // delete descendant nodes (will empty the instance pool)
-            $ret = ChildProhibitionQuery::create()
-                ->descendantsOf($this)
-                ->delete($con);
 
-            // fill up the room that was used by descendants
-            ChildProhibitionQuery::shiftRLValues($left - $right + 1, $right, null, $con);
+        return $con->transaction(function () use ($con, $left, $right) {
+                // delete descendant nodes (will empty the instance pool)
+                $ret = ChildProhibitionQuery::create()
+                    ->descendantsOf($this)
+                    ->delete($con);
 
-            // fix the right value for the current node, which is now a leaf
-            $this->setRightValue($left + 1);
+                // fill up the room that was used by descendants
+                ChildProhibitionQuery::shiftRLValues($left - $right + 1, $right, null, $con);
 
-            $con->commit();
-        } catch (Exception $e) {
-            $con->rollback();
-            throw $e;
-        }
+                // fix the right value for the current node, which is now a leaf
+                $this->setRightValue($left + 1);
 
-        return $ret;
+                return $ret;
+            });
     }
 
     /**
@@ -3183,7 +3309,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        
     }
 
     /**
@@ -3202,7 +3328,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        
     }
 
     /**
@@ -3221,7 +3347,7 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        
     }
 
     /**
@@ -3240,9 +3366,8 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        
     }
-
 
     /**
      * Derived method to catches calls to undefined methods.

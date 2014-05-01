@@ -1,5 +1,4 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel\Base;
 
 use \DateTime;
@@ -12,6 +11,7 @@ use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
+use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
@@ -30,7 +30,6 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * TableMap class name
      */
     const TABLE_MAP = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Map\\ProhibitionsUsersTableMap';
-
 
     /**
      * attribute to determine if this object has previously been saved.
@@ -72,29 +71,29 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
 
     /**
      * The value for the prohibited_until field.
-     * @var        string
+     * @var        \DateTime
      */
     protected $prohibited_until;
 
     /**
      * The value for the created_at field.
-     * @var        string
+     * @var        \DateTime
      */
     protected $created_at;
 
     /**
      * The value for the updated_at field.
-     * @var        string
+     * @var        \DateTime
      */
     protected $updated_at;
 
     /**
-     * @var        Prohibition
+     * @var        ChildProhibition
      */
     protected $aProhibition;
 
     /**
-     * @var        User
+     * @var        ChildUser
      */
     protected $aUser;
 
@@ -111,6 +110,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function __construct()
     {
+        
     }
 
     /**
@@ -120,7 +120,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function isModified()
     {
-        return !empty($this->modifiedColumns);
+        return !!$this->modifiedColumns;
     }
 
     /**
@@ -131,7 +131,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function isColumnModified($col)
     {
-        return in_array($col, $this->modifiedColumns);
+        return $this->modifiedColumns && isset($this->modifiedColumns[$col]);
     }
 
     /**
@@ -140,7 +140,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function getModifiedColumns()
     {
-        return array_unique($this->modifiedColumns);
+        return $this->modifiedColumns ? array_keys($this->modifiedColumns) : [];
     }
 
     /**
@@ -163,7 +163,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function setNew($b)
     {
-        $this->new = (Boolean) $b;
+        $this->new = (boolean) $b;
     }
 
     /**
@@ -182,7 +182,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function setDeleted($b)
     {
-        $this->deleted = (Boolean) $b;
+        $this->deleted = (boolean) $b;
     }
 
     /**
@@ -193,8 +193,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     public function resetModified($col = null)
     {
         if (null !== $col) {
-            while (false !== ($offset = array_search($col, $this->modifiedColumns))) {
-                array_splice($this->modifiedColumns, $offset, 1);
+            if (isset($this->modifiedColumns[$col])) {
+                unset($this->modifiedColumns[$col]);
             }
         } else {
             $this->modifiedColumns = array();
@@ -211,8 +211,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function equals($obj)
     {
-        $thisclazz = get_class($this);
-        if (!is_object($obj) || !($obj instanceof $thisclazz)) {
+        if (!$obj instanceof static) {
             return false;
         }
 
@@ -220,27 +219,11 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             return true;
         }
 
-        if (null === $this->getPrimaryKey()
-            || null === $obj->getPrimaryKey())  {
+        if (null === $this->getPrimaryKey() || null === $obj->getPrimaryKey()) {
             return false;
         }
 
         return $this->getPrimaryKey() === $obj->getPrimaryKey();
-    }
-
-    /**
-     * If the primary key is not null, return the hashcode of the
-     * primary key. Otherwise, return the hash code of the object.
-     *
-     * @return int Hashcode
-     */
-    public function hashCode()
-    {
-        if (null !== $this->getPrimaryKey()) {
-            return crc32(serialize($this->getPrimaryKey()));
-        }
-
-        return crc32(serialize(clone $this));
     }
 
     /**
@@ -287,7 +270,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return ProhibitionsUsers The current object, for fluid interface
+     * @return $this|ProhibitionsUsers The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -306,30 +289,6 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     protected function log($msg, $priority = Propel::LOG_INFO)
     {
         return Propel::log(get_class($this) . ': ' . $msg, $priority);
-    }
-
-    /**
-     * Populate the current object from a string, using a given parser format
-     * <code>
-     * $book = new Book();
-     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
-     * </code>
-     *
-     * @param mixed $parser A AbstractParser instance,
-     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param string $data The source data to import from
-     *
-     * @return ProhibitionsUsers The current object, for fluid interface
-     */
-    public function importFrom($parser, $data)
-    {
-        if (!$parser instanceof AbstractParser) {
-            $parser = AbstractParser::getParser($parser);
-        }
-
-        $this->fromArray($parser->toArray($data), TableMap::TYPE_PHPNAME);
-
-        return $this;
     }
 
     /**
@@ -367,22 +326,20 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     /**
      * Get the [prohibitions_id] column value.
      *
-     * @return   int
+     * @return int
      */
     public function getProhibitionId()
     {
-
         return $this->prohibitions_id;
     }
 
     /**
      * Get the [users_id] column value.
      *
-     * @return   int
+     * @return int
      */
     public function getUserId()
     {
-
         return $this->users_id;
     }
 
@@ -393,7 +350,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw \DateTime object will be returned.
      *
-     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -413,7 +370,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw \DateTime object will be returned.
      *
-     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -433,7 +390,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw \DateTime object will be returned.
      *
-     * @return mixed Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -447,119 +404,6 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     }
 
     /**
-     * Set the value of [prohibitions_id] column.
-     *
-     * @param      int $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
-     */
-    public function setProhibitionId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->prohibitions_id !== $v) {
-            $this->prohibitions_id = $v;
-            $this->modifiedColumns[] = ProhibitionsUsersTableMap::PROHIBITIONS_ID;
-        }
-
-        if ($this->aProhibition !== null && $this->aProhibition->getId() !== $v) {
-            $this->aProhibition = null;
-        }
-
-
-        return $this;
-    } // setProhibitionId()
-
-    /**
-     * Set the value of [users_id] column.
-     *
-     * @param      int $v new value
-     * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
-     */
-    public function setUserId($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->users_id !== $v) {
-            $this->users_id = $v;
-            $this->modifiedColumns[] = ProhibitionsUsersTableMap::USERS_ID;
-        }
-
-        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
-            $this->aUser = null;
-        }
-
-
-        return $this;
-    } // setUserId()
-
-    /**
-     * Sets the value of [prohibited_until] column to a normalized version of the date/time value specified.
-     *
-     * @param      mixed $v string, integer (timestamp), or \DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
-     */
-    public function setProhibitedUntil($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
-        if ($this->prohibited_until !== null || $dt !== null) {
-            if ($dt !== $this->prohibited_until) {
-                $this->prohibited_until = $dt;
-                $this->modifiedColumns[] = ProhibitionsUsersTableMap::PROHIBITED_UNTIL;
-            }
-        } // if either are not null
-
-
-        return $this;
-    } // setProhibitedUntil()
-
-    /**
-     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
-     *
-     * @param      mixed $v string, integer (timestamp), or \DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
-     */
-    public function setCreatedAt($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
-        if ($this->created_at !== null || $dt !== null) {
-            if ($dt !== $this->created_at) {
-                $this->created_at = $dt;
-                $this->modifiedColumns[] = ProhibitionsUsersTableMap::CREATED_AT;
-            }
-        } // if either are not null
-
-
-        return $this;
-    } // setCreatedAt()
-
-    /**
-     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
-     *
-     * @param      mixed $v string, integer (timestamp), or \DateTime value.
-     *               Empty strings are treated as NULL.
-     * @return   \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
-     */
-    public function setUpdatedAt($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
-        if ($this->updated_at !== null || $dt !== null) {
-            if ($dt !== $this->updated_at) {
-                $this->updated_at = $dt;
-                $this->modifiedColumns[] = ProhibitionsUsersTableMap::UPDATED_AT;
-            }
-        } // if either are not null
-
-
-        return $this;
-    } // setUpdatedAt()
-
-    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -571,8 +415,9 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     {
         // otherwise, everything was equal, so return TRUE
         return true;
-    } // hasOnlyDefaultValues()
+    }
 
+// hasOnlyDefaultValues()
     /**
      * Hydrates (populates) the object variables with values from the database resultset.
      *
@@ -585,7 +430,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param int     $startcol  0-based offset column which indicates which restultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
      * @param string  $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+      One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @return int             next starting column
@@ -595,26 +440,30 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     {
         try {
 
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProhibitionsUsersTableMap::translateFieldName('ProhibitionId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProhibitionsUsersTableMap::translateFieldName('ProhibitionId',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->prohibitions_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProhibitionsUsersTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ProhibitionsUsersTableMap::translateFieldName('UserId',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             $this->users_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProhibitionsUsersTableMap::translateFieldName('ProhibitedUntil', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProhibitionsUsersTableMap::translateFieldName('ProhibitedUntil',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->prohibited_until = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProhibitionsUsersTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProhibitionsUsersTableMap::translateFieldName('CreatedAt',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProhibitionsUsersTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProhibitionsUsersTableMap::translateFieldName('UpdatedAt',
+                        TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -628,9 +477,9 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             }
 
             return $startcol + 5; // 5 = ProhibitionsUsersTableMap::NUM_HYDRATE_COLUMNS.
-
         } catch (Exception $e) {
-            throw new PropelException("Error populating \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers object", 0, $e);
+            throw new PropelException(sprintf('Error populating %s object',
+                '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsUsers'), 0, $e);
         }
     }
 
@@ -655,8 +504,122 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         if ($this->aUser !== null && $this->users_id !== $this->aUser->getId()) {
             $this->aUser = null;
         }
-    } // ensureConsistency
+    }
 
+// ensureConsistency
+    /**
+     * Set the value of [prohibitions_id] column.
+     *
+     * @param  int $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     */
+    public function setProhibitionId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->prohibitions_id !== $v) {
+            $this->prohibitions_id = $v;
+            $this->modifiedColumns[ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID] = true;
+        }
+
+        if ($this->aProhibition !== null && $this->aProhibition->getId() !== $v) {
+            $this->aProhibition = null;
+        }
+
+        return $this;
+    }
+
+// setProhibitionId()
+    /**
+     * Set the value of [users_id] column.
+     *
+     * @param  int $v new value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     */
+    public function setUserId($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->users_id !== $v) {
+            $this->users_id = $v;
+            $this->modifiedColumns[ProhibitionsUsersTableMap::COL_USERS_ID] = true;
+        }
+
+        if ($this->aUser !== null && $this->aUser->getId() !== $v) {
+            $this->aUser = null;
+        }
+
+        return $this;
+    }
+
+// setUserId()
+    /**
+     * Sets the value of [prohibited_until] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     */
+    public function setProhibitedUntil($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->prohibited_until !== null || $dt !== null) {
+            if ($dt !== $this->prohibited_until) {
+                $this->prohibited_until = $dt;
+                $this->modifiedColumns[ProhibitionsUsersTableMap::COL_PROHIBITED_UNTIL] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    }
+
+// setProhibitedUntil()
+    /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($dt !== $this->created_at) {
+                $this->created_at = $dt;
+                $this->modifiedColumns[ProhibitionsUsersTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    }
+
+// setCreatedAt()
+    /**
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTime value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     */
+    public function setUpdatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, '\DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($dt !== $this->updated_at) {
+                $this->updated_at = $dt;
+                $this->modifiedColumns[ProhibitionsUsersTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    }
+
+// setUpdatedAt()
     /**
      * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
      *
@@ -693,7 +656,6 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
-
             $this->aProhibition = null;
             $this->aUser = null;
         } // if (deep)
@@ -718,23 +680,16 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             $con = Propel::getServiceContainer()->getWriteConnection(ProhibitionsUsersTableMap::DATABASE_NAME);
         }
 
-        $con->beginTransaction();
-        try {
+        $con->transaction(function () use ($con) {
             $deleteQuery = ChildProhibitionsUsersQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
-                $con->commit();
                 $this->setDeleted(true);
-            } else {
-                $con->commit();
             }
-        } catch (Exception $e) {
-            $con->rollBack();
-            throw $e;
-        }
+        });
     }
 
     /**
@@ -760,45 +715,41 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             $con = Propel::getServiceContainer()->getWriteConnection(ProhibitionsUsersTableMap::DATABASE_NAME);
         }
 
-        $con->beginTransaction();
-        $isInsert = $this->isNew();
-        try {
-            $ret = $this->preSave($con);
-            if ($isInsert) {
-                $ret = $ret && $this->preInsert($con);
-                // timestampable behavior
-                if (!$this->isColumnModified(ProhibitionsUsersTableMap::CREATED_AT)) {
-                    $this->setCreatedAt(time());
-                }
-                if (!$this->isColumnModified(ProhibitionsUsersTableMap::UPDATED_AT)) {
-                    $this->setUpdatedAt(time());
-                }
-            } else {
-                $ret = $ret && $this->preUpdate($con);
-                // timestampable behavior
-                if ($this->isModified() && !$this->isColumnModified(ProhibitionsUsersTableMap::UPDATED_AT)) {
-                    $this->setUpdatedAt(time());
-                }
-            }
-            if ($ret) {
-                $affectedRows = $this->doSave($con);
+        return $con->transaction(function () use ($con) {
+                $isInsert = $this->isNew();
+                $ret = $this->preSave($con);
                 if ($isInsert) {
-                    $this->postInsert($con);
-                } else {
-                    $this->postUpdate($con);
-                }
-                $this->postSave($con);
-                ProhibitionsUsersTableMap::addInstanceToPool($this);
-            } else {
-                $affectedRows = 0;
-            }
-            $con->commit();
+                    $ret = $ret && $this->preInsert($con);
+                    // timestampable behavior
 
-            return $affectedRows;
-        } catch (Exception $e) {
-            $con->rollBack();
-            throw $e;
-        }
+                    if (!$this->isColumnModified(ProhibitionsUsersTableMap::COL_CREATED_AT)) {
+                        $this->setCreatedAt(time());
+                    }
+                    if (!$this->isColumnModified(ProhibitionsUsersTableMap::COL_UPDATED_AT)) {
+                        $this->setUpdatedAt(time());
+                    }
+                } else {
+                    $ret = $ret && $this->preUpdate($con);
+                    // timestampable behavior
+                    if ($this->isModified() && !$this->isColumnModified(ProhibitionsUsersTableMap::COL_UPDATED_AT)) {
+                        $this->setUpdatedAt(time());
+                    }
+                }
+                if ($ret) {
+                    $affectedRows = $this->doSave($con);
+                    if ($isInsert) {
+                        $this->postInsert($con);
+                    } else {
+                        $this->postUpdate($con);
+                    }
+                    $this->postSave($con);
+                    ProhibitionsUsersTableMap::addInstanceToPool($this);
+                } else {
+                    $affectedRows = 0;
+                }
+
+                return $affectedRows;
+            });
     }
 
     /**
@@ -849,12 +800,12 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             }
 
             $this->alreadyInSave = false;
-
         }
 
         return $affectedRows;
-    } // doSave()
+    }
 
+// doSave()
     /**
      * Insert the row in the database.
      *
@@ -869,26 +820,25 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         $index = 0;
 
 
-         // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ProhibitionsUsersTableMap::PROHIBITIONS_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'PROHIBITIONS_ID';
+        // check the columns in natural order for more readable SQL queries
+        if ($this->isColumnModified(ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID)) {
+            $modifiedColumns[':p' . $index++] = 'PROHIBITIONS_ID';
         }
-        if ($this->isColumnModified(ProhibitionsUsersTableMap::USERS_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'USERS_ID';
+        if ($this->isColumnModified(ProhibitionsUsersTableMap::COL_USERS_ID)) {
+            $modifiedColumns[':p' . $index++] = 'USERS_ID';
         }
-        if ($this->isColumnModified(ProhibitionsUsersTableMap::PROHIBITED_UNTIL)) {
-            $modifiedColumns[':p' . $index++]  = 'PROHIBITED_UNTIL';
+        if ($this->isColumnModified(ProhibitionsUsersTableMap::COL_PROHIBITED_UNTIL)) {
+            $modifiedColumns[':p' . $index++] = 'PROHIBITED_UNTIL';
         }
-        if ($this->isColumnModified(ProhibitionsUsersTableMap::CREATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = 'CREATED_AT';
+        if ($this->isColumnModified(ProhibitionsUsersTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++] = 'CREATED_AT';
         }
-        if ($this->isColumnModified(ProhibitionsUsersTableMap::UPDATED_AT)) {
-            $modifiedColumns[':p' . $index++]  = 'UPDATED_AT';
+        if ($this->isColumnModified(ProhibitionsUsersTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++] = 'UPDATED_AT';
         }
 
         $sql = sprintf(
-            'INSERT INTO prohibitions_users (%s) VALUES (%s)',
-            implode(', ', $modifiedColumns),
+            'INSERT INTO prohibitions_users (%s) VALUES (%s)', implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
 
@@ -903,13 +853,17 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->users_id, PDO::PARAM_INT);
                         break;
                     case 'PROHIBITED_UNTIL':
-                        $stmt->bindValue($identifier, $this->prohibited_until ? $this->prohibited_until->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier,
+                            $this->prohibited_until ? $this->prohibited_until->format("Y-m-d H:i:s") : null,
+                            PDO::PARAM_STR);
                         break;
                     case 'CREATED_AT':
-                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier,
+                            $this->created_at ? $this->created_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                     case 'UPDATED_AT':
-                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier,
+                            $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1002,7 +956,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true,
+        $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
         if (isset($alreadyDumpedObjects['ProhibitionsUsers'][serialize($this->getPrimaryKey())])) {
             return '*RECURSION*';
@@ -1023,10 +978,11 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->aProhibition) {
-                $result['Prohibition'] = $this->aProhibition->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result['Prohibition'] = $this->aProhibition->toArray($keyType, $includeLazyLoadColumns,
+                    $alreadyDumpedObjects, true);
             }
             if (null !== $this->aUser) {
-                $result['User'] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result['User'] = $this->aUser->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
         }
 
@@ -1036,13 +992,13 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     /**
      * Sets a field from the object by name passed in as a string.
      *
-     * @param      string $name
-     * @param      mixed  $value field value
-     * @param      string $type The type of fieldname the $name is of:
-     *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
-     *                     TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-     *                     Defaults to TableMap::TYPE_PHPNAME.
-     * @return void
+     * @param  string $name
+     * @param  mixed  $value field value
+     * @param  string $type The type of fieldname the $name is of:
+     *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     *                Defaults to TableMap::TYPE_PHPNAME.
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
@@ -1055,9 +1011,9 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * Sets a field from the object by Position as specified in the xml schema.
      * Zero-based.
      *
-     * @param      int $pos position in xml schema
-     * @param      mixed $value field value
-     * @return void
+     * @param  int $pos position in xml schema
+     * @param  mixed $value field value
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers
      */
     public function setByPosition($pos, $value)
     {
@@ -1078,6 +1034,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
+
+        return $this;
     }
 
     /**
@@ -1101,11 +1059,45 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     {
         $keys = ProhibitionsUsersTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setProhibitionId($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setUserId($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setProhibitedUntil($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setCreatedAt($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setUpdatedAt($arr[$keys[4]]);
+        if (array_key_exists($keys[0], $arr)) {
+            $this->setProhibitionId($arr[$keys[0]]);
+        }
+        if (array_key_exists($keys[1], $arr)) {
+            $this->setUserId($arr[$keys[1]]);
+        }
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setProhibitedUntil($arr[$keys[2]]);
+        }
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setCreatedAt($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setUpdatedAt($arr[$keys[4]]);
+        }
+    }
+
+    /**
+     * Populate the current object from a string, using a given parser format
+     * <code>
+     * $book = new Book();
+     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
+     * </code>
+     *
+     * @param mixed $parser A AbstractParser instance,
+     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param string $data The source data to import from
+     *
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object, for fluid interface
+     */
+    public function importFrom($parser, $data)
+    {
+        if (!$parser instanceof AbstractParser) {
+            $parser = AbstractParser::getParser($parser);
+        }
+
+        $this->fromArray($parser->toArray($data), TableMap::TYPE_PHPNAME);
+
+        return $this;
     }
 
     /**
@@ -1117,11 +1109,21 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     {
         $criteria = new Criteria(ProhibitionsUsersTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ProhibitionsUsersTableMap::PROHIBITIONS_ID)) $criteria->add(ProhibitionsUsersTableMap::PROHIBITIONS_ID, $this->prohibitions_id);
-        if ($this->isColumnModified(ProhibitionsUsersTableMap::USERS_ID)) $criteria->add(ProhibitionsUsersTableMap::USERS_ID, $this->users_id);
-        if ($this->isColumnModified(ProhibitionsUsersTableMap::PROHIBITED_UNTIL)) $criteria->add(ProhibitionsUsersTableMap::PROHIBITED_UNTIL, $this->prohibited_until);
-        if ($this->isColumnModified(ProhibitionsUsersTableMap::CREATED_AT)) $criteria->add(ProhibitionsUsersTableMap::CREATED_AT, $this->created_at);
-        if ($this->isColumnModified(ProhibitionsUsersTableMap::UPDATED_AT)) $criteria->add(ProhibitionsUsersTableMap::UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID)) {
+            $criteria->add(ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID, $this->prohibitions_id);
+        }
+        if ($this->isColumnModified(ProhibitionsUsersTableMap::COL_USERS_ID)) {
+            $criteria->add(ProhibitionsUsersTableMap::COL_USERS_ID, $this->users_id);
+        }
+        if ($this->isColumnModified(ProhibitionsUsersTableMap::COL_PROHIBITED_UNTIL)) {
+            $criteria->add(ProhibitionsUsersTableMap::COL_PROHIBITED_UNTIL, $this->prohibited_until);
+        }
+        if ($this->isColumnModified(ProhibitionsUsersTableMap::COL_CREATED_AT)) {
+            $criteria->add(ProhibitionsUsersTableMap::COL_CREATED_AT, $this->created_at);
+        }
+        if ($this->isColumnModified(ProhibitionsUsersTableMap::COL_UPDATED_AT)) {
+            $criteria->add(ProhibitionsUsersTableMap::COL_UPDATED_AT, $this->updated_at);
+        }
 
         return $criteria;
     }
@@ -1132,15 +1134,54 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * Unlike buildCriteria() this method includes the primary key values regardless
      * of whether or not they have been modified.
      *
+     * @throws LogicException if no primary key is defined
+     *
      * @return Criteria The Criteria object containing value(s) for primary key(s).
      */
     public function buildPkeyCriteria()
     {
         $criteria = new Criteria(ProhibitionsUsersTableMap::DATABASE_NAME);
-        $criteria->add(ProhibitionsUsersTableMap::PROHIBITIONS_ID, $this->prohibitions_id);
-        $criteria->add(ProhibitionsUsersTableMap::USERS_ID, $this->users_id);
+        $criteria->add(ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID, $this->prohibitions_id);
+        $criteria->add(ProhibitionsUsersTableMap::COL_USERS_ID, $this->users_id);
 
         return $criteria;
+    }
+
+    /**
+     * If the primary key is not null, return the hashcode of the
+     * primary key. Otherwise, return the hash code of the object.
+     *
+     * @return int Hashcode
+     */
+    public function hashCode()
+    {
+        $validPk = null !== $this->getProhibitionId() &&
+            null !== $this->getUserId();
+
+        $validPrimaryKeyFKs = 2;
+        $primaryKeyFKs = [];
+
+        //relation prohibitions_users_fk_7f4826 to table prohibitions
+        if ($this->aProhibition && $hash = spl_object_hash($this->aProhibition)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
+
+        //relation prohibitions_users_fk_935655 to table users
+        if ($this->aUser && $hash = spl_object_hash($this->aUser)) {
+            $primaryKeyFKs[] = $hash;
+        } else {
+            $validPrimaryKeyFKs = false;
+        }
+
+        if ($validPk) {
+            return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
+        } elseif ($validPrimaryKeyFKs) {
+            return crc32(json_encode($primaryKeyFKs, JSON_UNESCAPED_UNICODE));
+        }
+
+        return spl_object_hash($this);
     }
 
     /**
@@ -1175,7 +1216,6 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function isPrimaryKeyNull()
     {
-
         return (null === $this->getProhibitionId()) && (null === $this->getUserId());
     }
 
@@ -1210,8 +1250,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return                 \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers Clone of current object.
+     * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+     * @return \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1227,8 +1267,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     /**
      * Declares an association between this object and a ChildProhibition object.
      *
-     * @param                  ChildProhibition $v
-     * @return                 \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     * @param  ChildProhibition $v
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      * @throws PropelException
      */
     public function setProhibition(ChildProhibition $v = null)
@@ -1251,12 +1291,11 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         return $this;
     }
 
-
     /**
      * Get the associated ChildProhibition object
      *
-     * @param      ConnectionInterface $con Optional Connection object.
-     * @return                 ChildProhibition The associated ChildProhibition object.
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildProhibition The associated ChildProhibition object.
      * @throws PropelException
      */
     public function getProhibition(ConnectionInterface $con = null)
@@ -1264,11 +1303,11 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         if ($this->aProhibition === null && ($this->prohibitions_id !== null)) {
             $this->aProhibition = ChildProhibitionQuery::create()->findPk($this->prohibitions_id, $con);
             /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aProhibition->addProhibitionsUserss($this);
+              guarantee the related object contains a reference
+              to this object.  This level of coupling may, however, be
+              undesirable since it could result in an only partially populated collection
+              in the referenced object.
+              $this->aProhibition->addProhibitionsUserss($this);
              */
         }
 
@@ -1278,8 +1317,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     /**
      * Declares an association between this object and a ChildUser object.
      *
-     * @param                  ChildUser $v
-     * @return                 \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     * @param  ChildUser $v
+     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      * @throws PropelException
      */
     public function setUser(ChildUser $v = null)
@@ -1302,12 +1341,11 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         return $this;
     }
 
-
     /**
      * Get the associated ChildUser object
      *
-     * @param      ConnectionInterface $con Optional Connection object.
-     * @return                 ChildUser The associated ChildUser object.
+     * @param  ConnectionInterface $con Optional Connection object.
+     * @return ChildUser The associated ChildUser object.
      * @throws PropelException
      */
     public function getUser(ConnectionInterface $con = null)
@@ -1315,11 +1353,11 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         if ($this->aUser === null && ($this->users_id !== null)) {
             $this->aUser = ChildUserQuery::create()->findPk($this->users_id, $con);
             /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aUser->addProhibitionsUserss($this);
+              guarantee the related object contains a reference
+              to this object.  This level of coupling may, however, be
+              undesirable since it could result in an only partially populated collection
+              in the referenced object.
+              $this->aUser->addProhibitionsUserss($this);
              */
         }
 
@@ -1327,10 +1365,18 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     }
 
     /**
-     * Clears the current object and sets all attributes to their default values
+     * Clears the current object, sets all attributes to their default values and removes
+     * outgoing references as well as back-references (from other objects to this one. Results probably in a database
+     * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
+        if (null !== $this->aProhibition) {
+            $this->aProhibition->removeProhibitionsUsers($this);
+        }
+        if (null !== $this->aUser) {
+            $this->aUser->removeProhibitionsUsers($this);
+        }
         $this->prohibitions_id = null;
         $this->users_id = null;
         $this->prohibited_until = null;
@@ -1344,17 +1390,17 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     }
 
     /**
-     * Resets all references to other model objects or collections of model objects.
+     * Resets all references and back-references to other model objects or collections of model objects.
      *
-     * This method is a user-space workaround for PHP's inability to garbage collect
-     * objects with circular references (even in PHP 5.3). This is currently necessary
-     * when using Propel in certain daemon or large-volume/high-memory operations.
+     * This method is used to reset all php object references (not the actual reference in the database).
+     * Necessary for object serialisation.
      *
      * @param      boolean $deep Whether to also clear the references on all referrer objects.
      */
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            
         } // if ($deep)
 
         $this->aProhibition = null;
@@ -1372,15 +1418,14 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     }
 
     // timestampable behavior
-
     /**
      * Mark the current object so that the update date doesn't get updated during next save
      *
-     * @return     ChildProhibitionsUsers The current object (for fluent API support)
+     * @return     $this|ChildProhibitionsUsers The current object (for fluent API support)
      */
     public function keepUpdateDateUnchanged()
     {
-        $this->modifiedColumns[] = ProhibitionsUsersTableMap::UPDATED_AT;
+        $this->modifiedColumns[ProhibitionsUsersTableMap::COL_UPDATED_AT] = true;
 
         return $this;
     }
@@ -1401,7 +1446,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function postSave(ConnectionInterface $con = null)
     {
-
+        
     }
 
     /**
@@ -1420,7 +1465,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function postInsert(ConnectionInterface $con = null)
     {
-
+        
     }
 
     /**
@@ -1439,7 +1484,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function postUpdate(ConnectionInterface $con = null)
     {
-
+        
     }
 
     /**
@@ -1458,9 +1503,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      */
     public function postDelete(ConnectionInterface $con = null)
     {
-
+        
     }
-
 
     /**
      * Derived method to catches calls to undefined methods.

@@ -1,9 +1,7 @@
 <?php
-
 namespace org\bitbucket\phlopsi\access_control\propel;
 
 use org\bitbucket\phlopsi\access_control\propel\Base\UserQuery as BaseUserQuery;
-
 
 /**
  * Skeleton subclass for performing query and update operations on the 'users' table.
@@ -17,5 +15,7 @@ use org\bitbucket\phlopsi\access_control\propel\Base\UserQuery as BaseUserQuery;
  */
 class UserQuery extends BaseUserQuery
 {
+    
+}
 
-} // UserQuery
+// UserQuery
