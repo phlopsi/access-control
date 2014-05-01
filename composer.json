@@ -4,15 +4,15 @@
     "license": "MIT",
     "support": {
         "email": "nbphobos@gmail.com",
-        "issues": "https://bitbucket.org/Phlopsi/access-control/issues",
-        "source": "https://bitbucket.org/Phlopsi/access-control/src"
+        "issues": "https://github.com/phlopsi/access-control/issues",
+        "source": "https://github.com/phlopsi/access-control"
     },
     "require": {
         "propel/propel": "~2.0@alpha"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.0",
-        "squizlabs/php_codesniffer": "2.0.0a2"
+        "fabpot/php-cs-fixer": "0.4.*@dev",
+        "phpunit/phpunit": "~4.0"
     },
     "authors": [
         {
@@ -22,7 +22,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "org\\bitbucket\\phlopsi\\access_control\\": "src/org/bitbucket/phlopsi/access_control/"
+            "phlopsi\\access_control\\": "src/phlopsi/access_control/"
         }
     }
 }
