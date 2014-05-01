@@ -1,5 +1,5 @@
 <?php
-namespace org\bitbucket\phlopsi\access_control;
+namespace phlopsi\access_control;
 
 /**
  * Description of AccessControlTest
