@@ -8,5 +8,5 @@ before_script:
     - composer install
 
 script:
-    - ./vendor/bin/phpcs --ignore=propel --standard=PSR2 ./src
-    - ./vendor/bin/phpunit
+    - ./vendor/bin/phpcbf --ignore=propel --standard=PSR2 ./src
+    - ./vendor/bin/phpunit ./tests
