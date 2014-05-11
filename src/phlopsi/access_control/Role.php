@@ -6,8 +6,14 @@ use phlopsi\access_control\exception\RuntimeException;
 use phlopsi\access_control\propel\PermissionQuery as PropelPermissionQuery;
 use phlopsi\access_control\propel\Role as PropelRole;
 
+/**
+ * @author Patrick Fischer <nbphobos@gmail.com>
+ */
 class Role
 {
+    /**
+     * @var \phlopsi\access_control\propel\Role
+     */
     private $role;
 
     public function __construct(PropelRole $role)

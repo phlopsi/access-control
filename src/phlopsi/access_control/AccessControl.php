@@ -12,10 +12,24 @@ use phlopsi\access_control\propel\SessionTypeQuery as PropelSessionTypeQuery;
 use phlopsi\access_control\propel\User as PropelUser;
 use phlopsi\access_control\propel\UserQuery as PropelUserQuery;
 
+/**
+ * @author Patrick Fischer <nbphobos@gmail.com>
+ */
 class AccessControl
 {
+    /**
+     * @var \phlopsi\access_control\Role[]
+     */
     private $roles = [];
+    
+    /**
+     * @var \phlopsi\access_control\SessionType[]
+     */
     private $session_types = [];
+    
+    /**
+     * @var \phlopsi\access_control\User[]
+     */
     private $users = [];
 
     public function createPermission($permission_id)

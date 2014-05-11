@@ -6,8 +6,14 @@ use phlopsi\access_control\exception\RuntimeException;
 use phlopsi\access_control\propel\RoleQuery as PropelRoleQuery;
 use phlopsi\access_control\propel\SessionType as PropelSessionType;
 
+/**
+ * @author Patrick Fischer <nbphobos@gmail.com>
+ */
 class SessionType
 {
+    /**
+     * @var \phlopsi\access_control\propel\SessionType
+     */
     private $session_type;
 
     public function __construct(PropelSessionType $session_type)

@@ -7,8 +7,14 @@ use phlopsi\access_control\propel\PermissionQuery as PropelPermissionQuery;
 use phlopsi\access_control\propel\RoleQuery as PropelRoleQuery;
 use phlopsi\access_control\propel\User as PropelUser;
 
+/**
+ * @author Patrick Fischer <nbphobos@gmail.com>
+ */
 class User
 {
+    /**
+     * @var \phlopsi\access_control\propel\User
+     */
     private $user;
 
     public function __construct(PropelUser $user)
