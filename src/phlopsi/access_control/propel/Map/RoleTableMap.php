@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Map;
+namespace phlopsi\access_control\propel\Map;
 
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -11,8 +11,8 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use org\bitbucket\phlopsi\access_control\propel\Role;
-use org\bitbucket\phlopsi\access_control\propel\RoleQuery;
+use phlopsi\access_control\propel\Role;
+use phlopsi\access_control\propel\RoleQuery;
 
 
 /**
@@ -34,7 +34,7 @@ class RoleTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'org.bitbucket.phlopsi.access_control.propel.Map.RoleTableMap';
+    const CLASS_NAME = 'phlopsi.access_control.propel.Map.RoleTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class RoleTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role';
+    const OM_CLASS = '\\phlopsi\\access_control\\propel\\Role';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'org.bitbucket.phlopsi.access_control.propel.Role';
+    const CLASS_DEFAULT = 'phlopsi.access_control.propel.Role';
 
     /**
      * The total number of columns
@@ -143,8 +143,8 @@ class RoleTableMap extends TableMap
         // attributes
         $this->setName('roles');
         $this->setPhpName('Role');
-        $this->setClassName('\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role');
-        $this->setPackage('org.bitbucket.phlopsi.access_control.propel');
+        $this->setClassName('\\phlopsi\\access_control\\propel\\Role');
+        $this->setPackage('phlopsi.access_control.propel');
         $this->setUseIdGenerator(true);
         // columns
         $this->addColumn('EXTERNAL_ID', 'ExternalId', 'LONGVARCHAR', true, null, null);
@@ -159,14 +159,14 @@ class RoleTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('PermissionsRoles', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\PermissionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'PermissionsRoless');
-        $this->addRelation('ProhibitionsRoles', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'ProhibitionsRoless');
-        $this->addRelation('RolesSessionTypes', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesSessionTypes', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesSessionTypess');
-        $this->addRelation('RolesUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesUserss');
-        $this->addRelation('Permission', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission', RelationMap::MANY_TO_MANY, array(), null, null, 'Permissions');
-        $this->addRelation('Prohibition', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
-        $this->addRelation('SessionType', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\SessionType', RelationMap::MANY_TO_MANY, array(), null, null, 'SessionTypes');
-        $this->addRelation('User', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
+        $this->addRelation('PermissionsRoles', '\\phlopsi\\access_control\\propel\\PermissionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'PermissionsRoless');
+        $this->addRelation('ProhibitionsRoles', '\\phlopsi\\access_control\\propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'ProhibitionsRoless');
+        $this->addRelation('RolesSessionTypes', '\\phlopsi\\access_control\\propel\\RolesSessionTypes', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesSessionTypess');
+        $this->addRelation('RolesUsers', '\\phlopsi\\access_control\\propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesUserss');
+        $this->addRelation('Permission', '\\phlopsi\\access_control\\propel\\Permission', RelationMap::MANY_TO_MANY, array(), null, null, 'Permissions');
+        $this->addRelation('Prohibition', '\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
+        $this->addRelation('SessionType', '\\phlopsi\\access_control\\propel\\SessionType', RelationMap::MANY_TO_MANY, array(), null, null, 'SessionTypes');
+        $this->addRelation('User', '\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
     } // buildRelations()
 
     /**
@@ -381,7 +381,7 @@ class RoleTableMap extends TableMap
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \org\bitbucket\phlopsi\access_control\propel\Role) { // it's a model object
+        } elseif ($values instanceof \phlopsi\access_control\propel\Role) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks

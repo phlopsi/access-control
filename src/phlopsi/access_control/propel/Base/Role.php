@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Base;
+namespace phlopsi\access_control\propel\Base;
 
 use \Exception;
 use \PDO;
@@ -17,32 +17,32 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use org\bitbucket\phlopsi\access_control\propel\Permission as ChildPermission;
-use org\bitbucket\phlopsi\access_control\propel\PermissionQuery as ChildPermissionQuery;
-use org\bitbucket\phlopsi\access_control\propel\PermissionsRoles as ChildPermissionsRoles;
-use org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery as ChildPermissionsRolesQuery;
-use org\bitbucket\phlopsi\access_control\propel\Prohibition as ChildProhibition;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery as ChildProhibitionQuery;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles as ChildProhibitionsRoles;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery as ChildProhibitionsRolesQuery;
-use org\bitbucket\phlopsi\access_control\propel\Role as ChildRole;
-use org\bitbucket\phlopsi\access_control\propel\RoleQuery as ChildRoleQuery;
-use org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes as ChildRolesSessionTypes;
-use org\bitbucket\phlopsi\access_control\propel\RolesSessionTypesQuery as ChildRolesSessionTypesQuery;
-use org\bitbucket\phlopsi\access_control\propel\RolesUsers as ChildRolesUsers;
-use org\bitbucket\phlopsi\access_control\propel\RolesUsersQuery as ChildRolesUsersQuery;
-use org\bitbucket\phlopsi\access_control\propel\SessionType as ChildSessionType;
-use org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery as ChildSessionTypeQuery;
-use org\bitbucket\phlopsi\access_control\propel\User as ChildUser;
-use org\bitbucket\phlopsi\access_control\propel\UserQuery as ChildUserQuery;
-use org\bitbucket\phlopsi\access_control\propel\Map\RoleTableMap;
+use phlopsi\access_control\propel\Permission as ChildPermission;
+use phlopsi\access_control\propel\PermissionQuery as ChildPermissionQuery;
+use phlopsi\access_control\propel\PermissionsRoles as ChildPermissionsRoles;
+use phlopsi\access_control\propel\PermissionsRolesQuery as ChildPermissionsRolesQuery;
+use phlopsi\access_control\propel\Prohibition as ChildProhibition;
+use phlopsi\access_control\propel\ProhibitionQuery as ChildProhibitionQuery;
+use phlopsi\access_control\propel\ProhibitionsRoles as ChildProhibitionsRoles;
+use phlopsi\access_control\propel\ProhibitionsRolesQuery as ChildProhibitionsRolesQuery;
+use phlopsi\access_control\propel\Role as ChildRole;
+use phlopsi\access_control\propel\RoleQuery as ChildRoleQuery;
+use phlopsi\access_control\propel\RolesSessionTypes as ChildRolesSessionTypes;
+use phlopsi\access_control\propel\RolesSessionTypesQuery as ChildRolesSessionTypesQuery;
+use phlopsi\access_control\propel\RolesUsers as ChildRolesUsers;
+use phlopsi\access_control\propel\RolesUsersQuery as ChildRolesUsersQuery;
+use phlopsi\access_control\propel\SessionType as ChildSessionType;
+use phlopsi\access_control\propel\SessionTypeQuery as ChildSessionTypeQuery;
+use phlopsi\access_control\propel\User as ChildUser;
+use phlopsi\access_control\propel\UserQuery as ChildUserQuery;
+use phlopsi\access_control\propel\Map\RoleTableMap;
 
 abstract class Role implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Map\\RoleTableMap';
+    const TABLE_MAP = '\\phlopsi\\access_control\\propel\\Map\\RoleTableMap';
 
 
     /**
@@ -257,7 +257,7 @@ abstract class Role implements ActiveRecordInterface
     protected $rolesUserssScheduledForDeletion = null;
 
     /**
-     * Initializes internal state of org\bitbucket\phlopsi\access_control\propel\Base\Role object.
+     * Initializes internal state of phlopsi\access_control\propel\Base\Role object.
      */
     public function __construct()
     {
@@ -584,7 +584,7 @@ abstract class Role implements ActiveRecordInterface
             return $startcol + 5; // 5 = RoleTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\phlopsi\\access_control\\propel\\Role'), 0, $e);
         }
     }
 
@@ -609,7 +609,7 @@ abstract class Role implements ActiveRecordInterface
      * Set the value of [external_id] column.
      *
      * @param  string $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Role The current object (for fluent API support)
      */
     public function setExternalId($v)
     {
@@ -629,7 +629,7 @@ abstract class Role implements ActiveRecordInterface
      * Set the value of [tree_left] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Role The current object (for fluent API support)
      */
     public function setTreeLeft($v)
     {
@@ -649,7 +649,7 @@ abstract class Role implements ActiveRecordInterface
      * Set the value of [tree_right] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Role The current object (for fluent API support)
      */
     public function setTreeRight($v)
     {
@@ -669,7 +669,7 @@ abstract class Role implements ActiveRecordInterface
      * Set the value of [tree_level] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Role The current object (for fluent API support)
      */
     public function setTreeLevel($v)
     {
@@ -689,7 +689,7 @@ abstract class Role implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Role The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -901,7 +901,7 @@ abstract class Role implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery::create()
+                    \phlopsi\access_control\propel\PermissionsRolesQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -930,7 +930,7 @@ abstract class Role implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery::create()
+                    \phlopsi\access_control\propel\ProhibitionsRolesQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -959,7 +959,7 @@ abstract class Role implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypesQuery::create()
+                    \phlopsi\access_control\propel\RolesSessionTypesQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -988,7 +988,7 @@ abstract class Role implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \org\bitbucket\phlopsi\access_control\propel\RolesUsersQuery::create()
+                    \phlopsi\access_control\propel\RolesUsersQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -1008,7 +1008,7 @@ abstract class Role implements ActiveRecordInterface
 
             if ($this->permissionsRolessScheduledForDeletion !== null) {
                 if (!$this->permissionsRolessScheduledForDeletion->isEmpty()) {
-                    \org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery::create()
+                    \phlopsi\access_control\propel\PermissionsRolesQuery::create()
                         ->filterByPrimaryKeys($this->permissionsRolessScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
                     $this->permissionsRolessScheduledForDeletion = null;
@@ -1025,7 +1025,7 @@ abstract class Role implements ActiveRecordInterface
 
             if ($this->prohibitionsRolessScheduledForDeletion !== null) {
                 if (!$this->prohibitionsRolessScheduledForDeletion->isEmpty()) {
-                    \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery::create()
+                    \phlopsi\access_control\propel\ProhibitionsRolesQuery::create()
                         ->filterByPrimaryKeys($this->prohibitionsRolessScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
                     $this->prohibitionsRolessScheduledForDeletion = null;
@@ -1042,7 +1042,7 @@ abstract class Role implements ActiveRecordInterface
 
             if ($this->rolesSessionTypessScheduledForDeletion !== null) {
                 if (!$this->rolesSessionTypessScheduledForDeletion->isEmpty()) {
-                    \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypesQuery::create()
+                    \phlopsi\access_control\propel\RolesSessionTypesQuery::create()
                         ->filterByPrimaryKeys($this->rolesSessionTypessScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
                     $this->rolesSessionTypessScheduledForDeletion = null;
@@ -1059,7 +1059,7 @@ abstract class Role implements ActiveRecordInterface
 
             if ($this->rolesUserssScheduledForDeletion !== null) {
                 if (!$this->rolesUserssScheduledForDeletion->isEmpty()) {
-                    \org\bitbucket\phlopsi\access_control\propel\RolesUsersQuery::create()
+                    \phlopsi\access_control\propel\RolesUsersQuery::create()
                         ->filterByPrimaryKeys($this->rolesUserssScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
                     $this->rolesUserssScheduledForDeletion = null;
@@ -1285,7 +1285,7 @@ abstract class Role implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role
+     * @return $this|\phlopsi\access_control\propel\Role
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
@@ -1300,7 +1300,7 @@ abstract class Role implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role
+     * @return $this|\phlopsi\access_control\propel\Role
      */
     public function setByPosition($pos, $value)
     {
@@ -1374,7 +1374,7 @@ abstract class Role implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role The current object, for fluid interface
+     * @return $this|\phlopsi\access_control\propel\Role The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -1490,7 +1490,7 @@ abstract class Role implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \org\bitbucket\phlopsi\access_control\propel\Role (or compatible) type.
+     * @param      object $copyObj An object of \phlopsi\access_control\propel\Role (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1548,7 +1548,7 @@ abstract class Role implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \org\bitbucket\phlopsi\access_control\propel\Role Clone of current object.
+     * @return \phlopsi\access_control\propel\Role Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1626,7 +1626,7 @@ abstract class Role implements ActiveRecordInterface
             return;
         }
         $this->collPermissionsRoless = new ObjectCollection();
-        $this->collPermissionsRoless->setModel('\org\bitbucket\phlopsi\access_control\propel\PermissionsRoles');
+        $this->collPermissionsRoless->setModel('\phlopsi\access_control\propel\PermissionsRoles');
     }
 
     /**
@@ -1762,7 +1762,7 @@ abstract class Role implements ActiveRecordInterface
      * through the ChildPermissionsRoles foreign key attribute.
      *
      * @param  ChildPermissionsRoles $l ChildPermissionsRoles
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Role The current object (for fluent API support)
      */
     public function addPermissionsRoles(ChildPermissionsRoles $l)
     {
@@ -1872,7 +1872,7 @@ abstract class Role implements ActiveRecordInterface
             return;
         }
         $this->collProhibitionsRoless = new ObjectCollection();
-        $this->collProhibitionsRoless->setModel('\org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles');
+        $this->collProhibitionsRoless->setModel('\phlopsi\access_control\propel\ProhibitionsRoles');
     }
 
     /**
@@ -2008,7 +2008,7 @@ abstract class Role implements ActiveRecordInterface
      * through the ChildProhibitionsRoles foreign key attribute.
      *
      * @param  ChildProhibitionsRoles $l ChildProhibitionsRoles
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Role The current object (for fluent API support)
      */
     public function addProhibitionsRoles(ChildProhibitionsRoles $l)
     {
@@ -2118,7 +2118,7 @@ abstract class Role implements ActiveRecordInterface
             return;
         }
         $this->collRolesSessionTypess = new ObjectCollection();
-        $this->collRolesSessionTypess->setModel('\org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes');
+        $this->collRolesSessionTypess->setModel('\phlopsi\access_control\propel\RolesSessionTypes');
     }
 
     /**
@@ -2254,7 +2254,7 @@ abstract class Role implements ActiveRecordInterface
      * through the ChildRolesSessionTypes foreign key attribute.
      *
      * @param  ChildRolesSessionTypes $l ChildRolesSessionTypes
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Role The current object (for fluent API support)
      */
     public function addRolesSessionTypes(ChildRolesSessionTypes $l)
     {
@@ -2364,7 +2364,7 @@ abstract class Role implements ActiveRecordInterface
             return;
         }
         $this->collRolesUserss = new ObjectCollection();
-        $this->collRolesUserss->setModel('\org\bitbucket\phlopsi\access_control\propel\RolesUsers');
+        $this->collRolesUserss->setModel('\phlopsi\access_control\propel\RolesUsers');
     }
 
     /**
@@ -2500,7 +2500,7 @@ abstract class Role implements ActiveRecordInterface
      * through the ChildRolesUsers foreign key attribute.
      *
      * @param  ChildRolesUsers $l ChildRolesUsers
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Role The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Role The current object (for fluent API support)
      */
     public function addRolesUsers(ChildRolesUsers $l)
     {
@@ -2598,7 +2598,7 @@ abstract class Role implements ActiveRecordInterface
         $this->collPermissions = new ObjectCollection();
         $this->collPermissionsPartial = true;
 
-        $this->collPermissions->setModel('\org\bitbucket\phlopsi\access_control\propel\Permission');
+        $this->collPermissions->setModel('\phlopsi\access_control\propel\Permission');
     }
 
     /**
@@ -2840,7 +2840,7 @@ abstract class Role implements ActiveRecordInterface
         $this->collProhibitions = new ObjectCollection();
         $this->collProhibitionsPartial = true;
 
-        $this->collProhibitions->setModel('\org\bitbucket\phlopsi\access_control\propel\Prohibition');
+        $this->collProhibitions->setModel('\phlopsi\access_control\propel\Prohibition');
     }
 
     /**
@@ -3082,7 +3082,7 @@ abstract class Role implements ActiveRecordInterface
         $this->collSessionTypes = new ObjectCollection();
         $this->collSessionTypesPartial = true;
 
-        $this->collSessionTypes->setModel('\org\bitbucket\phlopsi\access_control\propel\SessionType');
+        $this->collSessionTypes->setModel('\phlopsi\access_control\propel\SessionType');
     }
 
     /**
@@ -3324,7 +3324,7 @@ abstract class Role implements ActiveRecordInterface
         $this->collUsers = new ObjectCollection();
         $this->collUsersPartial = true;
 
-        $this->collUsers->setModel('\org\bitbucket\phlopsi\access_control\propel\User');
+        $this->collUsers->setModel('\phlopsi\access_control\propel\User');
     }
 
     /**
@@ -3913,7 +3913,7 @@ abstract class Role implements ActiveRecordInterface
     public function initNestedSetChildren()
     {
         $this->collNestedSetChildren = new ObjectCollection();
-        $this->collNestedSetChildren->setModel('\org\bitbucket\phlopsi\access_control\propel\Role');
+        $this->collNestedSetChildren->setModel('\phlopsi\access_control\propel\Role');
     }
 
     /**
@@ -4176,7 +4176,7 @@ abstract class Role implements ActiveRecordInterface
 
         // Keep the tree modification query for the save() transaction
         $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\RoleQuery', 'makeRoomForLeaf'),
+            'callable'  => array('\phlopsi\access_control\propel\RoleQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -4210,7 +4210,7 @@ abstract class Role implements ActiveRecordInterface
 
         // Keep the tree modification query for the save() transaction
         $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\RoleQuery', 'makeRoomForLeaf'),
+            'callable'  => array('\phlopsi\access_control\propel\RoleQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -4238,7 +4238,7 @@ abstract class Role implements ActiveRecordInterface
         $this->setLevel($sibling->getLevel());
         // Keep the tree modification query for the save() transaction
         $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\RoleQuery', 'makeRoomForLeaf'),
+            'callable'  => array('\phlopsi\access_control\propel\RoleQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -4266,7 +4266,7 @@ abstract class Role implements ActiveRecordInterface
         $this->setLevel($sibling->getLevel());
         // Keep the tree modification query for the save() transaction
         $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\RoleQuery', 'makeRoomForLeaf'),
+            'callable'  => array('\phlopsi\access_control\propel\RoleQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 

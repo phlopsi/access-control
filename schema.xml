@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="http://xsd.propelorm.org/1.6/database.xsd"
+    xsi:noNamespaceSchemaLocation="vendor/propel/propel/resources/xsd/database.xsd"
     name="access_control"
     defaultIdMethod="native"
     namespace="phlopsi\access_control\propel"
@@ -10,6 +10,9 @@
     <table name="permissions" phpName="Permission">
         <column name="external_id" type="longvarchar" required="true" />
         <behavior name="nested_set" />
+        <unique>
+            <unique-column name="external_id" />
+        </unique>
     </table>
     <table name="permissions_roles" isCrossRef="true">
         <column name="permissions_id" phpName="PermissionId" type="integer" required="true" primaryKey="true" />
@@ -24,6 +27,9 @@
     <table name="prohibitions" phpName="Prohibition">
         <column name="external_id" type="longvarchar" required="true" />
         <behavior name="nested_set" />
+        <unique>
+            <unique-column name="external_id" />
+        </unique>
     </table>
     <table name="prohibitions_roles" isCrossRef="true">
         <column name="prohibitions_id" phpName="ProhibitionId" type="integer" required="true" primaryKey="true" />
@@ -50,6 +56,9 @@
     <table name="roles" phpName="Role">
         <column name="external_id" type="longvarchar" required="true" />
         <behavior name="nested_set" />
+        <unique>
+            <unique-column name="external_id" />
+        </unique>
     </table>
     <table name="roles_session_types" isCrossRef="true">
         <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
@@ -74,8 +83,14 @@
     <table name="session_types" phpName="SessionType">
         <column name="external_id" type="longvarchar" required="true" />
         <behavior name="nested_set" />
+        <unique>
+            <unique-column name="external_id" />
+        </unique>
     </table>
     <table name="users" phpName="User">
         <column name="external_id" type="longvarchar" required="true" />
+        <unique>
+            <unique-column name="external_id" />
+        </unique>
     </table>
 </database>

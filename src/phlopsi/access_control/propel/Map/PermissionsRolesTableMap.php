@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Map;
+namespace phlopsi\access_control\propel\Map;
 
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -11,8 +11,8 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use org\bitbucket\phlopsi\access_control\propel\PermissionsRoles;
-use org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery;
+use phlopsi\access_control\propel\PermissionsRoles;
+use phlopsi\access_control\propel\PermissionsRolesQuery;
 
 
 /**
@@ -34,7 +34,7 @@ class PermissionsRolesTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'org.bitbucket.phlopsi.access_control.propel.Map.PermissionsRolesTableMap';
+    const CLASS_NAME = 'phlopsi.access_control.propel.Map.PermissionsRolesTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class PermissionsRolesTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\PermissionsRoles';
+    const OM_CLASS = '\\phlopsi\\access_control\\propel\\PermissionsRoles';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'org.bitbucket.phlopsi.access_control.propel.PermissionsRoles';
+    const CLASS_DEFAULT = 'phlopsi.access_control.propel.PermissionsRoles';
 
     /**
      * The total number of columns
@@ -128,8 +128,8 @@ class PermissionsRolesTableMap extends TableMap
         // attributes
         $this->setName('permissions_roles');
         $this->setPhpName('PermissionsRoles');
-        $this->setClassName('\\org\\bitbucket\\phlopsi\\access_control\\propel\\PermissionsRoles');
-        $this->setPackage('org.bitbucket.phlopsi.access_control.propel');
+        $this->setClassName('\\phlopsi\\access_control\\propel\\PermissionsRoles');
+        $this->setPackage('phlopsi.access_control.propel');
         $this->setUseIdGenerator(false);
         $this->setIsCrossRef(true);
         // columns
@@ -142,8 +142,8 @@ class PermissionsRolesTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Permission', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission', RelationMap::MANY_TO_ONE, array('permissions_id' => 'id', ), null, null);
-        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_ONE, array('roles_id' => 'id', ), null, null);
+        $this->addRelation('Permission', '\\phlopsi\\access_control\\propel\\Permission', RelationMap::MANY_TO_ONE, array('permissions_id' => 'id', ), null, null);
+        $this->addRelation('Role', '\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_ONE, array('roles_id' => 'id', ), null, null);
     } // buildRelations()
 
     /**
@@ -154,7 +154,7 @@ class PermissionsRolesTableMap extends TableMap
      * to the cache in order to ensure that the same objects are always returned by find*()
      * and findPk*() calls.
      *
-     * @param \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles $obj A \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles object.
+     * @param \phlopsi\access_control\propel\PermissionsRoles $obj A \phlopsi\access_control\propel\PermissionsRoles object.
      * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
@@ -175,12 +175,12 @@ class PermissionsRolesTableMap extends TableMap
      * methods in your stub classes -- you may need to explicitly remove objects
      * from the cache in order to prevent returning objects that no longer exist.
      *
-     * @param mixed $value A \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles object or a primary key value.
+     * @param mixed $value A \phlopsi\access_control\propel\PermissionsRoles object or a primary key value.
      */
     public static function removeInstanceFromPool($value)
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
-            if (is_object($value) && $value instanceof \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles) {
+            if (is_object($value) && $value instanceof \phlopsi\access_control\propel\PermissionsRoles) {
                 $key = serialize(array((string) $value->getPermissionId(), (string) $value->getRoleId()));
 
             } elseif (is_array($value) && count($value) === 2) {
@@ -191,7 +191,7 @@ class PermissionsRolesTableMap extends TableMap
 
                 return;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \phlopsi\access_control\propel\PermissionsRoles object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
                 throw $e;
             }
 
@@ -400,7 +400,7 @@ class PermissionsRolesTableMap extends TableMap
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \org\bitbucket\phlopsi\access_control\propel\PermissionsRoles) { // it's a model object
+        } elseif ($values instanceof \phlopsi\access_control\propel\PermissionsRoles) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks

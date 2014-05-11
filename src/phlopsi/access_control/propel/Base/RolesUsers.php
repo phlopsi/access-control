@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Base;
+namespace phlopsi\access_control\propel\Base;
 
 use \Exception;
 use \PDO;
@@ -15,19 +15,19 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use org\bitbucket\phlopsi\access_control\propel\Role as ChildRole;
-use org\bitbucket\phlopsi\access_control\propel\RoleQuery as ChildRoleQuery;
-use org\bitbucket\phlopsi\access_control\propel\RolesUsersQuery as ChildRolesUsersQuery;
-use org\bitbucket\phlopsi\access_control\propel\User as ChildUser;
-use org\bitbucket\phlopsi\access_control\propel\UserQuery as ChildUserQuery;
-use org\bitbucket\phlopsi\access_control\propel\Map\RolesUsersTableMap;
+use phlopsi\access_control\propel\Role as ChildRole;
+use phlopsi\access_control\propel\RoleQuery as ChildRoleQuery;
+use phlopsi\access_control\propel\RolesUsersQuery as ChildRolesUsersQuery;
+use phlopsi\access_control\propel\User as ChildUser;
+use phlopsi\access_control\propel\UserQuery as ChildUserQuery;
+use phlopsi\access_control\propel\Map\RolesUsersTableMap;
 
 abstract class RolesUsers implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Map\\RolesUsersTableMap';
+    const TABLE_MAP = '\\phlopsi\\access_control\\propel\\Map\\RolesUsersTableMap';
 
 
     /**
@@ -87,7 +87,7 @@ abstract class RolesUsers implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of org\bitbucket\phlopsi\access_control\propel\Base\RolesUsers object.
+     * Initializes internal state of phlopsi\access_control\propel\Base\RolesUsers object.
      */
     public function __construct()
     {
@@ -375,7 +375,7 @@ abstract class RolesUsers implements ActiveRecordInterface
             return $startcol + 2; // 2 = RolesUsersTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesUsers'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\phlopsi\\access_control\\propel\\RolesUsers'), 0, $e);
         }
     }
 
@@ -406,7 +406,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * Set the value of [roles_id] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\RolesUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\RolesUsers The current object (for fluent API support)
      */
     public function setRoleId($v)
     {
@@ -430,7 +430,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * Set the value of [users_id] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\RolesUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\RolesUsers The current object (for fluent API support)
      */
     public function setUserId($v)
     {
@@ -782,7 +782,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\RolesUsers
+     * @return $this|\phlopsi\access_control\propel\RolesUsers
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
@@ -797,7 +797,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\RolesUsers
+     * @return $this|\phlopsi\access_control\propel\RolesUsers
      */
     public function setByPosition($pos, $value)
     {
@@ -853,7 +853,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\RolesUsers The current object, for fluid interface
+     * @return $this|\phlopsi\access_control\propel\RolesUsers The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -982,7 +982,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \org\bitbucket\phlopsi\access_control\propel\RolesUsers (or compatible) type.
+     * @param      object $copyObj An object of \phlopsi\access_control\propel\RolesUsers (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1005,7 +1005,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \org\bitbucket\phlopsi\access_control\propel\RolesUsers Clone of current object.
+     * @return \phlopsi\access_control\propel\RolesUsers Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1022,7 +1022,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * Declares an association between this object and a ChildRole object.
      *
      * @param  ChildRole $v
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\RolesUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\RolesUsers The current object (for fluent API support)
      * @throws PropelException
      */
     public function setRole(ChildRole $v = null)
@@ -1073,7 +1073,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * Declares an association between this object and a ChildUser object.
      *
      * @param  ChildUser $v
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\RolesUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\RolesUsers The current object (for fluent API support)
      * @throws PropelException
      */
     public function setUser(ChildUser $v = null)

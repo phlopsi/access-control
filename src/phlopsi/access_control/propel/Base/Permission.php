@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Base;
+namespace phlopsi\access_control\propel\Base;
 
 use \Exception;
 use \PDO;
@@ -17,20 +17,20 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use org\bitbucket\phlopsi\access_control\propel\Permission as ChildPermission;
-use org\bitbucket\phlopsi\access_control\propel\PermissionQuery as ChildPermissionQuery;
-use org\bitbucket\phlopsi\access_control\propel\PermissionsRoles as ChildPermissionsRoles;
-use org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery as ChildPermissionsRolesQuery;
-use org\bitbucket\phlopsi\access_control\propel\Role as ChildRole;
-use org\bitbucket\phlopsi\access_control\propel\RoleQuery as ChildRoleQuery;
-use org\bitbucket\phlopsi\access_control\propel\Map\PermissionTableMap;
+use phlopsi\access_control\propel\Permission as ChildPermission;
+use phlopsi\access_control\propel\PermissionQuery as ChildPermissionQuery;
+use phlopsi\access_control\propel\PermissionsRoles as ChildPermissionsRoles;
+use phlopsi\access_control\propel\PermissionsRolesQuery as ChildPermissionsRolesQuery;
+use phlopsi\access_control\propel\Role as ChildRole;
+use phlopsi\access_control\propel\RoleQuery as ChildRoleQuery;
+use phlopsi\access_control\propel\Map\PermissionTableMap;
 
 abstract class Permission implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Map\\PermissionTableMap';
+    const TABLE_MAP = '\\phlopsi\\access_control\\propel\\Map\\PermissionTableMap';
 
 
     /**
@@ -161,7 +161,7 @@ abstract class Permission implements ActiveRecordInterface
     protected $permissionsRolessScheduledForDeletion = null;
 
     /**
-     * Initializes internal state of org\bitbucket\phlopsi\access_control\propel\Base\Permission object.
+     * Initializes internal state of phlopsi\access_control\propel\Base\Permission object.
      */
     public function __construct()
     {
@@ -488,7 +488,7 @@ abstract class Permission implements ActiveRecordInterface
             return $startcol + 5; // 5 = PermissionTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\phlopsi\\access_control\\propel\\Permission'), 0, $e);
         }
     }
 
@@ -513,7 +513,7 @@ abstract class Permission implements ActiveRecordInterface
      * Set the value of [external_id] column.
      *
      * @param  string $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Permission The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Permission The current object (for fluent API support)
      */
     public function setExternalId($v)
     {
@@ -533,7 +533,7 @@ abstract class Permission implements ActiveRecordInterface
      * Set the value of [tree_left] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Permission The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Permission The current object (for fluent API support)
      */
     public function setTreeLeft($v)
     {
@@ -553,7 +553,7 @@ abstract class Permission implements ActiveRecordInterface
      * Set the value of [tree_right] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Permission The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Permission The current object (for fluent API support)
      */
     public function setTreeRight($v)
     {
@@ -573,7 +573,7 @@ abstract class Permission implements ActiveRecordInterface
      * Set the value of [tree_level] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Permission The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Permission The current object (for fluent API support)
      */
     public function setTreeLevel($v)
     {
@@ -593,7 +593,7 @@ abstract class Permission implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Permission The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Permission The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -796,7 +796,7 @@ abstract class Permission implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery::create()
+                    \phlopsi\access_control\propel\PermissionsRolesQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -816,7 +816,7 @@ abstract class Permission implements ActiveRecordInterface
 
             if ($this->permissionsRolessScheduledForDeletion !== null) {
                 if (!$this->permissionsRolessScheduledForDeletion->isEmpty()) {
-                    \org\bitbucket\phlopsi\access_control\propel\PermissionsRolesQuery::create()
+                    \phlopsi\access_control\propel\PermissionsRolesQuery::create()
                         ->filterByPrimaryKeys($this->permissionsRolessScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
                     $this->permissionsRolessScheduledForDeletion = null;
@@ -1033,7 +1033,7 @@ abstract class Permission implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Permission
+     * @return $this|\phlopsi\access_control\propel\Permission
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
@@ -1048,7 +1048,7 @@ abstract class Permission implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Permission
+     * @return $this|\phlopsi\access_control\propel\Permission
      */
     public function setByPosition($pos, $value)
     {
@@ -1122,7 +1122,7 @@ abstract class Permission implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Permission The current object, for fluid interface
+     * @return $this|\phlopsi\access_control\propel\Permission The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -1238,7 +1238,7 @@ abstract class Permission implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \org\bitbucket\phlopsi\access_control\propel\Permission (or compatible) type.
+     * @param      object $copyObj An object of \phlopsi\access_control\propel\Permission (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1278,7 +1278,7 @@ abstract class Permission implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \org\bitbucket\phlopsi\access_control\propel\Permission Clone of current object.
+     * @return \phlopsi\access_control\propel\Permission Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1347,7 +1347,7 @@ abstract class Permission implements ActiveRecordInterface
             return;
         }
         $this->collPermissionsRoless = new ObjectCollection();
-        $this->collPermissionsRoless->setModel('\org\bitbucket\phlopsi\access_control\propel\PermissionsRoles');
+        $this->collPermissionsRoless->setModel('\phlopsi\access_control\propel\PermissionsRoles');
     }
 
     /**
@@ -1483,7 +1483,7 @@ abstract class Permission implements ActiveRecordInterface
      * through the ChildPermissionsRoles foreign key attribute.
      *
      * @param  ChildPermissionsRoles $l ChildPermissionsRoles
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\Permission The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\Permission The current object (for fluent API support)
      */
     public function addPermissionsRoles(ChildPermissionsRoles $l)
     {
@@ -1581,7 +1581,7 @@ abstract class Permission implements ActiveRecordInterface
         $this->collRoles = new ObjectCollection();
         $this->collRolesPartial = true;
 
-        $this->collRoles->setModel('\org\bitbucket\phlopsi\access_control\propel\Role');
+        $this->collRoles->setModel('\phlopsi\access_control\propel\Role');
     }
 
     /**
@@ -2134,7 +2134,7 @@ abstract class Permission implements ActiveRecordInterface
     public function initNestedSetChildren()
     {
         $this->collNestedSetChildren = new ObjectCollection();
-        $this->collNestedSetChildren->setModel('\org\bitbucket\phlopsi\access_control\propel\Permission');
+        $this->collNestedSetChildren->setModel('\phlopsi\access_control\propel\Permission');
     }
 
     /**
@@ -2397,7 +2397,7 @@ abstract class Permission implements ActiveRecordInterface
 
         // Keep the tree modification query for the save() transaction
         $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\PermissionQuery', 'makeRoomForLeaf'),
+            'callable'  => array('\phlopsi\access_control\propel\PermissionQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2431,7 +2431,7 @@ abstract class Permission implements ActiveRecordInterface
 
         // Keep the tree modification query for the save() transaction
         $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\PermissionQuery', 'makeRoomForLeaf'),
+            'callable'  => array('\phlopsi\access_control\propel\PermissionQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2459,7 +2459,7 @@ abstract class Permission implements ActiveRecordInterface
         $this->setLevel($sibling->getLevel());
         // Keep the tree modification query for the save() transaction
         $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\PermissionQuery', 'makeRoomForLeaf'),
+            'callable'  => array('\phlopsi\access_control\propel\PermissionQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 
@@ -2487,7 +2487,7 @@ abstract class Permission implements ActiveRecordInterface
         $this->setLevel($sibling->getLevel());
         // Keep the tree modification query for the save() transaction
         $this->nestedSetQueries []= array(
-            'callable'  => array('\org\bitbucket\phlopsi\access_control\propel\PermissionQuery', 'makeRoomForLeaf'),
+            'callable'  => array('\phlopsi\access_control\propel\PermissionQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
 

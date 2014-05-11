@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Base;
+namespace phlopsi\access_control\propel\Base;
 
 use \Exception;
 use \PDO;
@@ -11,9 +11,9 @@ use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use org\bitbucket\phlopsi\access_control\propel\RolesUsers as ChildRolesUsers;
-use org\bitbucket\phlopsi\access_control\propel\RolesUsersQuery as ChildRolesUsersQuery;
-use org\bitbucket\phlopsi\access_control\propel\Map\RolesUsersTableMap;
+use phlopsi\access_control\propel\RolesUsers as ChildRolesUsers;
+use phlopsi\access_control\propel\RolesUsersQuery as ChildRolesUsersQuery;
+use phlopsi\access_control\propel\Map\RolesUsersTableMap;
 
 /**
  * Base class that represents a query for the 'roles_users' table.
@@ -38,7 +38,7 @@ use org\bitbucket\phlopsi\access_control\propel\Map\RolesUsersTableMap;
  * @method     ChildRolesUsersQuery rightJoinUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the User relation
  * @method     ChildRolesUsersQuery innerJoinUser($relationAlias = null) Adds a INNER JOIN clause to the query using the User relation
  *
- * @method     \org\bitbucket\phlopsi\access_control\propel\RoleQuery|\org\bitbucket\phlopsi\access_control\propel\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \phlopsi\access_control\propel\RoleQuery|\phlopsi\access_control\propel\UserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildRolesUsers findOne(ConnectionInterface $con = null) Return the first ChildRolesUsers matching the query
  * @method     ChildRolesUsers findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRolesUsers matching the query, or a new ChildRolesUsers object populated from the query conditions when no match is found
@@ -56,13 +56,13 @@ abstract class RolesUsersQuery extends ModelCriteria
 {
 
     /**
-     * Initializes internal state of \org\bitbucket\phlopsi\access_control\propel\Base\RolesUsersQuery object.
+     * Initializes internal state of \phlopsi\access_control\propel\Base\RolesUsersQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesUsers', $modelAlias = null)
+    public function __construct($dbName = 'access_control', $modelName = '\\phlopsi\\access_control\\propel\\RolesUsers', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -327,16 +327,16 @@ abstract class RolesUsersQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\Role object
+     * Filter the query by a related \phlopsi\access_control\propel\Role object
      *
-     * @param \org\bitbucket\phlopsi\access_control\propel\Role|ObjectCollection $role The related object(s) to use as filter
+     * @param \phlopsi\access_control\propel\Role|ObjectCollection $role The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildRolesUsersQuery The current query, for fluid interface
      */
     public function filterByRole($role, $comparison = null)
     {
-        if ($role instanceof \org\bitbucket\phlopsi\access_control\propel\Role) {
+        if ($role instanceof \phlopsi\access_control\propel\Role) {
             return $this
                 ->addUsingAlias(RolesUsersTableMap::COL_ROLES_ID, $role->getId(), $comparison);
         } elseif ($role instanceof ObjectCollection) {
@@ -347,7 +347,7 @@ abstract class RolesUsersQuery extends ModelCriteria
             return $this
                 ->addUsingAlias(RolesUsersTableMap::COL_ROLES_ID, $role->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByRole() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\Role or Collection');
+            throw new PropelException('filterByRole() only accepts arguments of type \phlopsi\access_control\propel\Role or Collection');
         }
     }
 
@@ -392,26 +392,26 @@ abstract class RolesUsersQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \org\bitbucket\phlopsi\access_control\propel\RoleQuery A secondary query class using the current class as primary query
+     * @return \phlopsi\access_control\propel\RoleQuery A secondary query class using the current class as primary query
      */
     public function useRoleQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinRole($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Role', '\org\bitbucket\phlopsi\access_control\propel\RoleQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'Role', '\phlopsi\access_control\propel\RoleQuery');
     }
 
     /**
-     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\User object
+     * Filter the query by a related \phlopsi\access_control\propel\User object
      *
-     * @param \org\bitbucket\phlopsi\access_control\propel\User|ObjectCollection $user The related object(s) to use as filter
+     * @param \phlopsi\access_control\propel\User|ObjectCollection $user The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildRolesUsersQuery The current query, for fluid interface
      */
     public function filterByUser($user, $comparison = null)
     {
-        if ($user instanceof \org\bitbucket\phlopsi\access_control\propel\User) {
+        if ($user instanceof \phlopsi\access_control\propel\User) {
             return $this
                 ->addUsingAlias(RolesUsersTableMap::COL_USERS_ID, $user->getId(), $comparison);
         } elseif ($user instanceof ObjectCollection) {
@@ -422,7 +422,7 @@ abstract class RolesUsersQuery extends ModelCriteria
             return $this
                 ->addUsingAlias(RolesUsersTableMap::COL_USERS_ID, $user->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
-            throw new PropelException('filterByUser() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\User or Collection');
+            throw new PropelException('filterByUser() only accepts arguments of type \phlopsi\access_control\propel\User or Collection');
         }
     }
 
@@ -467,13 +467,13 @@ abstract class RolesUsersQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \org\bitbucket\phlopsi\access_control\propel\UserQuery A secondary query class using the current class as primary query
+     * @return \phlopsi\access_control\propel\UserQuery A secondary query class using the current class as primary query
      */
     public function useUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinUser($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'User', '\org\bitbucket\phlopsi\access_control\propel\UserQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'User', '\phlopsi\access_control\propel\UserQuery');
     }
 
     /**

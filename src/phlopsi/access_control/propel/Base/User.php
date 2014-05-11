@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Base;
+namespace phlopsi\access_control\propel\Base;
 
 use \Exception;
 use \PDO;
@@ -16,24 +16,24 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use org\bitbucket\phlopsi\access_control\propel\Prohibition as ChildProhibition;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery as ChildProhibitionQuery;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers as ChildProhibitionsUsers;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery as ChildProhibitionsUsersQuery;
-use org\bitbucket\phlopsi\access_control\propel\Role as ChildRole;
-use org\bitbucket\phlopsi\access_control\propel\RoleQuery as ChildRoleQuery;
-use org\bitbucket\phlopsi\access_control\propel\RolesUsers as ChildRolesUsers;
-use org\bitbucket\phlopsi\access_control\propel\RolesUsersQuery as ChildRolesUsersQuery;
-use org\bitbucket\phlopsi\access_control\propel\User as ChildUser;
-use org\bitbucket\phlopsi\access_control\propel\UserQuery as ChildUserQuery;
-use org\bitbucket\phlopsi\access_control\propel\Map\UserTableMap;
+use phlopsi\access_control\propel\Prohibition as ChildProhibition;
+use phlopsi\access_control\propel\ProhibitionQuery as ChildProhibitionQuery;
+use phlopsi\access_control\propel\ProhibitionsUsers as ChildProhibitionsUsers;
+use phlopsi\access_control\propel\ProhibitionsUsersQuery as ChildProhibitionsUsersQuery;
+use phlopsi\access_control\propel\Role as ChildRole;
+use phlopsi\access_control\propel\RoleQuery as ChildRoleQuery;
+use phlopsi\access_control\propel\RolesUsers as ChildRolesUsers;
+use phlopsi\access_control\propel\RolesUsersQuery as ChildRolesUsersQuery;
+use phlopsi\access_control\propel\User as ChildUser;
+use phlopsi\access_control\propel\UserQuery as ChildUserQuery;
+use phlopsi\access_control\propel\Map\UserTableMap;
 
 abstract class User implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Map\\UserTableMap';
+    const TABLE_MAP = '\\phlopsi\\access_control\\propel\\Map\\UserTableMap';
 
 
     /**
@@ -139,7 +139,7 @@ abstract class User implements ActiveRecordInterface
     protected $rolesUserssScheduledForDeletion = null;
 
     /**
-     * Initializes internal state of org\bitbucket\phlopsi\access_control\propel\Base\User object.
+     * Initializes internal state of phlopsi\access_control\propel\Base\User object.
      */
     public function __construct()
     {
@@ -427,7 +427,7 @@ abstract class User implements ActiveRecordInterface
             return $startcol + 2; // 2 = UserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\User'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\phlopsi\\access_control\\propel\\User'), 0, $e);
         }
     }
 
@@ -452,7 +452,7 @@ abstract class User implements ActiveRecordInterface
      * Set the value of [external_id] column.
      *
      * @param  string $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\User The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\User The current object (for fluent API support)
      */
     public function setExternalId($v)
     {
@@ -472,7 +472,7 @@ abstract class User implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\User The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\User The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -652,7 +652,7 @@ abstract class User implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery::create()
+                    \phlopsi\access_control\propel\ProhibitionsUsersQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -681,7 +681,7 @@ abstract class User implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \org\bitbucket\phlopsi\access_control\propel\RolesUsersQuery::create()
+                    \phlopsi\access_control\propel\RolesUsersQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -701,7 +701,7 @@ abstract class User implements ActiveRecordInterface
 
             if ($this->prohibitionsUserssScheduledForDeletion !== null) {
                 if (!$this->prohibitionsUserssScheduledForDeletion->isEmpty()) {
-                    \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery::create()
+                    \phlopsi\access_control\propel\ProhibitionsUsersQuery::create()
                         ->filterByPrimaryKeys($this->prohibitionsUserssScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
                     $this->prohibitionsUserssScheduledForDeletion = null;
@@ -718,7 +718,7 @@ abstract class User implements ActiveRecordInterface
 
             if ($this->rolesUserssScheduledForDeletion !== null) {
                 if (!$this->rolesUserssScheduledForDeletion->isEmpty()) {
-                    \org\bitbucket\phlopsi\access_control\propel\RolesUsersQuery::create()
+                    \phlopsi\access_control\propel\RolesUsersQuery::create()
                         ->filterByPrimaryKeys($this->rolesUserssScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
                     $this->rolesUserssScheduledForDeletion = null;
@@ -908,7 +908,7 @@ abstract class User implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\User
+     * @return $this|\phlopsi\access_control\propel\User
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
@@ -923,7 +923,7 @@ abstract class User implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\User
+     * @return $this|\phlopsi\access_control\propel\User
      */
     public function setByPosition($pos, $value)
     {
@@ -979,7 +979,7 @@ abstract class User implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\User The current object, for fluid interface
+     * @return $this|\phlopsi\access_control\propel\User The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -1086,7 +1086,7 @@ abstract class User implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \org\bitbucket\phlopsi\access_control\propel\User (or compatible) type.
+     * @param      object $copyObj An object of \phlopsi\access_control\propel\User (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1129,7 +1129,7 @@ abstract class User implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \org\bitbucket\phlopsi\access_control\propel\User Clone of current object.
+     * @return \phlopsi\access_control\propel\User Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1201,7 +1201,7 @@ abstract class User implements ActiveRecordInterface
             return;
         }
         $this->collProhibitionsUserss = new ObjectCollection();
-        $this->collProhibitionsUserss->setModel('\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers');
+        $this->collProhibitionsUserss->setModel('\phlopsi\access_control\propel\ProhibitionsUsers');
     }
 
     /**
@@ -1337,7 +1337,7 @@ abstract class User implements ActiveRecordInterface
      * through the ChildProhibitionsUsers foreign key attribute.
      *
      * @param  ChildProhibitionsUsers $l ChildProhibitionsUsers
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\User The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\User The current object (for fluent API support)
      */
     public function addProhibitionsUsers(ChildProhibitionsUsers $l)
     {
@@ -1447,7 +1447,7 @@ abstract class User implements ActiveRecordInterface
             return;
         }
         $this->collRolesUserss = new ObjectCollection();
-        $this->collRolesUserss->setModel('\org\bitbucket\phlopsi\access_control\propel\RolesUsers');
+        $this->collRolesUserss->setModel('\phlopsi\access_control\propel\RolesUsers');
     }
 
     /**
@@ -1583,7 +1583,7 @@ abstract class User implements ActiveRecordInterface
      * through the ChildRolesUsers foreign key attribute.
      *
      * @param  ChildRolesUsers $l ChildRolesUsers
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\User The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\User The current object (for fluent API support)
      */
     public function addRolesUsers(ChildRolesUsers $l)
     {
@@ -1681,7 +1681,7 @@ abstract class User implements ActiveRecordInterface
         $this->collProhibitions = new ObjectCollection();
         $this->collProhibitionsPartial = true;
 
-        $this->collProhibitions->setModel('\org\bitbucket\phlopsi\access_control\propel\Prohibition');
+        $this->collProhibitions->setModel('\phlopsi\access_control\propel\Prohibition');
     }
 
     /**
@@ -1923,7 +1923,7 @@ abstract class User implements ActiveRecordInterface
         $this->collRoles = new ObjectCollection();
         $this->collRolesPartial = true;
 
-        $this->collRoles->setModel('\org\bitbucket\phlopsi\access_control\propel\Role');
+        $this->collRoles->setModel('\phlopsi\access_control\propel\Role');
     }
 
     /**

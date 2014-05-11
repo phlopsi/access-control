@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Base;
+namespace phlopsi\access_control\propel\Base;
 
 use \Exception;
 use \PDO;
@@ -12,9 +12,9 @@ use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
-use org\bitbucket\phlopsi\access_control\propel\SessionType as ChildSessionType;
-use org\bitbucket\phlopsi\access_control\propel\SessionTypeQuery as ChildSessionTypeQuery;
-use org\bitbucket\phlopsi\access_control\propel\Map\SessionTypeTableMap;
+use phlopsi\access_control\propel\SessionType as ChildSessionType;
+use phlopsi\access_control\propel\SessionTypeQuery as ChildSessionTypeQuery;
+use phlopsi\access_control\propel\Map\SessionTypeTableMap;
 
 /**
  * Base class that represents a query for the 'session_types' table.
@@ -41,7 +41,7 @@ use org\bitbucket\phlopsi\access_control\propel\Map\SessionTypeTableMap;
  * @method     ChildSessionTypeQuery rightJoinRolesSessionTypes($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RolesSessionTypes relation
  * @method     ChildSessionTypeQuery innerJoinRolesSessionTypes($relationAlias = null) Adds a INNER JOIN clause to the query using the RolesSessionTypes relation
  *
- * @method     \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \phlopsi\access_control\propel\RolesSessionTypesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildSessionType findOne(ConnectionInterface $con = null) Return the first ChildSessionType matching the query
  * @method     ChildSessionType findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSessionType matching the query, or a new ChildSessionType object populated from the query conditions when no match is found
@@ -65,13 +65,13 @@ abstract class SessionTypeQuery extends ModelCriteria
 {
 
     /**
-     * Initializes internal state of \org\bitbucket\phlopsi\access_control\propel\Base\SessionTypeQuery object.
+     * Initializes internal state of \phlopsi\access_control\propel\Base\SessionTypeQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\SessionType', $modelAlias = null)
+    public function __construct($dbName = 'access_control', $modelName = '\\phlopsi\\access_control\\propel\\SessionType', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -431,16 +431,16 @@ abstract class SessionTypeQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes object
+     * Filter the query by a related \phlopsi\access_control\propel\RolesSessionTypes object
      *
-     * @param \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes|ObjectCollection $rolesSessionTypes  the related object to use as filter
+     * @param \phlopsi\access_control\propel\RolesSessionTypes|ObjectCollection $rolesSessionTypes  the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildSessionTypeQuery The current query, for fluid interface
      */
     public function filterByRolesSessionTypes($rolesSessionTypes, $comparison = null)
     {
-        if ($rolesSessionTypes instanceof \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes) {
+        if ($rolesSessionTypes instanceof \phlopsi\access_control\propel\RolesSessionTypes) {
             return $this
                 ->addUsingAlias(SessionTypeTableMap::COL_ID, $rolesSessionTypes->getSessionTypeId(), $comparison);
         } elseif ($rolesSessionTypes instanceof ObjectCollection) {
@@ -449,7 +449,7 @@ abstract class SessionTypeQuery extends ModelCriteria
                 ->filterByPrimaryKeys($rolesSessionTypes->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByRolesSessionTypes() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypes or Collection');
+            throw new PropelException('filterByRolesSessionTypes() only accepts arguments of type \phlopsi\access_control\propel\RolesSessionTypes or Collection');
         }
     }
 
@@ -494,13 +494,13 @@ abstract class SessionTypeQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \org\bitbucket\phlopsi\access_control\propel\RolesSessionTypesQuery A secondary query class using the current class as primary query
+     * @return \phlopsi\access_control\propel\RolesSessionTypesQuery A secondary query class using the current class as primary query
      */
     public function useRolesSessionTypesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinRolesSessionTypes($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'RolesSessionTypes', '\org\bitbucket\phlopsi\access_control\propel\RolesSessionTypesQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'RolesSessionTypes', '\phlopsi\access_control\propel\RolesSessionTypesQuery');
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Map;
+namespace phlopsi\access_control\propel\Map;
 
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -11,8 +11,8 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use org\bitbucket\phlopsi\access_control\propel\User;
-use org\bitbucket\phlopsi\access_control\propel\UserQuery;
+use phlopsi\access_control\propel\User;
+use phlopsi\access_control\propel\UserQuery;
 
 
 /**
@@ -34,7 +34,7 @@ class UserTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'org.bitbucket.phlopsi.access_control.propel.Map.UserTableMap';
+    const CLASS_NAME = 'phlopsi.access_control.propel.Map.UserTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class UserTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\User';
+    const OM_CLASS = '\\phlopsi\\access_control\\propel\\User';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'org.bitbucket.phlopsi.access_control.propel.User';
+    const CLASS_DEFAULT = 'phlopsi.access_control.propel.User';
 
     /**
      * The total number of columns
@@ -128,8 +128,8 @@ class UserTableMap extends TableMap
         // attributes
         $this->setName('users');
         $this->setPhpName('User');
-        $this->setClassName('\\org\\bitbucket\\phlopsi\\access_control\\propel\\User');
-        $this->setPackage('org.bitbucket.phlopsi.access_control.propel');
+        $this->setClassName('\\phlopsi\\access_control\\propel\\User');
+        $this->setPackage('phlopsi.access_control.propel');
         $this->setUseIdGenerator(true);
         // columns
         $this->addColumn('EXTERNAL_ID', 'ExternalId', 'LONGVARCHAR', true, null, null);
@@ -141,10 +141,10 @@ class UserTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ProhibitionsUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'ProhibitionsUserss');
-        $this->addRelation('RolesUsers', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'RolesUserss');
-        $this->addRelation('Prohibition', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
-        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
+        $this->addRelation('ProhibitionsUsers', '\\phlopsi\\access_control\\propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'ProhibitionsUserss');
+        $this->addRelation('RolesUsers', '\\phlopsi\\access_control\\propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'RolesUserss');
+        $this->addRelation('Prohibition', '\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
+        $this->addRelation('Role', '\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
     } // buildRelations()
 
     /**
@@ -352,7 +352,7 @@ class UserTableMap extends TableMap
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \org\bitbucket\phlopsi\access_control\propel\User) { // it's a model object
+        } elseif ($values instanceof \phlopsi\access_control\propel\User) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks

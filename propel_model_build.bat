@@ -1,0 +1,1 @@
+"vendor\bin\propel.bat" "model:build" "--output-dir=src"

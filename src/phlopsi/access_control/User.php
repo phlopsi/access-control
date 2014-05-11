@@ -1,6 +1,8 @@
 <?php
 namespace phlopsi\access_control;
 
+use phlopsi\access_control\exception\InvalidArgumentException;
+use phlopsi\access_control\exception\RuntimeException;
 use phlopsi\access_control\propel\PermissionQuery as PropelPermissionQuery;
 use phlopsi\access_control\propel\RoleQuery as PropelRoleQuery;
 use phlopsi\access_control\propel\User as PropelUser;
@@ -19,13 +21,13 @@ class User
         $role_id = (string) $role_id;
 
         if (empty($role_id)) {
-            throw new \InvalidArgumentException('$role_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
 
         if (is_null($role)) {
-            throw new EntityNotFoundException('Role "' . $role_id . '" not found!');
+            throw new RuntimeException('Role "' . $role_id . '" not found!');
         }
 
         $this->role->addPermission($role);
@@ -36,7 +38,7 @@ class User
         $permission_id = (string) $permission_id;
 
         if (empty($permission_id)) {
-            throw new \InvalidArgumentException('$permission_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         //TODO more efficiency!
@@ -72,13 +74,13 @@ class User
         $role_id = (string) $role_id;
 
         if (empty($role_id)) {
-            throw new \InvalidArgumentException('$role_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
 
         if (is_null($role)) {
-            throw new EntityNotFoundException('Role "' . $role_id . '" not found!');
+            throw new RuntimeException('Role "' . $role_id . '" not found!');
         }
 
         $this->user->removeRole($role);

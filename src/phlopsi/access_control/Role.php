@@ -1,6 +1,8 @@
 <?php
 namespace phlopsi\access_control;
 
+use phlopsi\access_control\exception\InvalidArgumentException;
+use phlopsi\access_control\exception\RuntimeException;
 use phlopsi\access_control\propel\PermissionQuery as PropelPermissionQuery;
 use phlopsi\access_control\propel\Role as PropelRole;
 
@@ -18,13 +20,13 @@ class Role
         $permission_id = (string) $permission_id;
 
         if (empty($permission_id)) {
-            throw new \InvalidArgumentException('$permission_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
 
         if (is_null($permission)) {
-            throw new EntityNotFoundException('Permission "' . $permission_id . '" not found!');
+            throw new RuntimeException('Permission "' . $permission_id . '" not found!');
         }
 
         $this->role->addPermission($permission);
@@ -35,13 +37,13 @@ class Role
         $permission_id = (string) $permission_id;
 
         if (empty($permission_id)) {
-            throw new \InvalidArgumentException('$permission_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
 
         if (is_null($permission)) {
-            throw new EntityNotFoundException('Permission "' . $permission_id . '" not found!');
+            throw new RuntimeException('Permission "' . $permission_id . '" not found!');
         }
 
         $this->role->removePermission($permission);

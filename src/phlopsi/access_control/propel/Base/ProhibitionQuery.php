@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Base;
+namespace phlopsi\access_control\propel\Base;
 
 use \Exception;
 use \PDO;
@@ -12,9 +12,9 @@ use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
-use org\bitbucket\phlopsi\access_control\propel\Prohibition as ChildProhibition;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery as ChildProhibitionQuery;
-use org\bitbucket\phlopsi\access_control\propel\Map\ProhibitionTableMap;
+use phlopsi\access_control\propel\Prohibition as ChildProhibition;
+use phlopsi\access_control\propel\ProhibitionQuery as ChildProhibitionQuery;
+use phlopsi\access_control\propel\Map\ProhibitionTableMap;
 
 /**
  * Base class that represents a query for the 'prohibitions' table.
@@ -45,7 +45,7 @@ use org\bitbucket\phlopsi\access_control\propel\Map\ProhibitionTableMap;
  * @method     ChildProhibitionQuery rightJoinProhibitionsUsers($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProhibitionsUsers relation
  * @method     ChildProhibitionQuery innerJoinProhibitionsUsers($relationAlias = null) Adds a INNER JOIN clause to the query using the ProhibitionsUsers relation
  *
- * @method     \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \phlopsi\access_control\propel\ProhibitionsRolesQuery|\phlopsi\access_control\propel\ProhibitionsUsersQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildProhibition findOne(ConnectionInterface $con = null) Return the first ChildProhibition matching the query
  * @method     ChildProhibition findOneOrCreate(ConnectionInterface $con = null) Return the first ChildProhibition matching the query, or a new ChildProhibition object populated from the query conditions when no match is found
@@ -69,13 +69,13 @@ abstract class ProhibitionQuery extends ModelCriteria
 {
 
     /**
-     * Initializes internal state of \org\bitbucket\phlopsi\access_control\propel\Base\ProhibitionQuery object.
+     * Initializes internal state of \phlopsi\access_control\propel\Base\ProhibitionQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Prohibition', $modelAlias = null)
+    public function __construct($dbName = 'access_control', $modelName = '\\phlopsi\\access_control\\propel\\Prohibition', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -435,16 +435,16 @@ abstract class ProhibitionQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles object
+     * Filter the query by a related \phlopsi\access_control\propel\ProhibitionsRoles object
      *
-     * @param \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles|ObjectCollection $prohibitionsRoles  the related object to use as filter
+     * @param \phlopsi\access_control\propel\ProhibitionsRoles|ObjectCollection $prohibitionsRoles  the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildProhibitionQuery The current query, for fluid interface
      */
     public function filterByProhibitionsRoles($prohibitionsRoles, $comparison = null)
     {
-        if ($prohibitionsRoles instanceof \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles) {
+        if ($prohibitionsRoles instanceof \phlopsi\access_control\propel\ProhibitionsRoles) {
             return $this
                 ->addUsingAlias(ProhibitionTableMap::COL_ID, $prohibitionsRoles->getProhibitionId(), $comparison);
         } elseif ($prohibitionsRoles instanceof ObjectCollection) {
@@ -453,7 +453,7 @@ abstract class ProhibitionQuery extends ModelCriteria
                 ->filterByPrimaryKeys($prohibitionsRoles->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByProhibitionsRoles() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRoles or Collection');
+            throw new PropelException('filterByProhibitionsRoles() only accepts arguments of type \phlopsi\access_control\propel\ProhibitionsRoles or Collection');
         }
     }
 
@@ -498,26 +498,26 @@ abstract class ProhibitionQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery A secondary query class using the current class as primary query
+     * @return \phlopsi\access_control\propel\ProhibitionsRolesQuery A secondary query class using the current class as primary query
      */
     public function useProhibitionsRolesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinProhibitionsRoles($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProhibitionsRoles', '\org\bitbucket\phlopsi\access_control\propel\ProhibitionsRolesQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'ProhibitionsRoles', '\phlopsi\access_control\propel\ProhibitionsRolesQuery');
     }
 
     /**
-     * Filter the query by a related \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers object
+     * Filter the query by a related \phlopsi\access_control\propel\ProhibitionsUsers object
      *
-     * @param \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers|ObjectCollection $prohibitionsUsers  the related object to use as filter
+     * @param \phlopsi\access_control\propel\ProhibitionsUsers|ObjectCollection $prohibitionsUsers  the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildProhibitionQuery The current query, for fluid interface
      */
     public function filterByProhibitionsUsers($prohibitionsUsers, $comparison = null)
     {
-        if ($prohibitionsUsers instanceof \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers) {
+        if ($prohibitionsUsers instanceof \phlopsi\access_control\propel\ProhibitionsUsers) {
             return $this
                 ->addUsingAlias(ProhibitionTableMap::COL_ID, $prohibitionsUsers->getProhibitionId(), $comparison);
         } elseif ($prohibitionsUsers instanceof ObjectCollection) {
@@ -526,7 +526,7 @@ abstract class ProhibitionQuery extends ModelCriteria
                 ->filterByPrimaryKeys($prohibitionsUsers->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByProhibitionsUsers() only accepts arguments of type \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers or Collection');
+            throw new PropelException('filterByProhibitionsUsers() only accepts arguments of type \phlopsi\access_control\propel\ProhibitionsUsers or Collection');
         }
     }
 
@@ -571,13 +571,13 @@ abstract class ProhibitionQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery A secondary query class using the current class as primary query
+     * @return \phlopsi\access_control\propel\ProhibitionsUsersQuery A secondary query class using the current class as primary query
      */
     public function useProhibitionsUsersQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinProhibitionsUsers($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProhibitionsUsers', '\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'ProhibitionsUsers', '\phlopsi\access_control\propel\ProhibitionsUsersQuery');
     }
 
     /**

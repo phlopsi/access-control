@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Base;
+namespace phlopsi\access_control\propel\Base;
 
 use \DateTime;
 use \Exception;
@@ -17,20 +17,20 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
-use org\bitbucket\phlopsi\access_control\propel\Prohibition as ChildProhibition;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionQuery as ChildProhibitionQuery;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers as ChildProhibitionsUsers;
-use org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsersQuery as ChildProhibitionsUsersQuery;
-use org\bitbucket\phlopsi\access_control\propel\User as ChildUser;
-use org\bitbucket\phlopsi\access_control\propel\UserQuery as ChildUserQuery;
-use org\bitbucket\phlopsi\access_control\propel\Map\ProhibitionsUsersTableMap;
+use phlopsi\access_control\propel\Prohibition as ChildProhibition;
+use phlopsi\access_control\propel\ProhibitionQuery as ChildProhibitionQuery;
+use phlopsi\access_control\propel\ProhibitionsUsers as ChildProhibitionsUsers;
+use phlopsi\access_control\propel\ProhibitionsUsersQuery as ChildProhibitionsUsersQuery;
+use phlopsi\access_control\propel\User as ChildUser;
+use phlopsi\access_control\propel\UserQuery as ChildUserQuery;
+use phlopsi\access_control\propel\Map\ProhibitionsUsersTableMap;
 
 abstract class ProhibitionsUsers implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Map\\ProhibitionsUsersTableMap';
+    const TABLE_MAP = '\\phlopsi\\access_control\\propel\\Map\\ProhibitionsUsersTableMap';
 
 
     /**
@@ -108,7 +108,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of org\bitbucket\phlopsi\access_control\propel\Base\ProhibitionsUsers object.
+     * Initializes internal state of phlopsi\access_control\propel\Base\ProhibitionsUsers object.
      */
     public function __construct()
     {
@@ -351,7 +351,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw \DateTime object will be returned.
      *
-     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -371,7 +371,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw \DateTime object will be returned.
      *
-     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -391,7 +391,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw \DateTime object will be returned.
      *
-     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|\DateTime Formatted date/time value as string or \DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -447,21 +447,12 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             $this->users_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProhibitionsUsersTableMap::translateFieldName('ProhibitedUntil', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
             $this->prohibited_until = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProhibitionsUsersTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProhibitionsUsersTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
             $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, '\DateTime') : null;
             $this->resetModified();
 
@@ -474,7 +465,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             return $startcol + 5; // 5 = ProhibitionsUsersTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\ProhibitionsUsers'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\phlopsi\\access_control\\propel\\ProhibitionsUsers'), 0, $e);
         }
     }
 
@@ -505,7 +496,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * Set the value of [prohibitions_id] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      */
     public function setProhibitionId($v)
     {
@@ -529,7 +520,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * Set the value of [users_id] column.
      *
      * @param  int $v new value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      */
     public function setUserId($v)
     {
@@ -554,7 +545,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      */
     public function setProhibitedUntil($v)
     {
@@ -574,7 +565,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -594,7 +585,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTime value.
      *               Empty strings are treated as NULL.
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -983,7 +974,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers
+     * @return $this|\phlopsi\access_control\propel\ProhibitionsUsers
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
@@ -998,7 +989,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers
+     * @return $this|\phlopsi\access_control\propel\ProhibitionsUsers
      */
     public function setByPosition($pos, $value)
     {
@@ -1072,7 +1063,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      *
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object, for fluid interface
+     * @return $this|\phlopsi\access_control\propel\ProhibitionsUsers The current object, for fluid interface
      */
     public function importFrom($parser, $data)
     {
@@ -1210,7 +1201,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers (or compatible) type.
+     * @param      object $copyObj An object of \phlopsi\access_control\propel\ProhibitionsUsers (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1236,7 +1227,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers Clone of current object.
+     * @return \phlopsi\access_control\propel\ProhibitionsUsers Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1253,7 +1244,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * Declares an association between this object and a ChildProhibition object.
      *
      * @param  ChildProhibition $v
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      * @throws PropelException
      */
     public function setProhibition(ChildProhibition $v = null)
@@ -1304,7 +1295,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * Declares an association between this object and a ChildUser object.
      *
      * @param  ChildUser $v
-     * @return $this|\org\bitbucket\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
+     * @return $this|\phlopsi\access_control\propel\ProhibitionsUsers The current object (for fluent API support)
      * @throws PropelException
      */
     public function setUser(ChildUser $v = null)

@@ -1,0 +1,1 @@
+"vendor\bin\phpcbf.bat" "--standard=PSR2" "--ignore=propel" "src"

@@ -1,6 +1,6 @@
 <?php
 
-namespace org\bitbucket\phlopsi\access_control\propel\Map;
+namespace phlopsi\access_control\propel\Map;
 
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
@@ -11,8 +11,8 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use org\bitbucket\phlopsi\access_control\propel\Permission;
-use org\bitbucket\phlopsi\access_control\propel\PermissionQuery;
+use phlopsi\access_control\propel\Permission;
+use phlopsi\access_control\propel\PermissionQuery;
 
 
 /**
@@ -34,7 +34,7 @@ class PermissionTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'org.bitbucket.phlopsi.access_control.propel.Map.PermissionTableMap';
+    const CLASS_NAME = 'phlopsi.access_control.propel.Map.PermissionTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class PermissionTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission';
+    const OM_CLASS = '\\phlopsi\\access_control\\propel\\Permission';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'org.bitbucket.phlopsi.access_control.propel.Permission';
+    const CLASS_DEFAULT = 'phlopsi.access_control.propel.Permission';
 
     /**
      * The total number of columns
@@ -143,8 +143,8 @@ class PermissionTableMap extends TableMap
         // attributes
         $this->setName('permissions');
         $this->setPhpName('Permission');
-        $this->setClassName('\\org\\bitbucket\\phlopsi\\access_control\\propel\\Permission');
-        $this->setPackage('org.bitbucket.phlopsi.access_control.propel');
+        $this->setClassName('\\phlopsi\\access_control\\propel\\Permission');
+        $this->setPackage('phlopsi.access_control.propel');
         $this->setUseIdGenerator(true);
         // columns
         $this->addColumn('EXTERNAL_ID', 'ExternalId', 'LONGVARCHAR', true, null, null);
@@ -159,8 +159,8 @@ class PermissionTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('PermissionsRoles', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\PermissionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'permissions_id', ), null, null, 'PermissionsRoless');
-        $this->addRelation('Role', '\\org\\bitbucket\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
+        $this->addRelation('PermissionsRoles', '\\phlopsi\\access_control\\propel\\PermissionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'permissions_id', ), null, null, 'PermissionsRoless');
+        $this->addRelation('Role', '\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
     } // buildRelations()
 
     /**
@@ -375,7 +375,7 @@ class PermissionTableMap extends TableMap
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \org\bitbucket\phlopsi\access_control\propel\Permission) { // it's a model object
+        } elseif ($values instanceof \phlopsi\access_control\propel\Permission) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks

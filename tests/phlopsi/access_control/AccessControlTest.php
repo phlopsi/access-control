@@ -1,28 +1,67 @@
 <?php
 namespace phlopsi\access_control;
 
-/**
- * Description of AccessControlTest
- *
- * @author Patrick
- */
-class AccessControlTest extends \PHPUnit_Framework_TestCase
+use Propel\Generator\Builder\Util\SchemaReader;
+use Propel\Generator\Platform\SqlitePlatform;
+use Propel\Generator\Util\SqlParser;
+use Propel\Runtime\Connection\PdoConnection;
+use Propel\Runtime\Propel;
+
+class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 {
+    protected static $pdo;
+    protected static $sql;
+    
     protected $access_control;
+    protected $connection;
+
+    public static function setUpBeforeClass()
+    {
+        self::$pdo = new PdoConnection('sqlite::memory:');
+        
+        $serviceContainer = Propel::getServiceContainer();
+        $serviceContainer->setAdapterClass('access_control', 'sqlite');
+        $serviceContainer->setConnection('access_control', self::$pdo);
+        
+        $platform = new SqlitePlatform();
+        $schema_reader = new SchemaReader($platform);
+        $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'schema.xml';
+        $schema = $schema_reader->parseFile($file);
+        $database = $schema->getDatabase('access_control');
+        self::$sql = $platform->getAddTablesDDL($database);
+    }
+
+    public static function tearDownAfterClass()
+    {
+        self::$pdo = null;
+    }
 
     protected function setUp()
     {
+        $this->connection = $this->createDefaultDBConnection(self::$pdo);
+        SqlParser::executeString(self::$sql, self::$pdo);
         $this->access_control = new AccessControl();
     }
 
     protected function tearDown()
     {
-        unset($this->access_control);
+        $this->connection = null;
+        $this->access_control = null;
+    }
+
+    protected function getConnection()
+    {
+        return $this->connection;
+    }
+
+    protected function getDataSet()
+    {
+        
     }
 
     /**
      * @covers phlopsi\access_control\AccessControl::createPermission
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testCreatePermissionInvalidArgumentException()
     {
@@ -31,7 +70,7 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers phlopsi\access_control\AccessControl::createRole
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testCreateRoleInvalidArgumentException()
     {
@@ -40,7 +79,7 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers phlopsi\access_control\AccessControl::createSessionType
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testCreateSessionTypeInvalidArgumentException()
     {
@@ -49,7 +88,7 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers phlopsi\access_control\AccessControl::createUser
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testCreateUserInvalidArgumentException()
     {
@@ -58,7 +97,7 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers phlopsi\access_control\AccessControl::deletePermission
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testDeletePermissionInvalidArgumentException()
     {
@@ -67,7 +106,7 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers phlopsi\access_control\AccessControl::deleteRole
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testDeleteRoleInvalidArgumentException()
     {
@@ -76,7 +115,7 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers phlopsi\access_control\AccessControl::deleteSessionType
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testDeleteSessionTypeInvalidArgumentException()
     {
@@ -85,7 +124,7 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers phlopsi\access_control\AccessControl::deleteUser
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testDeleteUserInvalidArgumentException()
     {
@@ -94,7 +133,7 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers phlopsi\access_control\AccessControl::retrieveRole
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testRetrieveRoleInvalidArgumentException()
     {
@@ -103,7 +142,7 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers phlopsi\access_control\AccessControl::retrieveSessionType
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testRetrieveSessionTypeInvalidArgumentException()
     {
@@ -112,10 +151,21 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers phlopsi\access_control\AccessControl::retrieveUser
-     * @expectedException \InvalidArgumentException
+     * @expectedException phlopsi\access_control\exception\InvalidArgumentException
      */
     public function testRetrieveUserInvalidArgumentException()
     {
         $this->access_control->retrieveUser(NULL);
     }
+
+    /**
+     * @covers phlopsi\access_control\AccessControl::createPermission
+     * @expectedException phlopsi\access_control\exception\RuntimeException
+     */
+    public function testCreatePermissionTwice()
+    {
+        $this->access_control->createPermission('TEST_PERMISSION');
+        $this->access_control->createPermission('TEST_PERMISSION');
+    }
+
 }

@@ -1,6 +1,8 @@
 <?php
 namespace phlopsi\access_control;
 
+use phlopsi\access_control\exception\InvalidArgumentException;
+use phlopsi\access_control\exception\RuntimeException;
 use phlopsi\access_control\propel\Permission as PropelPermission;
 use phlopsi\access_control\propel\PermissionQuery as PropelPermissionQuery;
 use phlopsi\access_control\propel\Role as PropelRole;
@@ -21,18 +23,16 @@ class AccessControl
         $permission_id = (string) $permission_id;
 
         if (empty($permission_id)) {
-            throw new \InvalidArgumentException('$permission_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
-
-        if (!is_null($permission)) {
-            throw new EntityAlreadyExistsException('Permission "' . $permission_id . '" already exists!');
+        try {
+            $new_permission = new PropelPermission();
+            $new_permission->setExternalId($permission_id);
+            $new_permission->save();
+        } catch (\Exception $exception) {
+            throw new RuntimeException(null, null, $exception);
         }
-
-        $new_permission = new PropelPermission();
-        $new_permission->setExternalId($permission_id);
-        $new_permission->save();
     }
 
     public function createRole($role_id)
@@ -40,22 +40,20 @@ class AccessControl
         $role_id = (string) $role_id;
 
         if (empty($role_id)) {
-            throw new \InvalidArgumentException('$role_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (\array_key_exists($role_id, $this->roles)) {
-            throw new EntityAlreadyExistsException('Role "' . $role_id . '" already exists!');
+            throw new RuntimeException('Role "' . $role_id . '" already exists!');
         }
 
-        $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
-
-        if (!is_null($role)) {
-            throw new EntityAlreadyExistsException('Role "' . $role_id . '" already exists!');
+        try {
+            $new_role = new PropelRole();
+            $new_role->setExternalId($role_id);
+            $new_role->save();
+        } catch (\Exception $exception) {
+            throw new RuntimeException(null, null, $exception);
         }
-
-        $new_role = new PropelRole();
-        $new_role->setExternalId($role_id);
-        $new_role->save();
 
         $this->roles[$role_id] = new Role($new_role);
 
@@ -67,22 +65,20 @@ class AccessControl
         $session_type_id = (string) $session_type_id;
 
         if (empty($session_type_id)) {
-            throw new \InvalidArgumentException('$session_type_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (\array_key_exists($session_type_id, $this->session_types)) {
-            throw new EntityAlreadyExistsException('SessionType "' . $session_type_id . '" already exists!');
+            throw new RuntimeException('SessionType "' . $session_type_id . '" already exists!');
         }
 
-        $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
-
-        if (!is_null($session_type)) {
-            throw new EntityAlreadyExistsException('SessionType "' . $session_type . '" already exists!');
+        try {
+            $new_session_type = new PropelSessionType();
+            $new_session_type->setExternalId($session_type_id);
+            $new_session_type->save();
+        } catch (\Exception $exception) {
+            throw new RuntimeException(null, null, $exception);
         }
-
-        $new_session_type = new PropelSessionType();
-        $new_session_type->setExternalId($session_type_id);
-        $new_session_type->save();
 
         $this->session_types[$session_type_id] = new SessionType($new_session_type);
 
@@ -94,22 +90,20 @@ class AccessControl
         $user_id = (string) $user_id;
 
         if (empty($user_id)) {
-            throw new \InvalidArgumentException('$user_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (\array_key_exists($user_id, $this->users)) {
-            throw new EntityAlreadyExistsException('User "' . $user_id . '" already exists!');
+            throw new RuntimeException('User "' . $user_id . '" already exists!');
         }
 
-        $user = PropelUserQuery::create()->findOneByExternalId($user_id);
-
-        if (!is_null($user)) {
-            throw new EntityAlreadyExistsException('User "' . $user_id . '" already exists!');
+        try {
+            $new_user = new PropelUser();
+            $new_user->setExternalId($user_id);
+            $new_user->save();
+        } catch (\Exception $exception) {
+            throw new RuntimeException(null, null, $exception);
         }
-
-        $new_user = new PropelUser();
-        $new_user->setExternalId($user_id);
-        $new_user->save();
 
         $this->users[$user_id] = new User($new_user);
 
@@ -121,12 +115,16 @@ class AccessControl
         $permission_id = (string) $permission_id;
 
         if (empty($permission_id)) {
-            throw new \InvalidArgumentException('$permission_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        PropelPermissionQuery::create()
-            ->findOneByExternalId($permission_id)
-            ->delete();
+        try {
+            PropelPermissionQuery::create()
+                ->findOneByExternalId($permission_id)
+                ->delete();
+        } catch (\Exception $exception) {
+            throw new RuntimeException(null, null, $exception);
+        }
     }
 
     public function deleteRole($role_id)
@@ -134,16 +132,20 @@ class AccessControl
         $role_id = (string) $role_id;
 
         if (empty($role_id)) {
-            throw new \InvalidArgumentException('$role_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (\array_key_exists($role_id, $this->roles)) {
             unset($this->roles[$role_id]);
         }
 
-        PropelRoleQuery::create()
-            ->findOneByExternalId($role_id)
-            ->delete();
+        try {
+            PropelRoleQuery::create()
+                ->findOneByExternalId($role_id)
+                ->delete();
+        } catch (\Exception $exception) {
+            throw new RuntimeException(null, null, $exception);
+        }
     }
 
     public function deleteSessionType($session_type_id)
@@ -151,12 +153,16 @@ class AccessControl
         $session_type_id = (string) $session_type_id;
 
         if (empty($session_type_id)) {
-            throw new \InvalidArgumentException('$session_type_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        PropelSessionTypeQuery::create()
-            ->findOneByExternalId($session_type_id)
-            ->delete();
+        try {
+            PropelSessionTypeQuery::create()
+                ->findOneByExternalId($session_type_id)
+                ->delete();
+        } catch (\Exception $exception) {
+            throw new RuntimeException(null, null, $exception);
+        }
     }
 
     public function deleteUser($user_id)
@@ -164,16 +170,20 @@ class AccessControl
         $user_id = (string) $user_id;
 
         if (empty($user_id)) {
-            throw new \InvalidArgumentException('$user_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (\array_key_exists($user_id, $this->users)) {
             unset($this->users[$user_id]);
         }
 
-        PropelUserQuery::create()
-            ->findOneByExternalId($user_id)
-            ->delete();
+        try {
+            PropelUserQuery::create()
+                ->findOneByExternalId($user_id)
+                ->delete();
+        } catch (\Exception $exception) {
+            throw new RuntimeException(null, null, $exception);
+        }
     }
 
     public function retrieveRole($role_id)
@@ -181,14 +191,18 @@ class AccessControl
         $role_id = (string) $role_id;
 
         if (empty($role_id)) {
-            throw new \InvalidArgumentException('$role_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (!\array_key_exists($role_id, $this->roles)) {
-            $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
+            try {
+                $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
+            } catch (\Exception $exception) {
+                throw new RuntimeException(null, null, $exception);
+            }
 
             if (is_null($role)) {
-                throw new EntityNotFoundException('Role "' . $role_id . '" not found!');
+                throw new RuntimeException('Role "' . $role_id . '" not found!');
             }
 
             $this->roles[$role_id] = new Role($role);
@@ -202,14 +216,18 @@ class AccessControl
         $session_type_id = (string) $session_type_id;
 
         if (empty($session_type_id)) {
-            throw new \InvalidArgumentException('$session_type_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (!\array_key_exists($session_type_id, $this->session_types)) {
-            $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
+            try {
+                $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
+            } catch (\Exception $exception) {
+                throw new RuntimeException(null, null, $exception);
+            }
 
             if (is_null($session_type)) {
-                throw new EntityNotFoundException('SessionType "' . $session_type_id . '" not found!');
+                throw new RuntimeException('SessionType "' . $session_type_id . '" not found!');
             }
 
             $this->session_types[$session_type_id] = new SessionType($session_type);
@@ -223,14 +241,18 @@ class AccessControl
         $user_id = (string) $user_id;
 
         if (empty($user_id)) {
-            throw new \InvalidArgumentException('$user_id converts to an empty string!');
+            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (!\array_key_exists($user_id, $this->users)) {
-            $user = PropelUserQuery::create()->findOneByExternalId($user_id);
+            try {
+                $user = PropelUserQuery::create()->findOneByExternalId($user_id);
+            } catch (\Exception $exception) {
+                throw new RuntimeException(null, null, $exception);
+            }
 
             if (is_null($user)) {
-                throw new EntityNotFoundException('User "' . $user_id . '" not found!');
+                throw new RuntimeException('User "' . $user_id . '" not found!');
             }
 
             $this->users[$user_id] = new User($user);
