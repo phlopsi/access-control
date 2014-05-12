@@ -82,7 +82,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreatePermissionInvalidArgumentException()
     {
-        $this->access_control->createPermission(NULL);
+        $this->access_control->createPermission(null);
     }
     
     /**
@@ -110,7 +110,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateRoleInvalidArgumentException()
     {
-        $this->access_control->createRole(NULL);
+        $this->access_control->createRole(null);
     }
 
     /**
@@ -119,7 +119,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateSessionTypeInvalidArgumentException()
     {
-        $this->access_control->createSessionType(NULL);
+        $this->access_control->createSessionType(null);
     }
 
     /**
@@ -128,7 +128,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateUserInvalidArgumentException()
     {
-        $this->access_control->createUser(NULL);
+        $this->access_control->createUser(null);
     }
 
     /**
@@ -137,7 +137,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeletePermissionInvalidArgumentException()
     {
-        $this->access_control->deletePermission(NULL);
+        $this->access_control->deletePermission(null);
     }
 
     /**
@@ -146,7 +146,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteRoleInvalidArgumentException()
     {
-        $this->access_control->deleteRole(NULL);
+        $this->access_control->deleteRole(null);
     }
 
     /**
@@ -155,7 +155,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteSessionTypeInvalidArgumentException()
     {
-        $this->access_control->deleteSessionType(NULL);
+        $this->access_control->deleteSessionType(null);
     }
 
     /**
@@ -164,7 +164,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteUserInvalidArgumentException()
     {
-        $this->access_control->deleteUser(NULL);
+        $this->access_control->deleteUser(null);
     }
 
     /**
@@ -173,7 +173,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testRetrieveRoleInvalidArgumentException()
     {
-        $this->access_control->retrieveRole(NULL);
+        $this->access_control->retrieveRole(null);
     }
 
     /**
@@ -182,7 +182,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testRetrieveSessionTypeInvalidArgumentException()
     {
-        $this->access_control->retrieveSessionType(NULL);
+        $this->access_control->retrieveSessionType(null);
     }
 
     /**
@@ -191,7 +191,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testRetrieveUserInvalidArgumentException()
     {
-        $this->access_control->retrieveUser(NULL);
+        $this->access_control->retrieveUser(null);
     }
-
 }
