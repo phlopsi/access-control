@@ -32,7 +32,7 @@ class Role
         $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
 
         if (is_null($permission)) {
-            throw new RuntimeException('Permission "' . $permission_id . '" not found!');
+            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
         }
 
         $this->role->addPermission($permission);
@@ -49,7 +49,7 @@ class Role
         $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
 
         if (is_null($permission)) {
-            throw new RuntimeException('Permission "' . $permission_id . '" not found!');
+            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
         }
 
         $this->role->removePermission($permission);

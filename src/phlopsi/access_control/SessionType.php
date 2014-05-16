@@ -32,7 +32,7 @@ class SessionType
         $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
 
         if (is_null($role)) {
-            throw new RuntimeException('Role "' . $role_id . '" not found!');
+            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
         }
 
         $this->session_type->addRole($role);
@@ -49,7 +49,7 @@ class SessionType
         $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
 
         if (is_null($role)) {
-            throw new RuntimeException('Role "' . $role_id . '" not found!');
+            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
         }
 
         $this->session_type->removeRole($role);

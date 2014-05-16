@@ -58,7 +58,7 @@ class AccessControl
         }
 
         if (\array_key_exists($role_id, $this->roles)) {
-            throw new RuntimeException('Role "' . $role_id . '" already exists!');
+            throw new RuntimeException(sprintf(RuntimeException::ENTITY_ALREADY_EXISTS, $role_id));
         }
 
         try {
@@ -83,7 +83,7 @@ class AccessControl
         }
 
         if (\array_key_exists($session_type_id, $this->session_types)) {
-            throw new RuntimeException('SessionType "' . $session_type_id . '" already exists!');
+            throw new RuntimeException(sprintf(RuntimeException::ENTITY_ALREADY_EXISTS, $session_type_id));
         }
 
         try {
@@ -108,7 +108,7 @@ class AccessControl
         }
 
         if (\array_key_exists($user_id, $this->users)) {
-            throw new RuntimeException('User "' . $user_id . '" already exists!');
+            throw new RuntimeException(sprintf(RuntimeException::ENTITY_ALREADY_EXISTS, $user_id));
         }
 
         try {
@@ -216,7 +216,7 @@ class AccessControl
             }
 
             if (is_null($role)) {
-                throw new RuntimeException('Role "' . $role_id . '" not found!');
+                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
             }
 
             $this->roles[$role_id] = new Role($role);
@@ -241,7 +241,7 @@ class AccessControl
             }
 
             if (is_null($session_type)) {
-                throw new RuntimeException('SessionType "' . $session_type_id . '" not found!');
+                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $session_type_id));
             }
 
             $this->session_types[$session_type_id] = new SessionType($session_type);
@@ -266,7 +266,7 @@ class AccessControl
             }
 
             if (is_null($user)) {
-                throw new RuntimeException('User "' . $user_id . '" not found!');
+                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $user_id));
             }
 
             $this->users[$user_id] = new User($user);

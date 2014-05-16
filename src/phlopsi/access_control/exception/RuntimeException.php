@@ -7,4 +7,6 @@ namespace phlopsi\access_control\exception;
  */
 class RuntimeException extends \RuntimeException implements Exception
 {
+    const ENTITY_ALREADY_EXISTS = '"%s" already exists!';
+    const ENTITY_NOT_FOUND = '"%s" not found!';
 }
