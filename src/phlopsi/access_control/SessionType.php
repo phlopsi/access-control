@@ -12,15 +12,23 @@ use phlopsi\access_control\propel\SessionType as PropelSessionType;
 class SessionType
 {
     /**
-     * @var \phlopsi\access_control\propel\SessionType
+     * @var PropelSessionType
      */
     private $session_type;
 
+    /**
+     * @param PropelSessionType $session_type
+     */
     public function __construct(PropelSessionType $session_type)
     {
         $this->session_type = $session_type;
     }
 
+    /**
+     * @param mixed $role_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function addRole($role_id)
     {
         $role_id = (string) $role_id;
@@ -38,6 +46,11 @@ class SessionType
         $this->session_type->addRole($role);
     }
 
+    /**
+     * @param mixed $role_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function removeRole($role_id)
     {
         $role_id = (string) $role_id;

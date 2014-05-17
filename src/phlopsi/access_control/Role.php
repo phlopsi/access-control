@@ -12,15 +12,23 @@ use phlopsi\access_control\propel\Role as PropelRole;
 class Role
 {
     /**
-     * @var \phlopsi\access_control\propel\Role
+     * @var PropelRole
      */
     private $role;
 
+    /**
+     * @param PropelRole $role
+     */
     public function __construct(PropelRole $role)
     {
         $this->role = $role;
     }
 
+    /**
+     * @param mixed $permission_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function addPermission($permission_id)
     {
         $permission_id = (string) $permission_id;
@@ -38,6 +46,11 @@ class Role
         $this->role->addPermission($permission);
     }
 
+    /**
+     * @param mixed $permission_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function removePermission($permission_id)
     {
         $permission_id = (string) $permission_id;

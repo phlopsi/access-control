@@ -13,15 +13,23 @@ use phlopsi\access_control\propel\User as PropelUser;
 class User
 {
     /**
-     * @var \phlopsi\access_control\propel\User
+     * @var PropelUser
      */
     private $user;
 
+    /**
+     * @param PropelUser $user
+     */
     public function __construct(PropelUser $user)
     {
         $this->user = $user;
     }
 
+    /**
+     * @param mixed $role_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function addRole($role_id)
     {
         $role_id = (string) $role_id;
@@ -39,6 +47,11 @@ class User
         $this->role->addPermission($role);
     }
 
+    /**
+     * @param mixed $permission_id
+     * @return boolean
+     * @throws LengthException
+     */
     public function hasPermission($permission_id)
     {
         $permission_id = (string) $permission_id;
@@ -75,6 +88,11 @@ class User
         return false;
     }
 
+    /**
+     * @param mixed $role_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function removeRole($role_id)
     {
         $role_id = (string) $role_id;

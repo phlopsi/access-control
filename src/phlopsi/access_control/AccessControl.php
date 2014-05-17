@@ -18,20 +18,25 @@ use phlopsi\access_control\propel\UserQuery as PropelUserQuery;
 class AccessControl
 {
     /**
-     * @var \phlopsi\access_control\Role[]
+     * @var Role[]
      */
     private $roles = [];
     
     /**
-     * @var \phlopsi\access_control\SessionType[]
+     * @var SessionType[]
      */
     private $session_types = [];
     
     /**
-     * @var \phlopsi\access_control\User[]
+     * @var User[]
      */
     private $users = [];
 
+    /**
+     * @param mixed $permission_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function createPermission($permission_id)
     {
         $permission_id = (string) $permission_id;
@@ -49,6 +54,12 @@ class AccessControl
         }
     }
 
+    /**
+     * @param mixed $role_id
+     * @return Role
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function createRole($role_id)
     {
         $role_id = (string) $role_id;
@@ -74,6 +85,12 @@ class AccessControl
         return $this->roles[$role_id];
     }
 
+    /**
+     * @param mixed $session_type_id
+     * @return SessionType
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function createSessionType($session_type_id)
     {
         $session_type_id = (string) $session_type_id;
@@ -99,6 +116,12 @@ class AccessControl
         return $this->session_types[$session_type_id];
     }
 
+    /**
+     * @param mixed $user_id
+     * @return User
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function createUser($user_id)
     {
         $user_id = (string) $user_id;
@@ -124,6 +147,11 @@ class AccessControl
         return $this->users[$user_id];
     }
 
+    /**
+     * @param mixed $permission_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function deletePermission($permission_id)
     {
         $permission_id = (string) $permission_id;
@@ -141,6 +169,11 @@ class AccessControl
         }
     }
 
+    /**
+     * @param mixed $role_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function deleteRole($role_id)
     {
         $role_id = (string) $role_id;
@@ -162,6 +195,11 @@ class AccessControl
         }
     }
 
+    /**
+     * @param mixed $session_type_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function deleteSessionType($session_type_id)
     {
         $session_type_id = (string) $session_type_id;
@@ -179,6 +217,11 @@ class AccessControl
         }
     }
 
+    /**
+     * @param mixed $user_id
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function deleteUser($user_id)
     {
         $user_id = (string) $user_id;
@@ -200,6 +243,12 @@ class AccessControl
         }
     }
 
+    /**
+     * @param mixed $role_id
+     * @return Role
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function retrieveRole($role_id)
     {
         $role_id = (string) $role_id;
@@ -225,6 +274,12 @@ class AccessControl
         return $this->roles[$role_id];
     }
 
+    /**
+     * @param mixed $session_type_id
+     * @return SessionType
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function retrieveSessionType($session_type_id)
     {
         $session_type_id = (string) $session_type_id;
@@ -250,6 +305,12 @@ class AccessControl
         return $this->session_types[$session_type_id];
     }
 
+    /**
+     * @param mixed $user_id
+     * @return User
+     * @throws LengthException
+     * @throws RuntimeException
+     */
     public function retrieveUser($user_id)
     {
         $user_id = (string) $user_id;
