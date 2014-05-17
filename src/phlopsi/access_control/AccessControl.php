@@ -1,7 +1,7 @@
 <?php
 namespace phlopsi\access_control;
 
-use phlopsi\access_control\exception\InvalidArgumentException;
+use phlopsi\access_control\exception\LengthException;
 use phlopsi\access_control\exception\RuntimeException;
 use phlopsi\access_control\propel\Permission as PropelPermission;
 use phlopsi\access_control\propel\PermissionQuery as PropelPermissionQuery;
@@ -37,7 +37,7 @@ class AccessControl
         $permission_id = (string) $permission_id;
 
         if (empty($permission_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         try {
@@ -54,7 +54,7 @@ class AccessControl
         $role_id = (string) $role_id;
 
         if (empty($role_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (\array_key_exists($role_id, $this->roles)) {
@@ -79,7 +79,7 @@ class AccessControl
         $session_type_id = (string) $session_type_id;
 
         if (empty($session_type_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (\array_key_exists($session_type_id, $this->session_types)) {
@@ -104,7 +104,7 @@ class AccessControl
         $user_id = (string) $user_id;
 
         if (empty($user_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (\array_key_exists($user_id, $this->users)) {
@@ -129,7 +129,7 @@ class AccessControl
         $permission_id = (string) $permission_id;
 
         if (empty($permission_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         try {
@@ -146,7 +146,7 @@ class AccessControl
         $role_id = (string) $role_id;
 
         if (empty($role_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (\array_key_exists($role_id, $this->roles)) {
@@ -167,7 +167,7 @@ class AccessControl
         $session_type_id = (string) $session_type_id;
 
         if (empty($session_type_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         try {
@@ -184,7 +184,7 @@ class AccessControl
         $user_id = (string) $user_id;
 
         if (empty($user_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (\array_key_exists($user_id, $this->users)) {
@@ -205,7 +205,7 @@ class AccessControl
         $role_id = (string) $role_id;
 
         if (empty($role_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (!\array_key_exists($role_id, $this->roles)) {
@@ -230,7 +230,7 @@ class AccessControl
         $session_type_id = (string) $session_type_id;
 
         if (empty($session_type_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (!\array_key_exists($session_type_id, $this->session_types)) {
@@ -255,7 +255,7 @@ class AccessControl
         $user_id = (string) $user_id;
 
         if (empty($user_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         if (!\array_key_exists($user_id, $this->users)) {

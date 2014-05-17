@@ -1,7 +1,7 @@
 <?php
 namespace phlopsi\access_control;
 
-use phlopsi\access_control\exception\InvalidArgumentException;
+use phlopsi\access_control\exception\LengthException;
 use phlopsi\access_control\exception\RuntimeException;
 use phlopsi\access_control\propel\RoleQuery as PropelRoleQuery;
 use phlopsi\access_control\propel\SessionType as PropelSessionType;
@@ -26,7 +26,7 @@ class SessionType
         $role_id = (string) $role_id;
 
         if (empty($role_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
@@ -43,7 +43,7 @@ class SessionType
         $role_id = (string) $role_id;
 
         if (empty($role_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_EMPTY_STRING);
+            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
         $role = PropelRoleQuery::create()->findOneByExternalId($role_id);

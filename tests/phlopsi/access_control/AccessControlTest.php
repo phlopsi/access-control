@@ -78,7 +78,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::createPermission
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testCreatePermissionInvalidArgumentException()
     {
@@ -106,7 +106,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::createRole
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testCreateRoleInvalidArgumentException()
     {
@@ -115,7 +115,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::createSessionType
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testCreateSessionTypeInvalidArgumentException()
     {
@@ -124,7 +124,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::createUser
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testCreateUserInvalidArgumentException()
     {
@@ -133,7 +133,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::deletePermission
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testDeletePermissionInvalidArgumentException()
     {
@@ -142,7 +142,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::deleteRole
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testDeleteRoleInvalidArgumentException()
     {
@@ -151,7 +151,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::deleteSessionType
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testDeleteSessionTypeInvalidArgumentException()
     {
@@ -160,7 +160,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::deleteUser
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testDeleteUserInvalidArgumentException()
     {
@@ -169,7 +169,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::retrieveRole
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testRetrieveRoleInvalidArgumentException()
     {
@@ -178,7 +178,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::retrieveSessionType
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testRetrieveSessionTypeInvalidArgumentException()
     {
@@ -187,7 +187,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \phlopsi\access_control\AccessControl::retrieveUser
-     * @expectedException \phlopsi\access_control\exception\InvalidArgumentException
+     * @expectedException \phlopsi\access_control\exception\LengthException
      */
     public function testRetrieveUserInvalidArgumentException()
     {
