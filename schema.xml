@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="vendor/propel/propel/resources/xsd/database.xsd"
     name="access_control"
     defaultIdMethod="native"
-    namespace="phlopsi\access_control\propel"
+    namespace="Phlopsi\AccessControl\Propel"
 >
     <behavior name="auto_add_pk" />
     <table name="permissions" phpName="Permission">

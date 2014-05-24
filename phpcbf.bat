@@ -1,1 +1,1 @@
-"vendor\bin\phpcbf.bat" "--no-patch" "--standard=PSR2" "--ignore=propel" "src" "tests"
+"vendor\bin\phpcbf.bat" "--no-patch" "--standard=PSR2" "--ignore=Propel" "src" "tests"
