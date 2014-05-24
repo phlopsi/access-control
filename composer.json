@@ -24,7 +24,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "phlopsi\\access_control\\": "src/phlopsi/access_control/"
+            "Phlopsi\\AccessControl\\": "src/Phlopsi/AccessControl/"
         }
     }
 }
