@@ -208,6 +208,10 @@ class AccessControl
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
+        if (\array_key_exists($session_type_id, $this->session_types)) {
+            unset($this->session_types[$session_type_id]);
+        }
+
         try {
             PropelSessionTypeQuery::create()
                 ->findOneByExternalId($session_type_id)
