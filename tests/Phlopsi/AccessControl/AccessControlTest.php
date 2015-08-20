@@ -80,7 +80,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testCreatePermissionInvalidArgumentException()
+    public function testCreatePermissionLengthException()
     {
         $this->access_control->createPermission(null);
     }
@@ -108,7 +108,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::createRole
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testCreateRoleInvalidArgumentException()
+    public function testCreateRoleLengthException()
     {
         $this->access_control->createRole(null);
     }
@@ -117,7 +117,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::createSessionType
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testCreateSessionTypeInvalidArgumentException()
+    public function testCreateSessionTypeLengthException()
     {
         $this->access_control->createSessionType(null);
     }
@@ -126,7 +126,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::createUser
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testCreateUserInvalidArgumentException()
+    public function testCreateUserLengthException()
     {
         $this->access_control->createUser(null);
     }
@@ -135,7 +135,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testDeletePermissionInvalidArgumentException()
+    public function testDeletePermissionLengthException()
     {
         $this->access_control->deletePermission(null);
     }
@@ -144,7 +144,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testDeleteRoleInvalidArgumentException()
+    public function testDeleteRoleLengthException()
     {
         $this->access_control->deleteRole(null);
     }
@@ -153,7 +153,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::deleteSessionType
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testDeleteSessionTypeInvalidArgumentException()
+    public function testDeleteSessionTypeLengthException()
     {
         $this->access_control->deleteSessionType(null);
     }
@@ -162,7 +162,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testDeleteUserInvalidArgumentException()
+    public function testDeleteUserLengthException()
     {
         $this->access_control->deleteUser(null);
     }
@@ -171,7 +171,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testRetrieveRoleInvalidArgumentException()
+    public function testRetrieveRoleLengthException()
     {
         $this->access_control->retrieveRole(null);
     }
@@ -180,7 +180,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveSessionType
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testRetrieveSessionTypeInvalidArgumentException()
+    public function testRetrieveSessionTypeLengthException()
     {
         $this->access_control->retrieveSessionType(null);
     }
@@ -189,7 +189,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function testRetrieveUserInvalidArgumentException()
+    public function testRetrieveUserLengthException()
     {
         $this->access_control->retrieveUser(null);
     }

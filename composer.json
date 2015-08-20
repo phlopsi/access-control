@@ -8,13 +8,13 @@
         "source": "https://github.com/phlopsi/access-control"
     },
     "require": {
-        "php": "~5.4",
+        "php": "~5.5",
         "propel/propel": "@alpha"
     },
     "require-dev": {
         "phpunit/phpunit": "@stable",
         "phpunit/dbunit": "@stable",
-        "squizlabs/php_codesniffer": "dev-phpcs-fixer@dev"
+        "squizlabs/php_codesniffer": "@stable"
     },
     "authors": [
         {

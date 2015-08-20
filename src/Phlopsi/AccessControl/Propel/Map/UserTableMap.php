@@ -2,6 +2,8 @@
 
 namespace Phlopsi\AccessControl\Propel\Map;
 
+use Phlopsi\AccessControl\Propel\User;
+use Phlopsi\AccessControl\Propel\UserQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -11,8 +13,6 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use Phlopsi\AccessControl\Propel\User;
-use Phlopsi\AccessControl\Propel\UserQuery;
 
 
 /**
@@ -34,7 +34,7 @@ class UserTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'phlopsi.access_control.propel.Map.UserTableMap';
+    const CLASS_NAME = 'Phlopsi.AccessControl.Propel.Map.UserTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class UserTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\phlopsi\\access_control\\propel\\User';
+    const OM_CLASS = '\\Phlopsi\\AccessControl\\Propel\\User';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'phlopsi.access_control.propel.User';
+    const CLASS_DEFAULT = 'Phlopsi.AccessControl.Propel.User';
 
     /**
      * The total number of columns
@@ -72,14 +72,14 @@ class UserTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 2;
 
     /**
-     * the column name for the EXTERNAL_ID field
+     * the column name for the external_id field
      */
-    const COL_EXTERNAL_ID = 'users.EXTERNAL_ID';
+    const COL_EXTERNAL_ID = 'users.external_id';
 
     /**
-     * the column name for the ID field
+     * the column name for the id field
      */
-    const COL_ID = 'users.ID';
+    const COL_ID = 'users.id';
 
     /**
      * The default string format for model objects of the related table
@@ -94,9 +94,8 @@ class UserTableMap extends TableMap
      */
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('ExternalId', 'Id', ),
-        self::TYPE_STUDLYPHPNAME => array('externalId', 'id', ),
+        self::TYPE_CAMELNAME     => array('externalId', 'id', ),
         self::TYPE_COLNAME       => array(UserTableMap::COL_EXTERNAL_ID, UserTableMap::COL_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_EXTERNAL_ID', 'COL_ID', ),
         self::TYPE_FIELDNAME     => array('external_id', 'id', ),
         self::TYPE_NUM           => array(0, 1, )
     );
@@ -109,9 +108,8 @@ class UserTableMap extends TableMap
      */
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('ExternalId' => 0, 'Id' => 1, ),
-        self::TYPE_STUDLYPHPNAME => array('externalId' => 0, 'id' => 1, ),
+        self::TYPE_CAMELNAME     => array('externalId' => 0, 'id' => 1, ),
         self::TYPE_COLNAME       => array(UserTableMap::COL_EXTERNAL_ID => 0, UserTableMap::COL_ID => 1, ),
-        self::TYPE_RAW_COLNAME   => array('COL_EXTERNAL_ID' => 0, 'COL_ID' => 1, ),
         self::TYPE_FIELDNAME     => array('external_id' => 0, 'id' => 1, ),
         self::TYPE_NUM           => array(0, 1, )
     );
@@ -128,12 +126,13 @@ class UserTableMap extends TableMap
         // attributes
         $this->setName('users');
         $this->setPhpName('User');
-        $this->setClassName('\\phlopsi\\access_control\\propel\\User');
-        $this->setPackage('phlopsi.access_control.propel');
+        $this->setIdentifierQuoting(false);
+        $this->setClassName('\\Phlopsi\\AccessControl\\Propel\\User');
+        $this->setPackage('Phlopsi.AccessControl.Propel');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addColumn('EXTERNAL_ID', 'ExternalId', 'LONGVARCHAR', true, null, null);
-        $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
+        $this->addColumn('external_id', 'ExternalId', 'LONGVARCHAR', true, null, null);
+        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
     } // initialize()
 
     /**
@@ -141,10 +140,10 @@ class UserTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ProhibitionsUsers', '\\phlopsi\\access_control\\propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'ProhibitionsUserss');
-        $this->addRelation('RolesUsers', '\\phlopsi\\access_control\\propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'RolesUserss');
-        $this->addRelation('Prohibition', '\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
-        $this->addRelation('Role', '\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
+        $this->addRelation('ProhibitionsUsers', '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'ProhibitionsUserss');
+        $this->addRelation('RolesUsers', '\\Phlopsi\\AccessControl\\Propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'users_id', ), null, null, 'RolesUserss');
+        $this->addRelation('Prohibition', '\\Phlopsi\\AccessControl\\Propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
+        $this->addRelation('Role', '\\Phlopsi\\AccessControl\\Propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
     } // buildRelations()
 
     /**
@@ -168,7 +167,7 @@ class UserTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
@@ -190,7 +189,7 @@ class UserTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
@@ -226,7 +225,7 @@ class UserTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
@@ -304,8 +303,8 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_EXTERNAL_ID);
             $criteria->addSelectColumn(UserTableMap::COL_ID);
         } else {
-            $criteria->addSelectColumn($alias . '.EXTERNAL_ID');
-            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.external_id');
+            $criteria->addSelectColumn($alias . '.id');
         }
     }
 

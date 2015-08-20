@@ -4,6 +4,9 @@ namespace Phlopsi\AccessControl\Propel\Base;
 
 use \Exception;
 use \PDO;
+use Phlopsi\AccessControl\Propel\Permission as ChildPermission;
+use Phlopsi\AccessControl\Propel\PermissionQuery as ChildPermissionQuery;
+use Phlopsi\AccessControl\Propel\Map\PermissionTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -12,9 +15,6 @@ use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
-use Phlopsi\AccessControl\Propel\Permission as ChildPermission;
-use Phlopsi\AccessControl\Propel\PermissionQuery as ChildPermissionQuery;
-use Phlopsi\AccessControl\Propel\Map\PermissionTableMap;
 
 /**
  * Base class that represents a query for the 'permissions' table.
@@ -71,7 +71,7 @@ abstract class PermissionQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\phlopsi\\access_control\\propel\\Permission', $modelAlias = null)
+    public function __construct($dbName = 'access_control', $modelName = '\\Phlopsi\\AccessControl\\Propel\\Permission', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -143,11 +143,13 @@ abstract class PermissionQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
      * @return ChildPermission A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT EXTERNAL_ID, TREE_LEFT, TREE_RIGHT, TREE_LEVEL, ID FROM permissions WHERE ID = :p0';
+        $sql = 'SELECT external_id, tree_left, tree_right, tree_level, id FROM permissions WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);

@@ -2,6 +2,8 @@
 
 namespace Phlopsi\AccessControl\Propel\Map;
 
+use Phlopsi\AccessControl\Propel\RolesUsers;
+use Phlopsi\AccessControl\Propel\RolesUsersQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -11,8 +13,6 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use Phlopsi\AccessControl\Propel\RolesUsers;
-use Phlopsi\AccessControl\Propel\RolesUsersQuery;
 
 
 /**
@@ -34,7 +34,7 @@ class RolesUsersTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'phlopsi.access_control.propel.Map.RolesUsersTableMap';
+    const CLASS_NAME = 'Phlopsi.AccessControl.Propel.Map.RolesUsersTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class RolesUsersTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\phlopsi\\access_control\\propel\\RolesUsers';
+    const OM_CLASS = '\\Phlopsi\\AccessControl\\Propel\\RolesUsers';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'phlopsi.access_control.propel.RolesUsers';
+    const CLASS_DEFAULT = 'Phlopsi.AccessControl.Propel.RolesUsers';
 
     /**
      * The total number of columns
@@ -72,14 +72,14 @@ class RolesUsersTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 2;
 
     /**
-     * the column name for the ROLES_ID field
+     * the column name for the roles_id field
      */
-    const COL_ROLES_ID = 'roles_users.ROLES_ID';
+    const COL_ROLES_ID = 'roles_users.roles_id';
 
     /**
-     * the column name for the USERS_ID field
+     * the column name for the users_id field
      */
-    const COL_USERS_ID = 'roles_users.USERS_ID';
+    const COL_USERS_ID = 'roles_users.users_id';
 
     /**
      * The default string format for model objects of the related table
@@ -94,9 +94,8 @@ class RolesUsersTableMap extends TableMap
      */
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('RoleId', 'UserId', ),
-        self::TYPE_STUDLYPHPNAME => array('roleId', 'userId', ),
+        self::TYPE_CAMELNAME     => array('roleId', 'userId', ),
         self::TYPE_COLNAME       => array(RolesUsersTableMap::COL_ROLES_ID, RolesUsersTableMap::COL_USERS_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ROLES_ID', 'COL_USERS_ID', ),
         self::TYPE_FIELDNAME     => array('roles_id', 'users_id', ),
         self::TYPE_NUM           => array(0, 1, )
     );
@@ -109,9 +108,8 @@ class RolesUsersTableMap extends TableMap
      */
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('RoleId' => 0, 'UserId' => 1, ),
-        self::TYPE_STUDLYPHPNAME => array('roleId' => 0, 'userId' => 1, ),
+        self::TYPE_CAMELNAME     => array('roleId' => 0, 'userId' => 1, ),
         self::TYPE_COLNAME       => array(RolesUsersTableMap::COL_ROLES_ID => 0, RolesUsersTableMap::COL_USERS_ID => 1, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ROLES_ID' => 0, 'COL_USERS_ID' => 1, ),
         self::TYPE_FIELDNAME     => array('roles_id' => 0, 'users_id' => 1, ),
         self::TYPE_NUM           => array(0, 1, )
     );
@@ -128,13 +126,14 @@ class RolesUsersTableMap extends TableMap
         // attributes
         $this->setName('roles_users');
         $this->setPhpName('RolesUsers');
-        $this->setClassName('\\phlopsi\\access_control\\propel\\RolesUsers');
-        $this->setPackage('phlopsi.access_control.propel');
+        $this->setIdentifierQuoting(false);
+        $this->setClassName('\\Phlopsi\\AccessControl\\Propel\\RolesUsers');
+        $this->setPackage('Phlopsi.AccessControl.Propel');
         $this->setUseIdGenerator(false);
         $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('ROLES_ID', 'RoleId', 'INTEGER' , 'roles', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('USERS_ID', 'UserId', 'INTEGER' , 'users', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('roles_id', 'RoleId', 'INTEGER' , 'roles', 'id', true, null, null);
+        $this->addForeignPrimaryKey('users_id', 'UserId', 'INTEGER' , 'users', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -142,8 +141,8 @@ class RolesUsersTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Role', '\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_ONE, array('roles_id' => 'id', ), null, null);
-        $this->addRelation('User', '\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_ONE, array('users_id' => 'id', ), null, null);
+        $this->addRelation('Role', '\\Phlopsi\\AccessControl\\Propel\\Role', RelationMap::MANY_TO_ONE, array('roles_id' => 'id', ), null, null);
+        $this->addRelation('User', '\\Phlopsi\\AccessControl\\Propel\\User', RelationMap::MANY_TO_ONE, array('users_id' => 'id', ), null, null);
     } // buildRelations()
 
     /**
@@ -207,7 +206,7 @@ class RolesUsersTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
@@ -229,7 +228,7 @@ class RolesUsersTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
@@ -274,7 +273,7 @@ class RolesUsersTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
@@ -352,8 +351,8 @@ class RolesUsersTableMap extends TableMap
             $criteria->addSelectColumn(RolesUsersTableMap::COL_ROLES_ID);
             $criteria->addSelectColumn(RolesUsersTableMap::COL_USERS_ID);
         } else {
-            $criteria->addSelectColumn($alias . '.ROLES_ID');
-            $criteria->addSelectColumn($alias . '.USERS_ID');
+            $criteria->addSelectColumn($alias . '.roles_id');
+            $criteria->addSelectColumn($alias . '.users_id');
         }
     }
 

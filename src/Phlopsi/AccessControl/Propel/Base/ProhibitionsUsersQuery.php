@@ -4,6 +4,9 @@ namespace Phlopsi\AccessControl\Propel\Base;
 
 use \Exception;
 use \PDO;
+use Phlopsi\AccessControl\Propel\ProhibitionsUsers as ChildProhibitionsUsers;
+use Phlopsi\AccessControl\Propel\ProhibitionsUsersQuery as ChildProhibitionsUsersQuery;
+use Phlopsi\AccessControl\Propel\Map\ProhibitionsUsersTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -11,9 +14,6 @@ use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use Phlopsi\AccessControl\Propel\ProhibitionsUsers as ChildProhibitionsUsers;
-use Phlopsi\AccessControl\Propel\ProhibitionsUsersQuery as ChildProhibitionsUsersQuery;
-use Phlopsi\AccessControl\Propel\Map\ProhibitionsUsersTableMap;
 
 /**
  * Base class that represents a query for the 'prohibitions_users' table.
@@ -74,7 +74,7 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\phlopsi\\access_control\\propel\\ProhibitionsUsers', $modelAlias = null)
+    public function __construct($dbName = 'access_control', $modelName = '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsUsers', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -146,11 +146,13 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
      * @return ChildProhibitionsUsers A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT PROHIBITIONS_ID, USERS_ID, PROHIBITED_UNTIL, CREATED_AT, UPDATED_AT FROM prohibitions_users WHERE PROHIBITIONS_ID = :p0 AND USERS_ID = :p1';
+        $sql = 'SELECT prohibitions_id, users_id, prohibited_until, created_at, updated_at FROM prohibitions_users WHERE prohibitions_id = :p0 AND users_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -473,6 +475,8 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
      * @param \Phlopsi\AccessControl\Propel\Prohibition|ObjectCollection $prohibition The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
      * @return ChildProhibitionsUsersQuery The current query, for fluid interface
      */
     public function filterByProhibition($prohibition, $comparison = null)
@@ -547,6 +551,8 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
      *
      * @param \Phlopsi\AccessControl\Propel\User|ObjectCollection $user The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildProhibitionsUsersQuery The current query, for fluid interface
      */

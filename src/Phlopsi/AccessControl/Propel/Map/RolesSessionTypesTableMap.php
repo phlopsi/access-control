@@ -2,6 +2,8 @@
 
 namespace Phlopsi\AccessControl\Propel\Map;
 
+use Phlopsi\AccessControl\Propel\RolesSessionTypes;
+use Phlopsi\AccessControl\Propel\RolesSessionTypesQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -11,8 +13,6 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use Phlopsi\AccessControl\Propel\RolesSessionTypes;
-use Phlopsi\AccessControl\Propel\RolesSessionTypesQuery;
 
 
 /**
@@ -34,7 +34,7 @@ class RolesSessionTypesTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'phlopsi.access_control.propel.Map.RolesSessionTypesTableMap';
+    const CLASS_NAME = 'Phlopsi.AccessControl.Propel.Map.RolesSessionTypesTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class RolesSessionTypesTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\phlopsi\\access_control\\propel\\RolesSessionTypes';
+    const OM_CLASS = '\\Phlopsi\\AccessControl\\Propel\\RolesSessionTypes';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'phlopsi.access_control.propel.RolesSessionTypes';
+    const CLASS_DEFAULT = 'Phlopsi.AccessControl.Propel.RolesSessionTypes';
 
     /**
      * The total number of columns
@@ -72,14 +72,14 @@ class RolesSessionTypesTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 2;
 
     /**
-     * the column name for the ROLES_ID field
+     * the column name for the roles_id field
      */
-    const COL_ROLES_ID = 'roles_session_types.ROLES_ID';
+    const COL_ROLES_ID = 'roles_session_types.roles_id';
 
     /**
-     * the column name for the SESSION_TYPES_ID field
+     * the column name for the session_types_id field
      */
-    const COL_SESSION_TYPES_ID = 'roles_session_types.SESSION_TYPES_ID';
+    const COL_SESSION_TYPES_ID = 'roles_session_types.session_types_id';
 
     /**
      * The default string format for model objects of the related table
@@ -94,9 +94,8 @@ class RolesSessionTypesTableMap extends TableMap
      */
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('RoleId', 'SessionTypeId', ),
-        self::TYPE_STUDLYPHPNAME => array('roleId', 'sessionTypeId', ),
+        self::TYPE_CAMELNAME     => array('roleId', 'sessionTypeId', ),
         self::TYPE_COLNAME       => array(RolesSessionTypesTableMap::COL_ROLES_ID, RolesSessionTypesTableMap::COL_SESSION_TYPES_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ROLES_ID', 'COL_SESSION_TYPES_ID', ),
         self::TYPE_FIELDNAME     => array('roles_id', 'session_types_id', ),
         self::TYPE_NUM           => array(0, 1, )
     );
@@ -109,9 +108,8 @@ class RolesSessionTypesTableMap extends TableMap
      */
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('RoleId' => 0, 'SessionTypeId' => 1, ),
-        self::TYPE_STUDLYPHPNAME => array('roleId' => 0, 'sessionTypeId' => 1, ),
+        self::TYPE_CAMELNAME     => array('roleId' => 0, 'sessionTypeId' => 1, ),
         self::TYPE_COLNAME       => array(RolesSessionTypesTableMap::COL_ROLES_ID => 0, RolesSessionTypesTableMap::COL_SESSION_TYPES_ID => 1, ),
-        self::TYPE_RAW_COLNAME   => array('COL_ROLES_ID' => 0, 'COL_SESSION_TYPES_ID' => 1, ),
         self::TYPE_FIELDNAME     => array('roles_id' => 0, 'session_types_id' => 1, ),
         self::TYPE_NUM           => array(0, 1, )
     );
@@ -128,13 +126,14 @@ class RolesSessionTypesTableMap extends TableMap
         // attributes
         $this->setName('roles_session_types');
         $this->setPhpName('RolesSessionTypes');
-        $this->setClassName('\\phlopsi\\access_control\\propel\\RolesSessionTypes');
-        $this->setPackage('phlopsi.access_control.propel');
+        $this->setIdentifierQuoting(false);
+        $this->setClassName('\\Phlopsi\\AccessControl\\Propel\\RolesSessionTypes');
+        $this->setPackage('Phlopsi.AccessControl.Propel');
         $this->setUseIdGenerator(false);
         $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('ROLES_ID', 'RoleId', 'INTEGER' , 'roles', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('SESSION_TYPES_ID', 'SessionTypeId', 'INTEGER' , 'session_types', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('roles_id', 'RoleId', 'INTEGER' , 'roles', 'id', true, null, null);
+        $this->addForeignPrimaryKey('session_types_id', 'SessionTypeId', 'INTEGER' , 'session_types', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -142,8 +141,8 @@ class RolesSessionTypesTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Role', '\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_ONE, array('roles_id' => 'id', ), null, null);
-        $this->addRelation('SessionType', '\\phlopsi\\access_control\\propel\\SessionType', RelationMap::MANY_TO_ONE, array('session_types_id' => 'id', ), null, null);
+        $this->addRelation('Role', '\\Phlopsi\\AccessControl\\Propel\\Role', RelationMap::MANY_TO_ONE, array('roles_id' => 'id', ), null, null);
+        $this->addRelation('SessionType', '\\Phlopsi\\AccessControl\\Propel\\SessionType', RelationMap::MANY_TO_ONE, array('session_types_id' => 'id', ), null, null);
     } // buildRelations()
 
     /**
@@ -207,7 +206,7 @@ class RolesSessionTypesTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
@@ -229,7 +228,7 @@ class RolesSessionTypesTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
@@ -274,7 +273,7 @@ class RolesSessionTypesTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
@@ -352,8 +351,8 @@ class RolesSessionTypesTableMap extends TableMap
             $criteria->addSelectColumn(RolesSessionTypesTableMap::COL_ROLES_ID);
             $criteria->addSelectColumn(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID);
         } else {
-            $criteria->addSelectColumn($alias . '.ROLES_ID');
-            $criteria->addSelectColumn($alias . '.SESSION_TYPES_ID');
+            $criteria->addSelectColumn($alias . '.roles_id');
+            $criteria->addSelectColumn($alias . '.session_types_id');
         }
     }
 

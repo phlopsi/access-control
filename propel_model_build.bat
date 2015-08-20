@@ -1,1 +1,1 @@
-"vendor\bin\propel.bat" "model:build" "--output-dir=src"
+"vendor\bin\propel.bat" "model:build"

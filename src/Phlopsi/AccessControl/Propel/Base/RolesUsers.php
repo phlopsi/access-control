@@ -4,6 +4,12 @@ namespace Phlopsi\AccessControl\Propel\Base;
 
 use \Exception;
 use \PDO;
+use Phlopsi\AccessControl\Propel\Role as ChildRole;
+use Phlopsi\AccessControl\Propel\RoleQuery as ChildRoleQuery;
+use Phlopsi\AccessControl\Propel\RolesUsersQuery as ChildRolesUsersQuery;
+use Phlopsi\AccessControl\Propel\User as ChildUser;
+use Phlopsi\AccessControl\Propel\UserQuery as ChildUserQuery;
+use Phlopsi\AccessControl\Propel\Map\RolesUsersTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -15,19 +21,20 @@ use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
-use Phlopsi\AccessControl\Propel\Role as ChildRole;
-use Phlopsi\AccessControl\Propel\RoleQuery as ChildRoleQuery;
-use Phlopsi\AccessControl\Propel\RolesUsersQuery as ChildRolesUsersQuery;
-use Phlopsi\AccessControl\Propel\User as ChildUser;
-use Phlopsi\AccessControl\Propel\UserQuery as ChildUserQuery;
-use Phlopsi\AccessControl\Propel\Map\RolesUsersTableMap;
 
+/**
+ * Base class that represents a row from the 'roles_users' table.
+ *
+ *
+ *
+* @package    propel.generator.Phlopsi.AccessControl.Propel.Base
+*/
 abstract class RolesUsers implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\phlopsi\\access_control\\propel\\Map\\RolesUsersTableMap';
+    const TABLE_MAP = '\\Phlopsi\\AccessControl\\Propel\\Map\\RolesUsersTableMap';
 
 
     /**
@@ -324,85 +331,6 @@ abstract class RolesUsers implements ActiveRecordInterface
     }
 
     /**
-     * Indicates whether the columns in this object are only set to default values.
-     *
-     * This method can be used in conjunction with isModified() to indicate whether an object is both
-     * modified _and_ has some values set which are non-default.
-     *
-     * @return boolean Whether the columns in this object are only been set with default values.
-     */
-    public function hasOnlyDefaultValues()
-    {
-        // otherwise, everything was equal, so return TRUE
-        return true;
-    } // hasOnlyDefaultValues()
-
-    /**
-     * Hydrates (populates) the object variables with values from the database resultset.
-     *
-     * An offset (0-based "start column") is specified so that objects can be hydrated
-     * with a subset of the columns in the resultset rows.  This is needed, for example,
-     * for results of JOIN queries where the resultset row includes columns from two or
-     * more tables.
-     *
-     * @param array   $row       The row returned by DataFetcher->fetch().
-     * @param int     $startcol  0-based offset column which indicates which restultset column to start with.
-     * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
-     * @param string  $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
-     *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-     *
-     * @return int             next starting column
-     * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
-     */
-    public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
-    {
-        try {
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RolesUsersTableMap::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->roles_id = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RolesUsersTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->users_id = (null !== $col) ? (int) $col : null;
-            $this->resetModified();
-
-            $this->setNew(false);
-
-            if ($rehydrate) {
-                $this->ensureConsistency();
-            }
-
-            return $startcol + 2; // 2 = RolesUsersTableMap::NUM_HYDRATE_COLUMNS.
-
-        } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\phlopsi\\access_control\\propel\\RolesUsers'), 0, $e);
-        }
-    }
-
-    /**
-     * Checks and repairs the internal consistency of the object.
-     *
-     * This method is executed after an already-instantiated object is re-hydrated
-     * from the database.  It exists to check any foreign keys to make sure that
-     * the objects related to the current object are correct based on foreign key.
-     *
-     * You can override this method in the stub class, but you should always invoke
-     * the base method from the overridden method (i.e. parent::ensureConsistency()),
-     * in case your model changes.
-     *
-     * @throws PropelException
-     */
-    public function ensureConsistency()
-    {
-        if ($this->aRole !== null && $this->roles_id !== $this->aRole->getId()) {
-            $this->aRole = null;
-        }
-        if ($this->aUser !== null && $this->users_id !== $this->aUser->getId()) {
-            $this->aUser = null;
-        }
-    } // ensureConsistency
-
-    /**
      * Set the value of [roles_id] column.
      *
      * @param  int $v new value
@@ -449,6 +377,85 @@ abstract class RolesUsers implements ActiveRecordInterface
 
         return $this;
     } // setUserId()
+
+    /**
+     * Indicates whether the columns in this object are only set to default values.
+     *
+     * This method can be used in conjunction with isModified() to indicate whether an object is both
+     * modified _and_ has some values set which are non-default.
+     *
+     * @return boolean Whether the columns in this object are only been set with default values.
+     */
+    public function hasOnlyDefaultValues()
+    {
+        // otherwise, everything was equal, so return TRUE
+        return true;
+    } // hasOnlyDefaultValues()
+
+    /**
+     * Hydrates (populates) the object variables with values from the database resultset.
+     *
+     * An offset (0-based "start column") is specified so that objects can be hydrated
+     * with a subset of the columns in the resultset rows.  This is needed, for example,
+     * for results of JOIN queries where the resultset row includes columns from two or
+     * more tables.
+     *
+     * @param array   $row       The row returned by DataFetcher->fetch().
+     * @param int     $startcol  0-based offset column which indicates which restultset column to start with.
+     * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
+     * @param string  $indexType The index type of $row. Mostly DataFetcher->getIndexType().
+                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     *
+     * @return int             next starting column
+     * @throws PropelException - Any caught Exception will be rewrapped as a PropelException.
+     */
+    public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
+    {
+        try {
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RolesUsersTableMap::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->roles_id = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RolesUsersTableMap::translateFieldName('UserId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->users_id = (null !== $col) ? (int) $col : null;
+            $this->resetModified();
+
+            $this->setNew(false);
+
+            if ($rehydrate) {
+                $this->ensureConsistency();
+            }
+
+            return $startcol + 2; // 2 = RolesUsersTableMap::NUM_HYDRATE_COLUMNS.
+
+        } catch (Exception $e) {
+            throw new PropelException(sprintf('Error populating %s object', '\\Phlopsi\\AccessControl\\Propel\\RolesUsers'), 0, $e);
+        }
+    }
+
+    /**
+     * Checks and repairs the internal consistency of the object.
+     *
+     * This method is executed after an already-instantiated object is re-hydrated
+     * from the database.  It exists to check any foreign keys to make sure that
+     * the objects related to the current object are correct based on foreign key.
+     *
+     * You can override this method in the stub class, but you should always invoke
+     * the base method from the overridden method (i.e. parent::ensureConsistency()),
+     * in case your model changes.
+     *
+     * @throws PropelException
+     */
+    public function ensureConsistency()
+    {
+        if ($this->aRole !== null && $this->roles_id !== $this->aRole->getId()) {
+            $this->aRole = null;
+        }
+        if ($this->aUser !== null && $this->users_id !== $this->aUser->getId()) {
+            $this->aUser = null;
+        }
+    } // ensureConsistency
 
     /**
      * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
@@ -641,10 +648,10 @@ abstract class RolesUsers implements ActiveRecordInterface
 
          // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(RolesUsersTableMap::COL_ROLES_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'ROLES_ID';
+            $modifiedColumns[':p' . $index++]  = 'roles_id';
         }
         if ($this->isColumnModified(RolesUsersTableMap::COL_USERS_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'USERS_ID';
+            $modifiedColumns[':p' . $index++]  = 'users_id';
         }
 
         $sql = sprintf(
@@ -657,10 +664,10 @@ abstract class RolesUsers implements ActiveRecordInterface
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case 'ROLES_ID':
+                    case 'roles_id':
                         $stmt->bindValue($identifier, $this->roles_id, PDO::PARAM_INT);
                         break;
-                    case 'USERS_ID':
+                    case 'users_id':
                         $stmt->bindValue($identifier, $this->users_id, PDO::PARAM_INT);
                         break;
                 }
@@ -695,7 +702,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      *
      * @param      string $name name
      * @param      string $type The type of fieldname the $name is of:
-     *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                     TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                     Defaults to TableMap::TYPE_PHPNAME.
      * @return mixed Value of field.
@@ -736,7 +743,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * You can specify the key type of the array by passing one of the class
      * type constants.
      *
-     * @param     string  $keyType (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME,
+     * @param     string  $keyType (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
      *                    TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
@@ -747,10 +754,11 @@ abstract class RolesUsers implements ActiveRecordInterface
      */
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['RolesUsers'][serialize($this->getPrimaryKey())])) {
+
+        if (isset($alreadyDumpedObjects['RolesUsers'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['RolesUsers'][serialize($this->getPrimaryKey())] = true;
+        $alreadyDumpedObjects['RolesUsers'][$this->hashCode()] = true;
         $keys = RolesUsersTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getRoleId(),
@@ -763,10 +771,34 @@ abstract class RolesUsers implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->aRole) {
-                $result['Role'] = $this->aRole->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'role';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'roles';
+                        break;
+                    default:
+                        $key = 'Role';
+                }
+
+                $result[$key] = $this->aRole->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aUser) {
-                $result['User'] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'user';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'users';
+                        break;
+                    default:
+                        $key = 'User';
+                }
+
+                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -779,7 +811,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * @param  string $name
      * @param  mixed  $value field value
      * @param  string $type The type of fieldname the $name is of:
-     *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
      * @return $this|\Phlopsi\AccessControl\Propel\RolesUsers
@@ -822,7 +854,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      * array. If so the setByName() method is called for that column.
      *
      * You can specify the key type of the array by additionally passing one
-     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME,
+     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      * The default key type is the column's TableMap::TYPE_PHPNAME.
      *
@@ -849,19 +881,25 @@ abstract class RolesUsers implements ActiveRecordInterface
      * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
      * </code>
      *
+     * You can specify the key type of the array by additionally passing one
+     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+     * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     * The default key type is the column's TableMap::TYPE_PHPNAME.
+     *
      * @param mixed $parser A AbstractParser instance,
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
+     * @param string $keyType The type of keys the array uses.
      *
      * @return $this|\Phlopsi\AccessControl\Propel\RolesUsers The current object, for fluid interface
      */
-    public function importFrom($parser, $data)
+    public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
         if (!$parser instanceof AbstractParser) {
             $parser = AbstractParser::getParser($parser);
         }
 
-        $this->fromArray($parser->toArray($data), TableMap::TYPE_PHPNAME);
+        $this->fromArray($parser->toArray($data), $keyType);
 
         return $this;
     }
@@ -897,7 +935,7 @@ abstract class RolesUsers implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(RolesUsersTableMap::DATABASE_NAME);
+        $criteria = ChildRolesUsersQuery::create();
         $criteria->add(RolesUsersTableMap::COL_ROLES_ID, $this->roles_id);
         $criteria->add(RolesUsersTableMap::COL_USERS_ID, $this->users_id);
 

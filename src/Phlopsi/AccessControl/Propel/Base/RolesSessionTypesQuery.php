@@ -4,6 +4,9 @@ namespace Phlopsi\AccessControl\Propel\Base;
 
 use \Exception;
 use \PDO;
+use Phlopsi\AccessControl\Propel\RolesSessionTypes as ChildRolesSessionTypes;
+use Phlopsi\AccessControl\Propel\RolesSessionTypesQuery as ChildRolesSessionTypesQuery;
+use Phlopsi\AccessControl\Propel\Map\RolesSessionTypesTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -11,9 +14,6 @@ use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use Phlopsi\AccessControl\Propel\RolesSessionTypes as ChildRolesSessionTypes;
-use Phlopsi\AccessControl\Propel\RolesSessionTypesQuery as ChildRolesSessionTypesQuery;
-use Phlopsi\AccessControl\Propel\Map\RolesSessionTypesTableMap;
 
 /**
  * Base class that represents a query for the 'roles_session_types' table.
@@ -62,7 +62,7 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\phlopsi\\access_control\\propel\\RolesSessionTypes', $modelAlias = null)
+    public function __construct($dbName = 'access_control', $modelName = '\\Phlopsi\\AccessControl\\Propel\\RolesSessionTypes', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -134,11 +134,13 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
      * @return ChildRolesSessionTypes A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT ROLES_ID, SESSION_TYPES_ID FROM roles_session_types WHERE ROLES_ID = :p0 AND SESSION_TYPES_ID = :p1';
+        $sql = 'SELECT roles_id, session_types_id FROM roles_session_types WHERE roles_id = :p0 AND session_types_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -332,6 +334,8 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      * @param \Phlopsi\AccessControl\Propel\Role|ObjectCollection $role The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
      * @return ChildRolesSessionTypesQuery The current query, for fluid interface
      */
     public function filterByRole($role, $comparison = null)
@@ -406,6 +410,8 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
      *
      * @param \Phlopsi\AccessControl\Propel\SessionType|ObjectCollection $sessionType The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildRolesSessionTypesQuery The current query, for fluid interface
      */

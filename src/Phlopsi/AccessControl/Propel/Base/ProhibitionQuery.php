@@ -4,6 +4,9 @@ namespace Phlopsi\AccessControl\Propel\Base;
 
 use \Exception;
 use \PDO;
+use Phlopsi\AccessControl\Propel\Prohibition as ChildProhibition;
+use Phlopsi\AccessControl\Propel\ProhibitionQuery as ChildProhibitionQuery;
+use Phlopsi\AccessControl\Propel\Map\ProhibitionTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -12,9 +15,6 @@ use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
-use Phlopsi\AccessControl\Propel\Prohibition as ChildProhibition;
-use Phlopsi\AccessControl\Propel\ProhibitionQuery as ChildProhibitionQuery;
-use Phlopsi\AccessControl\Propel\Map\ProhibitionTableMap;
 
 /**
  * Base class that represents a query for the 'prohibitions' table.
@@ -75,7 +75,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\phlopsi\\access_control\\propel\\Prohibition', $modelAlias = null)
+    public function __construct($dbName = 'access_control', $modelName = '\\Phlopsi\\AccessControl\\Propel\\Prohibition', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -147,11 +147,13 @@ abstract class ProhibitionQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
      * @return ChildProhibition A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT EXTERNAL_ID, TREE_LEFT, TREE_RIGHT, TREE_LEVEL, ID FROM prohibitions WHERE ID = :p0';
+        $sql = 'SELECT external_id, tree_left, tree_right, tree_level, id FROM prohibitions WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);

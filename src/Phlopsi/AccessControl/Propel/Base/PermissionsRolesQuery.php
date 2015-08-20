@@ -4,6 +4,9 @@ namespace Phlopsi\AccessControl\Propel\Base;
 
 use \Exception;
 use \PDO;
+use Phlopsi\AccessControl\Propel\PermissionsRoles as ChildPermissionsRoles;
+use Phlopsi\AccessControl\Propel\PermissionsRolesQuery as ChildPermissionsRolesQuery;
+use Phlopsi\AccessControl\Propel\Map\PermissionsRolesTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -11,9 +14,6 @@ use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use Phlopsi\AccessControl\Propel\PermissionsRoles as ChildPermissionsRoles;
-use Phlopsi\AccessControl\Propel\PermissionsRolesQuery as ChildPermissionsRolesQuery;
-use Phlopsi\AccessControl\Propel\Map\PermissionsRolesTableMap;
 
 /**
  * Base class that represents a query for the 'permissions_roles' table.
@@ -62,7 +62,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\phlopsi\\access_control\\propel\\PermissionsRoles', $modelAlias = null)
+    public function __construct($dbName = 'access_control', $modelName = '\\Phlopsi\\AccessControl\\Propel\\PermissionsRoles', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -134,11 +134,13 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
      * @return ChildPermissionsRoles A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT PERMISSIONS_ID, ROLES_ID FROM permissions_roles WHERE PERMISSIONS_ID = :p0 AND ROLES_ID = :p1';
+        $sql = 'SELECT permissions_id, roles_id FROM permissions_roles WHERE permissions_id = :p0 AND roles_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -332,6 +334,8 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      * @param \Phlopsi\AccessControl\Propel\Permission|ObjectCollection $permission The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
      * @return ChildPermissionsRolesQuery The current query, for fluid interface
      */
     public function filterByPermission($permission, $comparison = null)
@@ -406,6 +410,8 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *
      * @param \Phlopsi\AccessControl\Propel\Role|ObjectCollection $role The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildPermissionsRolesQuery The current query, for fluid interface
      */

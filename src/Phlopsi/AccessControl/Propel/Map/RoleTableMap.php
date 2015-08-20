@@ -2,6 +2,8 @@
 
 namespace Phlopsi\AccessControl\Propel\Map;
 
+use Phlopsi\AccessControl\Propel\Role;
+use Phlopsi\AccessControl\Propel\RoleQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -11,8 +13,6 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use Phlopsi\AccessControl\Propel\Role;
-use Phlopsi\AccessControl\Propel\RoleQuery;
 
 
 /**
@@ -34,7 +34,7 @@ class RoleTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'phlopsi.access_control.propel.Map.RoleTableMap';
+    const CLASS_NAME = 'Phlopsi.AccessControl.Propel.Map.RoleTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class RoleTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\phlopsi\\access_control\\propel\\Role';
+    const OM_CLASS = '\\Phlopsi\\AccessControl\\Propel\\Role';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'phlopsi.access_control.propel.Role';
+    const CLASS_DEFAULT = 'Phlopsi.AccessControl.Propel.Role';
 
     /**
      * The total number of columns
@@ -72,29 +72,29 @@ class RoleTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 5;
 
     /**
-     * the column name for the EXTERNAL_ID field
+     * the column name for the external_id field
      */
-    const COL_EXTERNAL_ID = 'roles.EXTERNAL_ID';
+    const COL_EXTERNAL_ID = 'roles.external_id';
 
     /**
-     * the column name for the TREE_LEFT field
+     * the column name for the tree_left field
      */
-    const COL_TREE_LEFT = 'roles.TREE_LEFT';
+    const COL_TREE_LEFT = 'roles.tree_left';
 
     /**
-     * the column name for the TREE_RIGHT field
+     * the column name for the tree_right field
      */
-    const COL_TREE_RIGHT = 'roles.TREE_RIGHT';
+    const COL_TREE_RIGHT = 'roles.tree_right';
 
     /**
-     * the column name for the TREE_LEVEL field
+     * the column name for the tree_level field
      */
-    const COL_TREE_LEVEL = 'roles.TREE_LEVEL';
+    const COL_TREE_LEVEL = 'roles.tree_level';
 
     /**
-     * the column name for the ID field
+     * the column name for the id field
      */
-    const COL_ID = 'roles.ID';
+    const COL_ID = 'roles.id';
 
     /**
      * The default string format for model objects of the related table
@@ -109,9 +109,8 @@ class RoleTableMap extends TableMap
      */
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('ExternalId', 'TreeLeft', 'TreeRight', 'TreeLevel', 'Id', ),
-        self::TYPE_STUDLYPHPNAME => array('externalId', 'treeLeft', 'treeRight', 'treeLevel', 'id', ),
+        self::TYPE_CAMELNAME     => array('externalId', 'treeLeft', 'treeRight', 'treeLevel', 'id', ),
         self::TYPE_COLNAME       => array(RoleTableMap::COL_EXTERNAL_ID, RoleTableMap::COL_TREE_LEFT, RoleTableMap::COL_TREE_RIGHT, RoleTableMap::COL_TREE_LEVEL, RoleTableMap::COL_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_EXTERNAL_ID', 'COL_TREE_LEFT', 'COL_TREE_RIGHT', 'COL_TREE_LEVEL', 'COL_ID', ),
         self::TYPE_FIELDNAME     => array('external_id', 'tree_left', 'tree_right', 'tree_level', 'id', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
@@ -124,9 +123,8 @@ class RoleTableMap extends TableMap
      */
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('ExternalId' => 0, 'TreeLeft' => 1, 'TreeRight' => 2, 'TreeLevel' => 3, 'Id' => 4, ),
-        self::TYPE_STUDLYPHPNAME => array('externalId' => 0, 'treeLeft' => 1, 'treeRight' => 2, 'treeLevel' => 3, 'id' => 4, ),
+        self::TYPE_CAMELNAME     => array('externalId' => 0, 'treeLeft' => 1, 'treeRight' => 2, 'treeLevel' => 3, 'id' => 4, ),
         self::TYPE_COLNAME       => array(RoleTableMap::COL_EXTERNAL_ID => 0, RoleTableMap::COL_TREE_LEFT => 1, RoleTableMap::COL_TREE_RIGHT => 2, RoleTableMap::COL_TREE_LEVEL => 3, RoleTableMap::COL_ID => 4, ),
-        self::TYPE_RAW_COLNAME   => array('COL_EXTERNAL_ID' => 0, 'COL_TREE_LEFT' => 1, 'COL_TREE_RIGHT' => 2, 'COL_TREE_LEVEL' => 3, 'COL_ID' => 4, ),
         self::TYPE_FIELDNAME     => array('external_id' => 0, 'tree_left' => 1, 'tree_right' => 2, 'tree_level' => 3, 'id' => 4, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
@@ -143,15 +141,16 @@ class RoleTableMap extends TableMap
         // attributes
         $this->setName('roles');
         $this->setPhpName('Role');
-        $this->setClassName('\\phlopsi\\access_control\\propel\\Role');
-        $this->setPackage('phlopsi.access_control.propel');
+        $this->setIdentifierQuoting(false);
+        $this->setClassName('\\Phlopsi\\AccessControl\\Propel\\Role');
+        $this->setPackage('Phlopsi.AccessControl.Propel');
         $this->setUseIdGenerator(true);
         // columns
-        $this->addColumn('EXTERNAL_ID', 'ExternalId', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('TREE_LEFT', 'TreeLeft', 'INTEGER', false, null, null);
-        $this->addColumn('TREE_RIGHT', 'TreeRight', 'INTEGER', false, null, null);
-        $this->addColumn('TREE_LEVEL', 'TreeLevel', 'INTEGER', false, null, null);
-        $this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
+        $this->addColumn('external_id', 'ExternalId', 'LONGVARCHAR', true, null, null);
+        $this->addColumn('tree_left', 'TreeLeft', 'INTEGER', false, null, null);
+        $this->addColumn('tree_right', 'TreeRight', 'INTEGER', false, null, null);
+        $this->addColumn('tree_level', 'TreeLevel', 'INTEGER', false, null, null);
+        $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
     } // initialize()
 
     /**
@@ -159,14 +158,14 @@ class RoleTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('PermissionsRoles', '\\phlopsi\\access_control\\propel\\PermissionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'PermissionsRoless');
-        $this->addRelation('ProhibitionsRoles', '\\phlopsi\\access_control\\propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'ProhibitionsRoless');
-        $this->addRelation('RolesSessionTypes', '\\phlopsi\\access_control\\propel\\RolesSessionTypes', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesSessionTypess');
-        $this->addRelation('RolesUsers', '\\phlopsi\\access_control\\propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesUserss');
-        $this->addRelation('Permission', '\\phlopsi\\access_control\\propel\\Permission', RelationMap::MANY_TO_MANY, array(), null, null, 'Permissions');
-        $this->addRelation('Prohibition', '\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
-        $this->addRelation('SessionType', '\\phlopsi\\access_control\\propel\\SessionType', RelationMap::MANY_TO_MANY, array(), null, null, 'SessionTypes');
-        $this->addRelation('User', '\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
+        $this->addRelation('PermissionsRoles', '\\Phlopsi\\AccessControl\\Propel\\PermissionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'PermissionsRoless');
+        $this->addRelation('ProhibitionsRoles', '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'ProhibitionsRoless');
+        $this->addRelation('RolesSessionTypes', '\\Phlopsi\\AccessControl\\Propel\\RolesSessionTypes', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesSessionTypess');
+        $this->addRelation('RolesUsers', '\\Phlopsi\\AccessControl\\Propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesUserss');
+        $this->addRelation('Permission', '\\Phlopsi\\AccessControl\\Propel\\Permission', RelationMap::MANY_TO_MANY, array(), null, null, 'Permissions');
+        $this->addRelation('Prohibition', '\\Phlopsi\\AccessControl\\Propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
+        $this->addRelation('SessionType', '\\Phlopsi\\AccessControl\\Propel\\SessionType', RelationMap::MANY_TO_MANY, array(), null, null, 'SessionTypes');
+        $this->addRelation('User', '\\Phlopsi\\AccessControl\\Propel\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
     } // buildRelations()
 
     /**
@@ -191,7 +190,7 @@ class RoleTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
@@ -213,7 +212,7 @@ class RoleTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
@@ -249,7 +248,7 @@ class RoleTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
@@ -330,11 +329,11 @@ class RoleTableMap extends TableMap
             $criteria->addSelectColumn(RoleTableMap::COL_TREE_LEVEL);
             $criteria->addSelectColumn(RoleTableMap::COL_ID);
         } else {
-            $criteria->addSelectColumn($alias . '.EXTERNAL_ID');
-            $criteria->addSelectColumn($alias . '.TREE_LEFT');
-            $criteria->addSelectColumn($alias . '.TREE_RIGHT');
-            $criteria->addSelectColumn($alias . '.TREE_LEVEL');
-            $criteria->addSelectColumn($alias . '.ID');
+            $criteria->addSelectColumn($alias . '.external_id');
+            $criteria->addSelectColumn($alias . '.tree_left');
+            $criteria->addSelectColumn($alias . '.tree_right');
+            $criteria->addSelectColumn($alias . '.tree_level');
+            $criteria->addSelectColumn($alias . '.id');
         }
     }
 

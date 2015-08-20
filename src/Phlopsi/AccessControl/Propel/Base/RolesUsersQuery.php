@@ -4,6 +4,9 @@ namespace Phlopsi\AccessControl\Propel\Base;
 
 use \Exception;
 use \PDO;
+use Phlopsi\AccessControl\Propel\RolesUsers as ChildRolesUsers;
+use Phlopsi\AccessControl\Propel\RolesUsersQuery as ChildRolesUsersQuery;
+use Phlopsi\AccessControl\Propel\Map\RolesUsersTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -11,9 +14,6 @@ use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use Phlopsi\AccessControl\Propel\RolesUsers as ChildRolesUsers;
-use Phlopsi\AccessControl\Propel\RolesUsersQuery as ChildRolesUsersQuery;
-use Phlopsi\AccessControl\Propel\Map\RolesUsersTableMap;
 
 /**
  * Base class that represents a query for the 'roles_users' table.
@@ -62,7 +62,7 @@ abstract class RolesUsersQuery extends ModelCriteria
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\phlopsi\\access_control\\propel\\RolesUsers', $modelAlias = null)
+    public function __construct($dbName = 'access_control', $modelName = '\\Phlopsi\\AccessControl\\Propel\\RolesUsers', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
@@ -134,11 +134,13 @@ abstract class RolesUsersQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
      * @return ChildRolesUsers A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT ROLES_ID, USERS_ID FROM roles_users WHERE ROLES_ID = :p0 AND USERS_ID = :p1';
+        $sql = 'SELECT roles_id, users_id FROM roles_users WHERE roles_id = :p0 AND users_id = :p1';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key[0], PDO::PARAM_INT);
@@ -332,6 +334,8 @@ abstract class RolesUsersQuery extends ModelCriteria
      * @param \Phlopsi\AccessControl\Propel\Role|ObjectCollection $role The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
+     * @throws \Propel\Runtime\Exception\PropelException
+     *
      * @return ChildRolesUsersQuery The current query, for fluid interface
      */
     public function filterByRole($role, $comparison = null)
@@ -406,6 +410,8 @@ abstract class RolesUsersQuery extends ModelCriteria
      *
      * @param \Phlopsi\AccessControl\Propel\User|ObjectCollection $user The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildRolesUsersQuery The current query, for fluid interface
      */

@@ -2,6 +2,8 @@
 
 namespace Phlopsi\AccessControl\Propel\Map;
 
+use Phlopsi\AccessControl\Propel\ProhibitionsRoles;
+use Phlopsi\AccessControl\Propel\ProhibitionsRolesQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -11,8 +13,6 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use Phlopsi\AccessControl\Propel\ProhibitionsRoles;
-use Phlopsi\AccessControl\Propel\ProhibitionsRolesQuery;
 
 
 /**
@@ -34,7 +34,7 @@ class ProhibitionsRolesTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'phlopsi.access_control.propel.Map.ProhibitionsRolesTableMap';
+    const CLASS_NAME = 'Phlopsi.AccessControl.Propel.Map.ProhibitionsRolesTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class ProhibitionsRolesTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\phlopsi\\access_control\\propel\\ProhibitionsRoles';
+    const OM_CLASS = '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsRoles';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'phlopsi.access_control.propel.ProhibitionsRoles';
+    const CLASS_DEFAULT = 'Phlopsi.AccessControl.Propel.ProhibitionsRoles';
 
     /**
      * The total number of columns
@@ -72,14 +72,14 @@ class ProhibitionsRolesTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 2;
 
     /**
-     * the column name for the PROHIBITIONS_ID field
+     * the column name for the prohibitions_id field
      */
-    const COL_PROHIBITIONS_ID = 'prohibitions_roles.PROHIBITIONS_ID';
+    const COL_PROHIBITIONS_ID = 'prohibitions_roles.prohibitions_id';
 
     /**
-     * the column name for the ROLES_ID field
+     * the column name for the roles_id field
      */
-    const COL_ROLES_ID = 'prohibitions_roles.ROLES_ID';
+    const COL_ROLES_ID = 'prohibitions_roles.roles_id';
 
     /**
      * The default string format for model objects of the related table
@@ -94,9 +94,8 @@ class ProhibitionsRolesTableMap extends TableMap
      */
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('ProhibitionId', 'RoleId', ),
-        self::TYPE_STUDLYPHPNAME => array('prohibitionId', 'roleId', ),
+        self::TYPE_CAMELNAME     => array('prohibitionId', 'roleId', ),
         self::TYPE_COLNAME       => array(ProhibitionsRolesTableMap::COL_PROHIBITIONS_ID, ProhibitionsRolesTableMap::COL_ROLES_ID, ),
-        self::TYPE_RAW_COLNAME   => array('COL_PROHIBITIONS_ID', 'COL_ROLES_ID', ),
         self::TYPE_FIELDNAME     => array('prohibitions_id', 'roles_id', ),
         self::TYPE_NUM           => array(0, 1, )
     );
@@ -109,9 +108,8 @@ class ProhibitionsRolesTableMap extends TableMap
      */
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('ProhibitionId' => 0, 'RoleId' => 1, ),
-        self::TYPE_STUDLYPHPNAME => array('prohibitionId' => 0, 'roleId' => 1, ),
+        self::TYPE_CAMELNAME     => array('prohibitionId' => 0, 'roleId' => 1, ),
         self::TYPE_COLNAME       => array(ProhibitionsRolesTableMap::COL_PROHIBITIONS_ID => 0, ProhibitionsRolesTableMap::COL_ROLES_ID => 1, ),
-        self::TYPE_RAW_COLNAME   => array('COL_PROHIBITIONS_ID' => 0, 'COL_ROLES_ID' => 1, ),
         self::TYPE_FIELDNAME     => array('prohibitions_id' => 0, 'roles_id' => 1, ),
         self::TYPE_NUM           => array(0, 1, )
     );
@@ -128,13 +126,14 @@ class ProhibitionsRolesTableMap extends TableMap
         // attributes
         $this->setName('prohibitions_roles');
         $this->setPhpName('ProhibitionsRoles');
-        $this->setClassName('\\phlopsi\\access_control\\propel\\ProhibitionsRoles');
-        $this->setPackage('phlopsi.access_control.propel');
+        $this->setIdentifierQuoting(false);
+        $this->setClassName('\\Phlopsi\\AccessControl\\Propel\\ProhibitionsRoles');
+        $this->setPackage('Phlopsi.AccessControl.Propel');
         $this->setUseIdGenerator(false);
         $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('PROHIBITIONS_ID', 'ProhibitionId', 'INTEGER' , 'prohibitions', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('ROLES_ID', 'RoleId', 'INTEGER' , 'roles', 'ID', true, null, null);
+        $this->addForeignPrimaryKey('prohibitions_id', 'ProhibitionId', 'INTEGER' , 'prohibitions', 'id', true, null, null);
+        $this->addForeignPrimaryKey('roles_id', 'RoleId', 'INTEGER' , 'roles', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -142,8 +141,8 @@ class ProhibitionsRolesTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Prohibition', '\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id', ), null, null);
-        $this->addRelation('Role', '\\phlopsi\\access_control\\propel\\Role', RelationMap::MANY_TO_ONE, array('roles_id' => 'id', ), null, null);
+        $this->addRelation('Prohibition', '\\Phlopsi\\AccessControl\\Propel\\Prohibition', RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id', ), null, null);
+        $this->addRelation('Role', '\\Phlopsi\\AccessControl\\Propel\\Role', RelationMap::MANY_TO_ONE, array('roles_id' => 'id', ), null, null);
     } // buildRelations()
 
     /**
@@ -207,7 +206,7 @@ class ProhibitionsRolesTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
@@ -229,7 +228,7 @@ class ProhibitionsRolesTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
@@ -274,7 +273,7 @@ class ProhibitionsRolesTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
@@ -352,8 +351,8 @@ class ProhibitionsRolesTableMap extends TableMap
             $criteria->addSelectColumn(ProhibitionsRolesTableMap::COL_PROHIBITIONS_ID);
             $criteria->addSelectColumn(ProhibitionsRolesTableMap::COL_ROLES_ID);
         } else {
-            $criteria->addSelectColumn($alias . '.PROHIBITIONS_ID');
-            $criteria->addSelectColumn($alias . '.ROLES_ID');
+            $criteria->addSelectColumn($alias . '.prohibitions_id');
+            $criteria->addSelectColumn($alias . '.roles_id');
         }
     }
 

@@ -2,6 +2,8 @@
 
 namespace Phlopsi\AccessControl\Propel\Map;
 
+use Phlopsi\AccessControl\Propel\ProhibitionsUsers;
+use Phlopsi\AccessControl\Propel\ProhibitionsUsersQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -11,8 +13,6 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
-use Phlopsi\AccessControl\Propel\ProhibitionsUsers;
-use Phlopsi\AccessControl\Propel\ProhibitionsUsersQuery;
 
 
 /**
@@ -34,7 +34,7 @@ class ProhibitionsUsersTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'phlopsi.access_control.propel.Map.ProhibitionsUsersTableMap';
+    const CLASS_NAME = 'Phlopsi.AccessControl.Propel.Map.ProhibitionsUsersTableMap';
 
     /**
      * The default database name for this class
@@ -49,12 +49,12 @@ class ProhibitionsUsersTableMap extends TableMap
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\phlopsi\\access_control\\propel\\ProhibitionsUsers';
+    const OM_CLASS = '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsUsers';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'phlopsi.access_control.propel.ProhibitionsUsers';
+    const CLASS_DEFAULT = 'Phlopsi.AccessControl.Propel.ProhibitionsUsers';
 
     /**
      * The total number of columns
@@ -72,29 +72,29 @@ class ProhibitionsUsersTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 5;
 
     /**
-     * the column name for the PROHIBITIONS_ID field
+     * the column name for the prohibitions_id field
      */
-    const COL_PROHIBITIONS_ID = 'prohibitions_users.PROHIBITIONS_ID';
+    const COL_PROHIBITIONS_ID = 'prohibitions_users.prohibitions_id';
 
     /**
-     * the column name for the USERS_ID field
+     * the column name for the users_id field
      */
-    const COL_USERS_ID = 'prohibitions_users.USERS_ID';
+    const COL_USERS_ID = 'prohibitions_users.users_id';
 
     /**
-     * the column name for the PROHIBITED_UNTIL field
+     * the column name for the prohibited_until field
      */
-    const COL_PROHIBITED_UNTIL = 'prohibitions_users.PROHIBITED_UNTIL';
+    const COL_PROHIBITED_UNTIL = 'prohibitions_users.prohibited_until';
 
     /**
-     * the column name for the CREATED_AT field
+     * the column name for the created_at field
      */
-    const COL_CREATED_AT = 'prohibitions_users.CREATED_AT';
+    const COL_CREATED_AT = 'prohibitions_users.created_at';
 
     /**
-     * the column name for the UPDATED_AT field
+     * the column name for the updated_at field
      */
-    const COL_UPDATED_AT = 'prohibitions_users.UPDATED_AT';
+    const COL_UPDATED_AT = 'prohibitions_users.updated_at';
 
     /**
      * The default string format for model objects of the related table
@@ -109,9 +109,8 @@ class ProhibitionsUsersTableMap extends TableMap
      */
     protected static $fieldNames = array (
         self::TYPE_PHPNAME       => array('ProhibitionId', 'UserId', 'ProhibitedUntil', 'CreatedAt', 'UpdatedAt', ),
-        self::TYPE_STUDLYPHPNAME => array('prohibitionId', 'userId', 'prohibitedUntil', 'createdAt', 'updatedAt', ),
+        self::TYPE_CAMELNAME     => array('prohibitionId', 'userId', 'prohibitedUntil', 'createdAt', 'updatedAt', ),
         self::TYPE_COLNAME       => array(ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID, ProhibitionsUsersTableMap::COL_USERS_ID, ProhibitionsUsersTableMap::COL_PROHIBITED_UNTIL, ProhibitionsUsersTableMap::COL_CREATED_AT, ProhibitionsUsersTableMap::COL_UPDATED_AT, ),
-        self::TYPE_RAW_COLNAME   => array('COL_PROHIBITIONS_ID', 'COL_USERS_ID', 'COL_PROHIBITED_UNTIL', 'COL_CREATED_AT', 'COL_UPDATED_AT', ),
         self::TYPE_FIELDNAME     => array('prohibitions_id', 'users_id', 'prohibited_until', 'created_at', 'updated_at', ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
@@ -124,9 +123,8 @@ class ProhibitionsUsersTableMap extends TableMap
      */
     protected static $fieldKeys = array (
         self::TYPE_PHPNAME       => array('ProhibitionId' => 0, 'UserId' => 1, 'ProhibitedUntil' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ),
-        self::TYPE_STUDLYPHPNAME => array('prohibitionId' => 0, 'userId' => 1, 'prohibitedUntil' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
+        self::TYPE_CAMELNAME     => array('prohibitionId' => 0, 'userId' => 1, 'prohibitedUntil' => 2, 'createdAt' => 3, 'updatedAt' => 4, ),
         self::TYPE_COLNAME       => array(ProhibitionsUsersTableMap::COL_PROHIBITIONS_ID => 0, ProhibitionsUsersTableMap::COL_USERS_ID => 1, ProhibitionsUsersTableMap::COL_PROHIBITED_UNTIL => 2, ProhibitionsUsersTableMap::COL_CREATED_AT => 3, ProhibitionsUsersTableMap::COL_UPDATED_AT => 4, ),
-        self::TYPE_RAW_COLNAME   => array('COL_PROHIBITIONS_ID' => 0, 'COL_USERS_ID' => 1, 'COL_PROHIBITED_UNTIL' => 2, 'COL_CREATED_AT' => 3, 'COL_UPDATED_AT' => 4, ),
         self::TYPE_FIELDNAME     => array('prohibitions_id' => 0, 'users_id' => 1, 'prohibited_until' => 2, 'created_at' => 3, 'updated_at' => 4, ),
         self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
     );
@@ -143,16 +141,17 @@ class ProhibitionsUsersTableMap extends TableMap
         // attributes
         $this->setName('prohibitions_users');
         $this->setPhpName('ProhibitionsUsers');
-        $this->setClassName('\\phlopsi\\access_control\\propel\\ProhibitionsUsers');
-        $this->setPackage('phlopsi.access_control.propel');
+        $this->setIdentifierQuoting(false);
+        $this->setClassName('\\Phlopsi\\AccessControl\\Propel\\ProhibitionsUsers');
+        $this->setPackage('Phlopsi.AccessControl.Propel');
         $this->setUseIdGenerator(false);
         $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('PROHIBITIONS_ID', 'ProhibitionId', 'INTEGER' , 'prohibitions', 'ID', true, null, null);
-        $this->addForeignPrimaryKey('USERS_ID', 'UserId', 'INTEGER' , 'users', 'ID', true, null, null);
-        $this->addColumn('PROHIBITED_UNTIL', 'ProhibitedUntil', 'TIMESTAMP', false, null, null);
-        $this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
-        $this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+        $this->addForeignPrimaryKey('prohibitions_id', 'ProhibitionId', 'INTEGER' , 'prohibitions', 'id', true, null, null);
+        $this->addForeignPrimaryKey('users_id', 'UserId', 'INTEGER' , 'users', 'id', true, null, null);
+        $this->addColumn('prohibited_until', 'ProhibitedUntil', 'TIMESTAMP', false, null, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     } // initialize()
 
     /**
@@ -160,8 +159,8 @@ class ProhibitionsUsersTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Prohibition', '\\phlopsi\\access_control\\propel\\Prohibition', RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id', ), null, null);
-        $this->addRelation('User', '\\phlopsi\\access_control\\propel\\User', RelationMap::MANY_TO_ONE, array('users_id' => 'id', ), null, null);
+        $this->addRelation('Prohibition', '\\Phlopsi\\AccessControl\\Propel\\Prohibition', RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id', ), null, null);
+        $this->addRelation('User', '\\Phlopsi\\AccessControl\\Propel\\User', RelationMap::MANY_TO_ONE, array('users_id' => 'id', ), null, null);
     } // buildRelations()
 
     /**
@@ -238,7 +237,7 @@ class ProhibitionsUsersTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string The primary key hash of the row
@@ -260,7 +259,7 @@ class ProhibitionsUsersTableMap extends TableMap
      *
      * @param array  $row       resultset row.
      * @param int    $offset    The 0-based offset for reading from the resultset row.
-     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
@@ -305,7 +304,7 @@ class ProhibitionsUsersTableMap extends TableMap
      * @param array  $row       row returned by DataFetcher->fetch().
      * @param int    $offset    The 0-based offset for reading from the resultset row.
      * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_STUDLYPHPNAME
+                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws PropelException Any exceptions caught during processing will be
@@ -386,11 +385,11 @@ class ProhibitionsUsersTableMap extends TableMap
             $criteria->addSelectColumn(ProhibitionsUsersTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ProhibitionsUsersTableMap::COL_UPDATED_AT);
         } else {
-            $criteria->addSelectColumn($alias . '.PROHIBITIONS_ID');
-            $criteria->addSelectColumn($alias . '.USERS_ID');
-            $criteria->addSelectColumn($alias . '.PROHIBITED_UNTIL');
-            $criteria->addSelectColumn($alias . '.CREATED_AT');
-            $criteria->addSelectColumn($alias . '.UPDATED_AT');
+            $criteria->addSelectColumn($alias . '.prohibitions_id');
+            $criteria->addSelectColumn($alias . '.users_id');
+            $criteria->addSelectColumn($alias . '.prohibited_until');
+            $criteria->addSelectColumn($alias . '.created_at');
+            $criteria->addSelectColumn($alias . '.updated_at');
         }
     }
 

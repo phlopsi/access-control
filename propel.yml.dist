@@ -1,0 +1,8 @@
+# http://propelorm.org/documentation/reference/configuration-file.html
+
+propel:
+    general:
+        project: AccessControl
+        version: 0.1.0
+    paths:
+        phpDir: src
