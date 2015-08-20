@@ -80,7 +80,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission
      * @expectedException \TypeError
      */
-    public function testCreatePermissionLengthException()
+    public function testCreatePermissionTypeError()
     {
         $this->access_control->createPermission(null);
     }
@@ -106,90 +106,90 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createRole
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     * @expectedException \TypeError
      */
-    public function testCreateRoleLengthException()
+    public function testCreateRoleTypeError()
     {
         $this->access_control->createRole(null);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createSessionType
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     * @expectedException \TypeError
      */
-    public function testCreateSessionTypeLengthException()
+    public function testCreateSessionTypeTypeError()
     {
         $this->access_control->createSessionType(null);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createUser
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     * @expectedException \TypeError
      */
-    public function testCreateUserLengthException()
+    public function testCreateUserTypeError()
     {
         $this->access_control->createUser(null);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     * @expectedException \TypeError
      */
-    public function testDeletePermissionLengthException()
+    public function testDeletePermissionTypeError()
     {
         $this->access_control->deletePermission(null);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     * @expectedException \TypeError
      */
-    public function testDeleteRoleLengthException()
+    public function testDeleteRoleTypeError()
     {
         $this->access_control->deleteRole(null);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteSessionType
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     * @expectedException \TypeError
      */
-    public function testDeleteSessionTypeLengthException()
+    public function testDeleteSessionTypeTypeError()
     {
         $this->access_control->deleteSessionType(null);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     * @expectedException \TypeError
      */
-    public function testDeleteUserLengthException()
+    public function testDeleteUserTypeError()
     {
         $this->access_control->deleteUser(null);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     * @expectedException \TypeError
      */
-    public function testRetrieveRoleLengthException()
+    public function testRetrieveRoleTypeError()
     {
         $this->access_control->retrieveRole(null);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveSessionType
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     * @expectedException \TypeError
      */
-    public function testRetrieveSessionTypeLengthException()
+    public function testRetrieveSessionTypeTypeError()
     {
         $this->access_control->retrieveSessionType(null);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     * @expectedException \TypeError
      */
-    public function testRetrieveUserLengthException()
+    public function testRetrieveUserTypeError()
     {
         $this->access_control->retrieveUser(null);
     }
