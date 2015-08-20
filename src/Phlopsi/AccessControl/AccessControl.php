@@ -361,5 +361,4 @@ class AccessControl
 
         return $this->users[$user_id];
     }
-
 }
