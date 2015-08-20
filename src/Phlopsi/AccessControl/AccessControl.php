@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Phlopsi\AccessControl;
 
-use Phlopsi\AccessControl\Exception\InvalidArgumentException;
 use Phlopsi\AccessControl\Exception\LengthException;
 use Phlopsi\AccessControl\Exception\RuntimeException;
 use Phlopsi\AccessControl\Propel\Permission as PropelPermission;
@@ -61,12 +60,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function createRole($role_id)
+    public function createRole(string $role_id)
     {
-        if (!\is_string($role_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -94,12 +89,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function createSessionType($session_type_id)
+    public function createSessionType(string $session_type_id)
     {
-        if (!\is_string($session_type_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($session_type_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -127,12 +118,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function createUser($user_id)
+    public function createUser(string $user_id)
     {
-        if (!\is_string($user_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($user_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -159,12 +146,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function deletePermission($permission_id)
+    public function deletePermission(string $permission_id)
     {
-        if (!\is_string($permission_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($permission_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -183,12 +166,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function deleteRole($role_id)
+    public function deleteRole(string $role_id)
     {
-        if (!\is_string($role_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -211,12 +190,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function deleteSessionType($session_type_id)
+    public function deleteSessionType(string $session_type_id)
     {
-        if (!\is_string($session_type_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($session_type_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -239,12 +214,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function deleteUser($user_id)
+    public function deleteUser(string $user_id)
     {
-        if (!\is_string($user_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($user_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -268,12 +239,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function retrieveRole($role_id)
+    public function retrieveRole(string $role_id)
     {
-        if (!\is_string($role_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -301,12 +268,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function retrieveSessionType($session_type_id)
+    public function retrieveSessionType(string $session_type_id)
     {
-        if (!\is_string($session_type_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($session_type_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -334,12 +297,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function retrieveUser($user_id)
+    public function retrieveUser(string $user_id)
     {
-        if (!\is_string($user_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($user_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
