@@ -1,4 +1,7 @@
-<?php namespace Phlopsi\AccessControl;
+<?php
+declare(strict_types=1);
+
+namespace Phlopsi\AccessControl;
 
 use Phlopsi\AccessControl\Exception\InvalidArgumentException;
 use Phlopsi\AccessControl\Exception\LengthException;
@@ -37,12 +40,8 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function createPermission($permission_id)
+    public function createPermission(string $permission_id)
     {
-        if (!\is_string($permission_id)) {
-            throw new InvalidArgumentException(InvalidArgumentException::ARGUMENT_IS_NOT_A_STRING);
-        }
-
         if (empty($permission_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
