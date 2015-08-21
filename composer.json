@@ -12,7 +12,7 @@
         "propel/propel": "@alpha"
     },
     "require-dev": {
-        "phpunit/phpunit": "@stable",
+        "phpunit/phpunit": "@dev",
         "phpunit/dbunit": "@stable",
         "squizlabs/php_codesniffer": "@stable"
     },
