@@ -13,7 +13,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "@dev",
-        "phpunit/dbunit": "@stable",
+        "phpunit/dbunit": "@dev",
         "squizlabs/php_codesniffer": "@stable"
     },
     "authors": [
