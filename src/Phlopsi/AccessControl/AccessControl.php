@@ -50,7 +50,7 @@ class AccessControl
             $new_permission->setExternalId($permission_id);
             $new_permission->save();
         } catch (\Exception $exception) {
-            throw new RuntimeException(null, null, $exception);
+            throw new RuntimeException('', 0, $exception);
         }
     }
 
@@ -75,7 +75,7 @@ class AccessControl
             $new_role->setExternalId($role_id);
             $new_role->save();
         } catch (\Exception $exception) {
-            throw new RuntimeException(null, null, $exception);
+            throw new RuntimeException('', 0, $exception);
         }
 
         $this->roles[$role_id] = new Role($new_role);
@@ -104,7 +104,7 @@ class AccessControl
             $new_session_type->setExternalId($session_type_id);
             $new_session_type->save();
         } catch (\Exception $exception) {
-            throw new RuntimeException(null, null, $exception);
+            throw new RuntimeException('', 0, $exception);
         }
 
         $this->session_types[$session_type_id] = new SessionType($new_session_type);
@@ -133,7 +133,7 @@ class AccessControl
             $new_user->setExternalId($user_id);
             $new_user->save();
         } catch (\Exception $exception) {
-            throw new RuntimeException(null, null, $exception);
+            throw new RuntimeException('', 0, $exception);
         }
 
         $this->users[$user_id] = new User($new_user);
@@ -157,7 +157,7 @@ class AccessControl
                 ->findOneByExternalId($permission_id)
                 ->delete();
         } catch (\Exception $exception) {
-            throw new RuntimeException(null, null, $exception);
+            throw new RuntimeException('', 0, $exception);
         }
     }
 
@@ -181,7 +181,7 @@ class AccessControl
                 ->findOneByExternalId($role_id)
                 ->delete();
         } catch (\Exception $exception) {
-            throw new RuntimeException(null, null, $exception);
+            throw new RuntimeException('', 0, $exception);
         }
     }
 
@@ -205,7 +205,7 @@ class AccessControl
                 ->findOneByExternalId($session_type_id)
                 ->delete();
         } catch (\Exception $exception) {
-            throw new RuntimeException(null, null, $exception);
+            throw new RuntimeException('', 0, $exception);
         }
     }
 
@@ -229,7 +229,7 @@ class AccessControl
                 ->findOneByExternalId($user_id)
                 ->delete();
         } catch (\Exception $exception) {
-            throw new RuntimeException(null, null, $exception);
+            throw new RuntimeException('', 0, $exception);
         }
     }
 
@@ -249,7 +249,7 @@ class AccessControl
             try {
                 $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
             } catch (\Exception $exception) {
-                throw new RuntimeException(null, null, $exception);
+                throw new RuntimeException('', 0, $exception);
             }
 
             if (is_null($role)) {
@@ -278,7 +278,7 @@ class AccessControl
             try {
                 $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
             } catch (\Exception $exception) {
-                throw new RuntimeException(null, null, $exception);
+                throw new RuntimeException('', 0, $exception);
             }
 
             if (is_null($session_type)) {
@@ -307,7 +307,7 @@ class AccessControl
             try {
                 $user = PropelUserQuery::create()->findOneByExternalId($user_id);
             } catch (\Exception $exception) {
-                throw new RuntimeException(null, null, $exception);
+                throw new RuntimeException('', 0, $exception);
             }
 
             if (is_null($user)) {
