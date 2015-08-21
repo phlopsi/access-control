@@ -25,14 +25,12 @@ class Role
     }
 
     /**
-     * @param mixed $permission_id
+     * @param string $permission_id
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function addPermission($permission_id)
+    public function addPermission(string $permission_id)
     {
-        $permission_id = (string) $permission_id;
-
         if (empty($permission_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -47,14 +45,12 @@ class Role
     }
 
     /**
-     * @param mixed $permission_id
+     * @param string $permission_id
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function removePermission($permission_id)
+    public function removePermission(string $permission_id)
     {
-        $permission_id = (string) $permission_id;
-
         if (empty($permission_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }

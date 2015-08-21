@@ -26,14 +26,12 @@ class User
     }
 
     /**
-     * @param mixed $role_id
+     * @param string $role_id
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function addRole($role_id)
+    public function addRole(string $role_id)
     {
-        $role_id = (string) $role_id;
-
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -48,14 +46,12 @@ class User
     }
 
     /**
-     * @param mixed $permission_id
+     * @param string $permission_id
      * @return boolean
      * @throws LengthException
      */
-    public function hasPermission($permission_id)
+    public function hasPermission(string $permission_id)
     {
-        $permission_id = (string) $permission_id;
-
         if (empty($permission_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
@@ -89,14 +85,12 @@ class User
     }
 
     /**
-     * @param mixed $role_id
+     * @param string $role_id
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function removeRole($role_id)
+    public function removeRole(string $role_id)
     {
-        $role_id = (string) $role_id;
-
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
