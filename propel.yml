@@ -1,3 +1,5 @@
+# http://propelorm.org/documentation/reference/configuration-file.html
+
 propel:
     database:
         connections:
