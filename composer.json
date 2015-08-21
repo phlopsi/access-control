@@ -7,6 +7,7 @@
         "issues": "https://github.com/phlopsi/access-control/issues",
         "source": "https://github.com/phlopsi/access-control"
     },
+    "minimum-stability": "dev",
     "require": {
         "php": "~7.0",
         "propel/propel": "@alpha"
