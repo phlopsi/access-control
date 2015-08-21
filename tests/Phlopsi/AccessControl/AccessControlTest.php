@@ -96,6 +96,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testCreatePermissionTwice()
     {
