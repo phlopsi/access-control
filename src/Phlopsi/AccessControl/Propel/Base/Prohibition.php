@@ -601,7 +601,6 @@ abstract class Prohibition implements ActiveRecordInterface
     public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
     {
         try {
-
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProhibitionTableMap::translateFieldName('ExternalId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->external_id = (null !== $col) ? (string) $col : null;
 
@@ -683,8 +682,7 @@ abstract class Prohibition implements ActiveRecordInterface
         }
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
-        if ($deep) {  // also de-associate any related objects?
-
+        if ($deep) {
             $this->collProhibitionsRoless = null;
 
             $this->collProhibitionsUserss = null;
@@ -1106,7 +1104,6 @@ abstract class Prohibition implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->collProhibitionsRoless) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'prohibitionsRoless';
@@ -1121,7 +1118,6 @@ abstract class Prohibition implements ActiveRecordInterface
                 $result[$key] = $this->collProhibitionsRoless->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collProhibitionsUserss) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'prohibitionsUserss';
@@ -1393,7 +1389,7 @@ abstract class Prohibition implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setId(null); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1996,7 +1992,6 @@ abstract class Prohibition implements ActiveRecordInterface
                     $this->initRoles();
                 }
             } else {
-
                 $query = ChildRoleQuery::create(null, $criteria)
                     ->filterByProhibition($this);
                 $collRoles = $query->find($con);
@@ -2071,7 +2066,6 @@ abstract class Prohibition implements ActiveRecordInterface
             if ($this->isNew() && null === $this->collRoles) {
                 return 0;
             } else {
-
                 if ($partial && !$criteria) {
                     return count($this->getRoles());
                 }
@@ -2146,7 +2140,8 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function removeRole(ChildRole $role)
     {
-        if ($this->getRoles()->contains($role)) { $prohibitionsRoles = new ChildProhibitionsRoles();
+        if ($this->getRoles()->contains($role)) {
+            $prohibitionsRoles = new ChildProhibitionsRoles();
 
             $prohibitionsRoles->setRole($role);
             if ($role->isProhibitionsLoaded()) {
@@ -2238,7 +2233,6 @@ abstract class Prohibition implements ActiveRecordInterface
                     $this->initUsers();
                 }
             } else {
-
                 $query = ChildUserQuery::create(null, $criteria)
                     ->filterByProhibition($this);
                 $collUsers = $query->find($con);
@@ -2313,7 +2307,6 @@ abstract class Prohibition implements ActiveRecordInterface
             if ($this->isNew() && null === $this->collUsers) {
                 return 0;
             } else {
-
                 if ($partial && !$criteria) {
                     return count($this->getUsers());
                 }
@@ -2388,7 +2381,8 @@ abstract class Prohibition implements ActiveRecordInterface
      */
     public function removeUser(ChildUser $user)
     {
-        if ($this->getUsers()->contains($user)) { $prohibitionsUsers = new ChildProhibitionsUsers();
+        if ($this->getUsers()->contains($user)) {
+            $prohibitionsUsers = new ChildProhibitionsUsers();
 
             $prohibitionsUsers->setUser($user);
             if ($user->isProhibitionsLoaded()) {
@@ -3046,7 +3040,7 @@ abstract class Prohibition implements ActiveRecordInterface
     public function insertAsLastChildOf($parent)
     {
         if ($this->isInTree()) {
-           throw new PropelException(
+            throw new PropelException(
                 'A ChildProhibition object must not already be in the tree to be inserted. Use the moveToLastChildOf() instead.'
             );
         }
@@ -3251,8 +3245,6 @@ abstract class Prohibition implements ActiveRecordInterface
 
 
             if (!$preventDefault) {
-
-
                 if ($left >= $destLeft) { // src was shifted too?
                     $left += $treeSize;
                     $right += $treeSize;
@@ -3439,5 +3431,4 @@ abstract class Prohibition implements ActiveRecordInterface
 
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));
     }
-
 }

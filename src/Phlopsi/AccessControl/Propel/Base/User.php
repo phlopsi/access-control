@@ -457,7 +457,6 @@ abstract class User implements ActiveRecordInterface
     public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
     {
         try {
-
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UserTableMap::translateFieldName('ExternalId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->external_id = (null !== $col) ? (string) $col : null;
 
@@ -530,8 +529,7 @@ abstract class User implements ActiveRecordInterface
         }
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
-        if ($deep) {  // also de-associate any related objects?
-
+        if ($deep) {
             $this->collProhibitionsUserss = null;
 
             $this->collRolesUserss = null;
@@ -897,7 +895,6 @@ abstract class User implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->collProhibitionsUserss) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'prohibitionsUserss';
@@ -912,7 +909,6 @@ abstract class User implements ActiveRecordInterface
                 $result[$key] = $this->collProhibitionsUserss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collRolesUserss) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'rolesUserss';
@@ -1154,7 +1150,7 @@ abstract class User implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setId(null); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1757,7 +1753,6 @@ abstract class User implements ActiveRecordInterface
                     $this->initProhibitions();
                 }
             } else {
-
                 $query = ChildProhibitionQuery::create(null, $criteria)
                     ->filterByUser($this);
                 $collProhibitions = $query->find($con);
@@ -1832,7 +1827,6 @@ abstract class User implements ActiveRecordInterface
             if ($this->isNew() && null === $this->collProhibitions) {
                 return 0;
             } else {
-
                 if ($partial && !$criteria) {
                     return count($this->getProhibitions());
                 }
@@ -1907,7 +1901,8 @@ abstract class User implements ActiveRecordInterface
      */
     public function removeProhibition(ChildProhibition $prohibition)
     {
-        if ($this->getProhibitions()->contains($prohibition)) { $prohibitionsUsers = new ChildProhibitionsUsers();
+        if ($this->getProhibitions()->contains($prohibition)) {
+            $prohibitionsUsers = new ChildProhibitionsUsers();
 
             $prohibitionsUsers->setProhibition($prohibition);
             if ($prohibition->isUsersLoaded()) {
@@ -1999,7 +1994,6 @@ abstract class User implements ActiveRecordInterface
                     $this->initRoles();
                 }
             } else {
-
                 $query = ChildRoleQuery::create(null, $criteria)
                     ->filterByUser($this);
                 $collRoles = $query->find($con);
@@ -2074,7 +2068,6 @@ abstract class User implements ActiveRecordInterface
             if ($this->isNew() && null === $this->collRoles) {
                 return 0;
             } else {
-
                 if ($partial && !$criteria) {
                     return count($this->getRoles());
                 }
@@ -2149,7 +2142,8 @@ abstract class User implements ActiveRecordInterface
      */
     public function removeRole(ChildRole $role)
     {
-        if ($this->getRoles()->contains($role)) { $rolesUsers = new ChildRolesUsers();
+        if ($this->getRoles()->contains($role)) {
+            $rolesUsers = new ChildRolesUsers();
 
             $rolesUsers->setRole($role);
             if ($role->isUsersLoaded()) {
@@ -2357,5 +2351,4 @@ abstract class User implements ActiveRecordInterface
 
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));
     }
-
 }

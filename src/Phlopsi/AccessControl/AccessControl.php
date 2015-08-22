@@ -20,21 +20,6 @@ use Phlopsi\AccessControl\Propel\UserQuery as PropelUserQuery;
 class AccessControl
 {
     /**
-     * @var Role[]
-     */
-    private $roles = [];
-
-    /**
-     * @var SessionType[]
-     */
-    private $session_types = [];
-
-    /**
-     * @var User[]
-     */
-    private $users = [];
-
-    /**
      * @param string $permission_id
      * @throws LengthException
      * @throws RuntimeException
@@ -65,11 +50,7 @@ class AccessControl
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
-
-        if (\array_key_exists($role_id, $this->roles)) {
-            throw new RuntimeException(sprintf(RuntimeException::ENTITY_ALREADY_EXISTS, $role_id));
-        }
-
+        
         try {
             $new_role = new PropelRole();
             $new_role->setExternalId($role_id);
@@ -78,9 +59,7 @@ class AccessControl
             throw new RuntimeException('', 0, $exception);
         }
 
-        $this->roles[$role_id] = new Role($new_role);
-
-        return $this->roles[$role_id];
+        return new Role($new_role);
     }
 
     /**
@@ -95,10 +74,6 @@ class AccessControl
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        if (\array_key_exists($session_type_id, $this->session_types)) {
-            throw new RuntimeException(sprintf(RuntimeException::ENTITY_ALREADY_EXISTS, $session_type_id));
-        }
-
         try {
             $new_session_type = new PropelSessionType();
             $new_session_type->setExternalId($session_type_id);
@@ -107,9 +82,7 @@ class AccessControl
             throw new RuntimeException('', 0, $exception);
         }
 
-        $this->session_types[$session_type_id] = new SessionType($new_session_type);
-
-        return $this->session_types[$session_type_id];
+        return new SessionType($new_session_type);
     }
 
     /**
@@ -124,10 +97,6 @@ class AccessControl
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        if (\array_key_exists($user_id, $this->users)) {
-            throw new RuntimeException(sprintf(RuntimeException::ENTITY_ALREADY_EXISTS, $user_id));
-        }
-
         try {
             $new_user = new PropelUser();
             $new_user->setExternalId($user_id);
@@ -136,9 +105,7 @@ class AccessControl
             throw new RuntimeException('', 0, $exception);
         }
 
-        $this->users[$user_id] = new User($new_user);
-
-        return $this->users[$user_id];
+        return new User($new_user);
     }
 
     /**
@@ -172,10 +139,6 @@ class AccessControl
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        if (\array_key_exists($role_id, $this->roles)) {
-            unset($this->roles[$role_id]);
-        }
-
         try {
             PropelRoleQuery::create()
                 ->findOneByExternalId($role_id)
@@ -196,10 +159,6 @@ class AccessControl
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        if (\array_key_exists($session_type_id, $this->session_types)) {
-            unset($this->session_types[$session_type_id]);
-        }
-
         try {
             PropelSessionTypeQuery::create()
                 ->findOneByExternalId($session_type_id)
@@ -218,10 +177,6 @@ class AccessControl
     {
         if (empty($user_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-        }
-
-        if (\array_key_exists($user_id, $this->users)) {
-            unset($this->users[$user_id]);
         }
 
         try {
@@ -245,21 +200,17 @@ class AccessControl
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        if (!\array_key_exists($role_id, $this->roles)) {
-            try {
-                $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
-            } catch (\Exception $exception) {
-                throw new RuntimeException('', 0, $exception);
-            }
-
-            if (is_null($role)) {
-                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
-            }
-
-            $this->roles[$role_id] = new Role($role);
+        try {
+            $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
         }
 
-        return $this->roles[$role_id];
+        if (is_null($role)) {
+            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
+        }
+
+        return new Role($role);
     }
 
     /**
@@ -274,21 +225,19 @@ class AccessControl
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        if (!\array_key_exists($session_type_id, $this->session_types)) {
-            try {
-                $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
-            } catch (\Exception $exception) {
-                throw new RuntimeException('', 0, $exception);
-            }
 
-            if (is_null($session_type)) {
-                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $session_type_id));
-            }
-
-            $this->session_types[$session_type_id] = new SessionType($session_type);
+        try {
+            $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
         }
 
-        return $this->session_types[$session_type_id];
+        if (is_null($session_type)) {
+            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $session_type_id));
+        }
+
+
+        return new SessionType($session_type);
     }
 
     /**
@@ -303,20 +252,16 @@ class AccessControl
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        if (!\array_key_exists($user_id, $this->users)) {
-            try {
-                $user = PropelUserQuery::create()->findOneByExternalId($user_id);
-            } catch (\Exception $exception) {
-                throw new RuntimeException('', 0, $exception);
-            }
-
-            if (is_null($user)) {
-                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $user_id));
-            }
-
-            $this->users[$user_id] = new User($user);
+        try {
+            $user = PropelUserQuery::create()->findOneByExternalId($user_id);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
         }
 
-        return $this->users[$user_id];
+        if (is_null($user)) {
+            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $user_id));
+        }
+
+        return new User($user);
     }
 }

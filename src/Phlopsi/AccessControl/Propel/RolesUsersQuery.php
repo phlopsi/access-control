@@ -4,7 +4,6 @@ namespace Phlopsi\AccessControl\Propel;
 
 use Phlopsi\AccessControl\Propel\Base\RolesUsersQuery as BaseRolesUsersQuery;
 
-
 /**
  * Skeleton subclass for performing query and update operations on the 'roles_users' table.
  *

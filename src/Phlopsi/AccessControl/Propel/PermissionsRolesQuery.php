@@ -4,7 +4,6 @@ namespace Phlopsi\AccessControl\Propel;
 
 use Phlopsi\AccessControl\Propel\Base\PermissionsRolesQuery as BasePermissionsRolesQuery;
 
-
 /**
  * Skeleton subclass for performing query and update operations on the 'permissions_roles' table.
  *

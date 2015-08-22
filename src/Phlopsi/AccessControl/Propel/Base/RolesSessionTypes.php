@@ -413,7 +413,6 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
     {
         try {
-
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RolesSessionTypesTableMap::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->roles_id = (null !== $col) ? (int) $col : null;
 
@@ -492,8 +491,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
         }
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
-        if ($deep) {  // also de-associate any related objects?
-
+        if ($deep) {
             $this->aRole = null;
             $this->aSessionType = null;
         } // if (deep)
@@ -771,7 +769,6 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->aRole) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'role';
@@ -783,10 +780,9 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
                         $key = 'Role';
                 }
 
-                $result[$key] = $this->aRole->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aRole->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
             if (null !== $this->aSessionType) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'sessionType';
@@ -798,7 +794,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
                         $key = 'SessionType';
                 }
 
-                $result[$key] = $this->aSessionType->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aSessionType->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
         }
 
@@ -1066,7 +1062,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     public function setRole(ChildRole $v = null)
     {
         if ($v === null) {
-            $this->setRoleId(NULL);
+            $this->setRoleId(null);
         } else {
             $this->setRoleId($v->getId());
         }
@@ -1117,7 +1113,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     public function setSessionType(ChildSessionType $v = null)
     {
         if ($v === null) {
-            $this->setSessionTypeId(NULL);
+            $this->setSessionTypeId(null);
         } else {
             $this->setSessionTypeId($v->getId());
         }
@@ -1324,5 +1320,4 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
 
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));
     }
-
 }

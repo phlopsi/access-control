@@ -560,5 +560,4 @@ abstract class PermissionsRolesQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // PermissionsRolesQuery

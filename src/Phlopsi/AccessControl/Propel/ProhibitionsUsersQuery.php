@@ -4,7 +4,6 @@ namespace Phlopsi\AccessControl\Propel;
 
 use Phlopsi\AccessControl\Propel\Base\ProhibitionsUsersQuery as BaseProhibitionsUsersQuery;
 
-
 /**
  * Skeleton subclass for performing query and update operations on the 'prohibitions_users' table.
  *

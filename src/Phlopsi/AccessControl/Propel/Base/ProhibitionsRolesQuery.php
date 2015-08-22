@@ -560,5 +560,4 @@ abstract class ProhibitionsRolesQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // ProhibitionsRolesQuery

@@ -556,5 +556,4 @@ abstract class UserQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // UserQuery

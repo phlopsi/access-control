@@ -860,7 +860,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      * @param      ConnectionInterface $con    Connection to use.
      * @return     ChildProhibition            Propel object for root node
      */
-    static public function retrieveRoot(ConnectionInterface $con = null)
+    public static function retrieveRoot(ConnectionInterface $con = null)
     {
         $c = new Criteria(ProhibitionTableMap::DATABASE_NAME);
         $c->add(ChildProhibition::LEFT_COL, 1, Criteria::EQUAL);
@@ -875,7 +875,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      * @param      ConnectionInterface $con    Connection to use.
      * @return     ChildProhibition            Propel object for root node
      */
-    static public function retrieveTree(Criteria $criteria = null, ConnectionInterface $con = null)
+    public static function retrieveTree(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         if (null === $criteria) {
             $criteria = new Criteria(ProhibitionTableMap::DATABASE_NAME);
@@ -891,7 +891,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      * @param      ChildProhibition $node    Propel object for src node
      * @return     bool
      */
-    static public function isValid(ChildProhibition $node = null)
+    public static function isValid(ChildProhibition $node = null)
     {
         if (is_object($node) && $node->getRightValue() > $node->getLeftValue()) {
             return true;
@@ -907,7 +907,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @return     int  The number of deleted nodes
      */
-    static public function deleteTree(ConnectionInterface $con = null)
+    public static function deleteTree(ConnectionInterface $con = null)
     {
 
         return ProhibitionTableMap::doDeleteAll($con);
@@ -922,7 +922,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      * @param int $last                Last node to be shifted (optional)
      * @param ConnectionInterface $con Connection to use.
      */
-    static public function shiftRLValues($delta, $first, $last = null, ConnectionInterface $con = null)
+    public static function shiftRLValues($delta, $first, $last = null, ConnectionInterface $con = null)
     {
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(ProhibitionTableMap::DATABASE_NAME);
@@ -964,7 +964,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      * @param      int $last            Last node to be shifted
      * @param      ConnectionInterface $con        Connection to use.
      */
-    static public function shiftLevel($delta, $first, $last, ConnectionInterface $con = null)
+    public static function shiftLevel($delta, $first, $last, ConnectionInterface $con = null)
     {
         if ($con === null) {
             $con = Propel::getServiceContainer()->getWriteConnection(ProhibitionTableMap::DATABASE_NAME);
@@ -986,7 +986,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      * @param      ChildProhibition $prune        Object to prune from the update
      * @param      ConnectionInterface $con        Connection to use.
      */
-    static public function updateLoadedNodes($prune = null, ConnectionInterface $con = null)
+    public static function updateLoadedNodes($prune = null, ConnectionInterface $con = null)
     {
         if (Propel::isInstancePoolingEnabled()) {
             $keys = array();
@@ -1023,7 +1023,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      * @param      mixed $prune    Object to prune from the shift
      * @param      ConnectionInterface $con    Connection to use.
      */
-    static public function makeRoomForLeaf($left, $prune = null, ConnectionInterface $con = null)
+    public static function makeRoomForLeaf($left, $prune = null, ConnectionInterface $con = null)
     {
         // Update database nodes
         ChildProhibitionQuery::shiftRLValues(2, $left, null, $con);
@@ -1037,7 +1037,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @param      ConnectionInterface $con    Connection to use.
      */
-    static public function fixLevels(ConnectionInterface $con = null)
+    public static function fixLevels(ConnectionInterface $con = null)
     {
         $c = new Criteria();
         $c->addAscendingOrderByColumn(ChildProhibition::LEFT_COL);
@@ -1048,7 +1048,6 @@ abstract class ProhibitionQuery extends ModelCriteria
         $level = null;
         // iterate over the statement
         while ($row = $dataFetcher->fetch()) {
-
             // hydrate object
             $key = ProhibitionTableMap::getPrimaryKeyHashFromRow($row, 0);
             if (null === ($obj = ProhibitionTableMap::getInstanceFromPool($key))) {
@@ -1098,5 +1097,4 @@ abstract class ProhibitionQuery extends ModelCriteria
 
         $whereCriteria->doUpdate($valuesCriteria, $con);
     }
-
 } // ProhibitionQuery

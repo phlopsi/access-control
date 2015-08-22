@@ -665,7 +665,6 @@ abstract class Role implements ActiveRecordInterface
     public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
     {
         try {
-
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RoleTableMap::translateFieldName('ExternalId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->external_id = (null !== $col) ? (string) $col : null;
 
@@ -747,8 +746,7 @@ abstract class Role implements ActiveRecordInterface
         }
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
-        if ($deep) {  // also de-associate any related objects?
-
+        if ($deep) {
             $this->collPermissionsRoless = null;
 
             $this->collProhibitionsRoless = null;
@@ -1268,7 +1266,6 @@ abstract class Role implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->collPermissionsRoless) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'permissionsRoless';
@@ -1283,7 +1280,6 @@ abstract class Role implements ActiveRecordInterface
                 $result[$key] = $this->collPermissionsRoless->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collProhibitionsRoless) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'prohibitionsRoless';
@@ -1298,7 +1294,6 @@ abstract class Role implements ActiveRecordInterface
                 $result[$key] = $this->collProhibitionsRoless->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collRolesSessionTypess) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'rolesSessionTypess';
@@ -1313,7 +1308,6 @@ abstract class Role implements ActiveRecordInterface
                 $result[$key] = $this->collRolesSessionTypess->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collRolesUserss) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'rolesUserss';
@@ -1597,7 +1591,7 @@ abstract class Role implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setId(null); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -2698,7 +2692,6 @@ abstract class Role implements ActiveRecordInterface
                     $this->initPermissions();
                 }
             } else {
-
                 $query = ChildPermissionQuery::create(null, $criteria)
                     ->filterByRole($this);
                 $collPermissions = $query->find($con);
@@ -2773,7 +2766,6 @@ abstract class Role implements ActiveRecordInterface
             if ($this->isNew() && null === $this->collPermissions) {
                 return 0;
             } else {
-
                 if ($partial && !$criteria) {
                     return count($this->getPermissions());
                 }
@@ -2848,7 +2840,8 @@ abstract class Role implements ActiveRecordInterface
      */
     public function removePermission(ChildPermission $permission)
     {
-        if ($this->getPermissions()->contains($permission)) { $permissionsRoles = new ChildPermissionsRoles();
+        if ($this->getPermissions()->contains($permission)) {
+            $permissionsRoles = new ChildPermissionsRoles();
 
             $permissionsRoles->setPermission($permission);
             if ($permission->isRolesLoaded()) {
@@ -2940,7 +2933,6 @@ abstract class Role implements ActiveRecordInterface
                     $this->initProhibitions();
                 }
             } else {
-
                 $query = ChildProhibitionQuery::create(null, $criteria)
                     ->filterByRole($this);
                 $collProhibitions = $query->find($con);
@@ -3015,7 +3007,6 @@ abstract class Role implements ActiveRecordInterface
             if ($this->isNew() && null === $this->collProhibitions) {
                 return 0;
             } else {
-
                 if ($partial && !$criteria) {
                     return count($this->getProhibitions());
                 }
@@ -3090,7 +3081,8 @@ abstract class Role implements ActiveRecordInterface
      */
     public function removeProhibition(ChildProhibition $prohibition)
     {
-        if ($this->getProhibitions()->contains($prohibition)) { $prohibitionsRoles = new ChildProhibitionsRoles();
+        if ($this->getProhibitions()->contains($prohibition)) {
+            $prohibitionsRoles = new ChildProhibitionsRoles();
 
             $prohibitionsRoles->setProhibition($prohibition);
             if ($prohibition->isRolesLoaded()) {
@@ -3182,7 +3174,6 @@ abstract class Role implements ActiveRecordInterface
                     $this->initSessionTypes();
                 }
             } else {
-
                 $query = ChildSessionTypeQuery::create(null, $criteria)
                     ->filterByRole($this);
                 $collSessionTypes = $query->find($con);
@@ -3257,7 +3248,6 @@ abstract class Role implements ActiveRecordInterface
             if ($this->isNew() && null === $this->collSessionTypes) {
                 return 0;
             } else {
-
                 if ($partial && !$criteria) {
                     return count($this->getSessionTypes());
                 }
@@ -3332,7 +3322,8 @@ abstract class Role implements ActiveRecordInterface
      */
     public function removeSessionType(ChildSessionType $sessionType)
     {
-        if ($this->getSessionTypes()->contains($sessionType)) { $rolesSessionTypes = new ChildRolesSessionTypes();
+        if ($this->getSessionTypes()->contains($sessionType)) {
+            $rolesSessionTypes = new ChildRolesSessionTypes();
 
             $rolesSessionTypes->setSessionType($sessionType);
             if ($sessionType->isRolesLoaded()) {
@@ -3424,7 +3415,6 @@ abstract class Role implements ActiveRecordInterface
                     $this->initUsers();
                 }
             } else {
-
                 $query = ChildUserQuery::create(null, $criteria)
                     ->filterByRole($this);
                 $collUsers = $query->find($con);
@@ -3499,7 +3489,6 @@ abstract class Role implements ActiveRecordInterface
             if ($this->isNew() && null === $this->collUsers) {
                 return 0;
             } else {
-
                 if ($partial && !$criteria) {
                     return count($this->getUsers());
                 }
@@ -3574,7 +3563,8 @@ abstract class Role implements ActiveRecordInterface
      */
     public function removeUser(ChildUser $user)
     {
-        if ($this->getUsers()->contains($user)) { $rolesUsers = new ChildRolesUsers();
+        if ($this->getUsers()->contains($user)) {
+            $rolesUsers = new ChildRolesUsers();
 
             $rolesUsers->setUser($user);
             if ($user->isRolesLoaded()) {
@@ -4256,7 +4246,7 @@ abstract class Role implements ActiveRecordInterface
     public function insertAsLastChildOf($parent)
     {
         if ($this->isInTree()) {
-           throw new PropelException(
+            throw new PropelException(
                 'A ChildRole object must not already be in the tree to be inserted. Use the moveToLastChildOf() instead.'
             );
         }
@@ -4461,8 +4451,6 @@ abstract class Role implements ActiveRecordInterface
 
 
             if (!$preventDefault) {
-
-
                 if ($left >= $destLeft) { // src was shifted too?
                     $left += $treeSize;
                     $right += $treeSize;
@@ -4649,5 +4637,4 @@ abstract class Role implements ActiveRecordInterface
 
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));
     }
-
 }

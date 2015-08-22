@@ -560,5 +560,4 @@ abstract class RolesUsersQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // RolesUsersQuery

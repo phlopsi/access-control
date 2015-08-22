@@ -569,7 +569,6 @@ abstract class Permission implements ActiveRecordInterface
     public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
     {
         try {
-
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PermissionTableMap::translateFieldName('ExternalId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->external_id = (null !== $col) ? (string) $col : null;
 
@@ -651,8 +650,7 @@ abstract class Permission implements ActiveRecordInterface
         }
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
-        if ($deep) {  // also de-associate any related objects?
-
+        if ($deep) {
             $this->collPermissionsRoless = null;
 
             $this->collRoles = null;
@@ -1025,7 +1023,6 @@ abstract class Permission implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->collPermissionsRoless) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'permissionsRoless';
@@ -1291,7 +1288,7 @@ abstract class Permission implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setId(null); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1645,7 +1642,6 @@ abstract class Permission implements ActiveRecordInterface
                     $this->initRoles();
                 }
             } else {
-
                 $query = ChildRoleQuery::create(null, $criteria)
                     ->filterByPermission($this);
                 $collRoles = $query->find($con);
@@ -1720,7 +1716,6 @@ abstract class Permission implements ActiveRecordInterface
             if ($this->isNew() && null === $this->collRoles) {
                 return 0;
             } else {
-
                 if ($partial && !$criteria) {
                     return count($this->getRoles());
                 }
@@ -1795,7 +1790,8 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function removeRole(ChildRole $role)
     {
-        if ($this->getRoles()->contains($role)) { $permissionsRoles = new ChildPermissionsRoles();
+        if ($this->getRoles()->contains($role)) {
+            $permissionsRoles = new ChildPermissionsRoles();
 
             $permissionsRoles->setRole($role);
             if ($role->isPermissionsLoaded()) {
@@ -2441,7 +2437,7 @@ abstract class Permission implements ActiveRecordInterface
     public function insertAsLastChildOf($parent)
     {
         if ($this->isInTree()) {
-           throw new PropelException(
+            throw new PropelException(
                 'A ChildPermission object must not already be in the tree to be inserted. Use the moveToLastChildOf() instead.'
             );
         }
@@ -2646,8 +2642,6 @@ abstract class Permission implements ActiveRecordInterface
 
 
             if (!$preventDefault) {
-
-
                 if ($left >= $destLeft) { // src was shifted too?
                     $left += $treeSize;
                     $right += $treeSize;
@@ -2834,5 +2828,4 @@ abstract class Permission implements ActiveRecordInterface
 
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));
     }
-
 }

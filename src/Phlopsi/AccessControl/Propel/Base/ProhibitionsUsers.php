@@ -362,7 +362,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getProhibitedUntil($format = NULL)
+    public function getProhibitedUntil($format = null)
     {
         if ($format === null) {
             return $this->prohibited_until;
@@ -382,7 +382,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getCreatedAt($format = NULL)
+    public function getCreatedAt($format = null)
     {
         if ($format === null) {
             return $this->created_at;
@@ -402,7 +402,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getUpdatedAt($format = NULL)
+    public function getUpdatedAt($format = null)
     {
         if ($format === null) {
             return $this->updated_at;
@@ -554,7 +554,6 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
     {
         try {
-
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ProhibitionsUsersTableMap::translateFieldName('ProhibitionId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->prohibitions_id = (null !== $col) ? (int) $col : null;
 
@@ -651,8 +650,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
         }
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
-        if ($deep) {  // also de-associate any related objects?
-
+        if ($deep) {
             $this->aProhibition = null;
             $this->aUser = null;
         } // if (deep)
@@ -972,7 +970,6 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->aProhibition) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'prohibition';
@@ -984,10 +981,9 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
                         $key = 'Prohibition';
                 }
 
-                $result[$key] = $this->aProhibition->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aProhibition->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
             if (null !== $this->aUser) {
-
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'user';
@@ -999,7 +995,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
                         $key = 'User';
                 }
 
-                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+                $result[$key] = $this->aUser->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
         }
 
@@ -1297,7 +1293,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     public function setProhibition(ChildProhibition $v = null)
     {
         if ($v === null) {
-            $this->setProhibitionId(NULL);
+            $this->setProhibitionId(null);
         } else {
             $this->setProhibitionId($v->getId());
         }
@@ -1348,7 +1344,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     public function setUser(ChildUser $v = null)
     {
         if ($v === null) {
-            $this->setUserId(NULL);
+            $this->setUserId(null);
         } else {
             $this->setUserId($v->getId());
         }
@@ -1572,5 +1568,4 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
 
         throw new BadMethodCallException(sprintf('Call to undefined method: %s.', $name));
     }
-
 }

@@ -14,7 +14,6 @@ use Propel\Runtime\Map\RelationMap;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
 
-
 /**
  * This class defines the structure of the 'roles_session_types' table.
  *
@@ -132,8 +131,8 @@ class RolesSessionTypesTableMap extends TableMap
         $this->setUseIdGenerator(false);
         $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('roles_id', 'RoleId', 'INTEGER' , 'roles', 'id', true, null, null);
-        $this->addForeignPrimaryKey('session_types_id', 'SessionTypeId', 'INTEGER' , 'session_types', 'id', true, null, null);
+        $this->addForeignPrimaryKey('roles_id', 'RoleId', 'INTEGER', 'roles', 'id', true, null, null);
+        $this->addForeignPrimaryKey('session_types_id', 'SessionTypeId', 'INTEGER', 'session_types', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -428,7 +427,7 @@ class RolesSessionTypesTableMap extends TableMap
         }
 
         return $query->delete($con);
-    }
+        }
 
     /**
      * Deletes all rows from the roles_session_types table.
@@ -436,10 +435,10 @@ class RolesSessionTypesTableMap extends TableMap
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
-    public static function doDeleteAll(ConnectionInterface $con = null)
-    {
-        return RolesSessionTypesQuery::create()->doDeleteAll($con);
-    }
+        public static function doDeleteAll(ConnectionInterface $con = null)
+        {
+            return RolesSessionTypesQuery::create()->doDeleteAll($con);
+        }
 
     /**
      * Performs an INSERT on the database, given a RolesSessionTypes or Criteria object.
@@ -450,29 +449,28 @@ class RolesSessionTypesTableMap extends TableMap
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function doInsert($criteria, ConnectionInterface $con = null)
-    {
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(RolesSessionTypesTableMap::DATABASE_NAME);
+        public static function doInsert($criteria, ConnectionInterface $con = null)
+        {
+            if (null === $con) {
+                $con = Propel::getServiceContainer()->getWriteConnection(RolesSessionTypesTableMap::DATABASE_NAME);
+            }
+
+            if ($criteria instanceof Criteria) {
+                $criteria = clone $criteria; // rename for clarity
+            } else {
+                $criteria = $criteria->buildCriteria(); // build Criteria from RolesSessionTypes object
+            }
+
+
+            // Set the correct dbName
+            $query = RolesSessionTypesQuery::create()->mergeWith($criteria);
+
+            // use transaction because $criteria could contain info
+            // for more than one table (I guess, conceivably)
+            return $con->transaction(function () use ($con, $query) {
+                return $query->doInsert($con);
+            });
         }
-
-        if ($criteria instanceof Criteria) {
-            $criteria = clone $criteria; // rename for clarity
-        } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from RolesSessionTypes object
-        }
-
-
-        // Set the correct dbName
-        $query = RolesSessionTypesQuery::create()->mergeWith($criteria);
-
-        // use transaction because $criteria could contain info
-        // for more than one table (I guess, conceivably)
-        return $con->transaction(function () use ($con, $query) {
-            return $query->doInsert($con);
-        });
-    }
-
 } // RolesSessionTypesTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //

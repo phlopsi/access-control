@@ -4,7 +4,6 @@ namespace Phlopsi\AccessControl\Propel;
 
 use Phlopsi\AccessControl\Propel\Base\SessionTypeQuery as BaseSessionTypeQuery;
 
-
 /**
  * Skeleton subclass for performing query and update operations on the 'session_types' table.
  *

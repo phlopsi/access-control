@@ -767,5 +767,4 @@ abstract class ProhibitionsUsersQuery extends ModelCriteria
     {
         return $this->addAscendingOrderByColumn(ProhibitionsUsersTableMap::COL_CREATED_AT);
     }
-
 } // ProhibitionsUsersQuery

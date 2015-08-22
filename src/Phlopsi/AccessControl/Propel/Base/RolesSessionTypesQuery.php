@@ -560,5 +560,4 @@ abstract class RolesSessionTypesQuery extends ModelCriteria
             return $affectedRows;
         });
     }
-
 } // RolesSessionTypesQuery
