@@ -50,7 +50,16 @@ use Propel\Runtime\Map\TableMap;
  * @method     ChildPermission findOneByTreeLeft(int $tree_left) Return the first ChildPermission filtered by the tree_left column
  * @method     ChildPermission findOneByTreeRight(int $tree_right) Return the first ChildPermission filtered by the tree_right column
  * @method     ChildPermission findOneByTreeLevel(int $tree_level) Return the first ChildPermission filtered by the tree_level column
- * @method     ChildPermission findOneById(int $id) Return the first ChildPermission filtered by the id column
+ * @method     ChildPermission findOneById(int $id) Return the first ChildPermission filtered by the id column *
+
+ * @method     ChildPermission requirePk($key, ConnectionInterface $con = null) Return the ChildPermission by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermission requireOne(ConnectionInterface $con = null) Return the first ChildPermission matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ *
+ * @method     ChildPermission requireOneByExternalId(string $external_id) Return the first ChildPermission filtered by the external_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermission requireOneByTreeLeft(int $tree_left) Return the first ChildPermission filtered by the tree_left column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermission requireOneByTreeRight(int $tree_right) Return the first ChildPermission filtered by the tree_right column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermission requireOneByTreeLevel(int $tree_level) Return the first ChildPermission filtered by the tree_level column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermission requireOneById(int $id) Return the first ChildPermission filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildPermission[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPermission objects based on current ModelCriteria
  * @method     ChildPermission[]|ObjectCollection findByExternalId(string $external_id) Return ChildPermission objects filtered by the external_id column
@@ -63,6 +72,7 @@ use Propel\Runtime\Map\TableMap;
  */
 abstract class PermissionQuery extends ModelCriteria
 {
+    protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
      * Initializes internal state of \Phlopsi\AccessControl\Propel\Base\PermissionQuery object.
@@ -435,7 +445,7 @@ abstract class PermissionQuery extends ModelCriteria
     /**
      * Filter the query by a related \Phlopsi\AccessControl\Propel\PermissionsRoles object
      *
-     * @param \Phlopsi\AccessControl\Propel\PermissionsRoles|ObjectCollection $permissionsRoles  the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\PermissionsRoles|ObjectCollection $permissionsRoles the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildPermissionQuery The current query, for fluid interface
@@ -606,9 +616,9 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param     ChildPermission $permission The object to use for descendant search
      *
-     * @return    ChildPermissionQuery The current query, for fluid interface
+     * @return    $this|ChildPermissionQuery The current query, for fluid interface
      */
-    public function descendantsOf($permission)
+    public function descendantsOf(ChildPermission $permission)
     {
         return $this
             ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::GREATER_THAN)
@@ -621,9 +631,9 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param     ChildPermission $permission The object to use for branch search
      *
-     * @return    ChildPermissionQuery The current query, for fluid interface
+     * @return    $this|ChildPermissionQuery The current query, for fluid interface
      */
-    public function branchOf($permission)
+    public function branchOf(ChildPermission $permission)
     {
         return $this
             ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::GREATER_EQUAL)
@@ -637,7 +647,7 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @return    $this|ChildPermissionQuery The current query, for fluid interface
      */
-    public function childrenOf($permission)
+    public function childrenOf(ChildPermission $permission)
     {
         return $this
             ->descendantsOf($permission)
@@ -653,7 +663,7 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @return    $this|ChildPermissionQuery The current query, for fluid interface
      */
-    public function siblingsOf($permission, ConnectionInterface $con = null)
+    public function siblingsOf(ChildPermission $permission, ConnectionInterface $con = null)
     {
         if ($permission->isRoot()) {
             return $this->
@@ -670,9 +680,9 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param     ChildPermission $permission The object to use for ancestors search
      *
-     * @return    ChildPermissionQuery The current query, for fluid interface
+     * @return    $this|ChildPermissionQuery The current query, for fluid interface
      */
-    public function ancestorsOf($permission)
+    public function ancestorsOf(ChildPermission $permission)
     {
         return $this
             ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::LESS_THAN)
@@ -685,9 +695,9 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param     ChildPermission $permission The object to use for roots search
      *
-     * @return    ChildPermissionQuery The current query, for fluid interface
+     * @return    $this|ChildPermissionQuery The current query, for fluid interface
      */
-    public function rootsOf($permission)
+    public function rootsOf(ChildPermission $permission)
     {
         return $this
             ->addUsingAlias(ChildPermission::LEFT_COL, $permission->getLeftValue(), Criteria::LESS_EQUAL)
@@ -699,7 +709,7 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param     bool $reverse if true, reverses the order
      *
-     * @return    ChildPermissionQuery The current query, for fluid interface
+     * @return    $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function orderByBranch($reverse = false)
     {
@@ -717,7 +727,7 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param     bool $reverse if true, reverses the order
      *
-     * @return    ChildPermissionQuery The current query, for fluid interface
+     * @return    $this|ChildPermissionQuery The current query, for fluid interface
      */
     public function orderByLevel($reverse = false)
     {
@@ -739,7 +749,7 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @return     ChildPermission The tree root object
      */
-    public function findRoot($con = null)
+    public function findRoot(ConnectionInterface $con = null)
     {
         return $this
             ->addUsingAlias(ChildPermission::LEFT_COL, 1, Criteria::EQUAL)
@@ -751,9 +761,9 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     mixed the list of results, formatted by the current formatter
+     * @return     ChildPermission[]|ObjectCollection|mixed the list of results, formatted by the current formatter
      */
-    public function findTree($con = null)
+    public function findTree(ConnectionInterface $con = null)
     {
         return $this
             ->orderByBranch()
@@ -779,7 +789,7 @@ abstract class PermissionQuery extends ModelCriteria
      *
      * @param      Criteria $criteria    Optional Criteria to filter the query
      * @param      ConnectionInterface $con    Connection to use.
-     * @return     ChildPermission            Propel object for root node
+     * @return     ChildPermission[]|ObjectCollection|mixed the list of results, formatted by the current formatter
      */
     public static function retrieveTree(Criteria $criteria = null, ConnectionInterface $con = null)
     {
@@ -896,6 +906,7 @@ abstract class PermissionQuery extends ModelCriteria
     {
         if (Propel::isInstancePoolingEnabled()) {
             $keys = array();
+            /** @var $obj ChildPermission */
             foreach (PermissionTableMap::$instances as $obj) {
                 if (!$prune || !$prune->equals($obj)) {
                     $keys[] = $obj->getPrimaryKey();
@@ -910,6 +921,7 @@ abstract class PermissionQuery extends ModelCriteria
                 $dataFetcher = ChildPermissionQuery::create(null, $criteria)->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
                 while ($row = $dataFetcher->fetch()) {
                     $key = PermissionTableMap::getPrimaryKeyHashFromRow($row, 0);
+                    /** @var $object ChildPermission */
                     if (null !== ($object = PermissionTableMap::getInstanceFromPool($key))) {
                         $object->setLeftValue($row[1]);
                         $object->setRightValue($row[2]);
@@ -956,6 +968,7 @@ abstract class PermissionQuery extends ModelCriteria
         while ($row = $dataFetcher->fetch()) {
             // hydrate object
             $key = PermissionTableMap::getPrimaryKeyHashFromRow($row, 0);
+            /** @var $obj ChildPermission */
             if (null === ($obj = PermissionTableMap::getInstanceFromPool($key))) {
                 $obj = new $cls();
                 $obj->hydrate($row);
@@ -984,23 +997,5 @@ abstract class PermissionQuery extends ModelCriteria
             }
         }
         $dataFetcher->close();
-    }
-
-    /**
-     * Updates all scope values for items that has negative left (<=0) values.
-     *
-     * @param      mixed     $scope
-     * @param      ConnectionInterface $con  Connection to use.
-     */
-    public static function setNegativeScope($scope, ConnectionInterface $con = null)
-    {
-        //adjust scope value to $scope
-        $whereCriteria = new Criteria(PermissionTableMap::DATABASE_NAME);
-        $whereCriteria->add(ChildPermission::LEFT_COL, 0, Criteria::LESS_EQUAL);
-
-        $valuesCriteria = new Criteria(PermissionTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildPermission::SCOPE_COL, $scope, Criteria::EQUAL);
-
-        $whereCriteria->doUpdate($valuesCriteria, $con);
     }
 } // PermissionQuery

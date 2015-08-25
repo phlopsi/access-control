@@ -44,7 +44,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUser matching the query, or a new ChildUser object populated from the query conditions when no match is found
  *
  * @method     ChildUser findOneByExternalId(string $external_id) Return the first ChildUser filtered by the external_id column
- * @method     ChildUser findOneById(int $id) Return the first ChildUser filtered by the id column
+ * @method     ChildUser findOneById(int $id) Return the first ChildUser filtered by the id column *
+
+ * @method     ChildUser requirePk($key, ConnectionInterface $con = null) Return the ChildUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOne(ConnectionInterface $con = null) Return the first ChildUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ *
+ * @method     ChildUser requireOneByExternalId(string $external_id) Return the first ChildUser filtered by the external_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneById(int $id) Return the first ChildUser filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUser objects based on current ModelCriteria
  * @method     ChildUser[]|ObjectCollection findByExternalId(string $external_id) Return ChildUser objects filtered by the external_id column
@@ -54,6 +60,7 @@ use Propel\Runtime\Exception\PropelException;
  */
 abstract class UserQuery extends ModelCriteria
 {
+    protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
      * Initializes internal state of \Phlopsi\AccessControl\Propel\Base\UserQuery object.
@@ -303,7 +310,7 @@ abstract class UserQuery extends ModelCriteria
     /**
      * Filter the query by a related \Phlopsi\AccessControl\Propel\ProhibitionsUsers object
      *
-     * @param \Phlopsi\AccessControl\Propel\ProhibitionsUsers|ObjectCollection $prohibitionsUsers  the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\ProhibitionsUsers|ObjectCollection $prohibitionsUsers the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface
@@ -376,7 +383,7 @@ abstract class UserQuery extends ModelCriteria
     /**
      * Filter the query by a related \Phlopsi\AccessControl\Propel\RolesUsers object
      *
-     * @param \Phlopsi\AccessControl\Propel\RolesUsers|ObjectCollection $rolesUsers  the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\RolesUsers|ObjectCollection $rolesUsers the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface

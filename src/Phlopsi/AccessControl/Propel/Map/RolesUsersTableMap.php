@@ -140,8 +140,20 @@ class RolesUsersTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Role', '\\Phlopsi\\AccessControl\\Propel\\Role', RelationMap::MANY_TO_ONE, array('roles_id' => 'id', ), null, null);
-        $this->addRelation('User', '\\Phlopsi\\AccessControl\\Propel\\User', RelationMap::MANY_TO_ONE, array('users_id' => 'id', ), null, null);
+        $this->addRelation('Role', '\\Phlopsi\\AccessControl\\Propel\\Role', RelationMap::MANY_TO_ONE, array (
+        0 =>
+        array (
+        0 => ':roles_id',
+        1 => ':id',
+        ),
+        ), null, null, null, false);
+        $this->addRelation('User', '\\Phlopsi\\AccessControl\\Propel\\User', RelationMap::MANY_TO_ONE, array (
+        0 =>
+        array (
+        0 => ':users_id',
+        1 => ':id',
+        ),
+        ), null, null, null, false);
     } // buildRelations()
 
     /**

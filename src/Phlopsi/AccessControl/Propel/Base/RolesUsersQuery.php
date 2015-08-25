@@ -44,7 +44,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRolesUsers findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRolesUsers matching the query, or a new ChildRolesUsers object populated from the query conditions when no match is found
  *
  * @method     ChildRolesUsers findOneByRoleId(int $roles_id) Return the first ChildRolesUsers filtered by the roles_id column
- * @method     ChildRolesUsers findOneByUserId(int $users_id) Return the first ChildRolesUsers filtered by the users_id column
+ * @method     ChildRolesUsers findOneByUserId(int $users_id) Return the first ChildRolesUsers filtered by the users_id column *
+
+ * @method     ChildRolesUsers requirePk($key, ConnectionInterface $con = null) Return the ChildRolesUsers by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRolesUsers requireOne(ConnectionInterface $con = null) Return the first ChildRolesUsers matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ *
+ * @method     ChildRolesUsers requireOneByRoleId(int $roles_id) Return the first ChildRolesUsers filtered by the roles_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRolesUsers requireOneByUserId(int $users_id) Return the first ChildRolesUsers filtered by the users_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildRolesUsers[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildRolesUsers objects based on current ModelCriteria
  * @method     ChildRolesUsers[]|ObjectCollection findByRoleId(int $roles_id) Return ChildRolesUsers objects filtered by the roles_id column
@@ -54,6 +60,7 @@ use Propel\Runtime\Exception\PropelException;
  */
 abstract class RolesUsersQuery extends ModelCriteria
 {
+    protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
      * Initializes internal state of \Phlopsi\AccessControl\Propel\Base\RolesUsersQuery object.

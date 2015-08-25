@@ -44,7 +44,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildRolesSessionTypes findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRolesSessionTypes matching the query, or a new ChildRolesSessionTypes object populated from the query conditions when no match is found
  *
  * @method     ChildRolesSessionTypes findOneByRoleId(int $roles_id) Return the first ChildRolesSessionTypes filtered by the roles_id column
- * @method     ChildRolesSessionTypes findOneBySessionTypeId(int $session_types_id) Return the first ChildRolesSessionTypes filtered by the session_types_id column
+ * @method     ChildRolesSessionTypes findOneBySessionTypeId(int $session_types_id) Return the first ChildRolesSessionTypes filtered by the session_types_id column *
+
+ * @method     ChildRolesSessionTypes requirePk($key, ConnectionInterface $con = null) Return the ChildRolesSessionTypes by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRolesSessionTypes requireOne(ConnectionInterface $con = null) Return the first ChildRolesSessionTypes matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ *
+ * @method     ChildRolesSessionTypes requireOneByRoleId(int $roles_id) Return the first ChildRolesSessionTypes filtered by the roles_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRolesSessionTypes requireOneBySessionTypeId(int $session_types_id) Return the first ChildRolesSessionTypes filtered by the session_types_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildRolesSessionTypes[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildRolesSessionTypes objects based on current ModelCriteria
  * @method     ChildRolesSessionTypes[]|ObjectCollection findByRoleId(int $roles_id) Return ChildRolesSessionTypes objects filtered by the roles_id column
@@ -54,6 +60,7 @@ use Propel\Runtime\Exception\PropelException;
  */
 abstract class RolesSessionTypesQuery extends ModelCriteria
 {
+    protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
      * Initializes internal state of \Phlopsi\AccessControl\Propel\Base\RolesSessionTypesQuery object.

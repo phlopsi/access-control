@@ -157,10 +157,34 @@ class RoleTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('PermissionsRoles', '\\Phlopsi\\AccessControl\\Propel\\PermissionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'PermissionsRoless');
-        $this->addRelation('ProhibitionsRoles', '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'ProhibitionsRoless');
-        $this->addRelation('RolesSessionTypes', '\\Phlopsi\\AccessControl\\Propel\\RolesSessionTypes', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesSessionTypess');
-        $this->addRelation('RolesUsers', '\\Phlopsi\\AccessControl\\Propel\\RolesUsers', RelationMap::ONE_TO_MANY, array('id' => 'roles_id', ), null, null, 'RolesUserss');
+        $this->addRelation('PermissionsRoles', '\\Phlopsi\\AccessControl\\Propel\\PermissionsRoles', RelationMap::ONE_TO_MANY, array (
+        0 =>
+        array (
+        0 => ':roles_id',
+        1 => ':id',
+        ),
+        ), null, null, 'PermissionsRoless', false);
+        $this->addRelation('ProhibitionsRoles', '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array (
+        0 =>
+        array (
+        0 => ':roles_id',
+        1 => ':id',
+        ),
+        ), null, null, 'ProhibitionsRoless', false);
+        $this->addRelation('RolesSessionTypes', '\\Phlopsi\\AccessControl\\Propel\\RolesSessionTypes', RelationMap::ONE_TO_MANY, array (
+        0 =>
+        array (
+        0 => ':roles_id',
+        1 => ':id',
+        ),
+        ), null, null, 'RolesSessionTypess', false);
+        $this->addRelation('RolesUsers', '\\Phlopsi\\AccessControl\\Propel\\RolesUsers', RelationMap::ONE_TO_MANY, array (
+        0 =>
+        array (
+        0 => ':roles_id',
+        1 => ':id',
+        ),
+        ), null, null, 'RolesUserss', false);
         $this->addRelation('Permission', '\\Phlopsi\\AccessControl\\Propel\\Permission', RelationMap::MANY_TO_MANY, array(), null, null, 'Permissions');
         $this->addRelation('Prohibition', '\\Phlopsi\\AccessControl\\Propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
         $this->addRelation('SessionType', '\\Phlopsi\\AccessControl\\Propel\\SessionType', RelationMap::MANY_TO_MANY, array(), null, null, 'SessionTypes');

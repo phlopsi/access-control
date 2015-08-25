@@ -157,8 +157,20 @@ class ProhibitionTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ProhibitionsRoles', '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array('id' => 'prohibitions_id', ), null, null, 'ProhibitionsRoless');
-        $this->addRelation('ProhibitionsUsers', '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array('id' => 'prohibitions_id', ), null, null, 'ProhibitionsUserss');
+        $this->addRelation('ProhibitionsRoles', '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsRoles', RelationMap::ONE_TO_MANY, array (
+        0 =>
+        array (
+        0 => ':prohibitions_id',
+        1 => ':id',
+        ),
+        ), null, null, 'ProhibitionsRoless', false);
+        $this->addRelation('ProhibitionsUsers', '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array (
+        0 =>
+        array (
+        0 => ':prohibitions_id',
+        1 => ':id',
+        ),
+        ), null, null, 'ProhibitionsUserss', false);
         $this->addRelation('Role', '\\Phlopsi\\AccessControl\\Propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
         $this->addRelation('User', '\\Phlopsi\\AccessControl\\Propel\\User', RelationMap::MANY_TO_MANY, array(), null, null, 'Users');
     } // buildRelations()

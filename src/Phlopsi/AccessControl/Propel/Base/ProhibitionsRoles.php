@@ -333,7 +333,7 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
     /**
      * Set the value of [prohibitions_id] column.
      *
-     * @param  int $v new value
+     * @param int $v new value
      * @return $this|\Phlopsi\AccessControl\Propel\ProhibitionsRoles The current object (for fluent API support)
      */
     public function setProhibitionId($v)
@@ -357,7 +357,7 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
     /**
      * Set the value of [roles_id] column.
      *
-     * @param  int $v new value
+     * @param int $v new value
      * @return $this|\Phlopsi\AccessControl\Propel\ProhibitionsRoles The current object (for fluent API support)
      */
     public function setRoleId($v)
@@ -616,10 +616,10 @@ abstract class ProhibitionsRoles implements ActiveRecordInterface
                 // persist changes
                 if ($this->isNew()) {
                     $this->doInsert($con);
+                    $affectedRows += 1;
                 } else {
-                    $this->doUpdate($con);
+                    $affectedRows += $this->doUpdate($con);
                 }
-                $affectedRows += 1;
                 $this->resetModified();
             }
 

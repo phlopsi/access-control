@@ -158,8 +158,20 @@ class ProhibitionsUsersTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Prohibition', '\\Phlopsi\\AccessControl\\Propel\\Prohibition', RelationMap::MANY_TO_ONE, array('prohibitions_id' => 'id', ), null, null);
-        $this->addRelation('User', '\\Phlopsi\\AccessControl\\Propel\\User', RelationMap::MANY_TO_ONE, array('users_id' => 'id', ), null, null);
+        $this->addRelation('Prohibition', '\\Phlopsi\\AccessControl\\Propel\\Prohibition', RelationMap::MANY_TO_ONE, array (
+        0 =>
+        array (
+        0 => ':prohibitions_id',
+        1 => ':id',
+        ),
+        ), null, null, null, false);
+        $this->addRelation('User', '\\Phlopsi\\AccessControl\\Propel\\User', RelationMap::MANY_TO_ONE, array (
+        0 =>
+        array (
+        0 => ':users_id',
+        1 => ':id',
+        ),
+        ), null, null, null, false);
     } // buildRelations()
 
     /**

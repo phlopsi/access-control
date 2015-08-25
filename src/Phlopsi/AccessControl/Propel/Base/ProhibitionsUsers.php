@@ -358,7 +358,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -378,7 +378,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -398,7 +398,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -414,7 +414,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     /**
      * Set the value of [prohibitions_id] column.
      *
-     * @param  int $v new value
+     * @param int $v new value
      * @return $this|\Phlopsi\AccessControl\Propel\ProhibitionsUsers The current object (for fluent API support)
      */
     public function setProhibitionId($v)
@@ -438,7 +438,7 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     /**
      * Set the value of [users_id] column.
      *
-     * @param  int $v new value
+     * @param int $v new value
      * @return $this|\Phlopsi\AccessControl\Propel\ProhibitionsUsers The current object (for fluent API support)
      */
     public function setUserId($v)
@@ -470,8 +470,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->prohibited_until !== null || $dt !== null) {
-            if ($dt !== $this->prohibited_until) {
-                $this->prohibited_until = $dt;
+            if ($this->prohibited_until === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->prohibited_until->format("Y-m-d H:i:s")) {
+                $this->prohibited_until = $dt === null ? null : clone $dt;
                 $this->modifiedColumns[ProhibitionsUsersTableMap::COL_PROHIBITED_UNTIL] = true;
             }
         } // if either are not null
@@ -490,8 +490,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->created_at !== null || $dt !== null) {
-            if ($dt !== $this->created_at) {
-                $this->created_at = $dt;
+            if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->created_at->format("Y-m-d H:i:s")) {
+                $this->created_at = $dt === null ? null : clone $dt;
                 $this->modifiedColumns[ProhibitionsUsersTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
@@ -510,8 +510,8 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->updated_at !== null || $dt !== null) {
-            if ($dt !== $this->updated_at) {
-                $this->updated_at = $dt;
+            if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s") !== $this->updated_at->format("Y-m-d H:i:s")) {
+                $this->updated_at = $dt === null ? null : clone $dt;
                 $this->modifiedColumns[ProhibitionsUsersTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
@@ -561,21 +561,12 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             $this->users_id = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ProhibitionsUsersTableMap::translateFieldName('ProhibitedUntil', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
             $this->prohibited_until = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ProhibitionsUsersTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ProhibitionsUsersTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
             $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
@@ -787,10 +778,10 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
                 // persist changes
                 if ($this->isNew()) {
                     $this->doInsert($con);
+                    $affectedRows += 1;
                 } else {
-                    $this->doUpdate($con);
+                    $affectedRows += $this->doUpdate($con);
                 }
-                $affectedRows += 1;
                 $this->resetModified();
             }
 
@@ -963,6 +954,26 @@ abstract class ProhibitionsUsers implements ActiveRecordInterface
             $keys[3] => $this->getCreatedAt(),
             $keys[4] => $this->getUpdatedAt(),
         );
+
+        $utc = new \DateTimeZone('utc');
+        if ($result[$keys[2]] instanceof \DateTime) {
+            // When changing timezone we don't want to change existing instances
+            $dateTime = clone $result[$keys[2]];
+            $result[$keys[2]] = $dateTime->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
+        }
+
+        if ($result[$keys[3]] instanceof \DateTime) {
+            // When changing timezone we don't want to change existing instances
+            $dateTime = clone $result[$keys[3]];
+            $result[$keys[3]] = $dateTime->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
+        }
+
+        if ($result[$keys[4]] instanceof \DateTime) {
+            // When changing timezone we don't want to change existing instances
+            $dateTime = clone $result[$keys[4]];
+            $result[$keys[4]] = $dateTime->setTimezone($utc)->format('Y-m-d\TH:i:s\Z');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;

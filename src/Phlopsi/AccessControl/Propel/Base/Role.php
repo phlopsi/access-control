@@ -533,7 +533,7 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Set the value of [external_id] column.
      *
-     * @param  string $v new value
+     * @param string $v new value
      * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
      */
     public function setExternalId($v)
@@ -553,7 +553,7 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Set the value of [tree_left] column.
      *
-     * @param  int $v new value
+     * @param int $v new value
      * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
      */
     public function setTreeLeft($v)
@@ -573,7 +573,7 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Set the value of [tree_right] column.
      *
-     * @param  int $v new value
+     * @param int $v new value
      * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
      */
     public function setTreeRight($v)
@@ -593,7 +593,7 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Set the value of [tree_level] column.
      *
-     * @param  int $v new value
+     * @param int $v new value
      * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
      */
     public function setTreeLevel($v)
@@ -613,7 +613,7 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Set the value of [id] column.
      *
-     * @param  int $v new value
+     * @param int $v new value
      * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
      */
     public function setId($v)
@@ -837,10 +837,10 @@ abstract class Role implements ActiveRecordInterface
             // nested_set behavior
             if ($this->isNew() && $this->isRoot()) {
                 // check if no other root exist in, the tree
-                $nbRoots = ChildRoleQuery::create()
+                $rootExists = ChildRoleQuery::create()
                     ->addUsingAlias(ChildRole::LEFT_COL, 1, Criteria::EQUAL)
-                    ->count($con);
-                if ($nbRoots > 0) {
+                    ->exists($con);
+                if ($rootExists) {
                         throw new PropelException('A root node already exists in this tree. To allow multiple root nodes, add the `use_scope` parameter in the nested_set behavior tag.');
                 }
             }
@@ -888,10 +888,10 @@ abstract class Role implements ActiveRecordInterface
                 // persist changes
                 if ($this->isNew()) {
                     $this->doInsert($con);
+                    $affectedRows += 1;
                 } else {
-                    $this->doUpdate($con);
+                    $affectedRows += $this->doUpdate($con);
                 }
-                $affectedRows += 1;
                 $this->resetModified();
             }
 
@@ -3689,11 +3689,13 @@ abstract class Role implements ActiveRecordInterface
 
     /**
      * Execute queries that were saved to be run inside the save transaction
+     *
+     * @param  ConnectionInterface $con Connection to use.
      */
-    protected function processNestedSetQueries($con)
+    protected function processNestedSetQueries(ConnectionInterface $con)
     {
         foreach ($this->nestedSetQueries as $query) {
-            $query['arguments'][]= $con;
+            $query['arguments'][] = $con;
             call_user_func_array($query['callable'], $query['arguments']);
         }
         $this->nestedSetQueries = array();
@@ -3820,22 +3822,21 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Tests if node is a descendant of another node
      *
-     * @param      ChildRole $node Propel node object
+     * @param      ChildRole $parent Propel node object
      * @return     bool
      */
-    public function isDescendantOf($parent)
+    public function isDescendantOf(ChildRole $parent)
     {
-
         return $this->isInTree() && $this->getLeftValue() > $parent->getLeftValue() && $this->getRightValue() < $parent->getRightValue();
     }
 
     /**
      * Tests if node is a ancestor of another node
      *
-     * @param      ChildRole $node Propel node object
+     * @param      ChildRole $child Propel node object
      * @return     bool
      */
-    public function isAncestorOf($child)
+    public function isAncestorOf(ChildRole $child)
     {
         return $child->isDescendantOf($this);
     }
@@ -3858,7 +3859,7 @@ abstract class Role implements ActiveRecordInterface
      * @param      ChildRole $parent
      * @return     $this|ChildRole The current object, for fluid interface
      */
-    public function setParent($parent = null)
+    public function setParent(ChildRole $parent = null)
     {
         $this->aNestedSetParent = $parent;
 
@@ -3870,7 +3871,7 @@ abstract class Role implements ActiveRecordInterface
      * The result is cached so further calls to the same method don't issue any queries
      *
      * @param  ConnectionInterface $con Connection to use.
-     * @return self|boolean Propel object if exists else false
+     * @return ChildRole|null Propel object if exists else null
      */
     public function getParent(ConnectionInterface $con = null)
     {
@@ -3898,14 +3899,14 @@ abstract class Role implements ActiveRecordInterface
 
         return ChildRoleQuery::create()
             ->filterByTreeRight($this->getLeftValue() - 1)
-            ->count($con) > 0;
+            ->exists($con);
     }
 
     /**
      * Gets previous sibling for the given node if it exists
      *
      * @param      ConnectionInterface $con Connection to use.
-     * @return     mixed         Propel object if exists else false
+     * @return     ChildRole|null         Propel object if exists else null
      */
     public function getPrevSibling(ConnectionInterface $con = null)
     {
@@ -3928,14 +3929,14 @@ abstract class Role implements ActiveRecordInterface
 
         return ChildRoleQuery::create()
             ->filterByTreeLeft($this->getRightValue() + 1)
-            ->count($con) > 0;
+            ->exists($con);
     }
 
     /**
      * Gets next sibling for the given node if it exists
      *
      * @param      ConnectionInterface $con Connection to use.
-     * @return     mixed         Propel object if exists else false
+     * @return     ChildRole|null         Propel object if exists else null
      */
     public function getNextSibling(ConnectionInterface $con = null)
     {
@@ -3977,7 +3978,7 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return     void
      */
-    public function addNestedSetChild($role)
+    public function addNestedSetChild(ChildRole $role)
     {
         if (null === $this->collNestedSetChildren) {
             $this->initNestedSetChildren();
@@ -4003,9 +4004,9 @@ abstract class Role implements ActiveRecordInterface
      *
      * @param      Criteria  $criteria Criteria to filter results.
      * @param      ConnectionInterface $con Connection to use.
-     * @return     array     List of ChildRole objects
+     * @return     ObjectCollection|ChildRole[] List of ChildRole objects
      */
-    public function getChildren($criteria = null, ConnectionInterface $con = null)
+    public function getChildren(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         if (null === $this->collNestedSetChildren || null !== $criteria) {
             if ($this->isLeaf() || ($this->isNew() && null === $this->collNestedSetChildren)) {
@@ -4013,8 +4014,8 @@ abstract class Role implements ActiveRecordInterface
                 $this->initNestedSetChildren();
             } else {
                 $collNestedSetChildren = ChildRoleQuery::create(null, $criteria)
-                  ->childrenOf($this)
-                  ->orderByBranch()
+                    ->childrenOf($this)
+                    ->orderByBranch()
                     ->find($con);
                 if (null !== $criteria) {
                     return $collNestedSetChildren;
@@ -4033,7 +4034,7 @@ abstract class Role implements ActiveRecordInterface
      * @param      ConnectionInterface $con Connection to use.
      * @return     int       Number of children
      */
-    public function countChildren($criteria = null, ConnectionInterface $con = null)
+    public function countChildren(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         if (null === $this->collNestedSetChildren || null !== $criteria) {
             if ($this->isLeaf() || ($this->isNew() && null === $this->collNestedSetChildren)) {
@@ -4051,16 +4052,16 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Gets the first child of the given node
      *
-     * @param      Criteria $query Criteria to filter results.
+     * @param      Criteria $criteria Criteria to filter results.
      * @param      ConnectionInterface $con Connection to use.
-     * @return     array         List of ChildRole objects
+     * @return     ChildRole|null First child or null if this is a leaf
      */
-    public function getFirstChild($query = null, ConnectionInterface $con = null)
+    public function getFirstChild(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         if ($this->isLeaf()) {
-            return array();
+            return null;
         } else {
-            return ChildRoleQuery::create(null, $query)
+            return ChildRoleQuery::create(null, $criteria)
                 ->childrenOf($this)
                 ->orderByBranch()
                 ->findOne($con);
@@ -4070,16 +4071,16 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Gets the last child of the given node
      *
-     * @param      Criteria $query Criteria to filter results.
+     * @param      Criteria $criteria Criteria to filter results.
      * @param      ConnectionInterface $con Connection to use.
-     * @return     array         List of ChildRole objects
+     * @return     ChildRole|null Last child or null if this is a leaf
      */
-    public function getLastChild($query = null, ConnectionInterface $con = null)
+    public function getLastChild(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         if ($this->isLeaf()) {
-            return array();
+            return null;
         } else {
-            return ChildRoleQuery::create(null, $query)
+            return ChildRoleQuery::create(null, $criteria)
                 ->childrenOf($this)
                 ->orderByBranch(true)
                 ->findOne($con);
@@ -4090,19 +4091,19 @@ abstract class Role implements ActiveRecordInterface
      * Gets the siblings of the given node
      *
      * @param boolean             $includeNode Whether to include the current node or not
-     * @param Criteria            $query Criteria to filter results.
+     * @param Criteria            $criteria Criteria to filter results.
      * @param ConnectionInterface $con Connection to use.
      *
-     * @return array List of ChildRole objects
+     * @return ObjectCollection|ChildRole[] List of ChildRole objects
      */
-    public function getSiblings($includeNode = false, $query = null, ConnectionInterface $con = null)
+    public function getSiblings($includeNode = false, Criteria $criteria = null, ConnectionInterface $con = null)
     {
         if ($this->isRoot()) {
             return array();
         } else {
-             $query = ChildRoleQuery::create(null, $query)
-                    ->childrenOf($this->getParent($con))
-                    ->orderByBranch();
+            $query = ChildRoleQuery::create(null, $criteria)
+                ->childrenOf($this->getParent($con))
+                ->orderByBranch();
             if (!$includeNode) {
                 $query->prune($this);
             }
@@ -4114,16 +4115,16 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Gets descendants for the given node
      *
-     * @param      Criteria $query Criteria to filter results.
+     * @param      Criteria $criteria Criteria to filter results.
      * @param      ConnectionInterface $con Connection to use.
-     * @return     array         List of ChildRole objects
+     * @return     ObjectCollection|ChildRole[] List of ChildRole objects
      */
-    public function getDescendants($query = null, ConnectionInterface $con = null)
+    public function getDescendants(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         if ($this->isLeaf()) {
             return array();
         } else {
-            return ChildRoleQuery::create(null, $query)
+            return ChildRoleQuery::create(null, $criteria)
                 ->descendantsOf($this)
                 ->orderByBranch()
                 ->find($con);
@@ -4133,17 +4134,17 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Gets number of descendants for the given node
      *
-     * @param      Criteria $query Criteria to filter results.
+     * @param      Criteria $criteria Criteria to filter results.
      * @param      ConnectionInterface $con Connection to use.
      * @return     int         Number of descendants
      */
-    public function countDescendants($query = null, ConnectionInterface $con = null)
+    public function countDescendants(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         if ($this->isLeaf()) {
             // save one query
             return 0;
         } else {
-            return ChildRoleQuery::create(null, $query)
+            return ChildRoleQuery::create(null, $criteria)
                 ->descendantsOf($this)
                 ->count($con);
         }
@@ -4152,13 +4153,13 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Gets descendants for the given node, plus the current node
      *
-     * @param      Criteria $query Criteria to filter results.
+     * @param      Criteria $criteria Criteria to filter results.
      * @param      ConnectionInterface $con Connection to use.
-     * @return     array         List of ChildRole objects
+     * @return     ObjectCollection|ChildRole[] List of ChildRole objects
      */
-    public function getBranch($query = null, ConnectionInterface $con = null)
+    public function getBranch(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        return ChildRoleQuery::create(null, $query)
+        return ChildRoleQuery::create(null, $criteria)
             ->branchOf($this)
             ->orderByBranch()
             ->find($con);
@@ -4168,17 +4169,17 @@ abstract class Role implements ActiveRecordInterface
      * Gets ancestors for the given node, starting with the root node
      * Use it for breadcrumb paths for instance
      *
-     * @param      Criteria $query Criteria to filter results.
+     * @param      Criteria $criteria Criteria to filter results.
      * @param      ConnectionInterface $con Connection to use.
-     * @return     array         List of ChildRole objects
+     * @return     ObjectCollection|ChildRole[] List of ChildRole objects
      */
-    public function getAncestors($query = null, ConnectionInterface $con = null)
+    public function getAncestors(Criteria $criteria = null, ConnectionInterface $con = null)
     {
         if ($this->isRoot()) {
             // save one query
             return array();
         } else {
-            return ChildRoleQuery::create(null, $query)
+            return ChildRoleQuery::create(null, $criteria)
                 ->ancestorsOf($this)
                 ->orderByBranch()
                 ->find($con);
@@ -4213,7 +4214,7 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return     $this|ChildRole The current Propel object
      */
-    public function insertAsFirstChildOf($parent)
+    public function insertAsFirstChildOf(ChildRole $parent)
     {
         if ($this->isInTree()) {
             throw new PropelException('A ChildRole object must not already be in the tree to be inserted. Use the moveToFirstChildOf() instead.');
@@ -4227,7 +4228,7 @@ abstract class Role implements ActiveRecordInterface
         $parent->addNestedSetChild($this);
 
         // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
+        $this->nestedSetQueries[] = array(
             'callable'  => array('\Phlopsi\AccessControl\Propel\RoleQuery', 'makeRoomForLeaf'),
             'arguments' => array($left, $this->isNew() ? null : $this)
         );
@@ -4243,7 +4244,7 @@ abstract class Role implements ActiveRecordInterface
      * @param  ChildRole $parent Propel object for parent node
      * @return $this|ChildRole The current Propel object
      */
-    public function insertAsLastChildOf($parent)
+    public function insertAsLastChildOf(ChildRole $parent)
     {
         if ($this->isInTree()) {
             throw new PropelException(
@@ -4278,7 +4279,7 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return     $this|ChildRole The current Propel object
      */
-    public function insertAsPrevSiblingOf($sibling)
+    public function insertAsPrevSiblingOf(ChildRole $sibling)
     {
         if ($this->isInTree()) {
             throw new PropelException('A ChildRole object must not already be in the tree to be inserted. Use the moveToPrevSiblingOf() instead.');
@@ -4306,7 +4307,7 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return     $this|ChildRole The current Propel object
      */
-    public function insertAsNextSiblingOf($sibling)
+    public function insertAsNextSiblingOf(ChildRole $sibling)
     {
         if ($this->isInTree()) {
             throw new PropelException('A ChildRole object must not already be in the tree to be inserted. Use the moveToNextSiblingOf() instead.');
@@ -4334,7 +4335,7 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return     $this|ChildRole The current Propel object
      */
-    public function moveToFirstChildOf($parent, ConnectionInterface $con = null)
+    public function moveToFirstChildOf(ChildRole $parent, ConnectionInterface $con = null)
     {
         if (!$this->isInTree()) {
             throw new PropelException('A ChildRole object must be already in the tree to be moved. Use the insertAsFirstChildOf() instead.');
@@ -4357,7 +4358,7 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return     $this|ChildRole The current Propel object
      */
-    public function moveToLastChildOf($parent, ConnectionInterface $con = null)
+    public function moveToLastChildOf(ChildRole $parent, ConnectionInterface $con = null)
     {
         if (!$this->isInTree()) {
             throw new PropelException('A ChildRole object must be already in the tree to be moved. Use the insertAsLastChildOf() instead.');
@@ -4380,7 +4381,7 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return     $this|ChildRole The current Propel object
      */
-    public function moveToPrevSiblingOf($sibling, ConnectionInterface $con = null)
+    public function moveToPrevSiblingOf(ChildRole $sibling, ConnectionInterface $con = null)
     {
         if (!$this->isInTree()) {
             throw new PropelException('A ChildRole object must be already in the tree to be moved. Use the insertAsPrevSiblingOf() instead.');
@@ -4406,7 +4407,7 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return     $this|ChildRole The current Propel object
      */
-    public function moveToNextSiblingOf($sibling, ConnectionInterface $con = null)
+    public function moveToNextSiblingOf(ChildRole $sibling, ConnectionInterface $con = null)
     {
         if (!$this->isInTree()) {
             throw new PropelException('A ChildRole object must be already in the tree to be moved. Use the insertAsNextSiblingOf() instead.');
@@ -4430,11 +4431,10 @@ abstract class Role implements ActiveRecordInterface
      * @param      int    $levelDelta Delta to add to the levels
      * @param      ConnectionInterface $con        Connection to use.
      */
-    protected function moveSubtreeTo($destLeft, $levelDelta, PropelPDO $con = null)
+    protected function moveSubtreeTo($destLeft, $levelDelta, ConnectionInterface $con = null)
     {
         $left  = $this->getLeftValue();
         $right = $this->getRightValue();
-
 
         $treeSize = $right - $left +1;
 
@@ -4447,8 +4447,6 @@ abstract class Role implements ActiveRecordInterface
 
             // make room next to the target for the subtree
             ChildRoleQuery::shiftRLValues($treeSize, $destLeft, null, $con);
-
-
 
             if (!$preventDefault) {
                 if ($left >= $destLeft) { // src was shifted too?
@@ -4513,7 +4511,7 @@ abstract class Role implements ActiveRecordInterface
     /**
      * Returns a pre-order iterator for this node and its children.
      *
-     * @return RecursiveIterator
+     * @return NestedSetRecursiveIterator
      */
     public function getIterator()
     {

@@ -53,7 +53,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildProhibitionsUsers findOneByUserId(int $users_id) Return the first ChildProhibitionsUsers filtered by the users_id column
  * @method     ChildProhibitionsUsers findOneByProhibitedUntil(string $prohibited_until) Return the first ChildProhibitionsUsers filtered by the prohibited_until column
  * @method     ChildProhibitionsUsers findOneByCreatedAt(string $created_at) Return the first ChildProhibitionsUsers filtered by the created_at column
- * @method     ChildProhibitionsUsers findOneByUpdatedAt(string $updated_at) Return the first ChildProhibitionsUsers filtered by the updated_at column
+ * @method     ChildProhibitionsUsers findOneByUpdatedAt(string $updated_at) Return the first ChildProhibitionsUsers filtered by the updated_at column *
+
+ * @method     ChildProhibitionsUsers requirePk($key, ConnectionInterface $con = null) Return the ChildProhibitionsUsers by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProhibitionsUsers requireOne(ConnectionInterface $con = null) Return the first ChildProhibitionsUsers matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ *
+ * @method     ChildProhibitionsUsers requireOneByProhibitionId(int $prohibitions_id) Return the first ChildProhibitionsUsers filtered by the prohibitions_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProhibitionsUsers requireOneByUserId(int $users_id) Return the first ChildProhibitionsUsers filtered by the users_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProhibitionsUsers requireOneByProhibitedUntil(string $prohibited_until) Return the first ChildProhibitionsUsers filtered by the prohibited_until column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProhibitionsUsers requireOneByCreatedAt(string $created_at) Return the first ChildProhibitionsUsers filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProhibitionsUsers requireOneByUpdatedAt(string $updated_at) Return the first ChildProhibitionsUsers filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildProhibitionsUsers[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProhibitionsUsers objects based on current ModelCriteria
  * @method     ChildProhibitionsUsers[]|ObjectCollection findByProhibitionId(int $prohibitions_id) Return ChildProhibitionsUsers objects filtered by the prohibitions_id column
@@ -66,6 +75,7 @@ use Propel\Runtime\Exception\PropelException;
  */
 abstract class ProhibitionsUsersQuery extends ModelCriteria
 {
+    protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
      * Initializes internal state of \Phlopsi\AccessControl\Propel\Base\ProhibitionsUsersQuery object.

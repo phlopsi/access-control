@@ -44,7 +44,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildPermissionsRoles findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPermissionsRoles matching the query, or a new ChildPermissionsRoles object populated from the query conditions when no match is found
  *
  * @method     ChildPermissionsRoles findOneByPermissionId(int $permissions_id) Return the first ChildPermissionsRoles filtered by the permissions_id column
- * @method     ChildPermissionsRoles findOneByRoleId(int $roles_id) Return the first ChildPermissionsRoles filtered by the roles_id column
+ * @method     ChildPermissionsRoles findOneByRoleId(int $roles_id) Return the first ChildPermissionsRoles filtered by the roles_id column *
+
+ * @method     ChildPermissionsRoles requirePk($key, ConnectionInterface $con = null) Return the ChildPermissionsRoles by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermissionsRoles requireOne(ConnectionInterface $con = null) Return the first ChildPermissionsRoles matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ *
+ * @method     ChildPermissionsRoles requireOneByPermissionId(int $permissions_id) Return the first ChildPermissionsRoles filtered by the permissions_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermissionsRoles requireOneByRoleId(int $roles_id) Return the first ChildPermissionsRoles filtered by the roles_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildPermissionsRoles[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPermissionsRoles objects based on current ModelCriteria
  * @method     ChildPermissionsRoles[]|ObjectCollection findByPermissionId(int $permissions_id) Return ChildPermissionsRoles objects filtered by the permissions_id column
@@ -54,6 +60,7 @@ use Propel\Runtime\Exception\PropelException;
  */
 abstract class PermissionsRolesQuery extends ModelCriteria
 {
+    protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
      * Initializes internal state of \Phlopsi\AccessControl\Propel\Base\PermissionsRolesQuery object.

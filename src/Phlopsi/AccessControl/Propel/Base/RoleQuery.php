@@ -62,7 +62,16 @@ use Propel\Runtime\Map\TableMap;
  * @method     ChildRole findOneByTreeLeft(int $tree_left) Return the first ChildRole filtered by the tree_left column
  * @method     ChildRole findOneByTreeRight(int $tree_right) Return the first ChildRole filtered by the tree_right column
  * @method     ChildRole findOneByTreeLevel(int $tree_level) Return the first ChildRole filtered by the tree_level column
- * @method     ChildRole findOneById(int $id) Return the first ChildRole filtered by the id column
+ * @method     ChildRole findOneById(int $id) Return the first ChildRole filtered by the id column *
+
+ * @method     ChildRole requirePk($key, ConnectionInterface $con = null) Return the ChildRole by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRole requireOne(ConnectionInterface $con = null) Return the first ChildRole matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ *
+ * @method     ChildRole requireOneByExternalId(string $external_id) Return the first ChildRole filtered by the external_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRole requireOneByTreeLeft(int $tree_left) Return the first ChildRole filtered by the tree_left column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRole requireOneByTreeRight(int $tree_right) Return the first ChildRole filtered by the tree_right column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRole requireOneByTreeLevel(int $tree_level) Return the first ChildRole filtered by the tree_level column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildRole requireOneById(int $id) Return the first ChildRole filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildRole[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildRole objects based on current ModelCriteria
  * @method     ChildRole[]|ObjectCollection findByExternalId(string $external_id) Return ChildRole objects filtered by the external_id column
@@ -75,6 +84,7 @@ use Propel\Runtime\Map\TableMap;
  */
 abstract class RoleQuery extends ModelCriteria
 {
+    protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
      * Initializes internal state of \Phlopsi\AccessControl\Propel\Base\RoleQuery object.
@@ -447,7 +457,7 @@ abstract class RoleQuery extends ModelCriteria
     /**
      * Filter the query by a related \Phlopsi\AccessControl\Propel\PermissionsRoles object
      *
-     * @param \Phlopsi\AccessControl\Propel\PermissionsRoles|ObjectCollection $permissionsRoles  the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\PermissionsRoles|ObjectCollection $permissionsRoles the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildRoleQuery The current query, for fluid interface
@@ -520,7 +530,7 @@ abstract class RoleQuery extends ModelCriteria
     /**
      * Filter the query by a related \Phlopsi\AccessControl\Propel\ProhibitionsRoles object
      *
-     * @param \Phlopsi\AccessControl\Propel\ProhibitionsRoles|ObjectCollection $prohibitionsRoles  the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\ProhibitionsRoles|ObjectCollection $prohibitionsRoles the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildRoleQuery The current query, for fluid interface
@@ -593,7 +603,7 @@ abstract class RoleQuery extends ModelCriteria
     /**
      * Filter the query by a related \Phlopsi\AccessControl\Propel\RolesSessionTypes object
      *
-     * @param \Phlopsi\AccessControl\Propel\RolesSessionTypes|ObjectCollection $rolesSessionTypes  the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\RolesSessionTypes|ObjectCollection $rolesSessionTypes the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildRoleQuery The current query, for fluid interface
@@ -666,7 +676,7 @@ abstract class RoleQuery extends ModelCriteria
     /**
      * Filter the query by a related \Phlopsi\AccessControl\Propel\RolesUsers object
      *
-     * @param \Phlopsi\AccessControl\Propel\RolesUsers|ObjectCollection $rolesUsers  the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\RolesUsers|ObjectCollection $rolesUsers the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildRoleQuery The current query, for fluid interface
@@ -888,9 +898,9 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @param     ChildRole $role The object to use for descendant search
      *
-     * @return    ChildRoleQuery The current query, for fluid interface
+     * @return    $this|ChildRoleQuery The current query, for fluid interface
      */
-    public function descendantsOf($role)
+    public function descendantsOf(ChildRole $role)
     {
         return $this
             ->addUsingAlias(ChildRole::LEFT_COL, $role->getLeftValue(), Criteria::GREATER_THAN)
@@ -903,9 +913,9 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @param     ChildRole $role The object to use for branch search
      *
-     * @return    ChildRoleQuery The current query, for fluid interface
+     * @return    $this|ChildRoleQuery The current query, for fluid interface
      */
-    public function branchOf($role)
+    public function branchOf(ChildRole $role)
     {
         return $this
             ->addUsingAlias(ChildRole::LEFT_COL, $role->getLeftValue(), Criteria::GREATER_EQUAL)
@@ -919,7 +929,7 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @return    $this|ChildRoleQuery The current query, for fluid interface
      */
-    public function childrenOf($role)
+    public function childrenOf(ChildRole $role)
     {
         return $this
             ->descendantsOf($role)
@@ -935,7 +945,7 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @return    $this|ChildRoleQuery The current query, for fluid interface
      */
-    public function siblingsOf($role, ConnectionInterface $con = null)
+    public function siblingsOf(ChildRole $role, ConnectionInterface $con = null)
     {
         if ($role->isRoot()) {
             return $this->
@@ -952,9 +962,9 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @param     ChildRole $role The object to use for ancestors search
      *
-     * @return    ChildRoleQuery The current query, for fluid interface
+     * @return    $this|ChildRoleQuery The current query, for fluid interface
      */
-    public function ancestorsOf($role)
+    public function ancestorsOf(ChildRole $role)
     {
         return $this
             ->addUsingAlias(ChildRole::LEFT_COL, $role->getLeftValue(), Criteria::LESS_THAN)
@@ -967,9 +977,9 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @param     ChildRole $role The object to use for roots search
      *
-     * @return    ChildRoleQuery The current query, for fluid interface
+     * @return    $this|ChildRoleQuery The current query, for fluid interface
      */
-    public function rootsOf($role)
+    public function rootsOf(ChildRole $role)
     {
         return $this
             ->addUsingAlias(ChildRole::LEFT_COL, $role->getLeftValue(), Criteria::LESS_EQUAL)
@@ -981,7 +991,7 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @param     bool $reverse if true, reverses the order
      *
-     * @return    ChildRoleQuery The current query, for fluid interface
+     * @return    $this|ChildRoleQuery The current query, for fluid interface
      */
     public function orderByBranch($reverse = false)
     {
@@ -999,7 +1009,7 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @param     bool $reverse if true, reverses the order
      *
-     * @return    ChildRoleQuery The current query, for fluid interface
+     * @return    $this|ChildRoleQuery The current query, for fluid interface
      */
     public function orderByLevel($reverse = false)
     {
@@ -1021,7 +1031,7 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @return     ChildRole The tree root object
      */
-    public function findRoot($con = null)
+    public function findRoot(ConnectionInterface $con = null)
     {
         return $this
             ->addUsingAlias(ChildRole::LEFT_COL, 1, Criteria::EQUAL)
@@ -1033,9 +1043,9 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     mixed the list of results, formatted by the current formatter
+     * @return     ChildRole[]|ObjectCollection|mixed the list of results, formatted by the current formatter
      */
-    public function findTree($con = null)
+    public function findTree(ConnectionInterface $con = null)
     {
         return $this
             ->orderByBranch()
@@ -1061,7 +1071,7 @@ abstract class RoleQuery extends ModelCriteria
      *
      * @param      Criteria $criteria    Optional Criteria to filter the query
      * @param      ConnectionInterface $con    Connection to use.
-     * @return     ChildRole            Propel object for root node
+     * @return     ChildRole[]|ObjectCollection|mixed the list of results, formatted by the current formatter
      */
     public static function retrieveTree(Criteria $criteria = null, ConnectionInterface $con = null)
     {
@@ -1178,6 +1188,7 @@ abstract class RoleQuery extends ModelCriteria
     {
         if (Propel::isInstancePoolingEnabled()) {
             $keys = array();
+            /** @var $obj ChildRole */
             foreach (RoleTableMap::$instances as $obj) {
                 if (!$prune || !$prune->equals($obj)) {
                     $keys[] = $obj->getPrimaryKey();
@@ -1192,6 +1203,7 @@ abstract class RoleQuery extends ModelCriteria
                 $dataFetcher = ChildRoleQuery::create(null, $criteria)->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
                 while ($row = $dataFetcher->fetch()) {
                     $key = RoleTableMap::getPrimaryKeyHashFromRow($row, 0);
+                    /** @var $object ChildRole */
                     if (null !== ($object = RoleTableMap::getInstanceFromPool($key))) {
                         $object->setLeftValue($row[1]);
                         $object->setRightValue($row[2]);
@@ -1238,6 +1250,7 @@ abstract class RoleQuery extends ModelCriteria
         while ($row = $dataFetcher->fetch()) {
             // hydrate object
             $key = RoleTableMap::getPrimaryKeyHashFromRow($row, 0);
+            /** @var $obj ChildRole */
             if (null === ($obj = RoleTableMap::getInstanceFromPool($key))) {
                 $obj = new $cls();
                 $obj->hydrate($row);
@@ -1266,23 +1279,5 @@ abstract class RoleQuery extends ModelCriteria
             }
         }
         $dataFetcher->close();
-    }
-
-    /**
-     * Updates all scope values for items that has negative left (<=0) values.
-     *
-     * @param      mixed     $scope
-     * @param      ConnectionInterface $con  Connection to use.
-     */
-    public static function setNegativeScope($scope, ConnectionInterface $con = null)
-    {
-        //adjust scope value to $scope
-        $whereCriteria = new Criteria(RoleTableMap::DATABASE_NAME);
-        $whereCriteria->add(ChildRole::LEFT_COL, 0, Criteria::LESS_EQUAL);
-
-        $valuesCriteria = new Criteria(RoleTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildRole::SCOPE_COL, $scope, Criteria::EQUAL);
-
-        $whereCriteria->doUpdate($valuesCriteria, $con);
     }
 } // RoleQuery

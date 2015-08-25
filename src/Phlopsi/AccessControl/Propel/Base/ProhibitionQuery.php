@@ -54,7 +54,16 @@ use Propel\Runtime\Map\TableMap;
  * @method     ChildProhibition findOneByTreeLeft(int $tree_left) Return the first ChildProhibition filtered by the tree_left column
  * @method     ChildProhibition findOneByTreeRight(int $tree_right) Return the first ChildProhibition filtered by the tree_right column
  * @method     ChildProhibition findOneByTreeLevel(int $tree_level) Return the first ChildProhibition filtered by the tree_level column
- * @method     ChildProhibition findOneById(int $id) Return the first ChildProhibition filtered by the id column
+ * @method     ChildProhibition findOneById(int $id) Return the first ChildProhibition filtered by the id column *
+
+ * @method     ChildProhibition requirePk($key, ConnectionInterface $con = null) Return the ChildProhibition by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProhibition requireOne(ConnectionInterface $con = null) Return the first ChildProhibition matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ *
+ * @method     ChildProhibition requireOneByExternalId(string $external_id) Return the first ChildProhibition filtered by the external_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProhibition requireOneByTreeLeft(int $tree_left) Return the first ChildProhibition filtered by the tree_left column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProhibition requireOneByTreeRight(int $tree_right) Return the first ChildProhibition filtered by the tree_right column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProhibition requireOneByTreeLevel(int $tree_level) Return the first ChildProhibition filtered by the tree_level column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildProhibition requireOneById(int $id) Return the first ChildProhibition filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildProhibition[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildProhibition objects based on current ModelCriteria
  * @method     ChildProhibition[]|ObjectCollection findByExternalId(string $external_id) Return ChildProhibition objects filtered by the external_id column
@@ -67,6 +76,7 @@ use Propel\Runtime\Map\TableMap;
  */
 abstract class ProhibitionQuery extends ModelCriteria
 {
+    protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
      * Initializes internal state of \Phlopsi\AccessControl\Propel\Base\ProhibitionQuery object.
@@ -439,7 +449,7 @@ abstract class ProhibitionQuery extends ModelCriteria
     /**
      * Filter the query by a related \Phlopsi\AccessControl\Propel\ProhibitionsRoles object
      *
-     * @param \Phlopsi\AccessControl\Propel\ProhibitionsRoles|ObjectCollection $prohibitionsRoles  the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\ProhibitionsRoles|ObjectCollection $prohibitionsRoles the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildProhibitionQuery The current query, for fluid interface
@@ -512,7 +522,7 @@ abstract class ProhibitionQuery extends ModelCriteria
     /**
      * Filter the query by a related \Phlopsi\AccessControl\Propel\ProhibitionsUsers object
      *
-     * @param \Phlopsi\AccessControl\Propel\ProhibitionsUsers|ObjectCollection $prohibitionsUsers  the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\ProhibitionsUsers|ObjectCollection $prohibitionsUsers the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildProhibitionQuery The current query, for fluid interface
@@ -700,9 +710,9 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @param     ChildProhibition $prohibition The object to use for descendant search
      *
-     * @return    ChildProhibitionQuery The current query, for fluid interface
+     * @return    $this|ChildProhibitionQuery The current query, for fluid interface
      */
-    public function descendantsOf($prohibition)
+    public function descendantsOf(ChildProhibition $prohibition)
     {
         return $this
             ->addUsingAlias(ChildProhibition::LEFT_COL, $prohibition->getLeftValue(), Criteria::GREATER_THAN)
@@ -715,9 +725,9 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @param     ChildProhibition $prohibition The object to use for branch search
      *
-     * @return    ChildProhibitionQuery The current query, for fluid interface
+     * @return    $this|ChildProhibitionQuery The current query, for fluid interface
      */
-    public function branchOf($prohibition)
+    public function branchOf(ChildProhibition $prohibition)
     {
         return $this
             ->addUsingAlias(ChildProhibition::LEFT_COL, $prohibition->getLeftValue(), Criteria::GREATER_EQUAL)
@@ -731,7 +741,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @return    $this|ChildProhibitionQuery The current query, for fluid interface
      */
-    public function childrenOf($prohibition)
+    public function childrenOf(ChildProhibition $prohibition)
     {
         return $this
             ->descendantsOf($prohibition)
@@ -747,7 +757,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @return    $this|ChildProhibitionQuery The current query, for fluid interface
      */
-    public function siblingsOf($prohibition, ConnectionInterface $con = null)
+    public function siblingsOf(ChildProhibition $prohibition, ConnectionInterface $con = null)
     {
         if ($prohibition->isRoot()) {
             return $this->
@@ -764,9 +774,9 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @param     ChildProhibition $prohibition The object to use for ancestors search
      *
-     * @return    ChildProhibitionQuery The current query, for fluid interface
+     * @return    $this|ChildProhibitionQuery The current query, for fluid interface
      */
-    public function ancestorsOf($prohibition)
+    public function ancestorsOf(ChildProhibition $prohibition)
     {
         return $this
             ->addUsingAlias(ChildProhibition::LEFT_COL, $prohibition->getLeftValue(), Criteria::LESS_THAN)
@@ -779,9 +789,9 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @param     ChildProhibition $prohibition The object to use for roots search
      *
-     * @return    ChildProhibitionQuery The current query, for fluid interface
+     * @return    $this|ChildProhibitionQuery The current query, for fluid interface
      */
-    public function rootsOf($prohibition)
+    public function rootsOf(ChildProhibition $prohibition)
     {
         return $this
             ->addUsingAlias(ChildProhibition::LEFT_COL, $prohibition->getLeftValue(), Criteria::LESS_EQUAL)
@@ -793,7 +803,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @param     bool $reverse if true, reverses the order
      *
-     * @return    ChildProhibitionQuery The current query, for fluid interface
+     * @return    $this|ChildProhibitionQuery The current query, for fluid interface
      */
     public function orderByBranch($reverse = false)
     {
@@ -811,7 +821,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @param     bool $reverse if true, reverses the order
      *
-     * @return    ChildProhibitionQuery The current query, for fluid interface
+     * @return    $this|ChildProhibitionQuery The current query, for fluid interface
      */
     public function orderByLevel($reverse = false)
     {
@@ -833,7 +843,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @return     ChildProhibition The tree root object
      */
-    public function findRoot($con = null)
+    public function findRoot(ConnectionInterface $con = null)
     {
         return $this
             ->addUsingAlias(ChildProhibition::LEFT_COL, 1, Criteria::EQUAL)
@@ -845,9 +855,9 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @param      ConnectionInterface $con    Connection to use.
      *
-     * @return     mixed the list of results, formatted by the current formatter
+     * @return     ChildProhibition[]|ObjectCollection|mixed the list of results, formatted by the current formatter
      */
-    public function findTree($con = null)
+    public function findTree(ConnectionInterface $con = null)
     {
         return $this
             ->orderByBranch()
@@ -873,7 +883,7 @@ abstract class ProhibitionQuery extends ModelCriteria
      *
      * @param      Criteria $criteria    Optional Criteria to filter the query
      * @param      ConnectionInterface $con    Connection to use.
-     * @return     ChildProhibition            Propel object for root node
+     * @return     ChildProhibition[]|ObjectCollection|mixed the list of results, formatted by the current formatter
      */
     public static function retrieveTree(Criteria $criteria = null, ConnectionInterface $con = null)
     {
@@ -990,6 +1000,7 @@ abstract class ProhibitionQuery extends ModelCriteria
     {
         if (Propel::isInstancePoolingEnabled()) {
             $keys = array();
+            /** @var $obj ChildProhibition */
             foreach (ProhibitionTableMap::$instances as $obj) {
                 if (!$prune || !$prune->equals($obj)) {
                     $keys[] = $obj->getPrimaryKey();
@@ -1004,6 +1015,7 @@ abstract class ProhibitionQuery extends ModelCriteria
                 $dataFetcher = ChildProhibitionQuery::create(null, $criteria)->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
                 while ($row = $dataFetcher->fetch()) {
                     $key = ProhibitionTableMap::getPrimaryKeyHashFromRow($row, 0);
+                    /** @var $object ChildProhibition */
                     if (null !== ($object = ProhibitionTableMap::getInstanceFromPool($key))) {
                         $object->setLeftValue($row[1]);
                         $object->setRightValue($row[2]);
@@ -1050,6 +1062,7 @@ abstract class ProhibitionQuery extends ModelCriteria
         while ($row = $dataFetcher->fetch()) {
             // hydrate object
             $key = ProhibitionTableMap::getPrimaryKeyHashFromRow($row, 0);
+            /** @var $obj ChildProhibition */
             if (null === ($obj = ProhibitionTableMap::getInstanceFromPool($key))) {
                 $obj = new $cls();
                 $obj->hydrate($row);
@@ -1078,23 +1091,5 @@ abstract class ProhibitionQuery extends ModelCriteria
             }
         }
         $dataFetcher->close();
-    }
-
-    /**
-     * Updates all scope values for items that has negative left (<=0) values.
-     *
-     * @param      mixed     $scope
-     * @param      ConnectionInterface $con  Connection to use.
-     */
-    public static function setNegativeScope($scope, ConnectionInterface $con = null)
-    {
-        //adjust scope value to $scope
-        $whereCriteria = new Criteria(ProhibitionTableMap::DATABASE_NAME);
-        $whereCriteria->add(ChildProhibition::LEFT_COL, 0, Criteria::LESS_EQUAL);
-
-        $valuesCriteria = new Criteria(ProhibitionTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildProhibition::SCOPE_COL, $scope, Criteria::EQUAL);
-
-        $whereCriteria->doUpdate($valuesCriteria, $con);
     }
 } // ProhibitionQuery
