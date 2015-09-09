@@ -14,9 +14,9 @@
         "propel/propel": "@alpha"
     },
     "require-dev": {
-        "phpunit/phpunit": "master@dev",
-        "phpunit/dbunit": "master@dev",
-        "squizlabs/php_codesniffer": "master@dev"
+        "phpunit/phpunit": "5.0.x@dev",
+        "phpunit/dbunit": "@stable",
+        "squizlabs/php_codesniffer": "@stable"
     },
     "authors": [
         {
