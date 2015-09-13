@@ -201,6 +201,67 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
     
     /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createSessionType
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testCreateSessionTypeWithEmptyId()
+    {
+        $this->access_control->createSessionType('');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createSessionType
+     */
+    public function testCreateSessionType()
+    {
+        $session_type = $this->access_control->createSessionType('TEST_SESSION_TYPE');
+        $this->assertInstanceOf(\Phlopsi\AccessControl\SessionType::class, $session_type);
+        $this->assertEquals(1, $this->getConnection()->getRowCount('session_types'));
+    }
+
+    /**
+     * @depends testCreateSessionType
+     * @covers \Phlopsi\AccessControl\AccessControl::createSessionType
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testCreateSessionTypeTwice()
+    {
+        $this->access_control->createSessionType('TEST_SESSION_TYPE');
+        $this->access_control->createSessionType('TEST_SESSION_TYPE');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteSessionType
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testDeleteSessionTypeWithEmptyId()
+    {
+        $this->access_control->deleteSessionType('');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteSessionType
+     */
+    public function testDeleteNonexistentSessionType()
+    {
+        $result = $this->access_control->deleteSessionType('TEST_SESSION_TYPE');
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * @depends testCreateSessionType
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteSessionType
+     * @uses \Phlopsi\AccessControl\AccessControl::createSessionType
+     */
+    public function testDeleteSessionType()
+    {
+        $this->access_control->createSessionType('TEST_SESSION_TYPE');
+        $result = $this->access_control->deleteSessionType('TEST_SESSION_TYPE');
+        $this->assertTrue($result);
+        $this->assertEquals(0, $this->getConnection()->getRowCount('session_types'));
+    }
+    
+    /**
      * @covers \Phlopsi\AccessControl\AccessControl::createUser
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
