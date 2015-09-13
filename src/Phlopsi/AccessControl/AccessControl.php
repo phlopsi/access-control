@@ -110,6 +110,7 @@ class AccessControl
 
     /**
      * @param string $permission_id
+     * @return bool
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -120,16 +121,23 @@ class AccessControl
         }
 
         try {
-            PropelPermissionQuery::create()
-                ->findOneByExternalId($permission_id)
-                ->delete();
+            $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
+            
+            if (is_null($permission)) {
+                return false;
+            }
+            
+            $permission->delete();
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
+        
+        return true;
     }
 
     /**
      * @param string $role_id
+     * @return bool
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -140,16 +148,23 @@ class AccessControl
         }
 
         try {
-            PropelRoleQuery::create()
-                ->findOneByExternalId($role_id)
-                ->delete();
+            $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
+            
+            if (is_null($role)) {
+                return false;
+            }
+            
+            $role->delete();
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
+        
+        return true;
     }
 
     /**
      * @param string $session_type_id
+     * @return bool
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -160,16 +175,23 @@ class AccessControl
         }
 
         try {
-            PropelSessionTypeQuery::create()
-                ->findOneByExternalId($session_type_id)
-                ->delete();
+            $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
+            
+            if (is_null($session_type)) {
+                return false;
+            }
+            
+            $session_type->delete();
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
+        
+        return true;
     }
 
     /**
      * @param string $user_id
+     * @return bool
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -180,12 +202,18 @@ class AccessControl
         }
 
         try {
-            PropelUserQuery::create()
-                ->findOneByExternalId($user_id)
-                ->delete();
+            $user = PropelUserQuery::create()->findOneByExternalId($user_id);
+            
+            if (is_null($user)) {
+                return false;
+            }
+            
+            $user->delete();
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
+        
+        return true;
     }
 
     /**
