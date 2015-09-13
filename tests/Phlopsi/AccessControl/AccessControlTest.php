@@ -78,6 +78,15 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testCreatePermissionWithEmptyId()
+    {
+        $this->access_control->createPermission('');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createPermission
      */
     public function testCreatePermission()
     {
@@ -86,6 +95,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * @depends testCreatePermission
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
@@ -93,5 +103,37 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->createPermission('TEST_PERMISSION');
         $this->access_control->createPermission('TEST_PERMISSION');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testDeletePermissionWithEmptyId()
+    {
+        $this->access_control->deletePermission('');
+    }
+    
+    /**
+     * @depends testCreatePermission
+     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
+     */
+    public function testDeleteNonExistentPermission()
+    {
+        $result = $this->access_control->deletePermission('TEST_PERMISSION');
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * @depends testCreatePermission
+     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission
+     */
+    public function testDeletePermission()
+    {
+        $this->access_control->createPermission('TEST_PERMISSION');
+        $result = $this->access_control->deletePermission('TEST_PERMISSION');
+        $this->assertTrue($result);
+        $this->assertEquals(0, $this->getConnection()->getRowCount('permissions'));
     }
 }
