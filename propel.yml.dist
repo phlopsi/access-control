@@ -8,4 +8,5 @@ propel:
         phpDir: src
     generator:
         objectModel:
+            addGenericAccessors: false
             addHooks: false
