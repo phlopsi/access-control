@@ -120,7 +120,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
      */
-    public function testDeleteNonExistentPermission()
+    public function testDeleteNonexistentPermission()
     {
         $result = $this->access_control->deletePermission('TEST_PERMISSION');
         $this->assertFalse($result);
@@ -137,5 +137,66 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $this->access_control->deletePermission('TEST_PERMISSION');
         $this->assertTrue($result);
         $this->assertEquals(0, $this->getConnection()->getRowCount('permissions'));
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createRole
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testCreateRoleWithEmptyId()
+    {
+        $this->access_control->createRole('');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createRole
+     */
+    public function testCreateRole()
+    {
+        $role = $this->access_control->createRole('TEST_ROLE');
+        $this->assertInstanceOf(\Phlopsi\AccessControl\Role::class, $role);
+        $this->assertEquals(1, $this->getConnection()->getRowCount('roles'));
+    }
+
+    /**
+     * @depends testCreateRole
+     * @covers \Phlopsi\AccessControl\AccessControl::createRole
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testCreateRoleTwice()
+    {
+        $this->access_control->createRole('TEST_ROLE');
+        $this->access_control->createRole('TEST_ROLE');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testDeleteRoleWithEmptyId()
+    {
+        $this->access_control->deleteRole('');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
+     */
+    public function testDeleteNonexistentRole()
+    {
+        $result = $this->access_control->deleteRole('TEST_ROLE');
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * @depends testCreateRole
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole
+     */
+    public function testDeleteRole()
+    {
+        $this->access_control->createRole('TEST_ROLE');
+        $result = $this->access_control->deleteRole('TEST_ROLE');
+        $this->assertTrue($result);
+        $this->assertEquals(0, $this->getConnection()->getRowCount('roles'));
     }
 }
