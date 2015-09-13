@@ -199,4 +199,65 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($result);
         $this->assertEquals(0, $this->getConnection()->getRowCount('roles'));
     }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createUser
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testCreateUserWithEmptyId()
+    {
+        $this->access_control->createUser('');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createUser
+     */
+    public function testCreateUser()
+    {
+        $user = $this->access_control->createUser('TEST_USER');
+        $this->assertInstanceOf(\Phlopsi\AccessControl\User::class, $user);
+        $this->assertEquals(1, $this->getConnection()->getRowCount('users'));
+    }
+
+    /**
+     * @depends testCreateUser
+     * @covers \Phlopsi\AccessControl\AccessControl::createUser
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testCreateUserTwice()
+    {
+        $this->access_control->createUser('TEST_USER');
+        $this->access_control->createUser('TEST_USER');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testDeleteUserWithEmptyId()
+    {
+        $this->access_control->deleteUser('');
+    }
+    
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
+     */
+    public function testDeleteNonexistentUser()
+    {
+        $result = $this->access_control->deleteUser('TEST_USER');
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * @depends testCreateUser
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser
+     */
+    public function testDeleteUser()
+    {
+        $this->access_control->createUser('TEST_USER');
+        $result = $this->access_control->deleteUser('TEST_USER');
+        $this->assertTrue($result);
+        $this->assertEquals(0, $this->getConnection()->getRowCount('users'));
+    }
 }
