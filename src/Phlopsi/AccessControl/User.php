@@ -24,6 +24,14 @@ class User
     {
         $this->user = $user;
     }
+    
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->user->getExternalId();
+    }
 
     /**
      * @param string $role_id

@@ -23,7 +23,15 @@ class Role
     {
         $this->role = $role;
     }
-
+    
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->role->getExternalId();
+    }
+    
     /**
      * @param string $permission_id
      * @throws LengthException

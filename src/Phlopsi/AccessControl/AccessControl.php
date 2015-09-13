@@ -253,7 +253,6 @@ class AccessControl
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-
         try {
             $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
         } catch (\Exception $exception) {

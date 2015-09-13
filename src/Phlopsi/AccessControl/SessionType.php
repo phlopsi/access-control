@@ -23,6 +23,14 @@ class SessionType
     {
         $this->session_type = $session_type;
     }
+    
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->session_type->getExternalId();
+    }
 
     /**
      * @param string $role_id
