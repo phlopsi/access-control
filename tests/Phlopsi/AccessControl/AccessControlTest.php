@@ -4,6 +4,7 @@ namespace Phlopsi\AccessControl;
 use Propel\Generator\Builder\Util\SchemaReader;
 use Propel\Generator\Platform\SqlitePlatform;
 use Propel\Generator\Util\SqlParser;
+use Propel\Runtime\Connection\ConnectionWrapper;
 use Propel\Runtime\Connection\PdoConnection;
 use Propel\Runtime\Propel;
 
@@ -36,9 +37,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         self::$pdo = new PdoConnection('sqlite::memory:');
         
+        $connection = new ConnectionWrapper(self::$pdo);
+        
         $serviceContainer = Propel::getServiceContainer();
         $serviceContainer->setAdapterClass('access_control', 'sqlite');
-        $serviceContainer->setConnection('access_control', self::$pdo);
+        $serviceContainer->setConnection('access_control', $connection);
         
         $platform = new SqlitePlatform();
         $schema_reader = new SchemaReader($platform);
@@ -115,7 +118,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
     
     /**
-     * @depends testCreatePermission
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
      */
     public function testDeleteNonExistentPermission()
