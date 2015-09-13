@@ -9,4 +9,5 @@ propel:
     generator:
         objectModel:
             addGenericAccessors: false
+            addGenericMutators: false
             addHooks: false
