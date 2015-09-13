@@ -17,4 +17,4 @@ use Phlopsi\AccessControl\Propel\Base\UserQuery as BaseUserQuery;
 class UserQuery extends BaseUserQuery
 {
 
-} // UserQuery
+}

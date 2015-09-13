@@ -8,3 +8,5 @@ propel:
                 dsn: 'sqlite::memory:'
                 user: ''
                 password: ''
+    generator:
+        platformClass: Propel\Generator\Platform\SqlitePlatform

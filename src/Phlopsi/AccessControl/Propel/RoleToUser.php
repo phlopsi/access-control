@@ -2,10 +2,10 @@
 
 namespace Phlopsi\AccessControl\Propel;
 
-use Phlopsi\AccessControl\Propel\Base\ProhibitionQuery as BaseProhibitionQuery;
+use Phlopsi\AccessControl\Propel\Base\RoleToUser as BaseRoleToUser;
 
 /**
- * Skeleton subclass for performing query and update operations on the 'prohibitions' table.
+ * Skeleton subclass for representing a row from the 'roles_users' table.
  *
  *
  *
@@ -14,7 +14,7 @@ use Phlopsi\AccessControl\Propel\Base\ProhibitionQuery as BaseProhibitionQuery;
  * long as it does not already exist in the output directory.
  *
  */
-class ProhibitionQuery extends BaseProhibitionQuery
+class RoleToUser extends BaseRoleToUser
 {
 
-} // ProhibitionQuery
+}

@@ -30,15 +30,11 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildUserQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildUserQuery leftJoinProhibitionsUsers($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProhibitionsUsers relation
- * @method     ChildUserQuery rightJoinProhibitionsUsers($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProhibitionsUsers relation
- * @method     ChildUserQuery innerJoinProhibitionsUsers($relationAlias = null) Adds a INNER JOIN clause to the query using the ProhibitionsUsers relation
+ * @method     ChildUserQuery leftJoinRoleToUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the RoleToUser relation
+ * @method     ChildUserQuery rightJoinRoleToUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RoleToUser relation
+ * @method     ChildUserQuery innerJoinRoleToUser($relationAlias = null) Adds a INNER JOIN clause to the query using the RoleToUser relation
  *
- * @method     ChildUserQuery leftJoinRolesUsers($relationAlias = null) Adds a LEFT JOIN clause to the query using the RolesUsers relation
- * @method     ChildUserQuery rightJoinRolesUsers($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RolesUsers relation
- * @method     ChildUserQuery innerJoinRolesUsers($relationAlias = null) Adds a INNER JOIN clause to the query using the RolesUsers relation
- *
- * @method     \Phlopsi\AccessControl\Propel\ProhibitionsUsersQuery|\Phlopsi\AccessControl\Propel\RolesUsersQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \Phlopsi\AccessControl\Propel\RoleToUserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildUser findOne(ConnectionInterface $con = null) Return the first ChildUser matching the query
  * @method     ChildUser findOneOrCreate(ConnectionInterface $con = null) Return the first ChildUser matching the query, or a new ChildUser object populated from the query conditions when no match is found
@@ -308,40 +304,40 @@ abstract class UserQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Phlopsi\AccessControl\Propel\ProhibitionsUsers object
+     * Filter the query by a related \Phlopsi\AccessControl\Propel\RoleToUser object
      *
-     * @param \Phlopsi\AccessControl\Propel\ProhibitionsUsers|ObjectCollection $prohibitionsUsers the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\RoleToUser|ObjectCollection $roleToUser the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildUserQuery The current query, for fluid interface
      */
-    public function filterByProhibitionsUsers($prohibitionsUsers, $comparison = null)
+    public function filterByRoleToUser($roleToUser, $comparison = null)
     {
-        if ($prohibitionsUsers instanceof \Phlopsi\AccessControl\Propel\ProhibitionsUsers) {
+        if ($roleToUser instanceof \Phlopsi\AccessControl\Propel\RoleToUser) {
             return $this
-                ->addUsingAlias(UserTableMap::COL_ID, $prohibitionsUsers->getUserId(), $comparison);
-        } elseif ($prohibitionsUsers instanceof ObjectCollection) {
+                ->addUsingAlias(UserTableMap::COL_ID, $roleToUser->getUserId(), $comparison);
+        } elseif ($roleToUser instanceof ObjectCollection) {
             return $this
-                ->useProhibitionsUsersQuery()
-                ->filterByPrimaryKeys($prohibitionsUsers->getPrimaryKeys())
+                ->useRoleToUserQuery()
+                ->filterByPrimaryKeys($roleToUser->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByProhibitionsUsers() only accepts arguments of type \Phlopsi\AccessControl\Propel\ProhibitionsUsers or Collection');
+            throw new PropelException('filterByRoleToUser() only accepts arguments of type \Phlopsi\AccessControl\Propel\RoleToUser or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the ProhibitionsUsers relation
+     * Adds a JOIN clause to the query using the RoleToUser relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildUserQuery The current query, for fluid interface
      */
-    public function joinProhibitionsUsers($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinRoleToUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ProhibitionsUsers');
+        $relationMap = $tableMap->getRelation('RoleToUser');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -356,14 +352,14 @@ abstract class UserQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'ProhibitionsUsers');
+            $this->addJoinObject($join, 'RoleToUser');
         }
 
         return $this;
     }
 
     /**
-     * Use the ProhibitionsUsers relation ProhibitionsUsers object
+     * Use the RoleToUser relation RoleToUser object
      *
      * @see useQuery()
      *
@@ -371,103 +367,13 @@ abstract class UserQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Phlopsi\AccessControl\Propel\ProhibitionsUsersQuery A secondary query class using the current class as primary query
+     * @return \Phlopsi\AccessControl\Propel\RoleToUserQuery A secondary query class using the current class as primary query
      */
-    public function useProhibitionsUsersQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useRoleToUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinProhibitionsUsers($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProhibitionsUsers', '\Phlopsi\AccessControl\Propel\ProhibitionsUsersQuery');
-    }
-
-    /**
-     * Filter the query by a related \Phlopsi\AccessControl\Propel\RolesUsers object
-     *
-     * @param \Phlopsi\AccessControl\Propel\RolesUsers|ObjectCollection $rolesUsers the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByRolesUsers($rolesUsers, $comparison = null)
-    {
-        if ($rolesUsers instanceof \Phlopsi\AccessControl\Propel\RolesUsers) {
-            return $this
-                ->addUsingAlias(UserTableMap::COL_ID, $rolesUsers->getUserId(), $comparison);
-        } elseif ($rolesUsers instanceof ObjectCollection) {
-            return $this
-                ->useRolesUsersQuery()
-                ->filterByPrimaryKeys($rolesUsers->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByRolesUsers() only accepts arguments of type \Phlopsi\AccessControl\Propel\RolesUsers or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the RolesUsers relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildUserQuery The current query, for fluid interface
-     */
-    public function joinRolesUsers($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('RolesUsers');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'RolesUsers');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the RolesUsers relation RolesUsers object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \Phlopsi\AccessControl\Propel\RolesUsersQuery A secondary query class using the current class as primary query
-     */
-    public function useRolesUsersQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinRolesUsers($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'RolesUsers', '\Phlopsi\AccessControl\Propel\RolesUsersQuery');
-    }
-
-    /**
-     * Filter the query by a related Prohibition object
-     * using the prohibitions_users table as cross reference
-     *
-     * @param Prohibition $prohibition the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildUserQuery The current query, for fluid interface
-     */
-    public function filterByProhibition($prohibition, $comparison = Criteria::EQUAL)
-    {
-        return $this
-            ->useProhibitionsUsersQuery()
-            ->filterByProhibition($prohibition, $comparison)
-            ->endUse();
+            ->joinRoleToUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RoleToUser', '\Phlopsi\AccessControl\Propel\RoleToUserQuery');
     }
 
     /**
@@ -482,7 +388,7 @@ abstract class UserQuery extends ModelCriteria
     public function filterByRole($role, $comparison = Criteria::EQUAL)
     {
         return $this
-            ->useRolesUsersQuery()
+            ->useRoleToUserQuery()
             ->filterByRole($role, $comparison)
             ->endUse();
     }
@@ -554,9 +460,9 @@ abstract class UserQuery extends ModelCriteria
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
-
+            
             UserTableMap::removeInstanceFromPool($criteria);
-
+        
             $affectedRows += ModelCriteria::delete($con);
             UserTableMap::clearRelatedInstancePool();
 

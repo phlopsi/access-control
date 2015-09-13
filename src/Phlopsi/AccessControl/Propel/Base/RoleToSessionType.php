@@ -6,10 +6,10 @@ use \Exception;
 use \PDO;
 use Phlopsi\AccessControl\Propel\Role as ChildRole;
 use Phlopsi\AccessControl\Propel\RoleQuery as ChildRoleQuery;
-use Phlopsi\AccessControl\Propel\RolesSessionTypesQuery as ChildRolesSessionTypesQuery;
+use Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery as ChildRoleToSessionTypeQuery;
 use Phlopsi\AccessControl\Propel\SessionType as ChildSessionType;
 use Phlopsi\AccessControl\Propel\SessionTypeQuery as ChildSessionTypeQuery;
-use Phlopsi\AccessControl\Propel\Map\RolesSessionTypesTableMap;
+use Phlopsi\AccessControl\Propel\Map\RoleToSessionTypeTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -29,12 +29,12 @@ use Propel\Runtime\Parser\AbstractParser;
  *
 * @package    propel.generator.Phlopsi.AccessControl.Propel.Base
 */
-abstract class RolesSessionTypes implements ActiveRecordInterface
+abstract class RoleToSessionType implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Phlopsi\\AccessControl\\Propel\\Map\\RolesSessionTypesTableMap';
+    const TABLE_MAP = '\\Phlopsi\\AccessControl\\Propel\\Map\\RoleToSessionTypeTableMap';
 
 
     /**
@@ -94,7 +94,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of Phlopsi\AccessControl\Propel\Base\RolesSessionTypes object.
+     * Initializes internal state of Phlopsi\AccessControl\Propel\Base\RoleToSessionType object.
      */
     public function __construct()
     {
@@ -189,9 +189,9 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>RolesSessionTypes</code> instance.  If
-     * <code>obj</code> is an instance of <code>RolesSessionTypes</code>, delegates to
-     * <code>equals(RolesSessionTypes)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>RoleToSessionType</code> instance.  If
+     * <code>obj</code> is an instance of <code>RoleToSessionType</code>, delegates to
+     * <code>equals(RoleToSessionType)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -257,7 +257,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|RolesSessionTypes The current object, for fluid interface
+     * @return $this|RoleToSessionType The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -334,7 +334,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * Set the value of [roles_id] column.
      *
      * @param int $v new value
-     * @return $this|\Phlopsi\AccessControl\Propel\RolesSessionTypes The current object (for fluent API support)
+     * @return $this|\Phlopsi\AccessControl\Propel\RoleToSessionType The current object (for fluent API support)
      */
     public function setRoleId($v)
     {
@@ -344,7 +344,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
 
         if ($this->roles_id !== $v) {
             $this->roles_id = $v;
-            $this->modifiedColumns[RolesSessionTypesTableMap::COL_ROLES_ID] = true;
+            $this->modifiedColumns[RoleToSessionTypeTableMap::COL_ROLES_ID] = true;
         }
 
         if ($this->aRole !== null && $this->aRole->getId() !== $v) {
@@ -358,7 +358,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * Set the value of [session_types_id] column.
      *
      * @param int $v new value
-     * @return $this|\Phlopsi\AccessControl\Propel\RolesSessionTypes The current object (for fluent API support)
+     * @return $this|\Phlopsi\AccessControl\Propel\RoleToSessionType The current object (for fluent API support)
      */
     public function setSessionTypeId($v)
     {
@@ -368,7 +368,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
 
         if ($this->session_types_id !== $v) {
             $this->session_types_id = $v;
-            $this->modifiedColumns[RolesSessionTypesTableMap::COL_SESSION_TYPES_ID] = true;
+            $this->modifiedColumns[RoleToSessionTypeTableMap::COL_SESSION_TYPES_ID] = true;
         }
 
         if ($this->aSessionType !== null && $this->aSessionType->getId() !== $v) {
@@ -413,10 +413,10 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     public function hydrate($row, $startcol = 0, $rehydrate = false, $indexType = TableMap::TYPE_NUM)
     {
         try {
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RolesSessionTypesTableMap::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RoleToSessionTypeTableMap::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->roles_id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RolesSessionTypesTableMap::translateFieldName('SessionTypeId', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RoleToSessionTypeTableMap::translateFieldName('SessionTypeId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->session_types_id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -426,10 +426,10 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 2; // 2 = RolesSessionTypesTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = RoleToSessionTypeTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Phlopsi\\AccessControl\\Propel\\RolesSessionTypes'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Phlopsi\\AccessControl\\Propel\\RoleToSessionType'), 0, $e);
         }
     }
 
@@ -477,13 +477,13 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(RolesSessionTypesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(RoleToSessionTypeTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildRolesSessionTypesQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildRoleToSessionTypeQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -503,8 +503,8 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see RolesSessionTypes::setDeleted()
-     * @see RolesSessionTypes::isDeleted()
+     * @see RoleToSessionType::setDeleted()
+     * @see RoleToSessionType::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -513,18 +513,14 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(RolesSessionTypesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(RoleToSessionTypeTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildRolesSessionTypesQuery::create()
+            $deleteQuery = ChildRoleToSessionTypeQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
-            $ret = $this->preDelete($con);
-            if ($ret) {
-                $deleteQuery->delete($con);
-                $this->postDelete($con);
-                $this->setDeleted(true);
-            }
+            $deleteQuery->delete($con);
+            $this->setDeleted(true);
         });
     }
 
@@ -548,29 +544,13 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(RolesSessionTypesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(RoleToSessionTypeTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
             $isInsert = $this->isNew();
-            $ret = $this->preSave($con);
-            if ($isInsert) {
-                $ret = $ret && $this->preInsert($con);
-            } else {
-                $ret = $ret && $this->preUpdate($con);
-            }
-            if ($ret) {
-                $affectedRows = $this->doSave($con);
-                if ($isInsert) {
-                    $this->postInsert($con);
-                } else {
-                    $this->postUpdate($con);
-                }
-                $this->postSave($con);
-                RolesSessionTypesTableMap::addInstanceToPool($this);
-            } else {
-                $affectedRows = 0;
-            }
+            $affectedRows = $this->doSave($con);
+            RoleToSessionTypeTableMap::addInstanceToPool($this);
 
             return $affectedRows;
         });
@@ -645,10 +625,10 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
 
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(RolesSessionTypesTableMap::COL_ROLES_ID)) {
+        if ($this->isColumnModified(RoleToSessionTypeTableMap::COL_ROLES_ID)) {
             $modifiedColumns[':p' . $index++]  = 'roles_id';
         }
-        if ($this->isColumnModified(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID)) {
+        if ($this->isColumnModified(RoleToSessionTypeTableMap::COL_SESSION_TYPES_ID)) {
             $modifiedColumns[':p' . $index++]  = 'session_types_id';
         }
 
@@ -707,7 +687,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = RolesSessionTypesTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = RoleToSessionTypeTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -753,11 +733,11 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['RolesSessionTypes'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['RoleToSessionType'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['RolesSessionTypes'][$this->hashCode()] = true;
-        $keys = RolesSessionTypesTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['RoleToSessionType'][$this->hashCode()] = true;
+        $keys = RoleToSessionTypeTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getRoleId(),
             $keys[1] => $this->getSessionTypeId(),
@@ -766,7 +746,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
-
+        
         if ($includeForeignObjects) {
             if (null !== $this->aRole) {
                 switch ($keyType) {
@@ -779,7 +759,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
                     default:
                         $key = 'Role';
                 }
-
+        
                 $result[$key] = $this->aRole->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
             if (null !== $this->aSessionType) {
@@ -793,7 +773,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
                     default:
                         $key = 'SessionType';
                 }
-
+        
                 $result[$key] = $this->aSessionType->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
         }
@@ -810,11 +790,11 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Phlopsi\AccessControl\Propel\RolesSessionTypes
+     * @return $this|\Phlopsi\AccessControl\Propel\RoleToSessionType
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = RolesSessionTypesTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = RoleToSessionTypeTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -825,7 +805,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Phlopsi\AccessControl\Propel\RolesSessionTypes
+     * @return $this|\Phlopsi\AccessControl\Propel\RoleToSessionType
      */
     public function setByPosition($pos, $value)
     {
@@ -860,7 +840,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = RolesSessionTypesTableMap::getFieldNames($keyType);
+        $keys = RoleToSessionTypeTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setRoleId($arr[$keys[0]]);
@@ -887,7 +867,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Phlopsi\AccessControl\Propel\RolesSessionTypes The current object, for fluid interface
+     * @return $this|\Phlopsi\AccessControl\Propel\RoleToSessionType The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -907,13 +887,13 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(RolesSessionTypesTableMap::DATABASE_NAME);
+        $criteria = new Criteria(RoleToSessionTypeTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(RolesSessionTypesTableMap::COL_ROLES_ID)) {
-            $criteria->add(RolesSessionTypesTableMap::COL_ROLES_ID, $this->roles_id);
+        if ($this->isColumnModified(RoleToSessionTypeTableMap::COL_ROLES_ID)) {
+            $criteria->add(RoleToSessionTypeTableMap::COL_ROLES_ID, $this->roles_id);
         }
-        if ($this->isColumnModified(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID)) {
-            $criteria->add(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID, $this->session_types_id);
+        if ($this->isColumnModified(RoleToSessionTypeTableMap::COL_SESSION_TYPES_ID)) {
+            $criteria->add(RoleToSessionTypeTableMap::COL_SESSION_TYPES_ID, $this->session_types_id);
         }
 
         return $criteria;
@@ -931,9 +911,9 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildRolesSessionTypesQuery::create();
-        $criteria->add(RolesSessionTypesTableMap::COL_ROLES_ID, $this->roles_id);
-        $criteria->add(RolesSessionTypesTableMap::COL_SESSION_TYPES_ID, $this->session_types_id);
+        $criteria = ChildRoleToSessionTypeQuery::create();
+        $criteria->add(RoleToSessionTypeTableMap::COL_ROLES_ID, $this->roles_id);
+        $criteria->add(RoleToSessionTypeTableMap::COL_SESSION_TYPES_ID, $this->session_types_id);
 
         return $criteria;
     }
@@ -974,7 +954,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
 
         return spl_object_hash($this);
     }
-
+        
     /**
      * Returns the composite primary key for this object.
      * The array elements will be in same order as specified in XML.
@@ -1016,7 +996,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Phlopsi\AccessControl\Propel\RolesSessionTypes (or compatible) type.
+     * @param      object $copyObj An object of \Phlopsi\AccessControl\Propel\RoleToSessionType (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
@@ -1039,7 +1019,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Phlopsi\AccessControl\Propel\RolesSessionTypes Clone of current object.
+     * @return \Phlopsi\AccessControl\Propel\RoleToSessionType Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1056,7 +1036,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * Declares an association between this object and a ChildRole object.
      *
      * @param  ChildRole $v
-     * @return $this|\Phlopsi\AccessControl\Propel\RolesSessionTypes The current object (for fluent API support)
+     * @return $this|\Phlopsi\AccessControl\Propel\RoleToSessionType The current object (for fluent API support)
      * @throws PropelException
      */
     public function setRole(ChildRole $v = null)
@@ -1072,7 +1052,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildRole object, it will not be re-added.
         if ($v !== null) {
-            $v->addRolesSessionTypes($this);
+            $v->addRoleToSessionType($this);
         }
 
 
@@ -1096,7 +1076,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aRole->addRolesSessionTypess($this);
+                $this->aRole->addRoleToSessionTypes($this);
              */
         }
 
@@ -1107,7 +1087,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      * Declares an association between this object and a ChildSessionType object.
      *
      * @param  ChildSessionType $v
-     * @return $this|\Phlopsi\AccessControl\Propel\RolesSessionTypes The current object (for fluent API support)
+     * @return $this|\Phlopsi\AccessControl\Propel\RoleToSessionType The current object (for fluent API support)
      * @throws PropelException
      */
     public function setSessionType(ChildSessionType $v = null)
@@ -1123,7 +1103,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the ChildSessionType object, it will not be re-added.
         if ($v !== null) {
-            $v->addRolesSessionTypes($this);
+            $v->addRoleToSessionType($this);
         }
 
 
@@ -1147,7 +1127,7 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aSessionType->addRolesSessionTypess($this);
+                $this->aSessionType->addRoleToSessionTypes($this);
              */
         }
 
@@ -1162,10 +1142,10 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
     public function clear()
     {
         if (null !== $this->aRole) {
-            $this->aRole->removeRolesSessionTypes($this);
+            $this->aRole->removeRoleToSessionType($this);
         }
         if (null !== $this->aSessionType) {
-            $this->aSessionType->removeRolesSessionTypes($this);
+            $this->aSessionType->removeRoleToSessionType($this);
         }
         $this->roles_id = null;
         $this->session_types_id = null;
@@ -1200,85 +1180,8 @@ abstract class RolesSessionTypes implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(RolesSessionTypesTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(RoleToSessionTypeTableMap::DEFAULT_STRING_FORMAT);
     }
-
-    /**
-     * Code to be run before persisting the object
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preSave(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after persisting the object
-     * @param ConnectionInterface $con
-     */
-    public function postSave(ConnectionInterface $con = null)
-    {
-
-    }
-
-    /**
-     * Code to be run before inserting to database
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preInsert(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after inserting to database
-     * @param ConnectionInterface $con
-     */
-    public function postInsert(ConnectionInterface $con = null)
-    {
-
-    }
-
-    /**
-     * Code to be run before updating the object in database
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preUpdate(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after updating the object in database
-     * @param ConnectionInterface $con
-     */
-    public function postUpdate(ConnectionInterface $con = null)
-    {
-
-    }
-
-    /**
-     * Code to be run before deleting the object in database
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preDelete(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after deleting the object in database
-     * @param ConnectionInterface $con
-     */
-    public function postDelete(ConnectionInterface $con = null)
-    {
-
-    }
-
 
     /**
      * Derived method to catches calls to undefined methods.

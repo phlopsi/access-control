@@ -58,7 +58,7 @@ class SessionTypeTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 2;
 
     /**
      * The number of lazy-loaded columns
@@ -68,27 +68,12 @@ class SessionTypeTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 2;
 
     /**
      * the column name for the external_id field
      */
     const COL_EXTERNAL_ID = 'session_types.external_id';
-
-    /**
-     * the column name for the tree_left field
-     */
-    const COL_TREE_LEFT = 'session_types.tree_left';
-
-    /**
-     * the column name for the tree_right field
-     */
-    const COL_TREE_RIGHT = 'session_types.tree_right';
-
-    /**
-     * the column name for the tree_level field
-     */
-    const COL_TREE_LEVEL = 'session_types.tree_level';
 
     /**
      * the column name for the id field
@@ -107,11 +92,11 @@ class SessionTypeTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('ExternalId', 'TreeLeft', 'TreeRight', 'TreeLevel', 'Id', ),
-        self::TYPE_CAMELNAME     => array('externalId', 'treeLeft', 'treeRight', 'treeLevel', 'id', ),
-        self::TYPE_COLNAME       => array(SessionTypeTableMap::COL_EXTERNAL_ID, SessionTypeTableMap::COL_TREE_LEFT, SessionTypeTableMap::COL_TREE_RIGHT, SessionTypeTableMap::COL_TREE_LEVEL, SessionTypeTableMap::COL_ID, ),
-        self::TYPE_FIELDNAME     => array('external_id', 'tree_left', 'tree_right', 'tree_level', 'id', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('ExternalId', 'Id', ),
+        self::TYPE_CAMELNAME     => array('externalId', 'id', ),
+        self::TYPE_COLNAME       => array(SessionTypeTableMap::COL_EXTERNAL_ID, SessionTypeTableMap::COL_ID, ),
+        self::TYPE_FIELDNAME     => array('external_id', 'id', ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -121,11 +106,11 @@ class SessionTypeTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('ExternalId' => 0, 'TreeLeft' => 1, 'TreeRight' => 2, 'TreeLevel' => 3, 'Id' => 4, ),
-        self::TYPE_CAMELNAME     => array('externalId' => 0, 'treeLeft' => 1, 'treeRight' => 2, 'treeLevel' => 3, 'id' => 4, ),
-        self::TYPE_COLNAME       => array(SessionTypeTableMap::COL_EXTERNAL_ID => 0, SessionTypeTableMap::COL_TREE_LEFT => 1, SessionTypeTableMap::COL_TREE_RIGHT => 2, SessionTypeTableMap::COL_TREE_LEVEL => 3, SessionTypeTableMap::COL_ID => 4, ),
-        self::TYPE_FIELDNAME     => array('external_id' => 0, 'tree_left' => 1, 'tree_right' => 2, 'tree_level' => 3, 'id' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('ExternalId' => 0, 'Id' => 1, ),
+        self::TYPE_CAMELNAME     => array('externalId' => 0, 'id' => 1, ),
+        self::TYPE_COLNAME       => array(SessionTypeTableMap::COL_EXTERNAL_ID => 0, SessionTypeTableMap::COL_ID => 1, ),
+        self::TYPE_FIELDNAME     => array('external_id' => 0, 'id' => 1, ),
+        self::TYPE_NUM           => array(0, 1, )
     );
 
     /**
@@ -146,9 +131,6 @@ class SessionTypeTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addColumn('external_id', 'ExternalId', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('tree_left', 'TreeLeft', 'INTEGER', false, null, null);
-        $this->addColumn('tree_right', 'TreeRight', 'INTEGER', false, null, null);
-        $this->addColumn('tree_level', 'TreeLevel', 'INTEGER', false, null, null);
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
     } // initialize()
 
@@ -157,13 +139,13 @@ class SessionTypeTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('RolesSessionTypes', '\\Phlopsi\\AccessControl\\Propel\\RolesSessionTypes', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('RoleToSessionType', '\\Phlopsi\\AccessControl\\Propel\\RoleToSessionType', RelationMap::ONE_TO_MANY, array (
         0 =>
         array (
         0 => ':session_types_id',
         1 => ':id',
         ),
-        ), null, null, 'RolesSessionTypess', false);
+        ), null, null, 'RoleToSessionTypes', false);
         $this->addRelation('Role', '\\Phlopsi\\AccessControl\\Propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
     } // buildRelations()
 
@@ -176,7 +158,6 @@ class SessionTypeTableMap extends TableMap
     public function getBehaviors()
     {
         return array(
-            'nested_set' => array('left_column' => 'tree_left', 'right_column' => 'tree_right', 'level_column' => 'tree_level', 'use_scope' => 'false', 'scope_column' => 'tree_scope', 'method_proxies' => 'false', ),
             'auto_add_pk' => array('name' => 'id', 'autoIncrement' => 'true', 'type' => 'INTEGER', ),
         );
     } // getBehaviors()
@@ -197,11 +178,11 @@ class SessionTypeTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 4 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return (string) $row[TableMap::TYPE_NUM == $indexType ? 4 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -220,11 +201,11 @@ class SessionTypeTableMap extends TableMap
     {
         return (int) $row[
             $indexType == TableMap::TYPE_NUM
-                ? 4 + $offset
+                ? 1 + $offset
                 : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
-
+    
     /**
      * The class that the tableMap will make instances of.
      *
@@ -285,7 +266,7 @@ class SessionTypeTableMap extends TableMap
     public static function populateObjects(DataFetcherInterface $dataFetcher)
     {
         $results = array();
-
+    
         // set the class once to avoid overhead in the loop
         $cls = static::getOMClass(false);
         // populate the object(s)
@@ -323,15 +304,9 @@ class SessionTypeTableMap extends TableMap
     {
         if (null === $alias) {
             $criteria->addSelectColumn(SessionTypeTableMap::COL_EXTERNAL_ID);
-            $criteria->addSelectColumn(SessionTypeTableMap::COL_TREE_LEFT);
-            $criteria->addSelectColumn(SessionTypeTableMap::COL_TREE_RIGHT);
-            $criteria->addSelectColumn(SessionTypeTableMap::COL_TREE_LEVEL);
             $criteria->addSelectColumn(SessionTypeTableMap::COL_ID);
         } else {
             $criteria->addSelectColumn($alias . '.external_id');
-            $criteria->addSelectColumn($alias . '.tree_left');
-            $criteria->addSelectColumn($alias . '.tree_right');
-            $criteria->addSelectColumn($alias . '.tree_level');
             $criteria->addSelectColumn($alias . '.id');
         }
     }

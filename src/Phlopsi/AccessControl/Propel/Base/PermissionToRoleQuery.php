@@ -4,9 +4,9 @@ namespace Phlopsi\AccessControl\Propel\Base;
 
 use \Exception;
 use \PDO;
-use Phlopsi\AccessControl\Propel\PermissionsRoles as ChildPermissionsRoles;
-use Phlopsi\AccessControl\Propel\PermissionsRolesQuery as ChildPermissionsRolesQuery;
-use Phlopsi\AccessControl\Propel\Map\PermissionsRolesTableMap;
+use Phlopsi\AccessControl\Propel\PermissionToRole as ChildPermissionToRole;
+use Phlopsi\AccessControl\Propel\PermissionToRoleQuery as ChildPermissionToRoleQuery;
+use Phlopsi\AccessControl\Propel\Map\PermissionToRoleTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -20,74 +20,74 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  *
- * @method     ChildPermissionsRolesQuery orderByPermissionId($order = Criteria::ASC) Order by the permissions_id column
- * @method     ChildPermissionsRolesQuery orderByRoleId($order = Criteria::ASC) Order by the roles_id column
+ * @method     ChildPermissionToRoleQuery orderByPermissionId($order = Criteria::ASC) Order by the permissions_id column
+ * @method     ChildPermissionToRoleQuery orderByRoleId($order = Criteria::ASC) Order by the roles_id column
  *
- * @method     ChildPermissionsRolesQuery groupByPermissionId() Group by the permissions_id column
- * @method     ChildPermissionsRolesQuery groupByRoleId() Group by the roles_id column
+ * @method     ChildPermissionToRoleQuery groupByPermissionId() Group by the permissions_id column
+ * @method     ChildPermissionToRoleQuery groupByRoleId() Group by the roles_id column
  *
- * @method     ChildPermissionsRolesQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildPermissionsRolesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildPermissionsRolesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildPermissionToRoleQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildPermissionToRoleQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildPermissionToRoleQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildPermissionsRolesQuery leftJoinPermission($relationAlias = null) Adds a LEFT JOIN clause to the query using the Permission relation
- * @method     ChildPermissionsRolesQuery rightJoinPermission($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Permission relation
- * @method     ChildPermissionsRolesQuery innerJoinPermission($relationAlias = null) Adds a INNER JOIN clause to the query using the Permission relation
+ * @method     ChildPermissionToRoleQuery leftJoinPermission($relationAlias = null) Adds a LEFT JOIN clause to the query using the Permission relation
+ * @method     ChildPermissionToRoleQuery rightJoinPermission($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Permission relation
+ * @method     ChildPermissionToRoleQuery innerJoinPermission($relationAlias = null) Adds a INNER JOIN clause to the query using the Permission relation
  *
- * @method     ChildPermissionsRolesQuery leftJoinRole($relationAlias = null) Adds a LEFT JOIN clause to the query using the Role relation
- * @method     ChildPermissionsRolesQuery rightJoinRole($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Role relation
- * @method     ChildPermissionsRolesQuery innerJoinRole($relationAlias = null) Adds a INNER JOIN clause to the query using the Role relation
+ * @method     ChildPermissionToRoleQuery leftJoinRole($relationAlias = null) Adds a LEFT JOIN clause to the query using the Role relation
+ * @method     ChildPermissionToRoleQuery rightJoinRole($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Role relation
+ * @method     ChildPermissionToRoleQuery innerJoinRole($relationAlias = null) Adds a INNER JOIN clause to the query using the Role relation
  *
  * @method     \Phlopsi\AccessControl\Propel\PermissionQuery|\Phlopsi\AccessControl\Propel\RoleQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildPermissionsRoles findOne(ConnectionInterface $con = null) Return the first ChildPermissionsRoles matching the query
- * @method     ChildPermissionsRoles findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPermissionsRoles matching the query, or a new ChildPermissionsRoles object populated from the query conditions when no match is found
+ * @method     ChildPermissionToRole findOne(ConnectionInterface $con = null) Return the first ChildPermissionToRole matching the query
+ * @method     ChildPermissionToRole findOneOrCreate(ConnectionInterface $con = null) Return the first ChildPermissionToRole matching the query, or a new ChildPermissionToRole object populated from the query conditions when no match is found
  *
- * @method     ChildPermissionsRoles findOneByPermissionId(int $permissions_id) Return the first ChildPermissionsRoles filtered by the permissions_id column
- * @method     ChildPermissionsRoles findOneByRoleId(int $roles_id) Return the first ChildPermissionsRoles filtered by the roles_id column *
+ * @method     ChildPermissionToRole findOneByPermissionId(int $permissions_id) Return the first ChildPermissionToRole filtered by the permissions_id column
+ * @method     ChildPermissionToRole findOneByRoleId(int $roles_id) Return the first ChildPermissionToRole filtered by the roles_id column *
 
- * @method     ChildPermissionsRoles requirePk($key, ConnectionInterface $con = null) Return the ChildPermissionsRoles by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPermissionsRoles requireOne(ConnectionInterface $con = null) Return the first ChildPermissionsRoles matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermissionToRole requirePk($key, ConnectionInterface $con = null) Return the ChildPermissionToRole by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermissionToRole requireOne(ConnectionInterface $con = null) Return the first ChildPermissionToRole matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildPermissionsRoles requireOneByPermissionId(int $permissions_id) Return the first ChildPermissionsRoles filtered by the permissions_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildPermissionsRoles requireOneByRoleId(int $roles_id) Return the first ChildPermissionsRoles filtered by the roles_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermissionToRole requireOneByPermissionId(int $permissions_id) Return the first ChildPermissionToRole filtered by the permissions_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildPermissionToRole requireOneByRoleId(int $roles_id) Return the first ChildPermissionToRole filtered by the roles_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildPermissionsRoles[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPermissionsRoles objects based on current ModelCriteria
- * @method     ChildPermissionsRoles[]|ObjectCollection findByPermissionId(int $permissions_id) Return ChildPermissionsRoles objects filtered by the permissions_id column
- * @method     ChildPermissionsRoles[]|ObjectCollection findByRoleId(int $roles_id) Return ChildPermissionsRoles objects filtered by the roles_id column
- * @method     ChildPermissionsRoles[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildPermissionToRole[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildPermissionToRole objects based on current ModelCriteria
+ * @method     ChildPermissionToRole[]|ObjectCollection findByPermissionId(int $permissions_id) Return ChildPermissionToRole objects filtered by the permissions_id column
+ * @method     ChildPermissionToRole[]|ObjectCollection findByRoleId(int $roles_id) Return ChildPermissionToRole objects filtered by the roles_id column
+ * @method     ChildPermissionToRole[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class PermissionsRolesQuery extends ModelCriteria
+abstract class PermissionToRoleQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Phlopsi\AccessControl\Propel\Base\PermissionsRolesQuery object.
+     * Initializes internal state of \Phlopsi\AccessControl\Propel\Base\PermissionToRoleQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct($dbName = 'access_control', $modelName = '\\Phlopsi\\AccessControl\\Propel\\PermissionsRoles', $modelAlias = null)
+    public function __construct($dbName = 'access_control', $modelName = '\\Phlopsi\\AccessControl\\Propel\\PermissionToRole', $modelAlias = null)
     {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildPermissionsRolesQuery object.
+     * Returns a new ChildPermissionToRoleQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildPermissionsRolesQuery
+     * @return ChildPermissionToRoleQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildPermissionsRolesQuery) {
+        if ($criteria instanceof ChildPermissionToRoleQuery) {
             return $criteria;
         }
-        $query = new ChildPermissionsRolesQuery();
+        $query = new ChildPermissionToRoleQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -110,19 +110,19 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      * @param array[$permissions_id, $roles_id] $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildPermissionsRoles|array|mixed the result, formatted by the current formatter
+     * @return ChildPermissionToRole|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = PermissionsRolesTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
+        if ((null !== ($obj = PermissionToRoleTableMap::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && !$this->formatter) {
             // the object is already in the instance pool
             return $obj;
         }
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(PermissionsRolesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(PermissionToRoleTableMap::DATABASE_NAME);
         }
         $this->basePreSelect($con);
         if ($this->formatter || $this->modelAlias || $this->with || $this->select
@@ -143,7 +143,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildPermissionsRoles A model object, or null if the key is not found
+     * @return ChildPermissionToRole A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
@@ -159,10 +159,10 @@ abstract class PermissionsRolesQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildPermissionsRoles $obj */
-            $obj = new ChildPermissionsRoles();
+            /** @var ChildPermissionToRole $obj */
+            $obj = new ChildPermissionToRole();
             $obj->hydrate($row);
-            PermissionsRolesTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
+            PermissionToRoleTableMap::addInstanceToPool($obj, serialize(array((string) $key[0], (string) $key[1])));
         }
         $stmt->closeCursor();
 
@@ -175,7 +175,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildPermissionsRoles|array|mixed the result, formatted by the current formatter
+     * @return ChildPermissionToRole|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -217,12 +217,12 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildPermissionsRolesQuery The current query, for fluid interface
+     * @return $this|ChildPermissionToRoleQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
-        $this->addUsingAlias(PermissionsRolesTableMap::COL_PERMISSIONS_ID, $key[0], Criteria::EQUAL);
-        $this->addUsingAlias(PermissionsRolesTableMap::COL_ROLES_ID, $key[1], Criteria::EQUAL);
+        $this->addUsingAlias(PermissionToRoleTableMap::COL_PERMISSIONS_ID, $key[0], Criteria::EQUAL);
+        $this->addUsingAlias(PermissionToRoleTableMap::COL_ROLES_ID, $key[1], Criteria::EQUAL);
 
         return $this;
     }
@@ -232,7 +232,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildPermissionsRolesQuery The current query, for fluid interface
+     * @return $this|ChildPermissionToRoleQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
@@ -240,8 +240,8 @@ abstract class PermissionsRolesQuery extends ModelCriteria
             return $this->add(null, '1<>1', Criteria::CUSTOM);
         }
         foreach ($keys as $key) {
-            $cton0 = $this->getNewCriterion(PermissionsRolesTableMap::COL_PERMISSIONS_ID, $key[0], Criteria::EQUAL);
-            $cton1 = $this->getNewCriterion(PermissionsRolesTableMap::COL_ROLES_ID, $key[1], Criteria::EQUAL);
+            $cton0 = $this->getNewCriterion(PermissionToRoleTableMap::COL_PERMISSIONS_ID, $key[0], Criteria::EQUAL);
+            $cton1 = $this->getNewCriterion(PermissionToRoleTableMap::COL_ROLES_ID, $key[1], Criteria::EQUAL);
             $cton0->addAnd($cton1);
             $this->addOr($cton0);
         }
@@ -267,18 +267,18 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildPermissionsRolesQuery The current query, for fluid interface
+     * @return $this|ChildPermissionToRoleQuery The current query, for fluid interface
      */
     public function filterByPermissionId($permissionId = null, $comparison = null)
     {
         if (is_array($permissionId)) {
             $useMinMax = false;
             if (isset($permissionId['min'])) {
-                $this->addUsingAlias(PermissionsRolesTableMap::COL_PERMISSIONS_ID, $permissionId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(PermissionToRoleTableMap::COL_PERMISSIONS_ID, $permissionId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($permissionId['max'])) {
-                $this->addUsingAlias(PermissionsRolesTableMap::COL_PERMISSIONS_ID, $permissionId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(PermissionToRoleTableMap::COL_PERMISSIONS_ID, $permissionId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -289,7 +289,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PermissionsRolesTableMap::COL_PERMISSIONS_ID, $permissionId, $comparison);
+        return $this->addUsingAlias(PermissionToRoleTableMap::COL_PERMISSIONS_ID, $permissionId, $comparison);
     }
 
     /**
@@ -310,18 +310,18 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildPermissionsRolesQuery The current query, for fluid interface
+     * @return $this|ChildPermissionToRoleQuery The current query, for fluid interface
      */
     public function filterByRoleId($roleId = null, $comparison = null)
     {
         if (is_array($roleId)) {
             $useMinMax = false;
             if (isset($roleId['min'])) {
-                $this->addUsingAlias(PermissionsRolesTableMap::COL_ROLES_ID, $roleId['min'], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(PermissionToRoleTableMap::COL_ROLES_ID, $roleId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($roleId['max'])) {
-                $this->addUsingAlias(PermissionsRolesTableMap::COL_ROLES_ID, $roleId['max'], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(PermissionToRoleTableMap::COL_ROLES_ID, $roleId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -332,7 +332,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(PermissionsRolesTableMap::COL_ROLES_ID, $roleId, $comparison);
+        return $this->addUsingAlias(PermissionToRoleTableMap::COL_ROLES_ID, $roleId, $comparison);
     }
 
     /**
@@ -343,20 +343,20 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildPermissionsRolesQuery The current query, for fluid interface
+     * @return ChildPermissionToRoleQuery The current query, for fluid interface
      */
     public function filterByPermission($permission, $comparison = null)
     {
         if ($permission instanceof \Phlopsi\AccessControl\Propel\Permission) {
             return $this
-                ->addUsingAlias(PermissionsRolesTableMap::COL_PERMISSIONS_ID, $permission->getId(), $comparison);
+                ->addUsingAlias(PermissionToRoleTableMap::COL_PERMISSIONS_ID, $permission->getId(), $comparison);
         } elseif ($permission instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(PermissionsRolesTableMap::COL_PERMISSIONS_ID, $permission->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(PermissionToRoleTableMap::COL_PERMISSIONS_ID, $permission->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByPermission() only accepts arguments of type \Phlopsi\AccessControl\Propel\Permission or Collection');
         }
@@ -368,7 +368,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildPermissionsRolesQuery The current query, for fluid interface
+     * @return $this|ChildPermissionToRoleQuery The current query, for fluid interface
      */
     public function joinPermission($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -420,20 +420,20 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildPermissionsRolesQuery The current query, for fluid interface
+     * @return ChildPermissionToRoleQuery The current query, for fluid interface
      */
     public function filterByRole($role, $comparison = null)
     {
         if ($role instanceof \Phlopsi\AccessControl\Propel\Role) {
             return $this
-                ->addUsingAlias(PermissionsRolesTableMap::COL_ROLES_ID, $role->getId(), $comparison);
+                ->addUsingAlias(PermissionToRoleTableMap::COL_ROLES_ID, $role->getId(), $comparison);
         } elseif ($role instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(PermissionsRolesTableMap::COL_ROLES_ID, $role->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(PermissionToRoleTableMap::COL_ROLES_ID, $role->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByRole() only accepts arguments of type \Phlopsi\AccessControl\Propel\Role or Collection');
         }
@@ -445,7 +445,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildPermissionsRolesQuery The current query, for fluid interface
+     * @return $this|ChildPermissionToRoleQuery The current query, for fluid interface
      */
     public function joinRole($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -492,15 +492,15 @@ abstract class PermissionsRolesQuery extends ModelCriteria
     /**
      * Exclude object from result
      *
-     * @param   ChildPermissionsRoles $permissionsRoles Object to remove from the list of results
+     * @param   ChildPermissionToRole $permissionToRole Object to remove from the list of results
      *
-     * @return $this|ChildPermissionsRolesQuery The current query, for fluid interface
+     * @return $this|ChildPermissionToRoleQuery The current query, for fluid interface
      */
-    public function prune($permissionsRoles = null)
+    public function prune($permissionToRole = null)
     {
-        if ($permissionsRoles) {
-            $this->addCond('pruneCond0', $this->getAliasedColName(PermissionsRolesTableMap::COL_PERMISSIONS_ID), $permissionsRoles->getPermissionId(), Criteria::NOT_EQUAL);
-            $this->addCond('pruneCond1', $this->getAliasedColName(PermissionsRolesTableMap::COL_ROLES_ID), $permissionsRoles->getRoleId(), Criteria::NOT_EQUAL);
+        if ($permissionToRole) {
+            $this->addCond('pruneCond0', $this->getAliasedColName(PermissionToRoleTableMap::COL_PERMISSIONS_ID), $permissionToRole->getPermissionId(), Criteria::NOT_EQUAL);
+            $this->addCond('pruneCond1', $this->getAliasedColName(PermissionToRoleTableMap::COL_ROLES_ID), $permissionToRole->getRoleId(), Criteria::NOT_EQUAL);
             $this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
         }
 
@@ -516,7 +516,7 @@ abstract class PermissionsRolesQuery extends ModelCriteria
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PermissionsRolesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PermissionToRoleTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -527,8 +527,8 @@ abstract class PermissionsRolesQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            PermissionsRolesTableMap::clearInstancePool();
-            PermissionsRolesTableMap::clearRelatedInstancePool();
+            PermissionToRoleTableMap::clearInstancePool();
+            PermissionToRoleTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -546,25 +546,25 @@ abstract class PermissionsRolesQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PermissionsRolesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(PermissionToRoleTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(PermissionsRolesTableMap::DATABASE_NAME);
+        $criteria->setDbName(PermissionToRoleTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
-
-            PermissionsRolesTableMap::removeInstanceFromPool($criteria);
-
+            
+            PermissionToRoleTableMap::removeInstanceFromPool($criteria);
+        
             $affectedRows += ModelCriteria::delete($con);
-            PermissionsRolesTableMap::clearRelatedInstancePool();
+            PermissionToRoleTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
-} // PermissionsRolesQuery
+} // PermissionToRoleQuery

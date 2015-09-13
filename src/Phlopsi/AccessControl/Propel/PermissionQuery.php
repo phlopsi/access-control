@@ -17,4 +17,4 @@ use Phlopsi\AccessControl\Propel\Base\PermissionQuery as BasePermissionQuery;
 class PermissionQuery extends BasePermissionQuery
 {
 
-} // PermissionQuery
+}

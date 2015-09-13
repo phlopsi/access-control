@@ -14,7 +14,6 @@ use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use Propel\Runtime\Map\TableMap;
 
 /**
  * Base class that represents a query for the 'session_types' table.
@@ -22,50 +21,35 @@ use Propel\Runtime\Map\TableMap;
  *
  *
  * @method     ChildSessionTypeQuery orderByExternalId($order = Criteria::ASC) Order by the external_id column
- * @method     ChildSessionTypeQuery orderByTreeLeft($order = Criteria::ASC) Order by the tree_left column
- * @method     ChildSessionTypeQuery orderByTreeRight($order = Criteria::ASC) Order by the tree_right column
- * @method     ChildSessionTypeQuery orderByTreeLevel($order = Criteria::ASC) Order by the tree_level column
  * @method     ChildSessionTypeQuery orderById($order = Criteria::ASC) Order by the id column
  *
  * @method     ChildSessionTypeQuery groupByExternalId() Group by the external_id column
- * @method     ChildSessionTypeQuery groupByTreeLeft() Group by the tree_left column
- * @method     ChildSessionTypeQuery groupByTreeRight() Group by the tree_right column
- * @method     ChildSessionTypeQuery groupByTreeLevel() Group by the tree_level column
  * @method     ChildSessionTypeQuery groupById() Group by the id column
  *
  * @method     ChildSessionTypeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildSessionTypeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildSessionTypeQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildSessionTypeQuery leftJoinRolesSessionTypes($relationAlias = null) Adds a LEFT JOIN clause to the query using the RolesSessionTypes relation
- * @method     ChildSessionTypeQuery rightJoinRolesSessionTypes($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RolesSessionTypes relation
- * @method     ChildSessionTypeQuery innerJoinRolesSessionTypes($relationAlias = null) Adds a INNER JOIN clause to the query using the RolesSessionTypes relation
+ * @method     ChildSessionTypeQuery leftJoinRoleToSessionType($relationAlias = null) Adds a LEFT JOIN clause to the query using the RoleToSessionType relation
+ * @method     ChildSessionTypeQuery rightJoinRoleToSessionType($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RoleToSessionType relation
+ * @method     ChildSessionTypeQuery innerJoinRoleToSessionType($relationAlias = null) Adds a INNER JOIN clause to the query using the RoleToSessionType relation
  *
- * @method     \Phlopsi\AccessControl\Propel\RolesSessionTypesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildSessionType findOne(ConnectionInterface $con = null) Return the first ChildSessionType matching the query
  * @method     ChildSessionType findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSessionType matching the query, or a new ChildSessionType object populated from the query conditions when no match is found
  *
  * @method     ChildSessionType findOneByExternalId(string $external_id) Return the first ChildSessionType filtered by the external_id column
- * @method     ChildSessionType findOneByTreeLeft(int $tree_left) Return the first ChildSessionType filtered by the tree_left column
- * @method     ChildSessionType findOneByTreeRight(int $tree_right) Return the first ChildSessionType filtered by the tree_right column
- * @method     ChildSessionType findOneByTreeLevel(int $tree_level) Return the first ChildSessionType filtered by the tree_level column
  * @method     ChildSessionType findOneById(int $id) Return the first ChildSessionType filtered by the id column *
 
  * @method     ChildSessionType requirePk($key, ConnectionInterface $con = null) Return the ChildSessionType by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSessionType requireOne(ConnectionInterface $con = null) Return the first ChildSessionType matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSessionType requireOneByExternalId(string $external_id) Return the first ChildSessionType filtered by the external_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSessionType requireOneByTreeLeft(int $tree_left) Return the first ChildSessionType filtered by the tree_left column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSessionType requireOneByTreeRight(int $tree_right) Return the first ChildSessionType filtered by the tree_right column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSessionType requireOneByTreeLevel(int $tree_level) Return the first ChildSessionType filtered by the tree_level column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSessionType requireOneById(int $id) Return the first ChildSessionType filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSessionType[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildSessionType objects based on current ModelCriteria
  * @method     ChildSessionType[]|ObjectCollection findByExternalId(string $external_id) Return ChildSessionType objects filtered by the external_id column
- * @method     ChildSessionType[]|ObjectCollection findByTreeLeft(int $tree_left) Return ChildSessionType objects filtered by the tree_left column
- * @method     ChildSessionType[]|ObjectCollection findByTreeRight(int $tree_right) Return ChildSessionType objects filtered by the tree_right column
- * @method     ChildSessionType[]|ObjectCollection findByTreeLevel(int $tree_level) Return ChildSessionType objects filtered by the tree_level column
  * @method     ChildSessionType[]|ObjectCollection findById(int $id) Return ChildSessionType objects filtered by the id column
  * @method     ChildSessionType[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -159,7 +143,7 @@ abstract class SessionTypeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT external_id, tree_left, tree_right, tree_level, id FROM session_types WHERE id = :p0';
+        $sql = 'SELECT external_id, id FROM session_types WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -279,129 +263,6 @@ abstract class SessionTypeQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the tree_left column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByTreeLeft(1234); // WHERE tree_left = 1234
-     * $query->filterByTreeLeft(array(12, 34)); // WHERE tree_left IN (12, 34)
-     * $query->filterByTreeLeft(array('min' => 12)); // WHERE tree_left > 12
-     * </code>
-     *
-     * @param     mixed $treeLeft The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function filterByTreeLeft($treeLeft = null, $comparison = null)
-    {
-        if (is_array($treeLeft)) {
-            $useMinMax = false;
-            if (isset($treeLeft['min'])) {
-                $this->addUsingAlias(SessionTypeTableMap::COL_TREE_LEFT, $treeLeft['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($treeLeft['max'])) {
-                $this->addUsingAlias(SessionTypeTableMap::COL_TREE_LEFT, $treeLeft['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(SessionTypeTableMap::COL_TREE_LEFT, $treeLeft, $comparison);
-    }
-
-    /**
-     * Filter the query on the tree_right column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByTreeRight(1234); // WHERE tree_right = 1234
-     * $query->filterByTreeRight(array(12, 34)); // WHERE tree_right IN (12, 34)
-     * $query->filterByTreeRight(array('min' => 12)); // WHERE tree_right > 12
-     * </code>
-     *
-     * @param     mixed $treeRight The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function filterByTreeRight($treeRight = null, $comparison = null)
-    {
-        if (is_array($treeRight)) {
-            $useMinMax = false;
-            if (isset($treeRight['min'])) {
-                $this->addUsingAlias(SessionTypeTableMap::COL_TREE_RIGHT, $treeRight['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($treeRight['max'])) {
-                $this->addUsingAlias(SessionTypeTableMap::COL_TREE_RIGHT, $treeRight['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(SessionTypeTableMap::COL_TREE_RIGHT, $treeRight, $comparison);
-    }
-
-    /**
-     * Filter the query on the tree_level column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByTreeLevel(1234); // WHERE tree_level = 1234
-     * $query->filterByTreeLevel(array(12, 34)); // WHERE tree_level IN (12, 34)
-     * $query->filterByTreeLevel(array('min' => 12)); // WHERE tree_level > 12
-     * </code>
-     *
-     * @param     mixed $treeLevel The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function filterByTreeLevel($treeLevel = null, $comparison = null)
-    {
-        if (is_array($treeLevel)) {
-            $useMinMax = false;
-            if (isset($treeLevel['min'])) {
-                $this->addUsingAlias(SessionTypeTableMap::COL_TREE_LEVEL, $treeLevel['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($treeLevel['max'])) {
-                $this->addUsingAlias(SessionTypeTableMap::COL_TREE_LEVEL, $treeLevel['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(SessionTypeTableMap::COL_TREE_LEVEL, $treeLevel, $comparison);
-    }
-
-    /**
      * Filter the query on the id column
      *
      * Example usage:
@@ -443,40 +304,40 @@ abstract class SessionTypeQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Phlopsi\AccessControl\Propel\RolesSessionTypes object
+     * Filter the query by a related \Phlopsi\AccessControl\Propel\RoleToSessionType object
      *
-     * @param \Phlopsi\AccessControl\Propel\RolesSessionTypes|ObjectCollection $rolesSessionTypes the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\RoleToSessionType|ObjectCollection $roleToSessionType the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildSessionTypeQuery The current query, for fluid interface
      */
-    public function filterByRolesSessionTypes($rolesSessionTypes, $comparison = null)
+    public function filterByRoleToSessionType($roleToSessionType, $comparison = null)
     {
-        if ($rolesSessionTypes instanceof \Phlopsi\AccessControl\Propel\RolesSessionTypes) {
+        if ($roleToSessionType instanceof \Phlopsi\AccessControl\Propel\RoleToSessionType) {
             return $this
-                ->addUsingAlias(SessionTypeTableMap::COL_ID, $rolesSessionTypes->getSessionTypeId(), $comparison);
-        } elseif ($rolesSessionTypes instanceof ObjectCollection) {
+                ->addUsingAlias(SessionTypeTableMap::COL_ID, $roleToSessionType->getSessionTypeId(), $comparison);
+        } elseif ($roleToSessionType instanceof ObjectCollection) {
             return $this
-                ->useRolesSessionTypesQuery()
-                ->filterByPrimaryKeys($rolesSessionTypes->getPrimaryKeys())
+                ->useRoleToSessionTypeQuery()
+                ->filterByPrimaryKeys($roleToSessionType->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByRolesSessionTypes() only accepts arguments of type \Phlopsi\AccessControl\Propel\RolesSessionTypes or Collection');
+            throw new PropelException('filterByRoleToSessionType() only accepts arguments of type \Phlopsi\AccessControl\Propel\RoleToSessionType or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the RolesSessionTypes relation
+     * Adds a JOIN clause to the query using the RoleToSessionType relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildSessionTypeQuery The current query, for fluid interface
      */
-    public function joinRolesSessionTypes($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinRoleToSessionType($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('RolesSessionTypes');
+        $relationMap = $tableMap->getRelation('RoleToSessionType');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -491,14 +352,14 @@ abstract class SessionTypeQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'RolesSessionTypes');
+            $this->addJoinObject($join, 'RoleToSessionType');
         }
 
         return $this;
     }
 
     /**
-     * Use the RolesSessionTypes relation RolesSessionTypes object
+     * Use the RoleToSessionType relation RoleToSessionType object
      *
      * @see useQuery()
      *
@@ -506,13 +367,13 @@ abstract class SessionTypeQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Phlopsi\AccessControl\Propel\RolesSessionTypesQuery A secondary query class using the current class as primary query
+     * @return \Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery A secondary query class using the current class as primary query
      */
-    public function useRolesSessionTypesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useRoleToSessionTypeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinRolesSessionTypes($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'RolesSessionTypes', '\Phlopsi\AccessControl\Propel\RolesSessionTypesQuery');
+            ->joinRoleToSessionType($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RoleToSessionType', '\Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery');
     }
 
     /**
@@ -527,7 +388,7 @@ abstract class SessionTypeQuery extends ModelCriteria
     public function filterByRole($role, $comparison = Criteria::EQUAL)
     {
         return $this
-            ->useRolesSessionTypesQuery()
+            ->useRoleToSessionTypeQuery()
             ->filterByRole($role, $comparison)
             ->endUse();
     }
@@ -599,403 +460,13 @@ abstract class SessionTypeQuery extends ModelCriteria
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
-
+            
             SessionTypeTableMap::removeInstanceFromPool($criteria);
-
+        
             $affectedRows += ModelCriteria::delete($con);
             SessionTypeTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
-    }
-
-    // nested_set behavior
-
-    /**
-     * Filter the query to restrict the result to descendants of an object
-     *
-     * @param     ChildSessionType $sessionType The object to use for descendant search
-     *
-     * @return    $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function descendantsOf(ChildSessionType $sessionType)
-    {
-        return $this
-            ->addUsingAlias(ChildSessionType::LEFT_COL, $sessionType->getLeftValue(), Criteria::GREATER_THAN)
-            ->addUsingAlias(ChildSessionType::LEFT_COL, $sessionType->getRightValue(), Criteria::LESS_THAN);
-    }
-
-    /**
-     * Filter the query to restrict the result to the branch of an object.
-     * Same as descendantsOf(), except that it includes the object passed as parameter in the result
-     *
-     * @param     ChildSessionType $sessionType The object to use for branch search
-     *
-     * @return    $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function branchOf(ChildSessionType $sessionType)
-    {
-        return $this
-            ->addUsingAlias(ChildSessionType::LEFT_COL, $sessionType->getLeftValue(), Criteria::GREATER_EQUAL)
-            ->addUsingAlias(ChildSessionType::LEFT_COL, $sessionType->getRightValue(), Criteria::LESS_EQUAL);
-    }
-
-    /**
-     * Filter the query to restrict the result to children of an object
-     *
-     * @param     ChildSessionType $sessionType The object to use for child search
-     *
-     * @return    $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function childrenOf(ChildSessionType $sessionType)
-    {
-        return $this
-            ->descendantsOf($sessionType)
-            ->addUsingAlias(ChildSessionType::LEVEL_COL, $sessionType->getLevel() + 1, Criteria::EQUAL);
-    }
-
-    /**
-     * Filter the query to restrict the result to siblings of an object.
-     * The result does not include the object passed as parameter.
-     *
-     * @param     ChildSessionType $sessionType The object to use for sibling search
-     * @param      ConnectionInterface $con Connection to use.
-     *
-     * @return    $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function siblingsOf(ChildSessionType $sessionType, ConnectionInterface $con = null)
-    {
-        if ($sessionType->isRoot()) {
-            return $this->
-                add(ChildSessionType::LEVEL_COL, '1<>1', Criteria::CUSTOM);
-        } else {
-            return $this
-                ->childrenOf($sessionType->getParent($con))
-                ->prune($sessionType);
-        }
-    }
-
-    /**
-     * Filter the query to restrict the result to ancestors of an object
-     *
-     * @param     ChildSessionType $sessionType The object to use for ancestors search
-     *
-     * @return    $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function ancestorsOf(ChildSessionType $sessionType)
-    {
-        return $this
-            ->addUsingAlias(ChildSessionType::LEFT_COL, $sessionType->getLeftValue(), Criteria::LESS_THAN)
-            ->addUsingAlias(ChildSessionType::RIGHT_COL, $sessionType->getRightValue(), Criteria::GREATER_THAN);
-    }
-
-    /**
-     * Filter the query to restrict the result to roots of an object.
-     * Same as ancestorsOf(), except that it includes the object passed as parameter in the result
-     *
-     * @param     ChildSessionType $sessionType The object to use for roots search
-     *
-     * @return    $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function rootsOf(ChildSessionType $sessionType)
-    {
-        return $this
-            ->addUsingAlias(ChildSessionType::LEFT_COL, $sessionType->getLeftValue(), Criteria::LESS_EQUAL)
-            ->addUsingAlias(ChildSessionType::RIGHT_COL, $sessionType->getRightValue(), Criteria::GREATER_EQUAL);
-    }
-
-    /**
-     * Order the result by branch, i.e. natural tree order
-     *
-     * @param     bool $reverse if true, reverses the order
-     *
-     * @return    $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function orderByBranch($reverse = false)
-    {
-        if ($reverse) {
-            return $this
-                ->addDescendingOrderByColumn(ChildSessionType::LEFT_COL);
-        } else {
-            return $this
-                ->addAscendingOrderByColumn(ChildSessionType::LEFT_COL);
-        }
-    }
-
-    /**
-     * Order the result by level, the closer to the root first
-     *
-     * @param     bool $reverse if true, reverses the order
-     *
-     * @return    $this|ChildSessionTypeQuery The current query, for fluid interface
-     */
-    public function orderByLevel($reverse = false)
-    {
-        if ($reverse) {
-            return $this
-                ->addDescendingOrderByColumn(ChildSessionType::LEVEL_COL)
-                ->addDescendingOrderByColumn(ChildSessionType::LEFT_COL);
-        } else {
-            return $this
-                ->addAscendingOrderByColumn(ChildSessionType::LEVEL_COL)
-                ->addAscendingOrderByColumn(ChildSessionType::LEFT_COL);
-        }
-    }
-
-    /**
-     * Returns the root node for the tree
-     *
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     ChildSessionType The tree root object
-     */
-    public function findRoot(ConnectionInterface $con = null)
-    {
-        return $this
-            ->addUsingAlias(ChildSessionType::LEFT_COL, 1, Criteria::EQUAL)
-            ->findOne($con);
-    }
-
-    /**
-     * Returns the tree of objects
-     *
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     ChildSessionType[]|ObjectCollection|mixed the list of results, formatted by the current formatter
-     */
-    public function findTree(ConnectionInterface $con = null)
-    {
-        return $this
-            ->orderByBranch()
-            ->find($con);
-    }
-
-    /**
-     * Returns the root node for a given scope
-     *
-     * @param      ConnectionInterface $con    Connection to use.
-     * @return     ChildSessionType            Propel object for root node
-     */
-    public static function retrieveRoot(ConnectionInterface $con = null)
-    {
-        $c = new Criteria(SessionTypeTableMap::DATABASE_NAME);
-        $c->add(ChildSessionType::LEFT_COL, 1, Criteria::EQUAL);
-
-        return ChildSessionTypeQuery::create(null, $c)->findOne($con);
-    }
-
-    /**
-     * Returns the whole tree node for a given scope
-     *
-     * @param      Criteria $criteria    Optional Criteria to filter the query
-     * @param      ConnectionInterface $con    Connection to use.
-     * @return     ChildSessionType[]|ObjectCollection|mixed the list of results, formatted by the current formatter
-     */
-    public static function retrieveTree(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if (null === $criteria) {
-            $criteria = new Criteria(SessionTypeTableMap::DATABASE_NAME);
-        }
-        $criteria->addAscendingOrderByColumn(ChildSessionType::LEFT_COL);
-
-        return ChildSessionTypeQuery::create(null, $criteria)->find($con);
-    }
-
-    /**
-     * Tests if node is valid
-     *
-     * @param      ChildSessionType $node    Propel object for src node
-     * @return     bool
-     */
-    public static function isValid(ChildSessionType $node = null)
-    {
-        if (is_object($node) && $node->getRightValue() > $node->getLeftValue()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Delete an entire tree
-     *
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     int  The number of deleted nodes
-     */
-    public static function deleteTree(ConnectionInterface $con = null)
-    {
-
-        return SessionTypeTableMap::doDeleteAll($con);
-    }
-
-    /**
-     * Adds $delta to all L and R values that are >= $first and <= $last.
-     * '$delta' can also be negative.
-     *
-     * @param int $delta               Value to be shifted by, can be negative
-     * @param int $first               First node to be shifted
-     * @param int $last                Last node to be shifted (optional)
-     * @param ConnectionInterface $con Connection to use.
-     */
-    public static function shiftRLValues($delta, $first, $last = null, ConnectionInterface $con = null)
-    {
-        if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTypeTableMap::DATABASE_NAME);
-        }
-
-        // Shift left column values
-        $whereCriteria = new Criteria(SessionTypeTableMap::DATABASE_NAME);
-        $criterion = $whereCriteria->getNewCriterion(ChildSessionType::LEFT_COL, $first, Criteria::GREATER_EQUAL);
-        if (null !== $last) {
-            $criterion->addAnd($whereCriteria->getNewCriterion(ChildSessionType::LEFT_COL, $last, Criteria::LESS_EQUAL));
-        }
-        $whereCriteria->add($criterion);
-
-        $valuesCriteria = new Criteria(SessionTypeTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildSessionType::LEFT_COL, array('raw' => ChildSessionType::LEFT_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
-
-        $whereCriteria->doUpdate($valuesCriteria, $con);
-
-        // Shift right column values
-        $whereCriteria = new Criteria(SessionTypeTableMap::DATABASE_NAME);
-        $criterion = $whereCriteria->getNewCriterion(ChildSessionType::RIGHT_COL, $first, Criteria::GREATER_EQUAL);
-        if (null !== $last) {
-            $criterion->addAnd($whereCriteria->getNewCriterion(ChildSessionType::RIGHT_COL, $last, Criteria::LESS_EQUAL));
-        }
-        $whereCriteria->add($criterion);
-
-        $valuesCriteria = new Criteria(SessionTypeTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildSessionType::RIGHT_COL, array('raw' => ChildSessionType::RIGHT_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
-
-        $whereCriteria->doUpdate($valuesCriteria, $con);
-    }
-
-    /**
-     * Adds $delta to level for nodes having left value >= $first and right value <= $last.
-     * '$delta' can also be negative.
-     *
-     * @param      int $delta        Value to be shifted by, can be negative
-     * @param      int $first        First node to be shifted
-     * @param      int $last            Last node to be shifted
-     * @param      ConnectionInterface $con        Connection to use.
-     */
-    public static function shiftLevel($delta, $first, $last, ConnectionInterface $con = null)
-    {
-        if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SessionTypeTableMap::DATABASE_NAME);
-        }
-
-        $whereCriteria = new Criteria(SessionTypeTableMap::DATABASE_NAME);
-        $whereCriteria->add(ChildSessionType::LEFT_COL, $first, Criteria::GREATER_EQUAL);
-        $whereCriteria->add(ChildSessionType::RIGHT_COL, $last, Criteria::LESS_EQUAL);
-
-        $valuesCriteria = new Criteria(SessionTypeTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildSessionType::LEVEL_COL, array('raw' => ChildSessionType::LEVEL_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
-
-        $whereCriteria->doUpdate($valuesCriteria, $con);
-    }
-
-    /**
-     * Reload all already loaded nodes to sync them with updated db
-     *
-     * @param      ChildSessionType $prune        Object to prune from the update
-     * @param      ConnectionInterface $con        Connection to use.
-     */
-    public static function updateLoadedNodes($prune = null, ConnectionInterface $con = null)
-    {
-        if (Propel::isInstancePoolingEnabled()) {
-            $keys = array();
-            /** @var $obj ChildSessionType */
-            foreach (SessionTypeTableMap::$instances as $obj) {
-                if (!$prune || !$prune->equals($obj)) {
-                    $keys[] = $obj->getPrimaryKey();
-                }
-            }
-
-            if (!empty($keys)) {
-                // We don't need to alter the object instance pool; we're just modifying these ones
-                // already in the pool.
-                $criteria = new Criteria(SessionTypeTableMap::DATABASE_NAME);
-                $criteria->add(SessionTypeTableMap::COL_ID, $keys, Criteria::IN);
-                $dataFetcher = ChildSessionTypeQuery::create(null, $criteria)->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
-                while ($row = $dataFetcher->fetch()) {
-                    $key = SessionTypeTableMap::getPrimaryKeyHashFromRow($row, 0);
-                    /** @var $object ChildSessionType */
-                    if (null !== ($object = SessionTypeTableMap::getInstanceFromPool($key))) {
-                        $object->setLeftValue($row[1]);
-                        $object->setRightValue($row[2]);
-                        $object->setLevel($row[3]);
-                        $object->clearNestedSetChildren();
-                    }
-                }
-                $dataFetcher->close();
-            }
-        }
-    }
-
-    /**
-     * Update the tree to allow insertion of a leaf at the specified position
-     *
-     * @param      int $left    left column value
-     * @param      mixed $prune    Object to prune from the shift
-     * @param      ConnectionInterface $con    Connection to use.
-     */
-    public static function makeRoomForLeaf($left, $prune = null, ConnectionInterface $con = null)
-    {
-        // Update database nodes
-        ChildSessionTypeQuery::shiftRLValues(2, $left, null, $con);
-
-        // Update all loaded nodes
-        ChildSessionTypeQuery::updateLoadedNodes($prune, $con);
-    }
-
-    /**
-     * Update the tree to allow insertion of a leaf at the specified position
-     *
-     * @param      ConnectionInterface $con    Connection to use.
-     */
-    public static function fixLevels(ConnectionInterface $con = null)
-    {
-        $c = new Criteria();
-        $c->addAscendingOrderByColumn(ChildSessionType::LEFT_COL);
-        $dataFetcher = ChildSessionTypeQuery::create(null, $c)->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
-
-        // set the class once to avoid overhead in the loop
-        $cls = SessionTypeTableMap::getOMClass(false);
-        $level = null;
-        // iterate over the statement
-        while ($row = $dataFetcher->fetch()) {
-            // hydrate object
-            $key = SessionTypeTableMap::getPrimaryKeyHashFromRow($row, 0);
-            /** @var $obj ChildSessionType */
-            if (null === ($obj = SessionTypeTableMap::getInstanceFromPool($key))) {
-                $obj = new $cls();
-                $obj->hydrate($row);
-                SessionTypeTableMap::addInstanceToPool($obj, $key);
-            }
-
-            // compute level
-            // Algorithm shamelessly stolen from sfPropelActAsNestedSetBehaviorPlugin
-            // Probably authored by Tristan Rivoallan
-            if ($level === null) {
-                $level = 0;
-                $i = 0;
-                $prev = array($obj->getRightValue());
-            } else {
-                while ($obj->getRightValue() > $prev[$i]) {
-                    $i--;
-                }
-                $level = ++$i;
-                $prev[$i] = $obj->getRightValue();
-            }
-
-            // update level in node if necessary
-            if ($obj->getLevel() !== $level) {
-                $obj->setLevel($level);
-                $obj->save($con);
-            }
-        }
-        $dataFetcher->close();
     }
 } // SessionTypeQuery

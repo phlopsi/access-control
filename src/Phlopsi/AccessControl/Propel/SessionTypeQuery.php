@@ -17,4 +17,4 @@ use Phlopsi\AccessControl\Propel\Base\SessionTypeQuery as BaseSessionTypeQuery;
 class SessionTypeQuery extends BaseSessionTypeQuery
 {
 
-} // SessionTypeQuery
+}

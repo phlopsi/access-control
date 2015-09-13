@@ -14,7 +14,6 @@ use Propel\Runtime\ActiveQuery\ModelJoin;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\PropelException;
-use Propel\Runtime\Map\TableMap;
 
 /**
  * Base class that represents a query for the 'roles' table.
@@ -22,62 +21,43 @@ use Propel\Runtime\Map\TableMap;
  *
  *
  * @method     ChildRoleQuery orderByExternalId($order = Criteria::ASC) Order by the external_id column
- * @method     ChildRoleQuery orderByTreeLeft($order = Criteria::ASC) Order by the tree_left column
- * @method     ChildRoleQuery orderByTreeRight($order = Criteria::ASC) Order by the tree_right column
- * @method     ChildRoleQuery orderByTreeLevel($order = Criteria::ASC) Order by the tree_level column
  * @method     ChildRoleQuery orderById($order = Criteria::ASC) Order by the id column
  *
  * @method     ChildRoleQuery groupByExternalId() Group by the external_id column
- * @method     ChildRoleQuery groupByTreeLeft() Group by the tree_left column
- * @method     ChildRoleQuery groupByTreeRight() Group by the tree_right column
- * @method     ChildRoleQuery groupByTreeLevel() Group by the tree_level column
  * @method     ChildRoleQuery groupById() Group by the id column
  *
  * @method     ChildRoleQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildRoleQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ChildRoleQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildRoleQuery leftJoinPermissionsRoles($relationAlias = null) Adds a LEFT JOIN clause to the query using the PermissionsRoles relation
- * @method     ChildRoleQuery rightJoinPermissionsRoles($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PermissionsRoles relation
- * @method     ChildRoleQuery innerJoinPermissionsRoles($relationAlias = null) Adds a INNER JOIN clause to the query using the PermissionsRoles relation
+ * @method     ChildRoleQuery leftJoinPermissionToRole($relationAlias = null) Adds a LEFT JOIN clause to the query using the PermissionToRole relation
+ * @method     ChildRoleQuery rightJoinPermissionToRole($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PermissionToRole relation
+ * @method     ChildRoleQuery innerJoinPermissionToRole($relationAlias = null) Adds a INNER JOIN clause to the query using the PermissionToRole relation
  *
- * @method     ChildRoleQuery leftJoinProhibitionsRoles($relationAlias = null) Adds a LEFT JOIN clause to the query using the ProhibitionsRoles relation
- * @method     ChildRoleQuery rightJoinProhibitionsRoles($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ProhibitionsRoles relation
- * @method     ChildRoleQuery innerJoinProhibitionsRoles($relationAlias = null) Adds a INNER JOIN clause to the query using the ProhibitionsRoles relation
+ * @method     ChildRoleQuery leftJoinRoleToSessionType($relationAlias = null) Adds a LEFT JOIN clause to the query using the RoleToSessionType relation
+ * @method     ChildRoleQuery rightJoinRoleToSessionType($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RoleToSessionType relation
+ * @method     ChildRoleQuery innerJoinRoleToSessionType($relationAlias = null) Adds a INNER JOIN clause to the query using the RoleToSessionType relation
  *
- * @method     ChildRoleQuery leftJoinRolesSessionTypes($relationAlias = null) Adds a LEFT JOIN clause to the query using the RolesSessionTypes relation
- * @method     ChildRoleQuery rightJoinRolesSessionTypes($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RolesSessionTypes relation
- * @method     ChildRoleQuery innerJoinRolesSessionTypes($relationAlias = null) Adds a INNER JOIN clause to the query using the RolesSessionTypes relation
+ * @method     ChildRoleQuery leftJoinRoleToUser($relationAlias = null) Adds a LEFT JOIN clause to the query using the RoleToUser relation
+ * @method     ChildRoleQuery rightJoinRoleToUser($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RoleToUser relation
+ * @method     ChildRoleQuery innerJoinRoleToUser($relationAlias = null) Adds a INNER JOIN clause to the query using the RoleToUser relation
  *
- * @method     ChildRoleQuery leftJoinRolesUsers($relationAlias = null) Adds a LEFT JOIN clause to the query using the RolesUsers relation
- * @method     ChildRoleQuery rightJoinRolesUsers($relationAlias = null) Adds a RIGHT JOIN clause to the query using the RolesUsers relation
- * @method     ChildRoleQuery innerJoinRolesUsers($relationAlias = null) Adds a INNER JOIN clause to the query using the RolesUsers relation
- *
- * @method     \Phlopsi\AccessControl\Propel\PermissionsRolesQuery|\Phlopsi\AccessControl\Propel\ProhibitionsRolesQuery|\Phlopsi\AccessControl\Propel\RolesSessionTypesQuery|\Phlopsi\AccessControl\Propel\RolesUsersQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \Phlopsi\AccessControl\Propel\PermissionToRoleQuery|\Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery|\Phlopsi\AccessControl\Propel\RoleToUserQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildRole findOne(ConnectionInterface $con = null) Return the first ChildRole matching the query
  * @method     ChildRole findOneOrCreate(ConnectionInterface $con = null) Return the first ChildRole matching the query, or a new ChildRole object populated from the query conditions when no match is found
  *
  * @method     ChildRole findOneByExternalId(string $external_id) Return the first ChildRole filtered by the external_id column
- * @method     ChildRole findOneByTreeLeft(int $tree_left) Return the first ChildRole filtered by the tree_left column
- * @method     ChildRole findOneByTreeRight(int $tree_right) Return the first ChildRole filtered by the tree_right column
- * @method     ChildRole findOneByTreeLevel(int $tree_level) Return the first ChildRole filtered by the tree_level column
  * @method     ChildRole findOneById(int $id) Return the first ChildRole filtered by the id column *
 
  * @method     ChildRole requirePk($key, ConnectionInterface $con = null) Return the ChildRole by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildRole requireOne(ConnectionInterface $con = null) Return the first ChildRole matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildRole requireOneByExternalId(string $external_id) Return the first ChildRole filtered by the external_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildRole requireOneByTreeLeft(int $tree_left) Return the first ChildRole filtered by the tree_left column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildRole requireOneByTreeRight(int $tree_right) Return the first ChildRole filtered by the tree_right column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildRole requireOneByTreeLevel(int $tree_level) Return the first ChildRole filtered by the tree_level column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildRole requireOneById(int $id) Return the first ChildRole filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildRole[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildRole objects based on current ModelCriteria
  * @method     ChildRole[]|ObjectCollection findByExternalId(string $external_id) Return ChildRole objects filtered by the external_id column
- * @method     ChildRole[]|ObjectCollection findByTreeLeft(int $tree_left) Return ChildRole objects filtered by the tree_left column
- * @method     ChildRole[]|ObjectCollection findByTreeRight(int $tree_right) Return ChildRole objects filtered by the tree_right column
- * @method     ChildRole[]|ObjectCollection findByTreeLevel(int $tree_level) Return ChildRole objects filtered by the tree_level column
  * @method     ChildRole[]|ObjectCollection findById(int $id) Return ChildRole objects filtered by the id column
  * @method     ChildRole[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
@@ -171,7 +151,7 @@ abstract class RoleQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT external_id, tree_left, tree_right, tree_level, id FROM roles WHERE id = :p0';
+        $sql = 'SELECT external_id, id FROM roles WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -291,129 +271,6 @@ abstract class RoleQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the tree_left column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByTreeLeft(1234); // WHERE tree_left = 1234
-     * $query->filterByTreeLeft(array(12, 34)); // WHERE tree_left IN (12, 34)
-     * $query->filterByTreeLeft(array('min' => 12)); // WHERE tree_left > 12
-     * </code>
-     *
-     * @param     mixed $treeLeft The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function filterByTreeLeft($treeLeft = null, $comparison = null)
-    {
-        if (is_array($treeLeft)) {
-            $useMinMax = false;
-            if (isset($treeLeft['min'])) {
-                $this->addUsingAlias(RoleTableMap::COL_TREE_LEFT, $treeLeft['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($treeLeft['max'])) {
-                $this->addUsingAlias(RoleTableMap::COL_TREE_LEFT, $treeLeft['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(RoleTableMap::COL_TREE_LEFT, $treeLeft, $comparison);
-    }
-
-    /**
-     * Filter the query on the tree_right column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByTreeRight(1234); // WHERE tree_right = 1234
-     * $query->filterByTreeRight(array(12, 34)); // WHERE tree_right IN (12, 34)
-     * $query->filterByTreeRight(array('min' => 12)); // WHERE tree_right > 12
-     * </code>
-     *
-     * @param     mixed $treeRight The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function filterByTreeRight($treeRight = null, $comparison = null)
-    {
-        if (is_array($treeRight)) {
-            $useMinMax = false;
-            if (isset($treeRight['min'])) {
-                $this->addUsingAlias(RoleTableMap::COL_TREE_RIGHT, $treeRight['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($treeRight['max'])) {
-                $this->addUsingAlias(RoleTableMap::COL_TREE_RIGHT, $treeRight['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(RoleTableMap::COL_TREE_RIGHT, $treeRight, $comparison);
-    }
-
-    /**
-     * Filter the query on the tree_level column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByTreeLevel(1234); // WHERE tree_level = 1234
-     * $query->filterByTreeLevel(array(12, 34)); // WHERE tree_level IN (12, 34)
-     * $query->filterByTreeLevel(array('min' => 12)); // WHERE tree_level > 12
-     * </code>
-     *
-     * @param     mixed $treeLevel The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function filterByTreeLevel($treeLevel = null, $comparison = null)
-    {
-        if (is_array($treeLevel)) {
-            $useMinMax = false;
-            if (isset($treeLevel['min'])) {
-                $this->addUsingAlias(RoleTableMap::COL_TREE_LEVEL, $treeLevel['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($treeLevel['max'])) {
-                $this->addUsingAlias(RoleTableMap::COL_TREE_LEVEL, $treeLevel['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(RoleTableMap::COL_TREE_LEVEL, $treeLevel, $comparison);
-    }
-
-    /**
      * Filter the query on the id column
      *
      * Example usage:
@@ -455,40 +312,40 @@ abstract class RoleQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Phlopsi\AccessControl\Propel\PermissionsRoles object
+     * Filter the query by a related \Phlopsi\AccessControl\Propel\PermissionToRole object
      *
-     * @param \Phlopsi\AccessControl\Propel\PermissionsRoles|ObjectCollection $permissionsRoles the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\PermissionToRole|ObjectCollection $permissionToRole the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildRoleQuery The current query, for fluid interface
      */
-    public function filterByPermissionsRoles($permissionsRoles, $comparison = null)
+    public function filterByPermissionToRole($permissionToRole, $comparison = null)
     {
-        if ($permissionsRoles instanceof \Phlopsi\AccessControl\Propel\PermissionsRoles) {
+        if ($permissionToRole instanceof \Phlopsi\AccessControl\Propel\PermissionToRole) {
             return $this
-                ->addUsingAlias(RoleTableMap::COL_ID, $permissionsRoles->getRoleId(), $comparison);
-        } elseif ($permissionsRoles instanceof ObjectCollection) {
+                ->addUsingAlias(RoleTableMap::COL_ID, $permissionToRole->getRoleId(), $comparison);
+        } elseif ($permissionToRole instanceof ObjectCollection) {
             return $this
-                ->usePermissionsRolesQuery()
-                ->filterByPrimaryKeys($permissionsRoles->getPrimaryKeys())
+                ->usePermissionToRoleQuery()
+                ->filterByPrimaryKeys($permissionToRole->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByPermissionsRoles() only accepts arguments of type \Phlopsi\AccessControl\Propel\PermissionsRoles or Collection');
+            throw new PropelException('filterByPermissionToRole() only accepts arguments of type \Phlopsi\AccessControl\Propel\PermissionToRole or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the PermissionsRoles relation
+     * Adds a JOIN clause to the query using the PermissionToRole relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildRoleQuery The current query, for fluid interface
      */
-    public function joinPermissionsRoles($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinPermissionToRole($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('PermissionsRoles');
+        $relationMap = $tableMap->getRelation('PermissionToRole');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -503,14 +360,14 @@ abstract class RoleQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'PermissionsRoles');
+            $this->addJoinObject($join, 'PermissionToRole');
         }
 
         return $this;
     }
 
     /**
-     * Use the PermissionsRoles relation PermissionsRoles object
+     * Use the PermissionToRole relation PermissionToRole object
      *
      * @see useQuery()
      *
@@ -518,50 +375,50 @@ abstract class RoleQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Phlopsi\AccessControl\Propel\PermissionsRolesQuery A secondary query class using the current class as primary query
+     * @return \Phlopsi\AccessControl\Propel\PermissionToRoleQuery A secondary query class using the current class as primary query
      */
-    public function usePermissionsRolesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function usePermissionToRoleQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinPermissionsRoles($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'PermissionsRoles', '\Phlopsi\AccessControl\Propel\PermissionsRolesQuery');
+            ->joinPermissionToRole($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'PermissionToRole', '\Phlopsi\AccessControl\Propel\PermissionToRoleQuery');
     }
 
     /**
-     * Filter the query by a related \Phlopsi\AccessControl\Propel\ProhibitionsRoles object
+     * Filter the query by a related \Phlopsi\AccessControl\Propel\RoleToSessionType object
      *
-     * @param \Phlopsi\AccessControl\Propel\ProhibitionsRoles|ObjectCollection $prohibitionsRoles the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\RoleToSessionType|ObjectCollection $roleToSessionType the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildRoleQuery The current query, for fluid interface
      */
-    public function filterByProhibitionsRoles($prohibitionsRoles, $comparison = null)
+    public function filterByRoleToSessionType($roleToSessionType, $comparison = null)
     {
-        if ($prohibitionsRoles instanceof \Phlopsi\AccessControl\Propel\ProhibitionsRoles) {
+        if ($roleToSessionType instanceof \Phlopsi\AccessControl\Propel\RoleToSessionType) {
             return $this
-                ->addUsingAlias(RoleTableMap::COL_ID, $prohibitionsRoles->getRoleId(), $comparison);
-        } elseif ($prohibitionsRoles instanceof ObjectCollection) {
+                ->addUsingAlias(RoleTableMap::COL_ID, $roleToSessionType->getRoleId(), $comparison);
+        } elseif ($roleToSessionType instanceof ObjectCollection) {
             return $this
-                ->useProhibitionsRolesQuery()
-                ->filterByPrimaryKeys($prohibitionsRoles->getPrimaryKeys())
+                ->useRoleToSessionTypeQuery()
+                ->filterByPrimaryKeys($roleToSessionType->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByProhibitionsRoles() only accepts arguments of type \Phlopsi\AccessControl\Propel\ProhibitionsRoles or Collection');
+            throw new PropelException('filterByRoleToSessionType() only accepts arguments of type \Phlopsi\AccessControl\Propel\RoleToSessionType or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the ProhibitionsRoles relation
+     * Adds a JOIN clause to the query using the RoleToSessionType relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildRoleQuery The current query, for fluid interface
      */
-    public function joinProhibitionsRoles($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinRoleToSessionType($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('ProhibitionsRoles');
+        $relationMap = $tableMap->getRelation('RoleToSessionType');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -576,14 +433,14 @@ abstract class RoleQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'ProhibitionsRoles');
+            $this->addJoinObject($join, 'RoleToSessionType');
         }
 
         return $this;
     }
 
     /**
-     * Use the ProhibitionsRoles relation ProhibitionsRoles object
+     * Use the RoleToSessionType relation RoleToSessionType object
      *
      * @see useQuery()
      *
@@ -591,50 +448,50 @@ abstract class RoleQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Phlopsi\AccessControl\Propel\ProhibitionsRolesQuery A secondary query class using the current class as primary query
+     * @return \Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery A secondary query class using the current class as primary query
      */
-    public function useProhibitionsRolesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useRoleToSessionTypeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinProhibitionsRoles($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'ProhibitionsRoles', '\Phlopsi\AccessControl\Propel\ProhibitionsRolesQuery');
+            ->joinRoleToSessionType($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RoleToSessionType', '\Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery');
     }
 
     /**
-     * Filter the query by a related \Phlopsi\AccessControl\Propel\RolesSessionTypes object
+     * Filter the query by a related \Phlopsi\AccessControl\Propel\RoleToUser object
      *
-     * @param \Phlopsi\AccessControl\Propel\RolesSessionTypes|ObjectCollection $rolesSessionTypes the related object to use as filter
+     * @param \Phlopsi\AccessControl\Propel\RoleToUser|ObjectCollection $roleToUser the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return ChildRoleQuery The current query, for fluid interface
      */
-    public function filterByRolesSessionTypes($rolesSessionTypes, $comparison = null)
+    public function filterByRoleToUser($roleToUser, $comparison = null)
     {
-        if ($rolesSessionTypes instanceof \Phlopsi\AccessControl\Propel\RolesSessionTypes) {
+        if ($roleToUser instanceof \Phlopsi\AccessControl\Propel\RoleToUser) {
             return $this
-                ->addUsingAlias(RoleTableMap::COL_ID, $rolesSessionTypes->getRoleId(), $comparison);
-        } elseif ($rolesSessionTypes instanceof ObjectCollection) {
+                ->addUsingAlias(RoleTableMap::COL_ID, $roleToUser->getRoleId(), $comparison);
+        } elseif ($roleToUser instanceof ObjectCollection) {
             return $this
-                ->useRolesSessionTypesQuery()
-                ->filterByPrimaryKeys($rolesSessionTypes->getPrimaryKeys())
+                ->useRoleToUserQuery()
+                ->filterByPrimaryKeys($roleToUser->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByRolesSessionTypes() only accepts arguments of type \Phlopsi\AccessControl\Propel\RolesSessionTypes or Collection');
+            throw new PropelException('filterByRoleToUser() only accepts arguments of type \Phlopsi\AccessControl\Propel\RoleToUser or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the RolesSessionTypes relation
+     * Adds a JOIN clause to the query using the RoleToUser relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildRoleQuery The current query, for fluid interface
      */
-    public function joinRolesSessionTypes($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinRoleToUser($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('RolesSessionTypes');
+        $relationMap = $tableMap->getRelation('RoleToUser');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -649,14 +506,14 @@ abstract class RoleQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'RolesSessionTypes');
+            $this->addJoinObject($join, 'RoleToUser');
         }
 
         return $this;
     }
 
     /**
-     * Use the RolesSessionTypes relation RolesSessionTypes object
+     * Use the RoleToUser relation RoleToUser object
      *
      * @see useQuery()
      *
@@ -664,86 +521,13 @@ abstract class RoleQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Phlopsi\AccessControl\Propel\RolesSessionTypesQuery A secondary query class using the current class as primary query
+     * @return \Phlopsi\AccessControl\Propel\RoleToUserQuery A secondary query class using the current class as primary query
      */
-    public function useRolesSessionTypesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useRoleToUserQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinRolesSessionTypes($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'RolesSessionTypes', '\Phlopsi\AccessControl\Propel\RolesSessionTypesQuery');
-    }
-
-    /**
-     * Filter the query by a related \Phlopsi\AccessControl\Propel\RolesUsers object
-     *
-     * @param \Phlopsi\AccessControl\Propel\RolesUsers|ObjectCollection $rolesUsers the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildRoleQuery The current query, for fluid interface
-     */
-    public function filterByRolesUsers($rolesUsers, $comparison = null)
-    {
-        if ($rolesUsers instanceof \Phlopsi\AccessControl\Propel\RolesUsers) {
-            return $this
-                ->addUsingAlias(RoleTableMap::COL_ID, $rolesUsers->getRoleId(), $comparison);
-        } elseif ($rolesUsers instanceof ObjectCollection) {
-            return $this
-                ->useRolesUsersQuery()
-                ->filterByPrimaryKeys($rolesUsers->getPrimaryKeys())
-                ->endUse();
-        } else {
-            throw new PropelException('filterByRolesUsers() only accepts arguments of type \Phlopsi\AccessControl\Propel\RolesUsers or Collection');
-        }
-    }
-
-    /**
-     * Adds a JOIN clause to the query using the RolesUsers relation
-     *
-     * @param     string $relationAlias optional alias for the relation
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function joinRolesUsers($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('RolesUsers');
-
-        // create a ModelJoin object for this join
-        $join = new ModelJoin();
-        $join->setJoinType($joinType);
-        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-        if ($previousJoin = $this->getPreviousJoin()) {
-            $join->setPreviousJoin($previousJoin);
-        }
-
-        // add the ModelJoin to the current object
-        if ($relationAlias) {
-            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-            $this->addJoinObject($join, $relationAlias);
-        } else {
-            $this->addJoinObject($join, 'RolesUsers');
-        }
-
-        return $this;
-    }
-
-    /**
-     * Use the RolesUsers relation RolesUsers object
-     *
-     * @see useQuery()
-     *
-     * @param     string $relationAlias optional alias for the relation,
-     *                                   to be used as main alias in the secondary query
-     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-     *
-     * @return \Phlopsi\AccessControl\Propel\RolesUsersQuery A secondary query class using the current class as primary query
-     */
-    public function useRolesUsersQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
-    {
-        return $this
-            ->joinRolesUsers($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'RolesUsers', '\Phlopsi\AccessControl\Propel\RolesUsersQuery');
+            ->joinRoleToUser($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'RoleToUser', '\Phlopsi\AccessControl\Propel\RoleToUserQuery');
     }
 
     /**
@@ -758,25 +542,8 @@ abstract class RoleQuery extends ModelCriteria
     public function filterByPermission($permission, $comparison = Criteria::EQUAL)
     {
         return $this
-            ->usePermissionsRolesQuery()
+            ->usePermissionToRoleQuery()
             ->filterByPermission($permission, $comparison)
-            ->endUse();
-    }
-
-    /**
-     * Filter the query by a related Prohibition object
-     * using the prohibitions_roles table as cross reference
-     *
-     * @param Prohibition $prohibition the related object to use as filter
-     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return ChildRoleQuery The current query, for fluid interface
-     */
-    public function filterByProhibition($prohibition, $comparison = Criteria::EQUAL)
-    {
-        return $this
-            ->useProhibitionsRolesQuery()
-            ->filterByProhibition($prohibition, $comparison)
             ->endUse();
     }
 
@@ -792,7 +559,7 @@ abstract class RoleQuery extends ModelCriteria
     public function filterBySessionType($sessionType, $comparison = Criteria::EQUAL)
     {
         return $this
-            ->useRolesSessionTypesQuery()
+            ->useRoleToSessionTypeQuery()
             ->filterBySessionType($sessionType, $comparison)
             ->endUse();
     }
@@ -809,7 +576,7 @@ abstract class RoleQuery extends ModelCriteria
     public function filterByUser($user, $comparison = Criteria::EQUAL)
     {
         return $this
-            ->useRolesUsersQuery()
+            ->useRoleToUserQuery()
             ->filterByUser($user, $comparison)
             ->endUse();
     }
@@ -881,403 +648,13 @@ abstract class RoleQuery extends ModelCriteria
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
-
+            
             RoleTableMap::removeInstanceFromPool($criteria);
-
+        
             $affectedRows += ModelCriteria::delete($con);
             RoleTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
-    }
-
-    // nested_set behavior
-
-    /**
-     * Filter the query to restrict the result to descendants of an object
-     *
-     * @param     ChildRole $role The object to use for descendant search
-     *
-     * @return    $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function descendantsOf(ChildRole $role)
-    {
-        return $this
-            ->addUsingAlias(ChildRole::LEFT_COL, $role->getLeftValue(), Criteria::GREATER_THAN)
-            ->addUsingAlias(ChildRole::LEFT_COL, $role->getRightValue(), Criteria::LESS_THAN);
-    }
-
-    /**
-     * Filter the query to restrict the result to the branch of an object.
-     * Same as descendantsOf(), except that it includes the object passed as parameter in the result
-     *
-     * @param     ChildRole $role The object to use for branch search
-     *
-     * @return    $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function branchOf(ChildRole $role)
-    {
-        return $this
-            ->addUsingAlias(ChildRole::LEFT_COL, $role->getLeftValue(), Criteria::GREATER_EQUAL)
-            ->addUsingAlias(ChildRole::LEFT_COL, $role->getRightValue(), Criteria::LESS_EQUAL);
-    }
-
-    /**
-     * Filter the query to restrict the result to children of an object
-     *
-     * @param     ChildRole $role The object to use for child search
-     *
-     * @return    $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function childrenOf(ChildRole $role)
-    {
-        return $this
-            ->descendantsOf($role)
-            ->addUsingAlias(ChildRole::LEVEL_COL, $role->getLevel() + 1, Criteria::EQUAL);
-    }
-
-    /**
-     * Filter the query to restrict the result to siblings of an object.
-     * The result does not include the object passed as parameter.
-     *
-     * @param     ChildRole $role The object to use for sibling search
-     * @param      ConnectionInterface $con Connection to use.
-     *
-     * @return    $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function siblingsOf(ChildRole $role, ConnectionInterface $con = null)
-    {
-        if ($role->isRoot()) {
-            return $this->
-                add(ChildRole::LEVEL_COL, '1<>1', Criteria::CUSTOM);
-        } else {
-            return $this
-                ->childrenOf($role->getParent($con))
-                ->prune($role);
-        }
-    }
-
-    /**
-     * Filter the query to restrict the result to ancestors of an object
-     *
-     * @param     ChildRole $role The object to use for ancestors search
-     *
-     * @return    $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function ancestorsOf(ChildRole $role)
-    {
-        return $this
-            ->addUsingAlias(ChildRole::LEFT_COL, $role->getLeftValue(), Criteria::LESS_THAN)
-            ->addUsingAlias(ChildRole::RIGHT_COL, $role->getRightValue(), Criteria::GREATER_THAN);
-    }
-
-    /**
-     * Filter the query to restrict the result to roots of an object.
-     * Same as ancestorsOf(), except that it includes the object passed as parameter in the result
-     *
-     * @param     ChildRole $role The object to use for roots search
-     *
-     * @return    $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function rootsOf(ChildRole $role)
-    {
-        return $this
-            ->addUsingAlias(ChildRole::LEFT_COL, $role->getLeftValue(), Criteria::LESS_EQUAL)
-            ->addUsingAlias(ChildRole::RIGHT_COL, $role->getRightValue(), Criteria::GREATER_EQUAL);
-    }
-
-    /**
-     * Order the result by branch, i.e. natural tree order
-     *
-     * @param     bool $reverse if true, reverses the order
-     *
-     * @return    $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function orderByBranch($reverse = false)
-    {
-        if ($reverse) {
-            return $this
-                ->addDescendingOrderByColumn(ChildRole::LEFT_COL);
-        } else {
-            return $this
-                ->addAscendingOrderByColumn(ChildRole::LEFT_COL);
-        }
-    }
-
-    /**
-     * Order the result by level, the closer to the root first
-     *
-     * @param     bool $reverse if true, reverses the order
-     *
-     * @return    $this|ChildRoleQuery The current query, for fluid interface
-     */
-    public function orderByLevel($reverse = false)
-    {
-        if ($reverse) {
-            return $this
-                ->addDescendingOrderByColumn(ChildRole::LEVEL_COL)
-                ->addDescendingOrderByColumn(ChildRole::LEFT_COL);
-        } else {
-            return $this
-                ->addAscendingOrderByColumn(ChildRole::LEVEL_COL)
-                ->addAscendingOrderByColumn(ChildRole::LEFT_COL);
-        }
-    }
-
-    /**
-     * Returns the root node for the tree
-     *
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     ChildRole The tree root object
-     */
-    public function findRoot(ConnectionInterface $con = null)
-    {
-        return $this
-            ->addUsingAlias(ChildRole::LEFT_COL, 1, Criteria::EQUAL)
-            ->findOne($con);
-    }
-
-    /**
-     * Returns the tree of objects
-     *
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     ChildRole[]|ObjectCollection|mixed the list of results, formatted by the current formatter
-     */
-    public function findTree(ConnectionInterface $con = null)
-    {
-        return $this
-            ->orderByBranch()
-            ->find($con);
-    }
-
-    /**
-     * Returns the root node for a given scope
-     *
-     * @param      ConnectionInterface $con    Connection to use.
-     * @return     ChildRole            Propel object for root node
-     */
-    public static function retrieveRoot(ConnectionInterface $con = null)
-    {
-        $c = new Criteria(RoleTableMap::DATABASE_NAME);
-        $c->add(ChildRole::LEFT_COL, 1, Criteria::EQUAL);
-
-        return ChildRoleQuery::create(null, $c)->findOne($con);
-    }
-
-    /**
-     * Returns the whole tree node for a given scope
-     *
-     * @param      Criteria $criteria    Optional Criteria to filter the query
-     * @param      ConnectionInterface $con    Connection to use.
-     * @return     ChildRole[]|ObjectCollection|mixed the list of results, formatted by the current formatter
-     */
-    public static function retrieveTree(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if (null === $criteria) {
-            $criteria = new Criteria(RoleTableMap::DATABASE_NAME);
-        }
-        $criteria->addAscendingOrderByColumn(ChildRole::LEFT_COL);
-
-        return ChildRoleQuery::create(null, $criteria)->find($con);
-    }
-
-    /**
-     * Tests if node is valid
-     *
-     * @param      ChildRole $node    Propel object for src node
-     * @return     bool
-     */
-    public static function isValid(ChildRole $node = null)
-    {
-        if (is_object($node) && $node->getRightValue() > $node->getLeftValue()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Delete an entire tree
-     *
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     int  The number of deleted nodes
-     */
-    public static function deleteTree(ConnectionInterface $con = null)
-    {
-
-        return RoleTableMap::doDeleteAll($con);
-    }
-
-    /**
-     * Adds $delta to all L and R values that are >= $first and <= $last.
-     * '$delta' can also be negative.
-     *
-     * @param int $delta               Value to be shifted by, can be negative
-     * @param int $first               First node to be shifted
-     * @param int $last                Last node to be shifted (optional)
-     * @param ConnectionInterface $con Connection to use.
-     */
-    public static function shiftRLValues($delta, $first, $last = null, ConnectionInterface $con = null)
-    {
-        if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(RoleTableMap::DATABASE_NAME);
-        }
-
-        // Shift left column values
-        $whereCriteria = new Criteria(RoleTableMap::DATABASE_NAME);
-        $criterion = $whereCriteria->getNewCriterion(ChildRole::LEFT_COL, $first, Criteria::GREATER_EQUAL);
-        if (null !== $last) {
-            $criterion->addAnd($whereCriteria->getNewCriterion(ChildRole::LEFT_COL, $last, Criteria::LESS_EQUAL));
-        }
-        $whereCriteria->add($criterion);
-
-        $valuesCriteria = new Criteria(RoleTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildRole::LEFT_COL, array('raw' => ChildRole::LEFT_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
-
-        $whereCriteria->doUpdate($valuesCriteria, $con);
-
-        // Shift right column values
-        $whereCriteria = new Criteria(RoleTableMap::DATABASE_NAME);
-        $criterion = $whereCriteria->getNewCriterion(ChildRole::RIGHT_COL, $first, Criteria::GREATER_EQUAL);
-        if (null !== $last) {
-            $criterion->addAnd($whereCriteria->getNewCriterion(ChildRole::RIGHT_COL, $last, Criteria::LESS_EQUAL));
-        }
-        $whereCriteria->add($criterion);
-
-        $valuesCriteria = new Criteria(RoleTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildRole::RIGHT_COL, array('raw' => ChildRole::RIGHT_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
-
-        $whereCriteria->doUpdate($valuesCriteria, $con);
-    }
-
-    /**
-     * Adds $delta to level for nodes having left value >= $first and right value <= $last.
-     * '$delta' can also be negative.
-     *
-     * @param      int $delta        Value to be shifted by, can be negative
-     * @param      int $first        First node to be shifted
-     * @param      int $last            Last node to be shifted
-     * @param      ConnectionInterface $con        Connection to use.
-     */
-    public static function shiftLevel($delta, $first, $last, ConnectionInterface $con = null)
-    {
-        if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(RoleTableMap::DATABASE_NAME);
-        }
-
-        $whereCriteria = new Criteria(RoleTableMap::DATABASE_NAME);
-        $whereCriteria->add(ChildRole::LEFT_COL, $first, Criteria::GREATER_EQUAL);
-        $whereCriteria->add(ChildRole::RIGHT_COL, $last, Criteria::LESS_EQUAL);
-
-        $valuesCriteria = new Criteria(RoleTableMap::DATABASE_NAME);
-        $valuesCriteria->add(ChildRole::LEVEL_COL, array('raw' => ChildRole::LEVEL_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
-
-        $whereCriteria->doUpdate($valuesCriteria, $con);
-    }
-
-    /**
-     * Reload all already loaded nodes to sync them with updated db
-     *
-     * @param      ChildRole $prune        Object to prune from the update
-     * @param      ConnectionInterface $con        Connection to use.
-     */
-    public static function updateLoadedNodes($prune = null, ConnectionInterface $con = null)
-    {
-        if (Propel::isInstancePoolingEnabled()) {
-            $keys = array();
-            /** @var $obj ChildRole */
-            foreach (RoleTableMap::$instances as $obj) {
-                if (!$prune || !$prune->equals($obj)) {
-                    $keys[] = $obj->getPrimaryKey();
-                }
-            }
-
-            if (!empty($keys)) {
-                // We don't need to alter the object instance pool; we're just modifying these ones
-                // already in the pool.
-                $criteria = new Criteria(RoleTableMap::DATABASE_NAME);
-                $criteria->add(RoleTableMap::COL_ID, $keys, Criteria::IN);
-                $dataFetcher = ChildRoleQuery::create(null, $criteria)->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
-                while ($row = $dataFetcher->fetch()) {
-                    $key = RoleTableMap::getPrimaryKeyHashFromRow($row, 0);
-                    /** @var $object ChildRole */
-                    if (null !== ($object = RoleTableMap::getInstanceFromPool($key))) {
-                        $object->setLeftValue($row[1]);
-                        $object->setRightValue($row[2]);
-                        $object->setLevel($row[3]);
-                        $object->clearNestedSetChildren();
-                    }
-                }
-                $dataFetcher->close();
-            }
-        }
-    }
-
-    /**
-     * Update the tree to allow insertion of a leaf at the specified position
-     *
-     * @param      int $left    left column value
-     * @param      mixed $prune    Object to prune from the shift
-     * @param      ConnectionInterface $con    Connection to use.
-     */
-    public static function makeRoomForLeaf($left, $prune = null, ConnectionInterface $con = null)
-    {
-        // Update database nodes
-        ChildRoleQuery::shiftRLValues(2, $left, null, $con);
-
-        // Update all loaded nodes
-        ChildRoleQuery::updateLoadedNodes($prune, $con);
-    }
-
-    /**
-     * Update the tree to allow insertion of a leaf at the specified position
-     *
-     * @param      ConnectionInterface $con    Connection to use.
-     */
-    public static function fixLevels(ConnectionInterface $con = null)
-    {
-        $c = new Criteria();
-        $c->addAscendingOrderByColumn(ChildRole::LEFT_COL);
-        $dataFetcher = ChildRoleQuery::create(null, $c)->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
-
-        // set the class once to avoid overhead in the loop
-        $cls = RoleTableMap::getOMClass(false);
-        $level = null;
-        // iterate over the statement
-        while ($row = $dataFetcher->fetch()) {
-            // hydrate object
-            $key = RoleTableMap::getPrimaryKeyHashFromRow($row, 0);
-            /** @var $obj ChildRole */
-            if (null === ($obj = RoleTableMap::getInstanceFromPool($key))) {
-                $obj = new $cls();
-                $obj->hydrate($row);
-                RoleTableMap::addInstanceToPool($obj, $key);
-            }
-
-            // compute level
-            // Algorithm shamelessly stolen from sfPropelActAsNestedSetBehaviorPlugin
-            // Probably authored by Tristan Rivoallan
-            if ($level === null) {
-                $level = 0;
-                $i = 0;
-                $prev = array($obj->getRightValue());
-            } else {
-                while ($obj->getRightValue() > $prev[$i]) {
-                    $i--;
-                }
-                $level = ++$i;
-                $prev[$i] = $obj->getRightValue();
-            }
-
-            // update level in node if necessary
-            if ($obj->getLevel() !== $level) {
-                $obj->setLevel($level);
-                $obj->save($con);
-            }
-        }
-        $dataFetcher->close();
     }
 } // RoleQuery

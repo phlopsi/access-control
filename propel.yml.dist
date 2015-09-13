@@ -6,3 +6,6 @@ propel:
         version: 0.1.0
     paths:
         phpDir: src
+    generator:
+        objectModel:
+            addHooks: false

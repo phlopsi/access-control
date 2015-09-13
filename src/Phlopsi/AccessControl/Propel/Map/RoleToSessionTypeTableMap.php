@@ -2,8 +2,8 @@
 
 namespace Phlopsi\AccessControl\Propel\Map;
 
-use Phlopsi\AccessControl\Propel\PermissionsRoles;
-use Phlopsi\AccessControl\Propel\PermissionsRolesQuery;
+use Phlopsi\AccessControl\Propel\RoleToSessionType;
+use Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -15,7 +15,7 @@ use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Map\TableMapTrait;
 
 /**
- * This class defines the structure of the 'permissions_roles' table.
+ * This class defines the structure of the 'roles_session_types' table.
  *
  *
  *
@@ -25,7 +25,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class PermissionsRolesTableMap extends TableMap
+class RoleToSessionTypeTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -33,7 +33,7 @@ class PermissionsRolesTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = 'Phlopsi.AccessControl.Propel.Map.PermissionsRolesTableMap';
+    const CLASS_NAME = 'Phlopsi.AccessControl.Propel.Map.RoleToSessionTypeTableMap';
 
     /**
      * The default database name for this class
@@ -43,17 +43,17 @@ class PermissionsRolesTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'permissions_roles';
+    const TABLE_NAME = 'roles_session_types';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Phlopsi\\AccessControl\\Propel\\PermissionsRoles';
+    const OM_CLASS = '\\Phlopsi\\AccessControl\\Propel\\RoleToSessionType';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Phlopsi.AccessControl.Propel.PermissionsRoles';
+    const CLASS_DEFAULT = 'Phlopsi.AccessControl.Propel.RoleToSessionType';
 
     /**
      * The total number of columns
@@ -71,14 +71,14 @@ class PermissionsRolesTableMap extends TableMap
     const NUM_HYDRATE_COLUMNS = 2;
 
     /**
-     * the column name for the permissions_id field
-     */
-    const COL_PERMISSIONS_ID = 'permissions_roles.permissions_id';
-
-    /**
      * the column name for the roles_id field
      */
-    const COL_ROLES_ID = 'permissions_roles.roles_id';
+    const COL_ROLES_ID = 'roles_session_types.roles_id';
+
+    /**
+     * the column name for the session_types_id field
+     */
+    const COL_SESSION_TYPES_ID = 'roles_session_types.session_types_id';
 
     /**
      * The default string format for model objects of the related table
@@ -92,10 +92,10 @@ class PermissionsRolesTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('PermissionId', 'RoleId', ),
-        self::TYPE_CAMELNAME     => array('permissionId', 'roleId', ),
-        self::TYPE_COLNAME       => array(PermissionsRolesTableMap::COL_PERMISSIONS_ID, PermissionsRolesTableMap::COL_ROLES_ID, ),
-        self::TYPE_FIELDNAME     => array('permissions_id', 'roles_id', ),
+        self::TYPE_PHPNAME       => array('RoleId', 'SessionTypeId', ),
+        self::TYPE_CAMELNAME     => array('roleId', 'sessionTypeId', ),
+        self::TYPE_COLNAME       => array(RoleToSessionTypeTableMap::COL_ROLES_ID, RoleToSessionTypeTableMap::COL_SESSION_TYPES_ID, ),
+        self::TYPE_FIELDNAME     => array('roles_id', 'session_types_id', ),
         self::TYPE_NUM           => array(0, 1, )
     );
 
@@ -106,10 +106,10 @@ class PermissionsRolesTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('PermissionId' => 0, 'RoleId' => 1, ),
-        self::TYPE_CAMELNAME     => array('permissionId' => 0, 'roleId' => 1, ),
-        self::TYPE_COLNAME       => array(PermissionsRolesTableMap::COL_PERMISSIONS_ID => 0, PermissionsRolesTableMap::COL_ROLES_ID => 1, ),
-        self::TYPE_FIELDNAME     => array('permissions_id' => 0, 'roles_id' => 1, ),
+        self::TYPE_PHPNAME       => array('RoleId' => 0, 'SessionTypeId' => 1, ),
+        self::TYPE_CAMELNAME     => array('roleId' => 0, 'sessionTypeId' => 1, ),
+        self::TYPE_COLNAME       => array(RoleToSessionTypeTableMap::COL_ROLES_ID => 0, RoleToSessionTypeTableMap::COL_SESSION_TYPES_ID => 1, ),
+        self::TYPE_FIELDNAME     => array('roles_id' => 0, 'session_types_id' => 1, ),
         self::TYPE_NUM           => array(0, 1, )
     );
 
@@ -123,16 +123,16 @@ class PermissionsRolesTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('permissions_roles');
-        $this->setPhpName('PermissionsRoles');
+        $this->setName('roles_session_types');
+        $this->setPhpName('RoleToSessionType');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Phlopsi\\AccessControl\\Propel\\PermissionsRoles');
+        $this->setClassName('\\Phlopsi\\AccessControl\\Propel\\RoleToSessionType');
         $this->setPackage('Phlopsi.AccessControl.Propel');
         $this->setUseIdGenerator(false);
         $this->setIsCrossRef(true);
         // columns
-        $this->addForeignPrimaryKey('permissions_id', 'PermissionId', 'INTEGER', 'permissions', 'id', true, null, null);
         $this->addForeignPrimaryKey('roles_id', 'RoleId', 'INTEGER', 'roles', 'id', true, null, null);
+        $this->addForeignPrimaryKey('session_types_id', 'SessionTypeId', 'INTEGER', 'session_types', 'id', true, null, null);
     } // initialize()
 
     /**
@@ -140,17 +140,17 @@ class PermissionsRolesTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Permission', '\\Phlopsi\\AccessControl\\Propel\\Permission', RelationMap::MANY_TO_ONE, array (
-        0 =>
-        array (
-        0 => ':permissions_id',
-        1 => ':id',
-        ),
-        ), null, null, null, false);
         $this->addRelation('Role', '\\Phlopsi\\AccessControl\\Propel\\Role', RelationMap::MANY_TO_ONE, array (
         0 =>
         array (
         0 => ':roles_id',
+        1 => ':id',
+        ),
+        ), null, null, null, false);
+        $this->addRelation('SessionType', '\\Phlopsi\\AccessControl\\Propel\\SessionType', RelationMap::MANY_TO_ONE, array (
+        0 =>
+        array (
+        0 => ':session_types_id',
         1 => ':id',
         ),
         ), null, null, null, false);
@@ -164,14 +164,14 @@ class PermissionsRolesTableMap extends TableMap
      * to the cache in order to ensure that the same objects are always returned by find*()
      * and findPk*() calls.
      *
-     * @param \Phlopsi\AccessControl\Propel\PermissionsRoles $obj A \Phlopsi\AccessControl\Propel\PermissionsRoles object.
+     * @param \Phlopsi\AccessControl\Propel\RoleToSessionType $obj A \Phlopsi\AccessControl\Propel\RoleToSessionType object.
      * @param string $key             (optional) key to use for instance map (for performance boost if key was already calculated externally).
      */
     public static function addInstanceToPool($obj, $key = null)
     {
         if (Propel::isInstancePoolingEnabled()) {
             if (null === $key) {
-                $key = serialize(array((string) $obj->getPermissionId(), (string) $obj->getRoleId()));
+                $key = serialize(array((string) $obj->getRoleId(), (string) $obj->getSessionTypeId()));
             } // if key === null
             self::$instances[$key] = $obj;
         }
@@ -185,13 +185,13 @@ class PermissionsRolesTableMap extends TableMap
      * methods in your stub classes -- you may need to explicitly remove objects
      * from the cache in order to prevent returning objects that no longer exist.
      *
-     * @param mixed $value A \Phlopsi\AccessControl\Propel\PermissionsRoles object or a primary key value.
+     * @param mixed $value A \Phlopsi\AccessControl\Propel\RoleToSessionType object or a primary key value.
      */
     public static function removeInstanceFromPool($value)
     {
         if (Propel::isInstancePoolingEnabled() && null !== $value) {
-            if (is_object($value) && $value instanceof \Phlopsi\AccessControl\Propel\PermissionsRoles) {
-                $key = serialize(array((string) $value->getPermissionId(), (string) $value->getRoleId()));
+            if (is_object($value) && $value instanceof \Phlopsi\AccessControl\Propel\RoleToSessionType) {
+                $key = serialize(array((string) $value->getRoleId(), (string) $value->getSessionTypeId()));
 
             } elseif (is_array($value) && count($value) === 2) {
                 // assume we've been passed a primary key";
@@ -201,7 +201,7 @@ class PermissionsRolesTableMap extends TableMap
 
                 return;
             } else {
-                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \Phlopsi\AccessControl\Propel\PermissionsRoles object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
+                $e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or \Phlopsi\AccessControl\Propel\RoleToSessionType object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value, true)));
                 throw $e;
             }
 
@@ -225,11 +225,11 @@ class PermissionsRolesTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('PermissionId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)] === null && $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('SessionTypeId', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('PermissionId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)]));
+        return serialize(array((string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)], (string) $row[TableMap::TYPE_NUM == $indexType ? 1 + $offset : static::translateFieldName('SessionTypeId', TableMap::TYPE_PHPNAME, $indexType)]));
     }
 
     /**
@@ -247,21 +247,21 @@ class PermissionsRolesTableMap extends TableMap
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
             $pks = [];
-
+            
         $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 0 + $offset
-                : self::translateFieldName('PermissionId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)
         ];
         $pks[] = (int) $row[
             $indexType == TableMap::TYPE_NUM
                 ? 1 + $offset
-                : self::translateFieldName('RoleId', TableMap::TYPE_PHPNAME, $indexType)
+                : self::translateFieldName('SessionTypeId', TableMap::TYPE_PHPNAME, $indexType)
         ];
 
         return $pks;
     }
-
+    
     /**
      * The class that the tableMap will make instances of.
      *
@@ -275,7 +275,7 @@ class PermissionsRolesTableMap extends TableMap
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? PermissionsRolesTableMap::CLASS_DEFAULT : PermissionsRolesTableMap::OM_CLASS;
+        return $withPrefix ? RoleToSessionTypeTableMap::CLASS_DEFAULT : RoleToSessionTypeTableMap::OM_CLASS;
     }
 
     /**
@@ -289,22 +289,22 @@ class PermissionsRolesTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (PermissionsRoles object, last column rank)
+     * @return array           (RoleToSessionType object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = PermissionsRolesTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = PermissionsRolesTableMap::getInstanceFromPool($key))) {
+        $key = RoleToSessionTypeTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = RoleToSessionTypeTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + PermissionsRolesTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + RoleToSessionTypeTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = PermissionsRolesTableMap::OM_CLASS;
-            /** @var PermissionsRoles $obj */
+            $cls = RoleToSessionTypeTableMap::OM_CLASS;
+            /** @var RoleToSessionType $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            PermissionsRolesTableMap::addInstanceToPool($obj, $key);
+            RoleToSessionTypeTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -322,23 +322,23 @@ class PermissionsRolesTableMap extends TableMap
     public static function populateObjects(DataFetcherInterface $dataFetcher)
     {
         $results = array();
-
+    
         // set the class once to avoid overhead in the loop
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = PermissionsRolesTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = PermissionsRolesTableMap::getInstanceFromPool($key))) {
+            $key = RoleToSessionTypeTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = RoleToSessionTypeTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var PermissionsRoles $obj */
+                /** @var RoleToSessionType $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                PermissionsRolesTableMap::addInstanceToPool($obj, $key);
+                RoleToSessionTypeTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
@@ -359,11 +359,11 @@ class PermissionsRolesTableMap extends TableMap
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(PermissionsRolesTableMap::COL_PERMISSIONS_ID);
-            $criteria->addSelectColumn(PermissionsRolesTableMap::COL_ROLES_ID);
+            $criteria->addSelectColumn(RoleToSessionTypeTableMap::COL_ROLES_ID);
+            $criteria->addSelectColumn(RoleToSessionTypeTableMap::COL_SESSION_TYPES_ID);
         } else {
-            $criteria->addSelectColumn($alias . '.permissions_id');
             $criteria->addSelectColumn($alias . '.roles_id');
+            $criteria->addSelectColumn($alias . '.session_types_id');
         }
     }
 
@@ -376,7 +376,7 @@ class PermissionsRolesTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(PermissionsRolesTableMap::DATABASE_NAME)->getTable(PermissionsRolesTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(RoleToSessionTypeTableMap::DATABASE_NAME)->getTable(RoleToSessionTypeTableMap::TABLE_NAME);
     }
 
     /**
@@ -384,16 +384,16 @@ class PermissionsRolesTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(PermissionsRolesTableMap::DATABASE_NAME);
-        if (!$dbMap->hasTable(PermissionsRolesTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new PermissionsRolesTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(RoleToSessionTypeTableMap::DATABASE_NAME);
+        if (!$dbMap->hasTable(RoleToSessionTypeTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new RoleToSessionTypeTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a PermissionsRoles or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a RoleToSessionType or Criteria object OR a primary key value.
      *
-     * @param mixed               $values Criteria or PermissionsRoles object or primary key or array of primary keys
+     * @param mixed               $values Criteria or RoleToSessionType object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -404,17 +404,17 @@ class PermissionsRolesTableMap extends TableMap
     public static function doDelete($values, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PermissionsRolesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(RoleToSessionTypeTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Phlopsi\AccessControl\Propel\PermissionsRoles) { // it's a model object
+        } elseif ($values instanceof \Phlopsi\AccessControl\Propel\RoleToSessionType) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(PermissionsRolesTableMap::DATABASE_NAME);
+            $criteria = new Criteria(RoleToSessionTypeTableMap::DATABASE_NAME);
             // primary key is composite; we therefore, expect
             // the primary key passed to be an array of pkey values
             if (count($values) == count($values, COUNT_RECURSIVE)) {
@@ -422,19 +422,19 @@ class PermissionsRolesTableMap extends TableMap
                 $values = array($values);
             }
             foreach ($values as $value) {
-                $criterion = $criteria->getNewCriterion(PermissionsRolesTableMap::COL_PERMISSIONS_ID, $value[0]);
-                $criterion->addAnd($criteria->getNewCriterion(PermissionsRolesTableMap::COL_ROLES_ID, $value[1]));
+                $criterion = $criteria->getNewCriterion(RoleToSessionTypeTableMap::COL_ROLES_ID, $value[0]);
+                $criterion->addAnd($criteria->getNewCriterion(RoleToSessionTypeTableMap::COL_SESSION_TYPES_ID, $value[1]));
                 $criteria->addOr($criterion);
             }
         }
 
-        $query = PermissionsRolesQuery::create()->mergeWith($criteria);
+        $query = RoleToSessionTypeQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            PermissionsRolesTableMap::clearInstancePool();
+            RoleToSessionTypeTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array) $values as $singleval) {
-                PermissionsRolesTableMap::removeInstanceFromPool($singleval);
+                RoleToSessionTypeTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -442,20 +442,20 @@ class PermissionsRolesTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the permissions_roles table.
+     * Deletes all rows from the roles_session_types table.
      *
      * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return PermissionsRolesQuery::create()->doDeleteAll($con);
+        return RoleToSessionTypeQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a PermissionsRoles or Criteria object.
+     * Performs an INSERT on the database, given a RoleToSessionType or Criteria object.
      *
-     * @param mixed               $criteria Criteria or PermissionsRoles object containing data that is used to create the INSERT statement.
+     * @param mixed               $criteria Criteria or RoleToSessionType object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
@@ -464,18 +464,18 @@ class PermissionsRolesTableMap extends TableMap
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PermissionsRolesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(RoleToSessionTypeTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from PermissionsRoles object
+            $criteria = $criteria->buildCriteria(); // build Criteria from RoleToSessionType object
         }
 
 
         // Set the correct dbName
-        $query = PermissionsRolesQuery::create()->mergeWith($criteria);
+        $query = RoleToSessionTypeQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -483,7 +483,7 @@ class PermissionsRolesTableMap extends TableMap
             return $query->doInsert($con);
         });
     }
-} // PermissionsRolesTableMap
+} // RoleToSessionTypeTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-PermissionsRolesTableMap::buildTableMap();
+RoleToSessionTypeTableMap::buildTableMap();

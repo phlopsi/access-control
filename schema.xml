@@ -2,19 +2,19 @@
 <database
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="vendor/propel/propel/resources/xsd/database.xsd"
-    name="access_control"
     defaultIdMethod="native"
+    name="access_control"
     namespace="Phlopsi\AccessControl\Propel"
 >
     <behavior name="auto_add_pk" />
     <table name="permissions" phpName="Permission">
+        <!--behavior name="nested_set" /-->
         <column name="external_id" type="longvarchar" required="true" />
-        <behavior name="nested_set" />
         <unique>
             <unique-column name="external_id" />
         </unique>
     </table>
-    <table name="permissions_roles" isCrossRef="true">
+    <table name="permissions_roles" phpName="PermissionToRole" isCrossRef="true">
         <column name="permissions_id" phpName="PermissionId" type="integer" required="true" primaryKey="true" />
         <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
         <foreign-key foreignTable="permissions">
@@ -24,14 +24,14 @@
             <reference local="roles_id" foreign="id" />
         </foreign-key>
     </table>
-    <table name="prohibitions" phpName="Prohibition">
-        <column name="external_id" type="longvarchar" required="true" />
+    <!--table name="prohibitions" phpName="Prohibition">
         <behavior name="nested_set" />
+        <column name="external_id" type="longvarchar" required="true" />
         <unique>
             <unique-column name="external_id" />
         </unique>
-    </table>
-    <table name="prohibitions_roles" isCrossRef="true">
+    </table-->
+    <!--table name="prohibitions_roles" phpName="ProhibitionToRole" isCrossRef="true">
         <column name="prohibitions_id" phpName="ProhibitionId" type="integer" required="true" primaryKey="true" />
         <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
         <foreign-key foreignTable="prohibitions">
@@ -40,27 +40,27 @@
         <foreign-key foreignTable="roles">
             <reference local="roles_id" foreign="id" />
         </foreign-key>
-    </table>
-    <table name="prohibitions_users" isCrossRef="true">
+    </table-->
+    <!--table name="prohibitions_users" phpName="ProhibitionToUser" isCrossRef="true">
+        <behavior name="timestampable" />
         <column name="prohibitions_id" phpName="ProhibitionId" type="integer" required="true" primaryKey="true" />
         <column name="users_id" phpName="UserId" type="integer" required="true" primaryKey="true" />
         <column name="prohibited_until" type="timestamp" />
-        <behavior name="timestampable" />
         <foreign-key foreignTable="prohibitions">
             <reference local="prohibitions_id" foreign="id" />
         </foreign-key>
         <foreign-key foreignTable="users">
             <reference local="users_id" foreign="id" />
         </foreign-key>
-    </table>
+    </table-->
     <table name="roles" phpName="Role">
+        <!--behavior name="nested_set" /-->
         <column name="external_id" type="longvarchar" required="true" />
-        <behavior name="nested_set" />
         <unique>
             <unique-column name="external_id" />
         </unique>
     </table>
-    <table name="roles_session_types" isCrossRef="true">
+    <table name="roles_session_types" phpName="RoleToSessionType" isCrossRef="true">
         <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
         <column name="session_types_id" phpName="SessionTypeId" type="integer" required="true" primaryKey="true" />
         <foreign-key foreignTable="roles">
@@ -70,7 +70,7 @@
             <reference local="session_types_id" foreign="id" />
         </foreign-key>
     </table>
-    <table name="roles_users" isCrossRef="true">
+    <table name="roles_users" phpName="RoleToUser" isCrossRef="true">
         <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
         <column name="users_id" phpName="UserId" type="integer" required="true" primaryKey="true" />
         <foreign-key foreignTable="roles">
@@ -81,8 +81,8 @@
         </foreign-key>
     </table>
     <table name="session_types" phpName="SessionType">
+        <!--behavior name="nested_set" /-->
         <column name="external_id" type="longvarchar" required="true" />
-        <behavior name="nested_set" />
         <unique>
             <unique-column name="external_id" />
         </unique>

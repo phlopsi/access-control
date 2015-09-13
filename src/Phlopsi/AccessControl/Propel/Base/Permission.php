@@ -6,8 +6,8 @@ use \Exception;
 use \PDO;
 use Phlopsi\AccessControl\Propel\Permission as ChildPermission;
 use Phlopsi\AccessControl\Propel\PermissionQuery as ChildPermissionQuery;
-use Phlopsi\AccessControl\Propel\PermissionsRoles as ChildPermissionsRoles;
-use Phlopsi\AccessControl\Propel\PermissionsRolesQuery as ChildPermissionsRolesQuery;
+use Phlopsi\AccessControl\Propel\PermissionToRole as ChildPermissionToRole;
+use Phlopsi\AccessControl\Propel\PermissionToRoleQuery as ChildPermissionToRoleQuery;
 use Phlopsi\AccessControl\Propel\Role as ChildRole;
 use Phlopsi\AccessControl\Propel\RoleQuery as ChildRoleQuery;
 use Phlopsi\AccessControl\Propel\Map\PermissionTableMap;
@@ -15,7 +15,6 @@ use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
-use Propel\Runtime\ActiveRecord\NestedSetRecursiveIterator;
 use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
@@ -73,34 +72,16 @@ abstract class Permission implements ActiveRecordInterface
     protected $external_id;
 
     /**
-     * The value for the tree_left field.
-     * @var        int
-     */
-    protected $tree_left;
-
-    /**
-     * The value for the tree_right field.
-     * @var        int
-     */
-    protected $tree_right;
-
-    /**
-     * The value for the tree_level field.
-     * @var        int
-     */
-    protected $tree_level;
-
-    /**
      * The value for the id field.
      * @var        int
      */
     protected $id;
 
     /**
-     * @var        ObjectCollection|ChildPermissionsRoles[] Collection to store aggregation of ChildPermissionsRoles objects.
+     * @var        ObjectCollection|ChildPermissionToRole[] Collection to store aggregation of ChildPermissionToRole objects.
      */
-    protected $collPermissionsRoless;
-    protected $collPermissionsRolessPartial;
+    protected $collPermissionToRoles;
+    protected $collPermissionToRolesPartial;
 
     /**
      * @var        ObjectCollection|ChildRole[] Cross Collection to store aggregation of ChildRole objects.
@@ -120,41 +101,6 @@ abstract class Permission implements ActiveRecordInterface
      */
     protected $alreadyInSave = false;
 
-    // nested_set behavior
-
-    /**
-     * Queries to be executed in the save transaction
-     * @var        array
-     */
-    protected $nestedSetQueries = array();
-
-    /**
-     * Internal cache for children nodes
-     * @var        null|ObjectCollection
-     */
-    protected $collNestedSetChildren = null;
-
-    /**
-     * Internal cache for parent node
-     * @var        null|ChildPermission
-     */
-    protected $aNestedSetParent = null;
-
-    /**
-     * Left column for the set
-     */
-    const LEFT_COL = 'permissions.tree_left';
-
-    /**
-     * Right column for the set
-     */
-    const RIGHT_COL = 'permissions.tree_right';
-
-    /**
-     * Level column for the set
-     */
-    const LEVEL_COL = 'permissions.tree_level';
-
     /**
      * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildRole[]
@@ -163,9 +109,9 @@ abstract class Permission implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildPermissionsRoles[]
+     * @var ObjectCollection|ChildPermissionToRole[]
      */
-    protected $permissionsRolessScheduledForDeletion = null;
+    protected $permissionToRolesScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Phlopsi\AccessControl\Propel\Base\Permission object.
@@ -395,36 +341,6 @@ abstract class Permission implements ActiveRecordInterface
     }
 
     /**
-     * Get the [tree_left] column value.
-     *
-     * @return int
-     */
-    public function getTreeLeft()
-    {
-        return $this->tree_left;
-    }
-
-    /**
-     * Get the [tree_right] column value.
-     *
-     * @return int
-     */
-    public function getTreeRight()
-    {
-        return $this->tree_right;
-    }
-
-    /**
-     * Get the [tree_level] column value.
-     *
-     * @return int
-     */
-    public function getTreeLevel()
-    {
-        return $this->tree_level;
-    }
-
-    /**
      * Get the [id] column value.
      *
      * @return int
@@ -453,66 +369,6 @@ abstract class Permission implements ActiveRecordInterface
 
         return $this;
     } // setExternalId()
-
-    /**
-     * Set the value of [tree_left] column.
-     *
-     * @param int $v new value
-     * @return $this|\Phlopsi\AccessControl\Propel\Permission The current object (for fluent API support)
-     */
-    public function setTreeLeft($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_left !== $v) {
-            $this->tree_left = $v;
-            $this->modifiedColumns[PermissionTableMap::COL_TREE_LEFT] = true;
-        }
-
-        return $this;
-    } // setTreeLeft()
-
-    /**
-     * Set the value of [tree_right] column.
-     *
-     * @param int $v new value
-     * @return $this|\Phlopsi\AccessControl\Propel\Permission The current object (for fluent API support)
-     */
-    public function setTreeRight($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_right !== $v) {
-            $this->tree_right = $v;
-            $this->modifiedColumns[PermissionTableMap::COL_TREE_RIGHT] = true;
-        }
-
-        return $this;
-    } // setTreeRight()
-
-    /**
-     * Set the value of [tree_level] column.
-     *
-     * @param int $v new value
-     * @return $this|\Phlopsi\AccessControl\Propel\Permission The current object (for fluent API support)
-     */
-    public function setTreeLevel($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_level !== $v) {
-            $this->tree_level = $v;
-            $this->modifiedColumns[PermissionTableMap::COL_TREE_LEVEL] = true;
-        }
-
-        return $this;
-    } // setTreeLevel()
 
     /**
      * Set the value of [id] column.
@@ -572,16 +428,7 @@ abstract class Permission implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PermissionTableMap::translateFieldName('ExternalId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->external_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PermissionTableMap::translateFieldName('TreeLeft', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->tree_left = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PermissionTableMap::translateFieldName('TreeRight', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->tree_right = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : PermissionTableMap::translateFieldName('TreeLevel', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->tree_level = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : PermissionTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PermissionTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -591,7 +438,7 @@ abstract class Permission implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = PermissionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = PermissionTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Phlopsi\\AccessControl\\Propel\\Permission'), 0, $e);
@@ -651,7 +498,7 @@ abstract class Permission implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {
-            $this->collPermissionsRoless = null;
+            $this->collPermissionToRoles = null;
 
             $this->collRoles = null;
         } // if (deep)
@@ -679,27 +526,8 @@ abstract class Permission implements ActiveRecordInterface
         $con->transaction(function () use ($con) {
             $deleteQuery = ChildPermissionQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
-            $ret = $this->preDelete($con);
-            // nested_set behavior
-            if ($this->isRoot()) {
-                throw new PropelException('Deletion of a root node is disabled for nested sets. Use ChildPermissionQuery::deleteTree() instead to delete an entire tree');
-            }
-
-            if ($this->isInTree()) {
-                $this->deleteDescendants($con);
-            }
-
-            if ($ret) {
-                $deleteQuery->delete($con);
-                $this->postDelete($con);
-                // nested_set behavior
-                if ($this->isInTree()) {
-                    // fill up the room that was used by the node
-                    ChildPermissionQuery::shiftRLValues(-2, $this->getRightValue() + 1, null, $con);
-                }
-
-                $this->setDeleted(true);
-            }
+            $deleteQuery->delete($con);
+            $this->setDeleted(true);
         });
     }
 
@@ -728,35 +556,8 @@ abstract class Permission implements ActiveRecordInterface
 
         return $con->transaction(function () use ($con) {
             $isInsert = $this->isNew();
-            $ret = $this->preSave($con);
-            // nested_set behavior
-            if ($this->isNew() && $this->isRoot()) {
-                // check if no other root exist in, the tree
-                $rootExists = ChildPermissionQuery::create()
-                    ->addUsingAlias(ChildPermission::LEFT_COL, 1, Criteria::EQUAL)
-                    ->exists($con);
-                if ($rootExists) {
-                        throw new PropelException('A root node already exists in this tree. To allow multiple root nodes, add the `use_scope` parameter in the nested_set behavior tag.');
-                }
-            }
-            $this->processNestedSetQueries($con);
-            if ($isInsert) {
-                $ret = $ret && $this->preInsert($con);
-            } else {
-                $ret = $ret && $this->preUpdate($con);
-            }
-            if ($ret) {
-                $affectedRows = $this->doSave($con);
-                if ($isInsert) {
-                    $this->postInsert($con);
-                } else {
-                    $this->postUpdate($con);
-                }
-                $this->postSave($con);
-                PermissionTableMap::addInstanceToPool($this);
-            } else {
-                $affectedRows = 0;
-            }
+            $affectedRows = $this->doSave($con);
+            PermissionTableMap::addInstanceToPool($this);
 
             return $affectedRows;
         });
@@ -801,7 +602,7 @@ abstract class Permission implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \Phlopsi\AccessControl\Propel\PermissionsRolesQuery::create()
+                    \Phlopsi\AccessControl\Propel\PermissionToRoleQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -819,17 +620,17 @@ abstract class Permission implements ActiveRecordInterface
             }
 
 
-            if ($this->permissionsRolessScheduledForDeletion !== null) {
-                if (!$this->permissionsRolessScheduledForDeletion->isEmpty()) {
-                    \Phlopsi\AccessControl\Propel\PermissionsRolesQuery::create()
-                        ->filterByPrimaryKeys($this->permissionsRolessScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->permissionToRolesScheduledForDeletion !== null) {
+                if (!$this->permissionToRolesScheduledForDeletion->isEmpty()) {
+                    \Phlopsi\AccessControl\Propel\PermissionToRoleQuery::create()
+                        ->filterByPrimaryKeys($this->permissionToRolesScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->permissionsRolessScheduledForDeletion = null;
+                    $this->permissionToRolesScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collPermissionsRoless !== null) {
-                foreach ($this->collPermissionsRoless as $referrerFK) {
+            if ($this->collPermissionToRoles !== null) {
+                foreach ($this->collPermissionToRoles as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -865,15 +666,6 @@ abstract class Permission implements ActiveRecordInterface
         if ($this->isColumnModified(PermissionTableMap::COL_EXTERNAL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'external_id';
         }
-        if ($this->isColumnModified(PermissionTableMap::COL_TREE_LEFT)) {
-            $modifiedColumns[':p' . $index++]  = 'tree_left';
-        }
-        if ($this->isColumnModified(PermissionTableMap::COL_TREE_RIGHT)) {
-            $modifiedColumns[':p' . $index++]  = 'tree_right';
-        }
-        if ($this->isColumnModified(PermissionTableMap::COL_TREE_LEVEL)) {
-            $modifiedColumns[':p' . $index++]  = 'tree_level';
-        }
         if ($this->isColumnModified(PermissionTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
@@ -890,15 +682,6 @@ abstract class Permission implements ActiveRecordInterface
                 switch ($columnName) {
                     case 'external_id':
                         $stmt->bindValue($identifier, $this->external_id, PDO::PARAM_STR);
-                        break;
-                    case 'tree_left':
-                        $stmt->bindValue($identifier, $this->tree_left, PDO::PARAM_INT);
-                        break;
-                    case 'tree_right':
-                        $stmt->bindValue($identifier, $this->tree_right, PDO::PARAM_INT);
-                        break;
-                    case 'tree_level':
-                        $stmt->bindValue($identifier, $this->tree_level, PDO::PARAM_INT);
                         break;
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
@@ -969,15 +752,6 @@ abstract class Permission implements ActiveRecordInterface
                 return $this->getExternalId();
                 break;
             case 1:
-                return $this->getTreeLeft();
-                break;
-            case 2:
-                return $this->getTreeRight();
-                break;
-            case 3:
-                return $this->getTreeLevel();
-                break;
-            case 4:
                 return $this->getId();
                 break;
             default:
@@ -1011,30 +785,27 @@ abstract class Permission implements ActiveRecordInterface
         $keys = PermissionTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getExternalId(),
-            $keys[1] => $this->getTreeLeft(),
-            $keys[2] => $this->getTreeRight(),
-            $keys[3] => $this->getTreeLevel(),
-            $keys[4] => $this->getId(),
+            $keys[1] => $this->getId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
-
+        
         if ($includeForeignObjects) {
-            if (null !== $this->collPermissionsRoless) {
+            if (null !== $this->collPermissionToRoles) {
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'permissionsRoless';
+                        $key = 'permissionToRoles';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'permissions_roless';
                         break;
                     default:
-                        $key = 'PermissionsRoless';
+                        $key = 'PermissionToRoles';
                 }
-
-                $result[$key] = $this->collPermissionsRoless->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+        
+                $result[$key] = $this->collPermissionToRoles->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1074,15 +845,6 @@ abstract class Permission implements ActiveRecordInterface
                 $this->setExternalId($value);
                 break;
             case 1:
-                $this->setTreeLeft($value);
-                break;
-            case 2:
-                $this->setTreeRight($value);
-                break;
-            case 3:
-                $this->setTreeLevel($value);
-                break;
-            case 4:
                 $this->setId($value);
                 break;
         } // switch()
@@ -1115,16 +877,7 @@ abstract class Permission implements ActiveRecordInterface
             $this->setExternalId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setTreeLeft($arr[$keys[1]]);
-        }
-        if (array_key_exists($keys[2], $arr)) {
-            $this->setTreeRight($arr[$keys[2]]);
-        }
-        if (array_key_exists($keys[3], $arr)) {
-            $this->setTreeLevel($arr[$keys[3]]);
-        }
-        if (array_key_exists($keys[4], $arr)) {
-            $this->setId($arr[$keys[4]]);
+            $this->setId($arr[$keys[1]]);
         }
     }
 
@@ -1169,15 +922,6 @@ abstract class Permission implements ActiveRecordInterface
 
         if ($this->isColumnModified(PermissionTableMap::COL_EXTERNAL_ID)) {
             $criteria->add(PermissionTableMap::COL_EXTERNAL_ID, $this->external_id);
-        }
-        if ($this->isColumnModified(PermissionTableMap::COL_TREE_LEFT)) {
-            $criteria->add(PermissionTableMap::COL_TREE_LEFT, $this->tree_left);
-        }
-        if ($this->isColumnModified(PermissionTableMap::COL_TREE_RIGHT)) {
-            $criteria->add(PermissionTableMap::COL_TREE_RIGHT, $this->tree_right);
-        }
-        if ($this->isColumnModified(PermissionTableMap::COL_TREE_LEVEL)) {
-            $criteria->add(PermissionTableMap::COL_TREE_LEVEL, $this->tree_level);
         }
         if ($this->isColumnModified(PermissionTableMap::COL_ID)) {
             $criteria->add(PermissionTableMap::COL_ID, $this->id);
@@ -1225,7 +969,7 @@ abstract class Permission implements ActiveRecordInterface
 
         return spl_object_hash($this);
     }
-
+        
     /**
      * Returns the primary key for this object (row).
      * @return int
@@ -1269,18 +1013,15 @@ abstract class Permission implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setExternalId($this->getExternalId());
-        $copyObj->setTreeLeft($this->getTreeLeft());
-        $copyObj->setTreeRight($this->getTreeRight());
-        $copyObj->setTreeLevel($this->getTreeLevel());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getPermissionsRoless() as $relObj) {
+            foreach ($this->getPermissionToRoles() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addPermissionsRoles($relObj->copy($deepCopy));
+                    $copyObj->addPermissionToRole($relObj->copy($deepCopy));
                 }
             }
 
@@ -1325,37 +1066,37 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('PermissionsRoles' == $relationName) {
-            return $this->initPermissionsRoless();
+        if ('PermissionToRole' == $relationName) {
+            return $this->initPermissionToRoles();
         }
     }
 
     /**
-     * Clears out the collPermissionsRoless collection
+     * Clears out the collPermissionToRoles collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addPermissionsRoless()
+     * @see        addPermissionToRoles()
      */
-    public function clearPermissionsRoless()
+    public function clearPermissionToRoles()
     {
-        $this->collPermissionsRoless = null; // important to set this to NULL since that means it is uninitialized
+        $this->collPermissionToRoles = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collPermissionsRoless collection loaded partially.
+     * Reset is the collPermissionToRoles collection loaded partially.
      */
-    public function resetPartialPermissionsRoless($v = true)
+    public function resetPartialPermissionToRoles($v = true)
     {
-        $this->collPermissionsRolessPartial = $v;
+        $this->collPermissionToRolesPartial = $v;
     }
 
     /**
-     * Initializes the collPermissionsRoless collection.
+     * Initializes the collPermissionToRoles collection.
      *
-     * By default this just sets the collPermissionsRoless collection to an empty array (like clearcollPermissionsRoless());
+     * By default this just sets the collPermissionToRoles collection to an empty array (like clearcollPermissionToRoles());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1364,17 +1105,17 @@ abstract class Permission implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initPermissionsRoless($overrideExisting = true)
+    public function initPermissionToRoles($overrideExisting = true)
     {
-        if (null !== $this->collPermissionsRoless && !$overrideExisting) {
+        if (null !== $this->collPermissionToRoles && !$overrideExisting) {
             return;
         }
-        $this->collPermissionsRoless = new ObjectCollection();
-        $this->collPermissionsRoless->setModel('\Phlopsi\AccessControl\Propel\PermissionsRoles');
+        $this->collPermissionToRoles = new ObjectCollection();
+        $this->collPermissionToRoles->setModel('\Phlopsi\AccessControl\Propel\PermissionToRole');
     }
 
     /**
-     * Gets an array of ChildPermissionsRoles objects which contain a foreign key that references this object.
+     * Gets an array of ChildPermissionToRole objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1384,111 +1125,111 @@ abstract class Permission implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildPermissionsRoles[] List of ChildPermissionsRoles objects
+     * @return ObjectCollection|ChildPermissionToRole[] List of ChildPermissionToRole objects
      * @throws PropelException
      */
-    public function getPermissionsRoless(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getPermissionToRoles(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collPermissionsRolessPartial && !$this->isNew();
-        if (null === $this->collPermissionsRoless || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collPermissionsRoless) {
+        $partial = $this->collPermissionToRolesPartial && !$this->isNew();
+        if (null === $this->collPermissionToRoles || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPermissionToRoles) {
                 // return empty collection
-                $this->initPermissionsRoless();
+                $this->initPermissionToRoles();
             } else {
-                $collPermissionsRoless = ChildPermissionsRolesQuery::create(null, $criteria)
+                $collPermissionToRoles = ChildPermissionToRoleQuery::create(null, $criteria)
                     ->filterByPermission($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collPermissionsRolessPartial && count($collPermissionsRoless)) {
-                        $this->initPermissionsRoless(false);
+                    if (false !== $this->collPermissionToRolesPartial && count($collPermissionToRoles)) {
+                        $this->initPermissionToRoles(false);
 
-                        foreach ($collPermissionsRoless as $obj) {
-                            if (false == $this->collPermissionsRoless->contains($obj)) {
-                                $this->collPermissionsRoless->append($obj);
+                        foreach ($collPermissionToRoles as $obj) {
+                            if (false == $this->collPermissionToRoles->contains($obj)) {
+                                $this->collPermissionToRoles->append($obj);
                             }
                         }
 
-                        $this->collPermissionsRolessPartial = true;
+                        $this->collPermissionToRolesPartial = true;
                     }
 
-                    return $collPermissionsRoless;
+                    return $collPermissionToRoles;
                 }
 
-                if ($partial && $this->collPermissionsRoless) {
-                    foreach ($this->collPermissionsRoless as $obj) {
+                if ($partial && $this->collPermissionToRoles) {
+                    foreach ($this->collPermissionToRoles as $obj) {
                         if ($obj->isNew()) {
-                            $collPermissionsRoless[] = $obj;
+                            $collPermissionToRoles[] = $obj;
                         }
                     }
                 }
 
-                $this->collPermissionsRoless = $collPermissionsRoless;
-                $this->collPermissionsRolessPartial = false;
+                $this->collPermissionToRoles = $collPermissionToRoles;
+                $this->collPermissionToRolesPartial = false;
             }
         }
 
-        return $this->collPermissionsRoless;
+        return $this->collPermissionToRoles;
     }
 
     /**
-     * Sets a collection of ChildPermissionsRoles objects related by a one-to-many relationship
+     * Sets a collection of ChildPermissionToRole objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $permissionsRoless A Propel collection.
+     * @param      Collection $permissionToRoles A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildPermission The current object (for fluent API support)
      */
-    public function setPermissionsRoless(Collection $permissionsRoless, ConnectionInterface $con = null)
+    public function setPermissionToRoles(Collection $permissionToRoles, ConnectionInterface $con = null)
     {
-        /** @var ChildPermissionsRoles[] $permissionsRolessToDelete */
-        $permissionsRolessToDelete = $this->getPermissionsRoless(new Criteria(), $con)->diff($permissionsRoless);
+        /** @var ChildPermissionToRole[] $permissionToRolesToDelete */
+        $permissionToRolesToDelete = $this->getPermissionToRoles(new Criteria(), $con)->diff($permissionToRoles);
 
-
+        
         //since at least one column in the foreign key is at the same time a PK
         //we can not just set a PK to NULL in the lines below. We have to store
         //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->permissionsRolessScheduledForDeletion = clone $permissionsRolessToDelete;
+        $this->permissionToRolesScheduledForDeletion = clone $permissionToRolesToDelete;
 
-        foreach ($permissionsRolessToDelete as $permissionsRolesRemoved) {
-            $permissionsRolesRemoved->setPermission(null);
+        foreach ($permissionToRolesToDelete as $permissionToRoleRemoved) {
+            $permissionToRoleRemoved->setPermission(null);
         }
 
-        $this->collPermissionsRoless = null;
-        foreach ($permissionsRoless as $permissionsRoles) {
-            $this->addPermissionsRoles($permissionsRoles);
+        $this->collPermissionToRoles = null;
+        foreach ($permissionToRoles as $permissionToRole) {
+            $this->addPermissionToRole($permissionToRole);
         }
 
-        $this->collPermissionsRoless = $permissionsRoless;
-        $this->collPermissionsRolessPartial = false;
+        $this->collPermissionToRoles = $permissionToRoles;
+        $this->collPermissionToRolesPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related PermissionsRoles objects.
+     * Returns the number of related PermissionToRole objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related PermissionsRoles objects.
+     * @return int             Count of related PermissionToRole objects.
      * @throws PropelException
      */
-    public function countPermissionsRoless(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countPermissionToRoles(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collPermissionsRolessPartial && !$this->isNew();
-        if (null === $this->collPermissionsRoless || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collPermissionsRoless) {
+        $partial = $this->collPermissionToRolesPartial && !$this->isNew();
+        if (null === $this->collPermissionToRoles || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPermissionToRoles) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getPermissionsRoless());
+                return count($this->getPermissionToRoles());
             }
 
-            $query = ChildPermissionsRolesQuery::create(null, $criteria);
+            $query = ChildPermissionToRoleQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -1498,54 +1239,54 @@ abstract class Permission implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collPermissionsRoless);
+        return count($this->collPermissionToRoles);
     }
 
     /**
-     * Method called to associate a ChildPermissionsRoles object to this object
-     * through the ChildPermissionsRoles foreign key attribute.
+     * Method called to associate a ChildPermissionToRole object to this object
+     * through the ChildPermissionToRole foreign key attribute.
      *
-     * @param  ChildPermissionsRoles $l ChildPermissionsRoles
+     * @param  ChildPermissionToRole $l ChildPermissionToRole
      * @return $this|\Phlopsi\AccessControl\Propel\Permission The current object (for fluent API support)
      */
-    public function addPermissionsRoles(ChildPermissionsRoles $l)
+    public function addPermissionToRole(ChildPermissionToRole $l)
     {
-        if ($this->collPermissionsRoless === null) {
-            $this->initPermissionsRoless();
-            $this->collPermissionsRolessPartial = true;
+        if ($this->collPermissionToRoles === null) {
+            $this->initPermissionToRoles();
+            $this->collPermissionToRolesPartial = true;
         }
 
-        if (!$this->collPermissionsRoless->contains($l)) {
-            $this->doAddPermissionsRoles($l);
+        if (!$this->collPermissionToRoles->contains($l)) {
+            $this->doAddPermissionToRole($l);
         }
 
         return $this;
     }
 
     /**
-     * @param ChildPermissionsRoles $permissionsRoles The ChildPermissionsRoles object to add.
+     * @param ChildPermissionToRole $permissionToRole The ChildPermissionToRole object to add.
      */
-    protected function doAddPermissionsRoles(ChildPermissionsRoles $permissionsRoles)
+    protected function doAddPermissionToRole(ChildPermissionToRole $permissionToRole)
     {
-        $this->collPermissionsRoless[]= $permissionsRoles;
-        $permissionsRoles->setPermission($this);
+        $this->collPermissionToRoles[]= $permissionToRole;
+        $permissionToRole->setPermission($this);
     }
 
     /**
-     * @param  ChildPermissionsRoles $permissionsRoles The ChildPermissionsRoles object to remove.
+     * @param  ChildPermissionToRole $permissionToRole The ChildPermissionToRole object to remove.
      * @return $this|ChildPermission The current object (for fluent API support)
      */
-    public function removePermissionsRoles(ChildPermissionsRoles $permissionsRoles)
+    public function removePermissionToRole(ChildPermissionToRole $permissionToRole)
     {
-        if ($this->getPermissionsRoless()->contains($permissionsRoles)) {
-            $pos = $this->collPermissionsRoless->search($permissionsRoles);
-            $this->collPermissionsRoless->remove($pos);
-            if (null === $this->permissionsRolessScheduledForDeletion) {
-                $this->permissionsRolessScheduledForDeletion = clone $this->collPermissionsRoless;
-                $this->permissionsRolessScheduledForDeletion->clear();
+        if ($this->getPermissionToRoles()->contains($permissionToRole)) {
+            $pos = $this->collPermissionToRoles->search($permissionToRole);
+            $this->collPermissionToRoles->remove($pos);
+            if (null === $this->permissionToRolesScheduledForDeletion) {
+                $this->permissionToRolesScheduledForDeletion = clone $this->collPermissionToRoles;
+                $this->permissionToRolesScheduledForDeletion->clear();
             }
-            $this->permissionsRolessScheduledForDeletion[]= clone $permissionsRoles;
-            $permissionsRoles->setPermission(null);
+            $this->permissionToRolesScheduledForDeletion[]= clone $permissionToRole;
+            $permissionToRole->setPermission(null);
         }
 
         return $this;
@@ -1557,7 +1298,7 @@ abstract class Permission implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Permission is new, it will return
      * an empty collection; or if this Permission has previously
-     * been saved, it will retrieve related PermissionsRoless from storage.
+     * been saved, it will retrieve related PermissionToRoles from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -1566,14 +1307,14 @@ abstract class Permission implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildPermissionsRoles[] List of ChildPermissionsRoles objects
+     * @return ObjectCollection|ChildPermissionToRole[] List of ChildPermissionToRole objects
      */
-    public function getPermissionsRolessJoinRole(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getPermissionToRolesJoinRole(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildPermissionsRolesQuery::create(null, $criteria);
+        $query = ChildPermissionToRoleQuery::create(null, $criteria);
         $query->joinWith('Role', $joinBehavior);
 
-        return $this->getPermissionsRoless($query, $con);
+        return $this->getPermissionToRoles($query, $con);
     }
 
     /**
@@ -1762,13 +1503,13 @@ abstract class Permission implements ActiveRecordInterface
      */
     protected function doAddRole(ChildRole $role)
     {
-        $permissionsRoles = new ChildPermissionsRoles();
+        $permissionToRole = new ChildPermissionToRole();
 
-        $permissionsRoles->setRole($role);
+        $permissionToRole->setRole($role);
 
-        $permissionsRoles->setPermission($this);
+        $permissionToRole->setPermission($this);
 
-        $this->addPermissionsRoles($permissionsRoles);
+        $this->addPermissionToRole($permissionToRole);
 
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
@@ -1791,20 +1532,20 @@ abstract class Permission implements ActiveRecordInterface
     public function removeRole(ChildRole $role)
     {
         if ($this->getRoles()->contains($role)) {
-            $permissionsRoles = new ChildPermissionsRoles();
+            $permissionToRole = new ChildPermissionToRole();
 
-            $permissionsRoles->setRole($role);
+            $permissionToRole->setRole($role);
             if ($role->isPermissionsLoaded()) {
                 //remove the back reference if available
                 $role->getPermissions()->removeObject($this);
             }
 
-            $permissionsRoles->setPermission($this);
-            $this->removePermissionsRoles(clone $permissionsRoles);
-            $permissionsRoles->clear();
+            $permissionToRole->setPermission($this);
+            $this->removePermissionToRole(clone $permissionToRole);
+            $permissionToRole->clear();
 
             $this->collRoles->remove($this->collRoles->search($role));
-
+            
             if (null === $this->rolesScheduledForDeletion) {
                 $this->rolesScheduledForDeletion = clone $this->collRoles;
                 $this->rolesScheduledForDeletion->clear();
@@ -1825,9 +1566,6 @@ abstract class Permission implements ActiveRecordInterface
     public function clear()
     {
         $this->external_id = null;
-        $this->tree_left = null;
-        $this->tree_right = null;
-        $this->tree_level = null;
         $this->id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
@@ -1847,8 +1585,8 @@ abstract class Permission implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collPermissionsRoless) {
-                foreach ($this->collPermissionsRoless as $o) {
+            if ($this->collPermissionToRoles) {
+                foreach ($this->collPermissionToRoles as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -1859,10 +1597,7 @@ abstract class Permission implements ActiveRecordInterface
             }
         } // if ($deep)
 
-        // nested_set behavior
-        $this->collNestedSetChildren = null;
-        $this->aNestedSetParent = null;
-        $this->collPermissionsRoless = null;
+        $this->collPermissionToRoles = null;
         $this->collRoles = null;
     }
 
@@ -1875,916 +1610,6 @@ abstract class Permission implements ActiveRecordInterface
     {
         return (string) $this->exportTo(PermissionTableMap::DEFAULT_STRING_FORMAT);
     }
-
-    // nested_set behavior
-
-    /**
-     * Execute queries that were saved to be run inside the save transaction
-     *
-     * @param  ConnectionInterface $con Connection to use.
-     */
-    protected function processNestedSetQueries(ConnectionInterface $con)
-    {
-        foreach ($this->nestedSetQueries as $query) {
-            $query['arguments'][] = $con;
-            call_user_func_array($query['callable'], $query['arguments']);
-        }
-        $this->nestedSetQueries = array();
-    }
-
-    /**
-     * Proxy getter method for the left value of the nested set model.
-     * It provides a generic way to get the value, whatever the actual column name is.
-     *
-     * @return     int The nested set left value
-     */
-    public function getLeftValue()
-    {
-        return $this->tree_left;
-    }
-
-    /**
-     * Proxy getter method for the right value of the nested set model.
-     * It provides a generic way to get the value, whatever the actual column name is.
-     *
-     * @return     int The nested set right value
-     */
-    public function getRightValue()
-    {
-        return $this->tree_right;
-    }
-
-    /**
-     * Proxy getter method for the level value of the nested set model.
-     * It provides a generic way to get the value, whatever the actual column name is.
-     *
-     * @return     int The nested set level value
-     */
-    public function getLevel()
-    {
-        return $this->tree_level;
-    }
-
-    /**
-     * Proxy setter method for the left value of the nested set model.
-     * It provides a generic way to set the value, whatever the actual column name is.
-     *
-     * @param  int $v The nested set left value
-     * @return $this|ChildPermission The current object (for fluent API support)
-     */
-    public function setLeftValue($v)
-    {
-        return $this->setTreeLeft($v);
-    }
-
-    /**
-     * Proxy setter method for the right value of the nested set model.
-     * It provides a generic way to set the value, whatever the actual column name is.
-     *
-     * @param      int $v The nested set right value
-     * @return     $this|ChildPermission The current object (for fluent API support)
-     */
-    public function setRightValue($v)
-    {
-        return $this->setTreeRight($v);
-    }
-
-    /**
-     * Proxy setter method for the level value of the nested set model.
-     * It provides a generic way to set the value, whatever the actual column name is.
-     *
-     * @param      int $v The nested set level value
-     * @return     $this|ChildPermission The current object (for fluent API support)
-     */
-    public function setLevel($v)
-    {
-        return $this->setTreeLevel($v);
-    }
-
-    /**
-     * Creates the supplied node as the root node.
-     *
-     * @return     $this|ChildPermission The current object (for fluent API support)
-     * @throws     PropelException
-     */
-    public function makeRoot()
-    {
-        if ($this->getLeftValue() || $this->getRightValue()) {
-            throw new PropelException('Cannot turn an existing node into a root node.');
-        }
-
-        $this->setLeftValue(1);
-        $this->setRightValue(2);
-        $this->setLevel(0);
-
-        return $this;
-    }
-
-    /**
-     * Tests if object is a node, i.e. if it is inserted in the tree
-     *
-     * @return     bool
-     */
-    public function isInTree()
-    {
-        return $this->getLeftValue() > 0 && $this->getRightValue() > $this->getLeftValue();
-    }
-
-    /**
-     * Tests if node is a root
-     *
-     * @return     bool
-     */
-    public function isRoot()
-    {
-        return $this->isInTree() && $this->getLeftValue() == 1;
-    }
-
-    /**
-     * Tests if node is a leaf
-     *
-     * @return     bool
-     */
-    public function isLeaf()
-    {
-        return $this->isInTree() &&  ($this->getRightValue() - $this->getLeftValue()) == 1;
-    }
-
-    /**
-     * Tests if node is a descendant of another node
-     *
-     * @param      ChildPermission $parent Propel node object
-     * @return     bool
-     */
-    public function isDescendantOf(ChildPermission $parent)
-    {
-        return $this->isInTree() && $this->getLeftValue() > $parent->getLeftValue() && $this->getRightValue() < $parent->getRightValue();
-    }
-
-    /**
-     * Tests if node is a ancestor of another node
-     *
-     * @param      ChildPermission $child Propel node object
-     * @return     bool
-     */
-    public function isAncestorOf(ChildPermission $child)
-    {
-        return $child->isDescendantOf($this);
-    }
-
-    /**
-     * Tests if object has an ancestor
-     *
-     * @return boolean
-     */
-    public function hasParent()
-    {
-        return $this->getLevel() > 0;
-    }
-
-    /**
-     * Sets the cache for parent node of the current object.
-     * Warning: this does not move the current object in the tree.
-     * Use moveTofirstChildOf() or moveToLastChildOf() for that purpose
-     *
-     * @param      ChildPermission $parent
-     * @return     $this|ChildPermission The current object, for fluid interface
-     */
-    public function setParent(ChildPermission $parent = null)
-    {
-        $this->aNestedSetParent = $parent;
-
-        return $this;
-    }
-
-    /**
-     * Gets parent node for the current object if it exists
-     * The result is cached so further calls to the same method don't issue any queries
-     *
-     * @param  ConnectionInterface $con Connection to use.
-     * @return ChildPermission|null Propel object if exists else null
-     */
-    public function getParent(ConnectionInterface $con = null)
-    {
-        if (null === $this->aNestedSetParent && $this->hasParent()) {
-            $this->aNestedSetParent = ChildPermissionQuery::create()
-                ->ancestorsOf($this)
-                ->orderByLevel(true)
-                ->findOne($con);
-        }
-
-        return $this->aNestedSetParent;
-    }
-
-    /**
-     * Determines if the node has previous sibling
-     *
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     bool
-     */
-    public function hasPrevSibling(ConnectionInterface $con = null)
-    {
-        if (!ChildPermissionQuery::isValid($this)) {
-            return false;
-        }
-
-        return ChildPermissionQuery::create()
-            ->filterByTreeRight($this->getLeftValue() - 1)
-            ->exists($con);
-    }
-
-    /**
-     * Gets previous sibling for the given node if it exists
-     *
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ChildPermission|null         Propel object if exists else null
-     */
-    public function getPrevSibling(ConnectionInterface $con = null)
-    {
-        return ChildPermissionQuery::create()
-            ->filterByTreeRight($this->getLeftValue() - 1)
-            ->findOne($con);
-    }
-
-    /**
-     * Determines if the node has next sibling
-     *
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     bool
-     */
-    public function hasNextSibling(ConnectionInterface $con = null)
-    {
-        if (!ChildPermissionQuery::isValid($this)) {
-            return false;
-        }
-
-        return ChildPermissionQuery::create()
-            ->filterByTreeLeft($this->getRightValue() + 1)
-            ->exists($con);
-    }
-
-    /**
-     * Gets next sibling for the given node if it exists
-     *
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ChildPermission|null         Propel object if exists else null
-     */
-    public function getNextSibling(ConnectionInterface $con = null)
-    {
-        return ChildPermissionQuery::create()
-            ->filterByTreeLeft($this->getRightValue() + 1)
-            ->findOne($con);
-    }
-
-    /**
-     * Clears out the $collNestedSetChildren collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return     void
-     */
-    public function clearNestedSetChildren()
-    {
-        $this->collNestedSetChildren = null;
-    }
-
-    /**
-     * Initializes the $collNestedSetChildren collection.
-     *
-     * @return     void
-     */
-    public function initNestedSetChildren()
-    {
-        $this->collNestedSetChildren = new ObjectCollection();
-        $this->collNestedSetChildren->setModel('\Phlopsi\AccessControl\Propel\Permission');
-    }
-
-    /**
-     * Adds an element to the internal $collNestedSetChildren collection.
-     * Beware that this doesn't insert a node in the tree.
-     * This method is only used to facilitate children hydration.
-     *
-     * @param      ChildPermission $permission
-     *
-     * @return     void
-     */
-    public function addNestedSetChild(ChildPermission $permission)
-    {
-        if (null === $this->collNestedSetChildren) {
-            $this->initNestedSetChildren();
-        }
-        if (!in_array($permission, $this->collNestedSetChildren->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->collNestedSetChildren[]= $permission;
-            $permission->setParent($this);
-        }
-    }
-
-    /**
-     * Tests if node has children
-     *
-     * @return     bool
-     */
-    public function hasChildren()
-    {
-        return ($this->getRightValue() - $this->getLeftValue()) > 1;
-    }
-
-    /**
-     * Gets the children of the given node
-     *
-     * @param      Criteria  $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ObjectCollection|ChildPermission[] List of ChildPermission objects
-     */
-    public function getChildren(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if (null === $this->collNestedSetChildren || null !== $criteria) {
-            if ($this->isLeaf() || ($this->isNew() && null === $this->collNestedSetChildren)) {
-                // return empty collection
-                $this->initNestedSetChildren();
-            } else {
-                $collNestedSetChildren = ChildPermissionQuery::create(null, $criteria)
-                    ->childrenOf($this)
-                    ->orderByBranch()
-                    ->find($con);
-                if (null !== $criteria) {
-                    return $collNestedSetChildren;
-                }
-                $this->collNestedSetChildren = $collNestedSetChildren;
-            }
-        }
-
-        return $this->collNestedSetChildren;
-    }
-
-    /**
-     * Gets number of children for the given node
-     *
-     * @param      Criteria  $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     int       Number of children
-     */
-    public function countChildren(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if (null === $this->collNestedSetChildren || null !== $criteria) {
-            if ($this->isLeaf() || ($this->isNew() && null === $this->collNestedSetChildren)) {
-                return 0;
-            } else {
-                return ChildPermissionQuery::create(null, $criteria)
-                    ->childrenOf($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collNestedSetChildren);
-        }
-    }
-
-    /**
-     * Gets the first child of the given node
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ChildPermission|null First child or null if this is a leaf
-     */
-    public function getFirstChild(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isLeaf()) {
-            return null;
-        } else {
-            return ChildPermissionQuery::create(null, $criteria)
-                ->childrenOf($this)
-                ->orderByBranch()
-                ->findOne($con);
-        }
-    }
-
-    /**
-     * Gets the last child of the given node
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ChildPermission|null Last child or null if this is a leaf
-     */
-    public function getLastChild(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isLeaf()) {
-            return null;
-        } else {
-            return ChildPermissionQuery::create(null, $criteria)
-                ->childrenOf($this)
-                ->orderByBranch(true)
-                ->findOne($con);
-        }
-    }
-
-    /**
-     * Gets the siblings of the given node
-     *
-     * @param boolean             $includeNode Whether to include the current node or not
-     * @param Criteria            $criteria Criteria to filter results.
-     * @param ConnectionInterface $con Connection to use.
-     *
-     * @return ObjectCollection|ChildPermission[] List of ChildPermission objects
-     */
-    public function getSiblings($includeNode = false, Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isRoot()) {
-            return array();
-        } else {
-            $query = ChildPermissionQuery::create(null, $criteria)
-                ->childrenOf($this->getParent($con))
-                ->orderByBranch();
-            if (!$includeNode) {
-                $query->prune($this);
-            }
-
-            return $query->find($con);
-        }
-    }
-
-    /**
-     * Gets descendants for the given node
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ObjectCollection|ChildPermission[] List of ChildPermission objects
-     */
-    public function getDescendants(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isLeaf()) {
-            return array();
-        } else {
-            return ChildPermissionQuery::create(null, $criteria)
-                ->descendantsOf($this)
-                ->orderByBranch()
-                ->find($con);
-        }
-    }
-
-    /**
-     * Gets number of descendants for the given node
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     int         Number of descendants
-     */
-    public function countDescendants(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isLeaf()) {
-            // save one query
-            return 0;
-        } else {
-            return ChildPermissionQuery::create(null, $criteria)
-                ->descendantsOf($this)
-                ->count($con);
-        }
-    }
-
-    /**
-     * Gets descendants for the given node, plus the current node
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ObjectCollection|ChildPermission[] List of ChildPermission objects
-     */
-    public function getBranch(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        return ChildPermissionQuery::create(null, $criteria)
-            ->branchOf($this)
-            ->orderByBranch()
-            ->find($con);
-    }
-
-    /**
-     * Gets ancestors for the given node, starting with the root node
-     * Use it for breadcrumb paths for instance
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ObjectCollection|ChildPermission[] List of ChildPermission objects
-     */
-    public function getAncestors(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isRoot()) {
-            // save one query
-            return array();
-        } else {
-            return ChildPermissionQuery::create(null, $criteria)
-                ->ancestorsOf($this)
-                ->orderByBranch()
-                ->find($con);
-        }
-    }
-
-    /**
-     * Inserts the given $child node as first child of current
-     * The modifications in the current object and the tree
-     * are not persisted until the child object is saved.
-     *
-     * @param      ChildPermission $child    Propel object for child node
-     *
-     * @return     $this|ChildPermission The current Propel object
-     */
-    public function addChild(ChildPermission $child)
-    {
-        if ($this->isNew()) {
-            throw new PropelException('A ChildPermission object must not be new to accept children.');
-        }
-        $child->insertAsFirstChildOf($this);
-
-        return $this;
-    }
-
-    /**
-     * Inserts the current node as first child of given $parent node
-     * The modifications in the current object and the tree
-     * are not persisted until the current object is saved.
-     *
-     * @param      ChildPermission $parent    Propel object for parent node
-     *
-     * @return     $this|ChildPermission The current Propel object
-     */
-    public function insertAsFirstChildOf(ChildPermission $parent)
-    {
-        if ($this->isInTree()) {
-            throw new PropelException('A ChildPermission object must not already be in the tree to be inserted. Use the moveToFirstChildOf() instead.');
-        }
-        $left = $parent->getLeftValue() + 1;
-        // Update node properties
-        $this->setLeftValue($left);
-        $this->setRightValue($left + 1);
-        $this->setLevel($parent->getLevel() + 1);
-        // update the children collection of the parent
-        $parent->addNestedSetChild($this);
-
-        // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries[] = array(
-            'callable'  => array('\Phlopsi\AccessControl\Propel\PermissionQuery', 'makeRoomForLeaf'),
-            'arguments' => array($left, $this->isNew() ? null : $this)
-        );
-
-        return $this;
-    }
-
-    /**
-     * Inserts the current node as last child of given $parent node
-     * The modifications in the current object and the tree
-     * are not persisted until the current object is saved.
-     *
-     * @param  ChildPermission $parent Propel object for parent node
-     * @return $this|ChildPermission The current Propel object
-     */
-    public function insertAsLastChildOf(ChildPermission $parent)
-    {
-        if ($this->isInTree()) {
-            throw new PropelException(
-                'A ChildPermission object must not already be in the tree to be inserted. Use the moveToLastChildOf() instead.'
-            );
-        }
-
-        $left = $parent->getRightValue();
-        // Update node properties
-        $this->setLeftValue($left);
-        $this->setRightValue($left + 1);
-        $this->setLevel($parent->getLevel() + 1);
-
-        // update the children collection of the parent
-        $parent->addNestedSetChild($this);
-
-        // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\Phlopsi\AccessControl\Propel\PermissionQuery', 'makeRoomForLeaf'),
-            'arguments' => array($left, $this->isNew() ? null : $this)
-        );
-
-        return $this;
-    }
-
-    /**
-     * Inserts the current node as prev sibling given $sibling node
-     * The modifications in the current object and the tree
-     * are not persisted until the current object is saved.
-     *
-     * @param      ChildPermission $sibling    Propel object for parent node
-     *
-     * @return     $this|ChildPermission The current Propel object
-     */
-    public function insertAsPrevSiblingOf(ChildPermission $sibling)
-    {
-        if ($this->isInTree()) {
-            throw new PropelException('A ChildPermission object must not already be in the tree to be inserted. Use the moveToPrevSiblingOf() instead.');
-        }
-        $left = $sibling->getLeftValue();
-        // Update node properties
-        $this->setLeftValue($left);
-        $this->setRightValue($left + 1);
-        $this->setLevel($sibling->getLevel());
-        // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\Phlopsi\AccessControl\Propel\PermissionQuery', 'makeRoomForLeaf'),
-            'arguments' => array($left, $this->isNew() ? null : $this)
-        );
-
-        return $this;
-    }
-
-    /**
-     * Inserts the current node as next sibling given $sibling node
-     * The modifications in the current object and the tree
-     * are not persisted until the current object is saved.
-     *
-     * @param      ChildPermission $sibling    Propel object for parent node
-     *
-     * @return     $this|ChildPermission The current Propel object
-     */
-    public function insertAsNextSiblingOf(ChildPermission $sibling)
-    {
-        if ($this->isInTree()) {
-            throw new PropelException('A ChildPermission object must not already be in the tree to be inserted. Use the moveToNextSiblingOf() instead.');
-        }
-        $left = $sibling->getRightValue() + 1;
-        // Update node properties
-        $this->setLeftValue($left);
-        $this->setRightValue($left + 1);
-        $this->setLevel($sibling->getLevel());
-        // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\Phlopsi\AccessControl\Propel\PermissionQuery', 'makeRoomForLeaf'),
-            'arguments' => array($left, $this->isNew() ? null : $this)
-        );
-
-        return $this;
-    }
-
-    /**
-     * Moves current node and its subtree to be the first child of $parent
-     * The modifications in the current object and the tree are immediate
-     *
-     * @param      ChildPermission $parent    Propel object for parent node
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     $this|ChildPermission The current Propel object
-     */
-    public function moveToFirstChildOf(ChildPermission $parent, ConnectionInterface $con = null)
-    {
-        if (!$this->isInTree()) {
-            throw new PropelException('A ChildPermission object must be already in the tree to be moved. Use the insertAsFirstChildOf() instead.');
-        }
-        if ($parent->isDescendantOf($this)) {
-            throw new PropelException('Cannot move a node as child of one of its subtree nodes.');
-        }
-
-        $this->moveSubtreeTo($parent->getLeftValue() + 1, $parent->getLevel() - $this->getLevel() + 1, $con);
-
-        return $this;
-    }
-
-    /**
-     * Moves current node and its subtree to be the last child of $parent
-     * The modifications in the current object and the tree are immediate
-     *
-     * @param      ChildPermission $parent    Propel object for parent node
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     $this|ChildPermission The current Propel object
-     */
-    public function moveToLastChildOf(ChildPermission $parent, ConnectionInterface $con = null)
-    {
-        if (!$this->isInTree()) {
-            throw new PropelException('A ChildPermission object must be already in the tree to be moved. Use the insertAsLastChildOf() instead.');
-        }
-        if ($parent->isDescendantOf($this)) {
-            throw new PropelException('Cannot move a node as child of one of its subtree nodes.');
-        }
-
-        $this->moveSubtreeTo($parent->getRightValue(), $parent->getLevel() - $this->getLevel() + 1, $con);
-
-        return $this;
-    }
-
-    /**
-     * Moves current node and its subtree to be the previous sibling of $sibling
-     * The modifications in the current object and the tree are immediate
-     *
-     * @param      ChildPermission $sibling    Propel object for sibling node
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     $this|ChildPermission The current Propel object
-     */
-    public function moveToPrevSiblingOf(ChildPermission $sibling, ConnectionInterface $con = null)
-    {
-        if (!$this->isInTree()) {
-            throw new PropelException('A ChildPermission object must be already in the tree to be moved. Use the insertAsPrevSiblingOf() instead.');
-        }
-        if ($sibling->isRoot()) {
-            throw new PropelException('Cannot move to previous sibling of a root node.');
-        }
-        if ($sibling->isDescendantOf($this)) {
-            throw new PropelException('Cannot move a node as sibling of one of its subtree nodes.');
-        }
-
-        $this->moveSubtreeTo($sibling->getLeftValue(), $sibling->getLevel() - $this->getLevel(), $con);
-
-        return $this;
-    }
-
-    /**
-     * Moves current node and its subtree to be the next sibling of $sibling
-     * The modifications in the current object and the tree are immediate
-     *
-     * @param      ChildPermission $sibling    Propel object for sibling node
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     $this|ChildPermission The current Propel object
-     */
-    public function moveToNextSiblingOf(ChildPermission $sibling, ConnectionInterface $con = null)
-    {
-        if (!$this->isInTree()) {
-            throw new PropelException('A ChildPermission object must be already in the tree to be moved. Use the insertAsNextSiblingOf() instead.');
-        }
-        if ($sibling->isRoot()) {
-            throw new PropelException('Cannot move to next sibling of a root node.');
-        }
-        if ($sibling->isDescendantOf($this)) {
-            throw new PropelException('Cannot move a node as sibling of one of its subtree nodes.');
-        }
-
-        $this->moveSubtreeTo($sibling->getRightValue() + 1, $sibling->getLevel() - $this->getLevel(), $con);
-
-        return $this;
-    }
-
-    /**
-     * Move current node and its children to location $destLeft and updates rest of tree
-     *
-     * @param      int    $destLeft Destination left value
-     * @param      int    $levelDelta Delta to add to the levels
-     * @param      ConnectionInterface $con        Connection to use.
-     */
-    protected function moveSubtreeTo($destLeft, $levelDelta, ConnectionInterface $con = null)
-    {
-        $left  = $this->getLeftValue();
-        $right = $this->getRightValue();
-
-        $treeSize = $right - $left +1;
-
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(PermissionTableMap::DATABASE_NAME);
-        }
-
-        $con->transaction(function () use ($con, $treeSize, $destLeft, $left, $right, $levelDelta) {
-            $preventDefault = false;
-
-            // make room next to the target for the subtree
-            ChildPermissionQuery::shiftRLValues($treeSize, $destLeft, null, $con);
-
-            if (!$preventDefault) {
-                if ($left >= $destLeft) { // src was shifted too?
-                    $left += $treeSize;
-                    $right += $treeSize;
-                }
-
-                if ($levelDelta) {
-                    // update the levels of the subtree
-                    ChildPermissionQuery::shiftLevel($levelDelta, $left, $right, $con);
-                }
-
-                // move the subtree to the target
-                ChildPermissionQuery::shiftRLValues($destLeft - $left, $left, $right, $con);
-            }
-
-            // remove the empty room at the previous location of the subtree
-            ChildPermissionQuery::shiftRLValues(-$treeSize, $right + 1, null, $con);
-
-            // update all loaded nodes
-            ChildPermissionQuery::updateLoadedNodes(null, $con);
-        });
-    }
-
-    /**
-     * Deletes all descendants for the given node
-     * Instance pooling is wiped out by this command,
-     * so existing ChildPermission instances are probably invalid (except for the current one)
-     *
-     * @param      ConnectionInterface $con Connection to use.
-     *
-     * @return     int         number of deleted nodes
-     */
-    public function deleteDescendants(ConnectionInterface $con = null)
-    {
-        if ($this->isLeaf()) {
-            // save one query
-            return;
-        }
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getReadConnection(PermissionTableMap::DATABASE_NAME);
-        }
-        $left = $this->getLeftValue();
-        $right = $this->getRightValue();
-
-        return $con->transaction(function () use ($con, $left, $right) {
-            // delete descendant nodes (will empty the instance pool)
-            $ret = ChildPermissionQuery::create()
-                ->descendantsOf($this)
-                ->delete($con);
-
-            // fill up the room that was used by descendants
-            ChildPermissionQuery::shiftRLValues($left - $right + 1, $right, null, $con);
-
-            // fix the right value for the current node, which is now a leaf
-            $this->setRightValue($left + 1);
-
-            return $ret;
-        });
-    }
-
-    /**
-     * Returns a pre-order iterator for this node and its children.
-     *
-     * @return NestedSetRecursiveIterator
-     */
-    public function getIterator()
-    {
-        return new NestedSetRecursiveIterator($this);
-    }
-
-    /**
-     * Code to be run before persisting the object
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preSave(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after persisting the object
-     * @param ConnectionInterface $con
-     */
-    public function postSave(ConnectionInterface $con = null)
-    {
-
-    }
-
-    /**
-     * Code to be run before inserting to database
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preInsert(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after inserting to database
-     * @param ConnectionInterface $con
-     */
-    public function postInsert(ConnectionInterface $con = null)
-    {
-
-    }
-
-    /**
-     * Code to be run before updating the object in database
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preUpdate(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after updating the object in database
-     * @param ConnectionInterface $con
-     */
-    public function postUpdate(ConnectionInterface $con = null)
-    {
-
-    }
-
-    /**
-     * Code to be run before deleting the object in database
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preDelete(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after deleting the object in database
-     * @param ConnectionInterface $con
-     */
-    public function postDelete(ConnectionInterface $con = null)
-    {
-
-    }
-
 
     /**
      * Derived method to catches calls to undefined methods.

@@ -6,18 +6,14 @@ use \Exception;
 use \PDO;
 use Phlopsi\AccessControl\Propel\Permission as ChildPermission;
 use Phlopsi\AccessControl\Propel\PermissionQuery as ChildPermissionQuery;
-use Phlopsi\AccessControl\Propel\PermissionsRoles as ChildPermissionsRoles;
-use Phlopsi\AccessControl\Propel\PermissionsRolesQuery as ChildPermissionsRolesQuery;
-use Phlopsi\AccessControl\Propel\Prohibition as ChildProhibition;
-use Phlopsi\AccessControl\Propel\ProhibitionQuery as ChildProhibitionQuery;
-use Phlopsi\AccessControl\Propel\ProhibitionsRoles as ChildProhibitionsRoles;
-use Phlopsi\AccessControl\Propel\ProhibitionsRolesQuery as ChildProhibitionsRolesQuery;
+use Phlopsi\AccessControl\Propel\PermissionToRole as ChildPermissionToRole;
+use Phlopsi\AccessControl\Propel\PermissionToRoleQuery as ChildPermissionToRoleQuery;
 use Phlopsi\AccessControl\Propel\Role as ChildRole;
 use Phlopsi\AccessControl\Propel\RoleQuery as ChildRoleQuery;
-use Phlopsi\AccessControl\Propel\RolesSessionTypes as ChildRolesSessionTypes;
-use Phlopsi\AccessControl\Propel\RolesSessionTypesQuery as ChildRolesSessionTypesQuery;
-use Phlopsi\AccessControl\Propel\RolesUsers as ChildRolesUsers;
-use Phlopsi\AccessControl\Propel\RolesUsersQuery as ChildRolesUsersQuery;
+use Phlopsi\AccessControl\Propel\RoleToSessionType as ChildRoleToSessionType;
+use Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery as ChildRoleToSessionTypeQuery;
+use Phlopsi\AccessControl\Propel\RoleToUser as ChildRoleToUser;
+use Phlopsi\AccessControl\Propel\RoleToUserQuery as ChildRoleToUserQuery;
 use Phlopsi\AccessControl\Propel\SessionType as ChildSessionType;
 use Phlopsi\AccessControl\Propel\SessionTypeQuery as ChildSessionTypeQuery;
 use Phlopsi\AccessControl\Propel\User as ChildUser;
@@ -27,7 +23,6 @@ use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
-use Propel\Runtime\ActiveRecord\NestedSetRecursiveIterator;
 use Propel\Runtime\Collection\Collection;
 use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
@@ -85,52 +80,28 @@ abstract class Role implements ActiveRecordInterface
     protected $external_id;
 
     /**
-     * The value for the tree_left field.
-     * @var        int
-     */
-    protected $tree_left;
-
-    /**
-     * The value for the tree_right field.
-     * @var        int
-     */
-    protected $tree_right;
-
-    /**
-     * The value for the tree_level field.
-     * @var        int
-     */
-    protected $tree_level;
-
-    /**
      * The value for the id field.
      * @var        int
      */
     protected $id;
 
     /**
-     * @var        ObjectCollection|ChildPermissionsRoles[] Collection to store aggregation of ChildPermissionsRoles objects.
+     * @var        ObjectCollection|ChildPermissionToRole[] Collection to store aggregation of ChildPermissionToRole objects.
      */
-    protected $collPermissionsRoless;
-    protected $collPermissionsRolessPartial;
+    protected $collPermissionToRoles;
+    protected $collPermissionToRolesPartial;
 
     /**
-     * @var        ObjectCollection|ChildProhibitionsRoles[] Collection to store aggregation of ChildProhibitionsRoles objects.
+     * @var        ObjectCollection|ChildRoleToSessionType[] Collection to store aggregation of ChildRoleToSessionType objects.
      */
-    protected $collProhibitionsRoless;
-    protected $collProhibitionsRolessPartial;
+    protected $collRoleToSessionTypes;
+    protected $collRoleToSessionTypesPartial;
 
     /**
-     * @var        ObjectCollection|ChildRolesSessionTypes[] Collection to store aggregation of ChildRolesSessionTypes objects.
+     * @var        ObjectCollection|ChildRoleToUser[] Collection to store aggregation of ChildRoleToUser objects.
      */
-    protected $collRolesSessionTypess;
-    protected $collRolesSessionTypessPartial;
-
-    /**
-     * @var        ObjectCollection|ChildRolesUsers[] Collection to store aggregation of ChildRolesUsers objects.
-     */
-    protected $collRolesUserss;
-    protected $collRolesUserssPartial;
+    protected $collRoleToUsers;
+    protected $collRoleToUsersPartial;
 
     /**
      * @var        ObjectCollection|ChildPermission[] Cross Collection to store aggregation of ChildPermission objects.
@@ -141,16 +112,6 @@ abstract class Role implements ActiveRecordInterface
      * @var bool
      */
     protected $collPermissionsPartial;
-
-    /**
-     * @var        ObjectCollection|ChildProhibition[] Cross Collection to store aggregation of ChildProhibition objects.
-     */
-    protected $collProhibitions;
-
-    /**
-     * @var bool
-     */
-    protected $collProhibitionsPartial;
 
     /**
      * @var        ObjectCollection|ChildSessionType[] Cross Collection to store aggregation of ChildSessionType objects.
@@ -180,52 +141,11 @@ abstract class Role implements ActiveRecordInterface
      */
     protected $alreadyInSave = false;
 
-    // nested_set behavior
-
-    /**
-     * Queries to be executed in the save transaction
-     * @var        array
-     */
-    protected $nestedSetQueries = array();
-
-    /**
-     * Internal cache for children nodes
-     * @var        null|ObjectCollection
-     */
-    protected $collNestedSetChildren = null;
-
-    /**
-     * Internal cache for parent node
-     * @var        null|ChildRole
-     */
-    protected $aNestedSetParent = null;
-
-    /**
-     * Left column for the set
-     */
-    const LEFT_COL = 'roles.tree_left';
-
-    /**
-     * Right column for the set
-     */
-    const RIGHT_COL = 'roles.tree_right';
-
-    /**
-     * Level column for the set
-     */
-    const LEVEL_COL = 'roles.tree_level';
-
     /**
      * An array of objects scheduled for deletion.
      * @var ObjectCollection|ChildPermission[]
      */
     protected $permissionsScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildProhibition[]
-     */
-    protected $prohibitionsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -241,27 +161,21 @@ abstract class Role implements ActiveRecordInterface
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildPermissionsRoles[]
+     * @var ObjectCollection|ChildPermissionToRole[]
      */
-    protected $permissionsRolessScheduledForDeletion = null;
+    protected $permissionToRolesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildProhibitionsRoles[]
+     * @var ObjectCollection|ChildRoleToSessionType[]
      */
-    protected $prohibitionsRolessScheduledForDeletion = null;
+    protected $roleToSessionTypesScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildRolesSessionTypes[]
+     * @var ObjectCollection|ChildRoleToUser[]
      */
-    protected $rolesSessionTypessScheduledForDeletion = null;
-
-    /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildRolesUsers[]
-     */
-    protected $rolesUserssScheduledForDeletion = null;
+    protected $roleToUsersScheduledForDeletion = null;
 
     /**
      * Initializes internal state of Phlopsi\AccessControl\Propel\Base\Role object.
@@ -491,36 +405,6 @@ abstract class Role implements ActiveRecordInterface
     }
 
     /**
-     * Get the [tree_left] column value.
-     *
-     * @return int
-     */
-    public function getTreeLeft()
-    {
-        return $this->tree_left;
-    }
-
-    /**
-     * Get the [tree_right] column value.
-     *
-     * @return int
-     */
-    public function getTreeRight()
-    {
-        return $this->tree_right;
-    }
-
-    /**
-     * Get the [tree_level] column value.
-     *
-     * @return int
-     */
-    public function getTreeLevel()
-    {
-        return $this->tree_level;
-    }
-
-    /**
      * Get the [id] column value.
      *
      * @return int
@@ -549,66 +433,6 @@ abstract class Role implements ActiveRecordInterface
 
         return $this;
     } // setExternalId()
-
-    /**
-     * Set the value of [tree_left] column.
-     *
-     * @param int $v new value
-     * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
-     */
-    public function setTreeLeft($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_left !== $v) {
-            $this->tree_left = $v;
-            $this->modifiedColumns[RoleTableMap::COL_TREE_LEFT] = true;
-        }
-
-        return $this;
-    } // setTreeLeft()
-
-    /**
-     * Set the value of [tree_right] column.
-     *
-     * @param int $v new value
-     * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
-     */
-    public function setTreeRight($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_right !== $v) {
-            $this->tree_right = $v;
-            $this->modifiedColumns[RoleTableMap::COL_TREE_RIGHT] = true;
-        }
-
-        return $this;
-    } // setTreeRight()
-
-    /**
-     * Set the value of [tree_level] column.
-     *
-     * @param int $v new value
-     * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
-     */
-    public function setTreeLevel($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->tree_level !== $v) {
-            $this->tree_level = $v;
-            $this->modifiedColumns[RoleTableMap::COL_TREE_LEVEL] = true;
-        }
-
-        return $this;
-    } // setTreeLevel()
 
     /**
      * Set the value of [id] column.
@@ -668,16 +492,7 @@ abstract class Role implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : RoleTableMap::translateFieldName('ExternalId', TableMap::TYPE_PHPNAME, $indexType)];
             $this->external_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RoleTableMap::translateFieldName('TreeLeft', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->tree_left = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : RoleTableMap::translateFieldName('TreeRight', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->tree_right = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : RoleTableMap::translateFieldName('TreeLevel', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->tree_level = (null !== $col) ? (int) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : RoleTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : RoleTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -687,7 +502,7 @@ abstract class Role implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = RoleTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 2; // 2 = RoleTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Phlopsi\\AccessControl\\Propel\\Role'), 0, $e);
@@ -747,16 +562,13 @@ abstract class Role implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {
-            $this->collPermissionsRoless = null;
+            $this->collPermissionToRoles = null;
 
-            $this->collProhibitionsRoless = null;
+            $this->collRoleToSessionTypes = null;
 
-            $this->collRolesSessionTypess = null;
-
-            $this->collRolesUserss = null;
+            $this->collRoleToUsers = null;
 
             $this->collPermissions = null;
-            $this->collProhibitions = null;
             $this->collSessionTypes = null;
             $this->collUsers = null;
         } // if (deep)
@@ -784,27 +596,8 @@ abstract class Role implements ActiveRecordInterface
         $con->transaction(function () use ($con) {
             $deleteQuery = ChildRoleQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
-            $ret = $this->preDelete($con);
-            // nested_set behavior
-            if ($this->isRoot()) {
-                throw new PropelException('Deletion of a root node is disabled for nested sets. Use ChildRoleQuery::deleteTree() instead to delete an entire tree');
-            }
-
-            if ($this->isInTree()) {
-                $this->deleteDescendants($con);
-            }
-
-            if ($ret) {
-                $deleteQuery->delete($con);
-                $this->postDelete($con);
-                // nested_set behavior
-                if ($this->isInTree()) {
-                    // fill up the room that was used by the node
-                    ChildRoleQuery::shiftRLValues(-2, $this->getRightValue() + 1, null, $con);
-                }
-
-                $this->setDeleted(true);
-            }
+            $deleteQuery->delete($con);
+            $this->setDeleted(true);
         });
     }
 
@@ -833,35 +626,8 @@ abstract class Role implements ActiveRecordInterface
 
         return $con->transaction(function () use ($con) {
             $isInsert = $this->isNew();
-            $ret = $this->preSave($con);
-            // nested_set behavior
-            if ($this->isNew() && $this->isRoot()) {
-                // check if no other root exist in, the tree
-                $rootExists = ChildRoleQuery::create()
-                    ->addUsingAlias(ChildRole::LEFT_COL, 1, Criteria::EQUAL)
-                    ->exists($con);
-                if ($rootExists) {
-                        throw new PropelException('A root node already exists in this tree. To allow multiple root nodes, add the `use_scope` parameter in the nested_set behavior tag.');
-                }
-            }
-            $this->processNestedSetQueries($con);
-            if ($isInsert) {
-                $ret = $ret && $this->preInsert($con);
-            } else {
-                $ret = $ret && $this->preUpdate($con);
-            }
-            if ($ret) {
-                $affectedRows = $this->doSave($con);
-                if ($isInsert) {
-                    $this->postInsert($con);
-                } else {
-                    $this->postUpdate($con);
-                }
-                $this->postSave($con);
-                RoleTableMap::addInstanceToPool($this);
-            } else {
-                $affectedRows = 0;
-            }
+            $affectedRows = $this->doSave($con);
+            RoleTableMap::addInstanceToPool($this);
 
             return $affectedRows;
         });
@@ -906,7 +672,7 @@ abstract class Role implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \Phlopsi\AccessControl\Propel\PermissionsRolesQuery::create()
+                    \Phlopsi\AccessControl\Propel\PermissionToRoleQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -924,35 +690,6 @@ abstract class Role implements ActiveRecordInterface
             }
 
 
-            if ($this->prohibitionsScheduledForDeletion !== null) {
-                if (!$this->prohibitionsScheduledForDeletion->isEmpty()) {
-                    $pks = array();
-                    foreach ($this->prohibitionsScheduledForDeletion as $entry) {
-                        $entryPk = [];
-
-                        $entryPk[1] = $this->getId();
-                        $entryPk[0] = $entry->getId();
-                        $pks[] = $entryPk;
-                    }
-
-                    \Phlopsi\AccessControl\Propel\ProhibitionsRolesQuery::create()
-                        ->filterByPrimaryKeys($pks)
-                        ->delete($con);
-
-                    $this->prohibitionsScheduledForDeletion = null;
-                }
-
-            }
-
-            if ($this->collProhibitions) {
-                foreach ($this->collProhibitions as $prohibition) {
-                    if (!$prohibition->isDeleted() && ($prohibition->isNew() || $prohibition->isModified())) {
-                        $prohibition->save($con);
-                    }
-                }
-            }
-
-
             if ($this->sessionTypesScheduledForDeletion !== null) {
                 if (!$this->sessionTypesScheduledForDeletion->isEmpty()) {
                     $pks = array();
@@ -964,7 +701,7 @@ abstract class Role implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \Phlopsi\AccessControl\Propel\RolesSessionTypesQuery::create()
+                    \Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -993,7 +730,7 @@ abstract class Role implements ActiveRecordInterface
                         $pks[] = $entryPk;
                     }
 
-                    \Phlopsi\AccessControl\Propel\RolesUsersQuery::create()
+                    \Phlopsi\AccessControl\Propel\RoleToUserQuery::create()
                         ->filterByPrimaryKeys($pks)
                         ->delete($con);
 
@@ -1011,68 +748,51 @@ abstract class Role implements ActiveRecordInterface
             }
 
 
-            if ($this->permissionsRolessScheduledForDeletion !== null) {
-                if (!$this->permissionsRolessScheduledForDeletion->isEmpty()) {
-                    \Phlopsi\AccessControl\Propel\PermissionsRolesQuery::create()
-                        ->filterByPrimaryKeys($this->permissionsRolessScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->permissionToRolesScheduledForDeletion !== null) {
+                if (!$this->permissionToRolesScheduledForDeletion->isEmpty()) {
+                    \Phlopsi\AccessControl\Propel\PermissionToRoleQuery::create()
+                        ->filterByPrimaryKeys($this->permissionToRolesScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->permissionsRolessScheduledForDeletion = null;
+                    $this->permissionToRolesScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collPermissionsRoless !== null) {
-                foreach ($this->collPermissionsRoless as $referrerFK) {
+            if ($this->collPermissionToRoles !== null) {
+                foreach ($this->collPermissionToRoles as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
 
-            if ($this->prohibitionsRolessScheduledForDeletion !== null) {
-                if (!$this->prohibitionsRolessScheduledForDeletion->isEmpty()) {
-                    \Phlopsi\AccessControl\Propel\ProhibitionsRolesQuery::create()
-                        ->filterByPrimaryKeys($this->prohibitionsRolessScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->roleToSessionTypesScheduledForDeletion !== null) {
+                if (!$this->roleToSessionTypesScheduledForDeletion->isEmpty()) {
+                    \Phlopsi\AccessControl\Propel\RoleToSessionTypeQuery::create()
+                        ->filterByPrimaryKeys($this->roleToSessionTypesScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->prohibitionsRolessScheduledForDeletion = null;
+                    $this->roleToSessionTypesScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collProhibitionsRoless !== null) {
-                foreach ($this->collProhibitionsRoless as $referrerFK) {
+            if ($this->collRoleToSessionTypes !== null) {
+                foreach ($this->collRoleToSessionTypes as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
 
-            if ($this->rolesSessionTypessScheduledForDeletion !== null) {
-                if (!$this->rolesSessionTypessScheduledForDeletion->isEmpty()) {
-                    \Phlopsi\AccessControl\Propel\RolesSessionTypesQuery::create()
-                        ->filterByPrimaryKeys($this->rolesSessionTypessScheduledForDeletion->getPrimaryKeys(false))
+            if ($this->roleToUsersScheduledForDeletion !== null) {
+                if (!$this->roleToUsersScheduledForDeletion->isEmpty()) {
+                    \Phlopsi\AccessControl\Propel\RoleToUserQuery::create()
+                        ->filterByPrimaryKeys($this->roleToUsersScheduledForDeletion->getPrimaryKeys(false))
                         ->delete($con);
-                    $this->rolesSessionTypessScheduledForDeletion = null;
+                    $this->roleToUsersScheduledForDeletion = null;
                 }
             }
 
-            if ($this->collRolesSessionTypess !== null) {
-                foreach ($this->collRolesSessionTypess as $referrerFK) {
-                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
-            }
-
-            if ($this->rolesUserssScheduledForDeletion !== null) {
-                if (!$this->rolesUserssScheduledForDeletion->isEmpty()) {
-                    \Phlopsi\AccessControl\Propel\RolesUsersQuery::create()
-                        ->filterByPrimaryKeys($this->rolesUserssScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
-                    $this->rolesUserssScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collRolesUserss !== null) {
-                foreach ($this->collRolesUserss as $referrerFK) {
+            if ($this->collRoleToUsers !== null) {
+                foreach ($this->collRoleToUsers as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1108,15 +828,6 @@ abstract class Role implements ActiveRecordInterface
         if ($this->isColumnModified(RoleTableMap::COL_EXTERNAL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'external_id';
         }
-        if ($this->isColumnModified(RoleTableMap::COL_TREE_LEFT)) {
-            $modifiedColumns[':p' . $index++]  = 'tree_left';
-        }
-        if ($this->isColumnModified(RoleTableMap::COL_TREE_RIGHT)) {
-            $modifiedColumns[':p' . $index++]  = 'tree_right';
-        }
-        if ($this->isColumnModified(RoleTableMap::COL_TREE_LEVEL)) {
-            $modifiedColumns[':p' . $index++]  = 'tree_level';
-        }
         if ($this->isColumnModified(RoleTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
@@ -1133,15 +844,6 @@ abstract class Role implements ActiveRecordInterface
                 switch ($columnName) {
                     case 'external_id':
                         $stmt->bindValue($identifier, $this->external_id, PDO::PARAM_STR);
-                        break;
-                    case 'tree_left':
-                        $stmt->bindValue($identifier, $this->tree_left, PDO::PARAM_INT);
-                        break;
-                    case 'tree_right':
-                        $stmt->bindValue($identifier, $this->tree_right, PDO::PARAM_INT);
-                        break;
-                    case 'tree_level':
-                        $stmt->bindValue($identifier, $this->tree_level, PDO::PARAM_INT);
                         break;
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
@@ -1212,15 +914,6 @@ abstract class Role implements ActiveRecordInterface
                 return $this->getExternalId();
                 break;
             case 1:
-                return $this->getTreeLeft();
-                break;
-            case 2:
-                return $this->getTreeRight();
-                break;
-            case 3:
-                return $this->getTreeLevel();
-                break;
-            case 4:
                 return $this->getId();
                 break;
             default:
@@ -1254,72 +947,55 @@ abstract class Role implements ActiveRecordInterface
         $keys = RoleTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getExternalId(),
-            $keys[1] => $this->getTreeLeft(),
-            $keys[2] => $this->getTreeRight(),
-            $keys[3] => $this->getTreeLevel(),
-            $keys[4] => $this->getId(),
+            $keys[1] => $this->getId(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
-
+        
         if ($includeForeignObjects) {
-            if (null !== $this->collPermissionsRoless) {
+            if (null !== $this->collPermissionToRoles) {
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'permissionsRoless';
+                        $key = 'permissionToRoles';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'permissions_roless';
                         break;
                     default:
-                        $key = 'PermissionsRoless';
+                        $key = 'PermissionToRoles';
                 }
-
-                $result[$key] = $this->collPermissionsRoless->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+        
+                $result[$key] = $this->collPermissionToRoles->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collProhibitionsRoless) {
+            if (null !== $this->collRoleToSessionTypes) {
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'prohibitionsRoless';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'prohibitions_roless';
-                        break;
-                    default:
-                        $key = 'ProhibitionsRoless';
-                }
-
-                $result[$key] = $this->collProhibitionsRoless->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
-            }
-            if (null !== $this->collRolesSessionTypess) {
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'rolesSessionTypess';
+                        $key = 'roleToSessionTypes';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'roles_session_typess';
                         break;
                     default:
-                        $key = 'RolesSessionTypess';
+                        $key = 'RoleToSessionTypes';
                 }
-
-                $result[$key] = $this->collRolesSessionTypess->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+        
+                $result[$key] = $this->collRoleToSessionTypes->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
-            if (null !== $this->collRolesUserss) {
+            if (null !== $this->collRoleToUsers) {
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'rolesUserss';
+                        $key = 'roleToUsers';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'roles_userss';
                         break;
                     default:
-                        $key = 'RolesUserss';
+                        $key = 'RoleToUsers';
                 }
-
-                $result[$key] = $this->collRolesUserss->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+        
+                $result[$key] = $this->collRoleToUsers->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -1359,15 +1035,6 @@ abstract class Role implements ActiveRecordInterface
                 $this->setExternalId($value);
                 break;
             case 1:
-                $this->setTreeLeft($value);
-                break;
-            case 2:
-                $this->setTreeRight($value);
-                break;
-            case 3:
-                $this->setTreeLevel($value);
-                break;
-            case 4:
                 $this->setId($value);
                 break;
         } // switch()
@@ -1400,16 +1067,7 @@ abstract class Role implements ActiveRecordInterface
             $this->setExternalId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setTreeLeft($arr[$keys[1]]);
-        }
-        if (array_key_exists($keys[2], $arr)) {
-            $this->setTreeRight($arr[$keys[2]]);
-        }
-        if (array_key_exists($keys[3], $arr)) {
-            $this->setTreeLevel($arr[$keys[3]]);
-        }
-        if (array_key_exists($keys[4], $arr)) {
-            $this->setId($arr[$keys[4]]);
+            $this->setId($arr[$keys[1]]);
         }
     }
 
@@ -1454,15 +1112,6 @@ abstract class Role implements ActiveRecordInterface
 
         if ($this->isColumnModified(RoleTableMap::COL_EXTERNAL_ID)) {
             $criteria->add(RoleTableMap::COL_EXTERNAL_ID, $this->external_id);
-        }
-        if ($this->isColumnModified(RoleTableMap::COL_TREE_LEFT)) {
-            $criteria->add(RoleTableMap::COL_TREE_LEFT, $this->tree_left);
-        }
-        if ($this->isColumnModified(RoleTableMap::COL_TREE_RIGHT)) {
-            $criteria->add(RoleTableMap::COL_TREE_RIGHT, $this->tree_right);
-        }
-        if ($this->isColumnModified(RoleTableMap::COL_TREE_LEVEL)) {
-            $criteria->add(RoleTableMap::COL_TREE_LEVEL, $this->tree_level);
         }
         if ($this->isColumnModified(RoleTableMap::COL_ID)) {
             $criteria->add(RoleTableMap::COL_ID, $this->id);
@@ -1510,7 +1159,7 @@ abstract class Role implements ActiveRecordInterface
 
         return spl_object_hash($this);
     }
-
+        
     /**
      * Returns the primary key for this object (row).
      * @return int
@@ -1554,36 +1203,27 @@ abstract class Role implements ActiveRecordInterface
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
         $copyObj->setExternalId($this->getExternalId());
-        $copyObj->setTreeLeft($this->getTreeLeft());
-        $copyObj->setTreeRight($this->getTreeRight());
-        $copyObj->setTreeLevel($this->getTreeLevel());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
-            foreach ($this->getPermissionsRoless() as $relObj) {
+            foreach ($this->getPermissionToRoles() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addPermissionsRoles($relObj->copy($deepCopy));
+                    $copyObj->addPermissionToRole($relObj->copy($deepCopy));
                 }
             }
 
-            foreach ($this->getProhibitionsRoless() as $relObj) {
+            foreach ($this->getRoleToSessionTypes() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addProhibitionsRoles($relObj->copy($deepCopy));
+                    $copyObj->addRoleToSessionType($relObj->copy($deepCopy));
                 }
             }
 
-            foreach ($this->getRolesSessionTypess() as $relObj) {
+            foreach ($this->getRoleToUsers() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addRolesSessionTypes($relObj->copy($deepCopy));
-                }
-            }
-
-            foreach ($this->getRolesUserss() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addRolesUsers($relObj->copy($deepCopy));
+                    $copyObj->addRoleToUser($relObj->copy($deepCopy));
                 }
             }
 
@@ -1628,46 +1268,43 @@ abstract class Role implements ActiveRecordInterface
      */
     public function initRelation($relationName)
     {
-        if ('PermissionsRoles' == $relationName) {
-            return $this->initPermissionsRoless();
+        if ('PermissionToRole' == $relationName) {
+            return $this->initPermissionToRoles();
         }
-        if ('ProhibitionsRoles' == $relationName) {
-            return $this->initProhibitionsRoless();
+        if ('RoleToSessionType' == $relationName) {
+            return $this->initRoleToSessionTypes();
         }
-        if ('RolesSessionTypes' == $relationName) {
-            return $this->initRolesSessionTypess();
-        }
-        if ('RolesUsers' == $relationName) {
-            return $this->initRolesUserss();
+        if ('RoleToUser' == $relationName) {
+            return $this->initRoleToUsers();
         }
     }
 
     /**
-     * Clears out the collPermissionsRoless collection
+     * Clears out the collPermissionToRoles collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addPermissionsRoless()
+     * @see        addPermissionToRoles()
      */
-    public function clearPermissionsRoless()
+    public function clearPermissionToRoles()
     {
-        $this->collPermissionsRoless = null; // important to set this to NULL since that means it is uninitialized
+        $this->collPermissionToRoles = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collPermissionsRoless collection loaded partially.
+     * Reset is the collPermissionToRoles collection loaded partially.
      */
-    public function resetPartialPermissionsRoless($v = true)
+    public function resetPartialPermissionToRoles($v = true)
     {
-        $this->collPermissionsRolessPartial = $v;
+        $this->collPermissionToRolesPartial = $v;
     }
 
     /**
-     * Initializes the collPermissionsRoless collection.
+     * Initializes the collPermissionToRoles collection.
      *
-     * By default this just sets the collPermissionsRoless collection to an empty array (like clearcollPermissionsRoless());
+     * By default this just sets the collPermissionToRoles collection to an empty array (like clearcollPermissionToRoles());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1676,17 +1313,17 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initPermissionsRoless($overrideExisting = true)
+    public function initPermissionToRoles($overrideExisting = true)
     {
-        if (null !== $this->collPermissionsRoless && !$overrideExisting) {
+        if (null !== $this->collPermissionToRoles && !$overrideExisting) {
             return;
         }
-        $this->collPermissionsRoless = new ObjectCollection();
-        $this->collPermissionsRoless->setModel('\Phlopsi\AccessControl\Propel\PermissionsRoles');
+        $this->collPermissionToRoles = new ObjectCollection();
+        $this->collPermissionToRoles->setModel('\Phlopsi\AccessControl\Propel\PermissionToRole');
     }
 
     /**
-     * Gets an array of ChildPermissionsRoles objects which contain a foreign key that references this object.
+     * Gets an array of ChildPermissionToRole objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1696,111 +1333,111 @@ abstract class Role implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildPermissionsRoles[] List of ChildPermissionsRoles objects
+     * @return ObjectCollection|ChildPermissionToRole[] List of ChildPermissionToRole objects
      * @throws PropelException
      */
-    public function getPermissionsRoless(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getPermissionToRoles(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collPermissionsRolessPartial && !$this->isNew();
-        if (null === $this->collPermissionsRoless || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collPermissionsRoless) {
+        $partial = $this->collPermissionToRolesPartial && !$this->isNew();
+        if (null === $this->collPermissionToRoles || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collPermissionToRoles) {
                 // return empty collection
-                $this->initPermissionsRoless();
+                $this->initPermissionToRoles();
             } else {
-                $collPermissionsRoless = ChildPermissionsRolesQuery::create(null, $criteria)
+                $collPermissionToRoles = ChildPermissionToRoleQuery::create(null, $criteria)
                     ->filterByRole($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collPermissionsRolessPartial && count($collPermissionsRoless)) {
-                        $this->initPermissionsRoless(false);
+                    if (false !== $this->collPermissionToRolesPartial && count($collPermissionToRoles)) {
+                        $this->initPermissionToRoles(false);
 
-                        foreach ($collPermissionsRoless as $obj) {
-                            if (false == $this->collPermissionsRoless->contains($obj)) {
-                                $this->collPermissionsRoless->append($obj);
+                        foreach ($collPermissionToRoles as $obj) {
+                            if (false == $this->collPermissionToRoles->contains($obj)) {
+                                $this->collPermissionToRoles->append($obj);
                             }
                         }
 
-                        $this->collPermissionsRolessPartial = true;
+                        $this->collPermissionToRolesPartial = true;
                     }
 
-                    return $collPermissionsRoless;
+                    return $collPermissionToRoles;
                 }
 
-                if ($partial && $this->collPermissionsRoless) {
-                    foreach ($this->collPermissionsRoless as $obj) {
+                if ($partial && $this->collPermissionToRoles) {
+                    foreach ($this->collPermissionToRoles as $obj) {
                         if ($obj->isNew()) {
-                            $collPermissionsRoless[] = $obj;
+                            $collPermissionToRoles[] = $obj;
                         }
                     }
                 }
 
-                $this->collPermissionsRoless = $collPermissionsRoless;
-                $this->collPermissionsRolessPartial = false;
+                $this->collPermissionToRoles = $collPermissionToRoles;
+                $this->collPermissionToRolesPartial = false;
             }
         }
 
-        return $this->collPermissionsRoless;
+        return $this->collPermissionToRoles;
     }
 
     /**
-     * Sets a collection of ChildPermissionsRoles objects related by a one-to-many relationship
+     * Sets a collection of ChildPermissionToRole objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $permissionsRoless A Propel collection.
+     * @param      Collection $permissionToRoles A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildRole The current object (for fluent API support)
      */
-    public function setPermissionsRoless(Collection $permissionsRoless, ConnectionInterface $con = null)
+    public function setPermissionToRoles(Collection $permissionToRoles, ConnectionInterface $con = null)
     {
-        /** @var ChildPermissionsRoles[] $permissionsRolessToDelete */
-        $permissionsRolessToDelete = $this->getPermissionsRoless(new Criteria(), $con)->diff($permissionsRoless);
+        /** @var ChildPermissionToRole[] $permissionToRolesToDelete */
+        $permissionToRolesToDelete = $this->getPermissionToRoles(new Criteria(), $con)->diff($permissionToRoles);
 
-
+        
         //since at least one column in the foreign key is at the same time a PK
         //we can not just set a PK to NULL in the lines below. We have to store
         //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->permissionsRolessScheduledForDeletion = clone $permissionsRolessToDelete;
+        $this->permissionToRolesScheduledForDeletion = clone $permissionToRolesToDelete;
 
-        foreach ($permissionsRolessToDelete as $permissionsRolesRemoved) {
-            $permissionsRolesRemoved->setRole(null);
+        foreach ($permissionToRolesToDelete as $permissionToRoleRemoved) {
+            $permissionToRoleRemoved->setRole(null);
         }
 
-        $this->collPermissionsRoless = null;
-        foreach ($permissionsRoless as $permissionsRoles) {
-            $this->addPermissionsRoles($permissionsRoles);
+        $this->collPermissionToRoles = null;
+        foreach ($permissionToRoles as $permissionToRole) {
+            $this->addPermissionToRole($permissionToRole);
         }
 
-        $this->collPermissionsRoless = $permissionsRoless;
-        $this->collPermissionsRolessPartial = false;
+        $this->collPermissionToRoles = $permissionToRoles;
+        $this->collPermissionToRolesPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related PermissionsRoles objects.
+     * Returns the number of related PermissionToRole objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related PermissionsRoles objects.
+     * @return int             Count of related PermissionToRole objects.
      * @throws PropelException
      */
-    public function countPermissionsRoless(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countPermissionToRoles(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collPermissionsRolessPartial && !$this->isNew();
-        if (null === $this->collPermissionsRoless || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collPermissionsRoless) {
+        $partial = $this->collPermissionToRolesPartial && !$this->isNew();
+        if (null === $this->collPermissionToRoles || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collPermissionToRoles) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getPermissionsRoless());
+                return count($this->getPermissionToRoles());
             }
 
-            $query = ChildPermissionsRolesQuery::create(null, $criteria);
+            $query = ChildPermissionToRoleQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -1810,54 +1447,54 @@ abstract class Role implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collPermissionsRoless);
+        return count($this->collPermissionToRoles);
     }
 
     /**
-     * Method called to associate a ChildPermissionsRoles object to this object
-     * through the ChildPermissionsRoles foreign key attribute.
+     * Method called to associate a ChildPermissionToRole object to this object
+     * through the ChildPermissionToRole foreign key attribute.
      *
-     * @param  ChildPermissionsRoles $l ChildPermissionsRoles
+     * @param  ChildPermissionToRole $l ChildPermissionToRole
      * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
      */
-    public function addPermissionsRoles(ChildPermissionsRoles $l)
+    public function addPermissionToRole(ChildPermissionToRole $l)
     {
-        if ($this->collPermissionsRoless === null) {
-            $this->initPermissionsRoless();
-            $this->collPermissionsRolessPartial = true;
+        if ($this->collPermissionToRoles === null) {
+            $this->initPermissionToRoles();
+            $this->collPermissionToRolesPartial = true;
         }
 
-        if (!$this->collPermissionsRoless->contains($l)) {
-            $this->doAddPermissionsRoles($l);
+        if (!$this->collPermissionToRoles->contains($l)) {
+            $this->doAddPermissionToRole($l);
         }
 
         return $this;
     }
 
     /**
-     * @param ChildPermissionsRoles $permissionsRoles The ChildPermissionsRoles object to add.
+     * @param ChildPermissionToRole $permissionToRole The ChildPermissionToRole object to add.
      */
-    protected function doAddPermissionsRoles(ChildPermissionsRoles $permissionsRoles)
+    protected function doAddPermissionToRole(ChildPermissionToRole $permissionToRole)
     {
-        $this->collPermissionsRoless[]= $permissionsRoles;
-        $permissionsRoles->setRole($this);
+        $this->collPermissionToRoles[]= $permissionToRole;
+        $permissionToRole->setRole($this);
     }
 
     /**
-     * @param  ChildPermissionsRoles $permissionsRoles The ChildPermissionsRoles object to remove.
+     * @param  ChildPermissionToRole $permissionToRole The ChildPermissionToRole object to remove.
      * @return $this|ChildRole The current object (for fluent API support)
      */
-    public function removePermissionsRoles(ChildPermissionsRoles $permissionsRoles)
+    public function removePermissionToRole(ChildPermissionToRole $permissionToRole)
     {
-        if ($this->getPermissionsRoless()->contains($permissionsRoles)) {
-            $pos = $this->collPermissionsRoless->search($permissionsRoles);
-            $this->collPermissionsRoless->remove($pos);
-            if (null === $this->permissionsRolessScheduledForDeletion) {
-                $this->permissionsRolessScheduledForDeletion = clone $this->collPermissionsRoless;
-                $this->permissionsRolessScheduledForDeletion->clear();
+        if ($this->getPermissionToRoles()->contains($permissionToRole)) {
+            $pos = $this->collPermissionToRoles->search($permissionToRole);
+            $this->collPermissionToRoles->remove($pos);
+            if (null === $this->permissionToRolesScheduledForDeletion) {
+                $this->permissionToRolesScheduledForDeletion = clone $this->collPermissionToRoles;
+                $this->permissionToRolesScheduledForDeletion->clear();
             }
-            $this->permissionsRolessScheduledForDeletion[]= clone $permissionsRoles;
-            $permissionsRoles->setRole(null);
+            $this->permissionToRolesScheduledForDeletion[]= clone $permissionToRole;
+            $permissionToRole->setRole(null);
         }
 
         return $this;
@@ -1869,7 +1506,7 @@ abstract class Role implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Role is new, it will return
      * an empty collection; or if this Role has previously
-     * been saved, it will retrieve related PermissionsRoless from storage.
+     * been saved, it will retrieve related PermissionToRoles from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -1878,42 +1515,42 @@ abstract class Role implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildPermissionsRoles[] List of ChildPermissionsRoles objects
+     * @return ObjectCollection|ChildPermissionToRole[] List of ChildPermissionToRole objects
      */
-    public function getPermissionsRolessJoinPermission(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getPermissionToRolesJoinPermission(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildPermissionsRolesQuery::create(null, $criteria);
+        $query = ChildPermissionToRoleQuery::create(null, $criteria);
         $query->joinWith('Permission', $joinBehavior);
 
-        return $this->getPermissionsRoless($query, $con);
+        return $this->getPermissionToRoles($query, $con);
     }
 
     /**
-     * Clears out the collProhibitionsRoless collection
+     * Clears out the collRoleToSessionTypes collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addProhibitionsRoless()
+     * @see        addRoleToSessionTypes()
      */
-    public function clearProhibitionsRoless()
+    public function clearRoleToSessionTypes()
     {
-        $this->collProhibitionsRoless = null; // important to set this to NULL since that means it is uninitialized
+        $this->collRoleToSessionTypes = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collProhibitionsRoless collection loaded partially.
+     * Reset is the collRoleToSessionTypes collection loaded partially.
      */
-    public function resetPartialProhibitionsRoless($v = true)
+    public function resetPartialRoleToSessionTypes($v = true)
     {
-        $this->collProhibitionsRolessPartial = $v;
+        $this->collRoleToSessionTypesPartial = $v;
     }
 
     /**
-     * Initializes the collProhibitionsRoless collection.
+     * Initializes the collRoleToSessionTypes collection.
      *
-     * By default this just sets the collProhibitionsRoless collection to an empty array (like clearcollProhibitionsRoless());
+     * By default this just sets the collRoleToSessionTypes collection to an empty array (like clearcollRoleToSessionTypes());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -1922,17 +1559,17 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initProhibitionsRoless($overrideExisting = true)
+    public function initRoleToSessionTypes($overrideExisting = true)
     {
-        if (null !== $this->collProhibitionsRoless && !$overrideExisting) {
+        if (null !== $this->collRoleToSessionTypes && !$overrideExisting) {
             return;
         }
-        $this->collProhibitionsRoless = new ObjectCollection();
-        $this->collProhibitionsRoless->setModel('\Phlopsi\AccessControl\Propel\ProhibitionsRoles');
+        $this->collRoleToSessionTypes = new ObjectCollection();
+        $this->collRoleToSessionTypes->setModel('\Phlopsi\AccessControl\Propel\RoleToSessionType');
     }
 
     /**
-     * Gets an array of ChildProhibitionsRoles objects which contain a foreign key that references this object.
+     * Gets an array of ChildRoleToSessionType objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -1942,111 +1579,111 @@ abstract class Role implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildProhibitionsRoles[] List of ChildProhibitionsRoles objects
+     * @return ObjectCollection|ChildRoleToSessionType[] List of ChildRoleToSessionType objects
      * @throws PropelException
      */
-    public function getProhibitionsRoless(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getRoleToSessionTypes(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collProhibitionsRolessPartial && !$this->isNew();
-        if (null === $this->collProhibitionsRoless || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collProhibitionsRoless) {
+        $partial = $this->collRoleToSessionTypesPartial && !$this->isNew();
+        if (null === $this->collRoleToSessionTypes || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRoleToSessionTypes) {
                 // return empty collection
-                $this->initProhibitionsRoless();
+                $this->initRoleToSessionTypes();
             } else {
-                $collProhibitionsRoless = ChildProhibitionsRolesQuery::create(null, $criteria)
+                $collRoleToSessionTypes = ChildRoleToSessionTypeQuery::create(null, $criteria)
                     ->filterByRole($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collProhibitionsRolessPartial && count($collProhibitionsRoless)) {
-                        $this->initProhibitionsRoless(false);
+                    if (false !== $this->collRoleToSessionTypesPartial && count($collRoleToSessionTypes)) {
+                        $this->initRoleToSessionTypes(false);
 
-                        foreach ($collProhibitionsRoless as $obj) {
-                            if (false == $this->collProhibitionsRoless->contains($obj)) {
-                                $this->collProhibitionsRoless->append($obj);
+                        foreach ($collRoleToSessionTypes as $obj) {
+                            if (false == $this->collRoleToSessionTypes->contains($obj)) {
+                                $this->collRoleToSessionTypes->append($obj);
                             }
                         }
 
-                        $this->collProhibitionsRolessPartial = true;
+                        $this->collRoleToSessionTypesPartial = true;
                     }
 
-                    return $collProhibitionsRoless;
+                    return $collRoleToSessionTypes;
                 }
 
-                if ($partial && $this->collProhibitionsRoless) {
-                    foreach ($this->collProhibitionsRoless as $obj) {
+                if ($partial && $this->collRoleToSessionTypes) {
+                    foreach ($this->collRoleToSessionTypes as $obj) {
                         if ($obj->isNew()) {
-                            $collProhibitionsRoless[] = $obj;
+                            $collRoleToSessionTypes[] = $obj;
                         }
                     }
                 }
 
-                $this->collProhibitionsRoless = $collProhibitionsRoless;
-                $this->collProhibitionsRolessPartial = false;
+                $this->collRoleToSessionTypes = $collRoleToSessionTypes;
+                $this->collRoleToSessionTypesPartial = false;
             }
         }
 
-        return $this->collProhibitionsRoless;
+        return $this->collRoleToSessionTypes;
     }
 
     /**
-     * Sets a collection of ChildProhibitionsRoles objects related by a one-to-many relationship
+     * Sets a collection of ChildRoleToSessionType objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $prohibitionsRoless A Propel collection.
+     * @param      Collection $roleToSessionTypes A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildRole The current object (for fluent API support)
      */
-    public function setProhibitionsRoless(Collection $prohibitionsRoless, ConnectionInterface $con = null)
+    public function setRoleToSessionTypes(Collection $roleToSessionTypes, ConnectionInterface $con = null)
     {
-        /** @var ChildProhibitionsRoles[] $prohibitionsRolessToDelete */
-        $prohibitionsRolessToDelete = $this->getProhibitionsRoless(new Criteria(), $con)->diff($prohibitionsRoless);
+        /** @var ChildRoleToSessionType[] $roleToSessionTypesToDelete */
+        $roleToSessionTypesToDelete = $this->getRoleToSessionTypes(new Criteria(), $con)->diff($roleToSessionTypes);
 
-
+        
         //since at least one column in the foreign key is at the same time a PK
         //we can not just set a PK to NULL in the lines below. We have to store
         //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->prohibitionsRolessScheduledForDeletion = clone $prohibitionsRolessToDelete;
+        $this->roleToSessionTypesScheduledForDeletion = clone $roleToSessionTypesToDelete;
 
-        foreach ($prohibitionsRolessToDelete as $prohibitionsRolesRemoved) {
-            $prohibitionsRolesRemoved->setRole(null);
+        foreach ($roleToSessionTypesToDelete as $roleToSessionTypeRemoved) {
+            $roleToSessionTypeRemoved->setRole(null);
         }
 
-        $this->collProhibitionsRoless = null;
-        foreach ($prohibitionsRoless as $prohibitionsRoles) {
-            $this->addProhibitionsRoles($prohibitionsRoles);
+        $this->collRoleToSessionTypes = null;
+        foreach ($roleToSessionTypes as $roleToSessionType) {
+            $this->addRoleToSessionType($roleToSessionType);
         }
 
-        $this->collProhibitionsRoless = $prohibitionsRoless;
-        $this->collProhibitionsRolessPartial = false;
+        $this->collRoleToSessionTypes = $roleToSessionTypes;
+        $this->collRoleToSessionTypesPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related ProhibitionsRoles objects.
+     * Returns the number of related RoleToSessionType objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related ProhibitionsRoles objects.
+     * @return int             Count of related RoleToSessionType objects.
      * @throws PropelException
      */
-    public function countProhibitionsRoless(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countRoleToSessionTypes(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collProhibitionsRolessPartial && !$this->isNew();
-        if (null === $this->collProhibitionsRoless || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collProhibitionsRoless) {
+        $partial = $this->collRoleToSessionTypesPartial && !$this->isNew();
+        if (null === $this->collRoleToSessionTypes || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRoleToSessionTypes) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getProhibitionsRoless());
+                return count($this->getRoleToSessionTypes());
             }
 
-            $query = ChildProhibitionsRolesQuery::create(null, $criteria);
+            $query = ChildRoleToSessionTypeQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -2056,54 +1693,54 @@ abstract class Role implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collProhibitionsRoless);
+        return count($this->collRoleToSessionTypes);
     }
 
     /**
-     * Method called to associate a ChildProhibitionsRoles object to this object
-     * through the ChildProhibitionsRoles foreign key attribute.
+     * Method called to associate a ChildRoleToSessionType object to this object
+     * through the ChildRoleToSessionType foreign key attribute.
      *
-     * @param  ChildProhibitionsRoles $l ChildProhibitionsRoles
+     * @param  ChildRoleToSessionType $l ChildRoleToSessionType
      * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
      */
-    public function addProhibitionsRoles(ChildProhibitionsRoles $l)
+    public function addRoleToSessionType(ChildRoleToSessionType $l)
     {
-        if ($this->collProhibitionsRoless === null) {
-            $this->initProhibitionsRoless();
-            $this->collProhibitionsRolessPartial = true;
+        if ($this->collRoleToSessionTypes === null) {
+            $this->initRoleToSessionTypes();
+            $this->collRoleToSessionTypesPartial = true;
         }
 
-        if (!$this->collProhibitionsRoless->contains($l)) {
-            $this->doAddProhibitionsRoles($l);
+        if (!$this->collRoleToSessionTypes->contains($l)) {
+            $this->doAddRoleToSessionType($l);
         }
 
         return $this;
     }
 
     /**
-     * @param ChildProhibitionsRoles $prohibitionsRoles The ChildProhibitionsRoles object to add.
+     * @param ChildRoleToSessionType $roleToSessionType The ChildRoleToSessionType object to add.
      */
-    protected function doAddProhibitionsRoles(ChildProhibitionsRoles $prohibitionsRoles)
+    protected function doAddRoleToSessionType(ChildRoleToSessionType $roleToSessionType)
     {
-        $this->collProhibitionsRoless[]= $prohibitionsRoles;
-        $prohibitionsRoles->setRole($this);
+        $this->collRoleToSessionTypes[]= $roleToSessionType;
+        $roleToSessionType->setRole($this);
     }
 
     /**
-     * @param  ChildProhibitionsRoles $prohibitionsRoles The ChildProhibitionsRoles object to remove.
+     * @param  ChildRoleToSessionType $roleToSessionType The ChildRoleToSessionType object to remove.
      * @return $this|ChildRole The current object (for fluent API support)
      */
-    public function removeProhibitionsRoles(ChildProhibitionsRoles $prohibitionsRoles)
+    public function removeRoleToSessionType(ChildRoleToSessionType $roleToSessionType)
     {
-        if ($this->getProhibitionsRoless()->contains($prohibitionsRoles)) {
-            $pos = $this->collProhibitionsRoless->search($prohibitionsRoles);
-            $this->collProhibitionsRoless->remove($pos);
-            if (null === $this->prohibitionsRolessScheduledForDeletion) {
-                $this->prohibitionsRolessScheduledForDeletion = clone $this->collProhibitionsRoless;
-                $this->prohibitionsRolessScheduledForDeletion->clear();
+        if ($this->getRoleToSessionTypes()->contains($roleToSessionType)) {
+            $pos = $this->collRoleToSessionTypes->search($roleToSessionType);
+            $this->collRoleToSessionTypes->remove($pos);
+            if (null === $this->roleToSessionTypesScheduledForDeletion) {
+                $this->roleToSessionTypesScheduledForDeletion = clone $this->collRoleToSessionTypes;
+                $this->roleToSessionTypesScheduledForDeletion->clear();
             }
-            $this->prohibitionsRolessScheduledForDeletion[]= clone $prohibitionsRoles;
-            $prohibitionsRoles->setRole(null);
+            $this->roleToSessionTypesScheduledForDeletion[]= clone $roleToSessionType;
+            $roleToSessionType->setRole(null);
         }
 
         return $this;
@@ -2115,7 +1752,7 @@ abstract class Role implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Role is new, it will return
      * an empty collection; or if this Role has previously
-     * been saved, it will retrieve related ProhibitionsRoless from storage.
+     * been saved, it will retrieve related RoleToSessionTypes from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -2124,288 +1761,42 @@ abstract class Role implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildProhibitionsRoles[] List of ChildProhibitionsRoles objects
+     * @return ObjectCollection|ChildRoleToSessionType[] List of ChildRoleToSessionType objects
      */
-    public function getProhibitionsRolessJoinProhibition(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getRoleToSessionTypesJoinSessionType(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildProhibitionsRolesQuery::create(null, $criteria);
-        $query->joinWith('Prohibition', $joinBehavior);
-
-        return $this->getProhibitionsRoless($query, $con);
-    }
-
-    /**
-     * Clears out the collRolesSessionTypess collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addRolesSessionTypess()
-     */
-    public function clearRolesSessionTypess()
-    {
-        $this->collRolesSessionTypess = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collRolesSessionTypess collection loaded partially.
-     */
-    public function resetPartialRolesSessionTypess($v = true)
-    {
-        $this->collRolesSessionTypessPartial = $v;
-    }
-
-    /**
-     * Initializes the collRolesSessionTypess collection.
-     *
-     * By default this just sets the collRolesSessionTypess collection to an empty array (like clearcollRolesSessionTypess());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initRolesSessionTypess($overrideExisting = true)
-    {
-        if (null !== $this->collRolesSessionTypess && !$overrideExisting) {
-            return;
-        }
-        $this->collRolesSessionTypess = new ObjectCollection();
-        $this->collRolesSessionTypess->setModel('\Phlopsi\AccessControl\Propel\RolesSessionTypes');
-    }
-
-    /**
-     * Gets an array of ChildRolesSessionTypes objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildRole is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildRolesSessionTypes[] List of ChildRolesSessionTypes objects
-     * @throws PropelException
-     */
-    public function getRolesSessionTypess(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collRolesSessionTypessPartial && !$this->isNew();
-        if (null === $this->collRolesSessionTypess || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collRolesSessionTypess) {
-                // return empty collection
-                $this->initRolesSessionTypess();
-            } else {
-                $collRolesSessionTypess = ChildRolesSessionTypesQuery::create(null, $criteria)
-                    ->filterByRole($this)
-                    ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collRolesSessionTypessPartial && count($collRolesSessionTypess)) {
-                        $this->initRolesSessionTypess(false);
-
-                        foreach ($collRolesSessionTypess as $obj) {
-                            if (false == $this->collRolesSessionTypess->contains($obj)) {
-                                $this->collRolesSessionTypess->append($obj);
-                            }
-                        }
-
-                        $this->collRolesSessionTypessPartial = true;
-                    }
-
-                    return $collRolesSessionTypess;
-                }
-
-                if ($partial && $this->collRolesSessionTypess) {
-                    foreach ($this->collRolesSessionTypess as $obj) {
-                        if ($obj->isNew()) {
-                            $collRolesSessionTypess[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collRolesSessionTypess = $collRolesSessionTypess;
-                $this->collRolesSessionTypessPartial = false;
-            }
-        }
-
-        return $this->collRolesSessionTypess;
-    }
-
-    /**
-     * Sets a collection of ChildRolesSessionTypes objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $rolesSessionTypess A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     * @return $this|ChildRole The current object (for fluent API support)
-     */
-    public function setRolesSessionTypess(Collection $rolesSessionTypess, ConnectionInterface $con = null)
-    {
-        /** @var ChildRolesSessionTypes[] $rolesSessionTypessToDelete */
-        $rolesSessionTypessToDelete = $this->getRolesSessionTypess(new Criteria(), $con)->diff($rolesSessionTypess);
-
-
-        //since at least one column in the foreign key is at the same time a PK
-        //we can not just set a PK to NULL in the lines below. We have to store
-        //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->rolesSessionTypessScheduledForDeletion = clone $rolesSessionTypessToDelete;
-
-        foreach ($rolesSessionTypessToDelete as $rolesSessionTypesRemoved) {
-            $rolesSessionTypesRemoved->setRole(null);
-        }
-
-        $this->collRolesSessionTypess = null;
-        foreach ($rolesSessionTypess as $rolesSessionTypes) {
-            $this->addRolesSessionTypes($rolesSessionTypes);
-        }
-
-        $this->collRolesSessionTypess = $rolesSessionTypess;
-        $this->collRolesSessionTypessPartial = false;
-
-        return $this;
-    }
-
-    /**
-     * Returns the number of related RolesSessionTypes objects.
-     *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
-     * @return int             Count of related RolesSessionTypes objects.
-     * @throws PropelException
-     */
-    public function countRolesSessionTypess(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collRolesSessionTypessPartial && !$this->isNew();
-        if (null === $this->collRolesSessionTypess || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collRolesSessionTypess) {
-                return 0;
-            }
-
-            if ($partial && !$criteria) {
-                return count($this->getRolesSessionTypess());
-            }
-
-            $query = ChildRolesSessionTypesQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByRole($this)
-                ->count($con);
-        }
-
-        return count($this->collRolesSessionTypess);
-    }
-
-    /**
-     * Method called to associate a ChildRolesSessionTypes object to this object
-     * through the ChildRolesSessionTypes foreign key attribute.
-     *
-     * @param  ChildRolesSessionTypes $l ChildRolesSessionTypes
-     * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
-     */
-    public function addRolesSessionTypes(ChildRolesSessionTypes $l)
-    {
-        if ($this->collRolesSessionTypess === null) {
-            $this->initRolesSessionTypess();
-            $this->collRolesSessionTypessPartial = true;
-        }
-
-        if (!$this->collRolesSessionTypess->contains($l)) {
-            $this->doAddRolesSessionTypes($l);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildRolesSessionTypes $rolesSessionTypes The ChildRolesSessionTypes object to add.
-     */
-    protected function doAddRolesSessionTypes(ChildRolesSessionTypes $rolesSessionTypes)
-    {
-        $this->collRolesSessionTypess[]= $rolesSessionTypes;
-        $rolesSessionTypes->setRole($this);
-    }
-
-    /**
-     * @param  ChildRolesSessionTypes $rolesSessionTypes The ChildRolesSessionTypes object to remove.
-     * @return $this|ChildRole The current object (for fluent API support)
-     */
-    public function removeRolesSessionTypes(ChildRolesSessionTypes $rolesSessionTypes)
-    {
-        if ($this->getRolesSessionTypess()->contains($rolesSessionTypes)) {
-            $pos = $this->collRolesSessionTypess->search($rolesSessionTypes);
-            $this->collRolesSessionTypess->remove($pos);
-            if (null === $this->rolesSessionTypessScheduledForDeletion) {
-                $this->rolesSessionTypessScheduledForDeletion = clone $this->collRolesSessionTypess;
-                $this->rolesSessionTypessScheduledForDeletion->clear();
-            }
-            $this->rolesSessionTypessScheduledForDeletion[]= clone $rolesSessionTypes;
-            $rolesSessionTypes->setRole(null);
-        }
-
-        return $this;
-    }
-
-
-    /**
-     * If this collection has already been initialized with
-     * an identical criteria, it returns the collection.
-     * Otherwise if this Role is new, it will return
-     * an empty collection; or if this Role has previously
-     * been saved, it will retrieve related RolesSessionTypess from storage.
-     *
-     * This method is protected by default in order to keep the public
-     * api reasonable.  You can provide public methods for those you
-     * actually need in Role.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildRolesSessionTypes[] List of ChildRolesSessionTypes objects
-     */
-    public function getRolesSessionTypessJoinSessionType(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
-    {
-        $query = ChildRolesSessionTypesQuery::create(null, $criteria);
+        $query = ChildRoleToSessionTypeQuery::create(null, $criteria);
         $query->joinWith('SessionType', $joinBehavior);
 
-        return $this->getRolesSessionTypess($query, $con);
+        return $this->getRoleToSessionTypes($query, $con);
     }
 
     /**
-     * Clears out the collRolesUserss collection
+     * Clears out the collRoleToUsers collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
      * them to be refetched by subsequent calls to accessor method.
      *
      * @return void
-     * @see        addRolesUserss()
+     * @see        addRoleToUsers()
      */
-    public function clearRolesUserss()
+    public function clearRoleToUsers()
     {
-        $this->collRolesUserss = null; // important to set this to NULL since that means it is uninitialized
+        $this->collRoleToUsers = null; // important to set this to NULL since that means it is uninitialized
     }
 
     /**
-     * Reset is the collRolesUserss collection loaded partially.
+     * Reset is the collRoleToUsers collection loaded partially.
      */
-    public function resetPartialRolesUserss($v = true)
+    public function resetPartialRoleToUsers($v = true)
     {
-        $this->collRolesUserssPartial = $v;
+        $this->collRoleToUsersPartial = $v;
     }
 
     /**
-     * Initializes the collRolesUserss collection.
+     * Initializes the collRoleToUsers collection.
      *
-     * By default this just sets the collRolesUserss collection to an empty array (like clearcollRolesUserss());
+     * By default this just sets the collRoleToUsers collection to an empty array (like clearcollRoleToUsers());
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
@@ -2414,17 +1805,17 @@ abstract class Role implements ActiveRecordInterface
      *
      * @return void
      */
-    public function initRolesUserss($overrideExisting = true)
+    public function initRoleToUsers($overrideExisting = true)
     {
-        if (null !== $this->collRolesUserss && !$overrideExisting) {
+        if (null !== $this->collRoleToUsers && !$overrideExisting) {
             return;
         }
-        $this->collRolesUserss = new ObjectCollection();
-        $this->collRolesUserss->setModel('\Phlopsi\AccessControl\Propel\RolesUsers');
+        $this->collRoleToUsers = new ObjectCollection();
+        $this->collRoleToUsers->setModel('\Phlopsi\AccessControl\Propel\RoleToUser');
     }
 
     /**
-     * Gets an array of ChildRolesUsers objects which contain a foreign key that references this object.
+     * Gets an array of ChildRoleToUser objects which contain a foreign key that references this object.
      *
      * If the $criteria is not null, it is used to always fetch the results from the database.
      * Otherwise the results are fetched from the database the first time, then cached.
@@ -2434,111 +1825,111 @@ abstract class Role implements ActiveRecordInterface
      *
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
-     * @return ObjectCollection|ChildRolesUsers[] List of ChildRolesUsers objects
+     * @return ObjectCollection|ChildRoleToUser[] List of ChildRoleToUser objects
      * @throws PropelException
      */
-    public function getRolesUserss(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function getRoleToUsers(Criteria $criteria = null, ConnectionInterface $con = null)
     {
-        $partial = $this->collRolesUserssPartial && !$this->isNew();
-        if (null === $this->collRolesUserss || null !== $criteria  || $partial) {
-            if ($this->isNew() && null === $this->collRolesUserss) {
+        $partial = $this->collRoleToUsersPartial && !$this->isNew();
+        if (null === $this->collRoleToUsers || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collRoleToUsers) {
                 // return empty collection
-                $this->initRolesUserss();
+                $this->initRoleToUsers();
             } else {
-                $collRolesUserss = ChildRolesUsersQuery::create(null, $criteria)
+                $collRoleToUsers = ChildRoleToUserQuery::create(null, $criteria)
                     ->filterByRole($this)
                     ->find($con);
 
                 if (null !== $criteria) {
-                    if (false !== $this->collRolesUserssPartial && count($collRolesUserss)) {
-                        $this->initRolesUserss(false);
+                    if (false !== $this->collRoleToUsersPartial && count($collRoleToUsers)) {
+                        $this->initRoleToUsers(false);
 
-                        foreach ($collRolesUserss as $obj) {
-                            if (false == $this->collRolesUserss->contains($obj)) {
-                                $this->collRolesUserss->append($obj);
+                        foreach ($collRoleToUsers as $obj) {
+                            if (false == $this->collRoleToUsers->contains($obj)) {
+                                $this->collRoleToUsers->append($obj);
                             }
                         }
 
-                        $this->collRolesUserssPartial = true;
+                        $this->collRoleToUsersPartial = true;
                     }
 
-                    return $collRolesUserss;
+                    return $collRoleToUsers;
                 }
 
-                if ($partial && $this->collRolesUserss) {
-                    foreach ($this->collRolesUserss as $obj) {
+                if ($partial && $this->collRoleToUsers) {
+                    foreach ($this->collRoleToUsers as $obj) {
                         if ($obj->isNew()) {
-                            $collRolesUserss[] = $obj;
+                            $collRoleToUsers[] = $obj;
                         }
                     }
                 }
 
-                $this->collRolesUserss = $collRolesUserss;
-                $this->collRolesUserssPartial = false;
+                $this->collRoleToUsers = $collRoleToUsers;
+                $this->collRoleToUsersPartial = false;
             }
         }
 
-        return $this->collRolesUserss;
+        return $this->collRoleToUsers;
     }
 
     /**
-     * Sets a collection of ChildRolesUsers objects related by a one-to-many relationship
+     * Sets a collection of ChildRoleToUser objects related by a one-to-many relationship
      * to the current object.
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param      Collection $rolesUserss A Propel collection.
+     * @param      Collection $roleToUsers A Propel collection.
      * @param      ConnectionInterface $con Optional connection object
      * @return $this|ChildRole The current object (for fluent API support)
      */
-    public function setRolesUserss(Collection $rolesUserss, ConnectionInterface $con = null)
+    public function setRoleToUsers(Collection $roleToUsers, ConnectionInterface $con = null)
     {
-        /** @var ChildRolesUsers[] $rolesUserssToDelete */
-        $rolesUserssToDelete = $this->getRolesUserss(new Criteria(), $con)->diff($rolesUserss);
+        /** @var ChildRoleToUser[] $roleToUsersToDelete */
+        $roleToUsersToDelete = $this->getRoleToUsers(new Criteria(), $con)->diff($roleToUsers);
 
-
+        
         //since at least one column in the foreign key is at the same time a PK
         //we can not just set a PK to NULL in the lines below. We have to store
         //a backup of all values, so we are able to manipulate these items based on the onDelete value later.
-        $this->rolesUserssScheduledForDeletion = clone $rolesUserssToDelete;
+        $this->roleToUsersScheduledForDeletion = clone $roleToUsersToDelete;
 
-        foreach ($rolesUserssToDelete as $rolesUsersRemoved) {
-            $rolesUsersRemoved->setRole(null);
+        foreach ($roleToUsersToDelete as $roleToUserRemoved) {
+            $roleToUserRemoved->setRole(null);
         }
 
-        $this->collRolesUserss = null;
-        foreach ($rolesUserss as $rolesUsers) {
-            $this->addRolesUsers($rolesUsers);
+        $this->collRoleToUsers = null;
+        foreach ($roleToUsers as $roleToUser) {
+            $this->addRoleToUser($roleToUser);
         }
 
-        $this->collRolesUserss = $rolesUserss;
-        $this->collRolesUserssPartial = false;
+        $this->collRoleToUsers = $roleToUsers;
+        $this->collRoleToUsersPartial = false;
 
         return $this;
     }
 
     /**
-     * Returns the number of related RolesUsers objects.
+     * Returns the number of related RoleToUser objects.
      *
      * @param      Criteria $criteria
      * @param      boolean $distinct
      * @param      ConnectionInterface $con
-     * @return int             Count of related RolesUsers objects.
+     * @return int             Count of related RoleToUser objects.
      * @throws PropelException
      */
-    public function countRolesUserss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function countRoleToUsers(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
     {
-        $partial = $this->collRolesUserssPartial && !$this->isNew();
-        if (null === $this->collRolesUserss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collRolesUserss) {
+        $partial = $this->collRoleToUsersPartial && !$this->isNew();
+        if (null === $this->collRoleToUsers || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collRoleToUsers) {
                 return 0;
             }
 
             if ($partial && !$criteria) {
-                return count($this->getRolesUserss());
+                return count($this->getRoleToUsers());
             }
 
-            $query = ChildRolesUsersQuery::create(null, $criteria);
+            $query = ChildRoleToUserQuery::create(null, $criteria);
             if ($distinct) {
                 $query->distinct();
             }
@@ -2548,54 +1939,54 @@ abstract class Role implements ActiveRecordInterface
                 ->count($con);
         }
 
-        return count($this->collRolesUserss);
+        return count($this->collRoleToUsers);
     }
 
     /**
-     * Method called to associate a ChildRolesUsers object to this object
-     * through the ChildRolesUsers foreign key attribute.
+     * Method called to associate a ChildRoleToUser object to this object
+     * through the ChildRoleToUser foreign key attribute.
      *
-     * @param  ChildRolesUsers $l ChildRolesUsers
+     * @param  ChildRoleToUser $l ChildRoleToUser
      * @return $this|\Phlopsi\AccessControl\Propel\Role The current object (for fluent API support)
      */
-    public function addRolesUsers(ChildRolesUsers $l)
+    public function addRoleToUser(ChildRoleToUser $l)
     {
-        if ($this->collRolesUserss === null) {
-            $this->initRolesUserss();
-            $this->collRolesUserssPartial = true;
+        if ($this->collRoleToUsers === null) {
+            $this->initRoleToUsers();
+            $this->collRoleToUsersPartial = true;
         }
 
-        if (!$this->collRolesUserss->contains($l)) {
-            $this->doAddRolesUsers($l);
+        if (!$this->collRoleToUsers->contains($l)) {
+            $this->doAddRoleToUser($l);
         }
 
         return $this;
     }
 
     /**
-     * @param ChildRolesUsers $rolesUsers The ChildRolesUsers object to add.
+     * @param ChildRoleToUser $roleToUser The ChildRoleToUser object to add.
      */
-    protected function doAddRolesUsers(ChildRolesUsers $rolesUsers)
+    protected function doAddRoleToUser(ChildRoleToUser $roleToUser)
     {
-        $this->collRolesUserss[]= $rolesUsers;
-        $rolesUsers->setRole($this);
+        $this->collRoleToUsers[]= $roleToUser;
+        $roleToUser->setRole($this);
     }
 
     /**
-     * @param  ChildRolesUsers $rolesUsers The ChildRolesUsers object to remove.
+     * @param  ChildRoleToUser $roleToUser The ChildRoleToUser object to remove.
      * @return $this|ChildRole The current object (for fluent API support)
      */
-    public function removeRolesUsers(ChildRolesUsers $rolesUsers)
+    public function removeRoleToUser(ChildRoleToUser $roleToUser)
     {
-        if ($this->getRolesUserss()->contains($rolesUsers)) {
-            $pos = $this->collRolesUserss->search($rolesUsers);
-            $this->collRolesUserss->remove($pos);
-            if (null === $this->rolesUserssScheduledForDeletion) {
-                $this->rolesUserssScheduledForDeletion = clone $this->collRolesUserss;
-                $this->rolesUserssScheduledForDeletion->clear();
+        if ($this->getRoleToUsers()->contains($roleToUser)) {
+            $pos = $this->collRoleToUsers->search($roleToUser);
+            $this->collRoleToUsers->remove($pos);
+            if (null === $this->roleToUsersScheduledForDeletion) {
+                $this->roleToUsersScheduledForDeletion = clone $this->collRoleToUsers;
+                $this->roleToUsersScheduledForDeletion->clear();
             }
-            $this->rolesUserssScheduledForDeletion[]= clone $rolesUsers;
-            $rolesUsers->setRole(null);
+            $this->roleToUsersScheduledForDeletion[]= clone $roleToUser;
+            $roleToUser->setRole(null);
         }
 
         return $this;
@@ -2607,7 +1998,7 @@ abstract class Role implements ActiveRecordInterface
      * an identical criteria, it returns the collection.
      * Otherwise if this Role is new, it will return
      * an empty collection; or if this Role has previously
-     * been saved, it will retrieve related RolesUserss from storage.
+     * been saved, it will retrieve related RoleToUsers from storage.
      *
      * This method is protected by default in order to keep the public
      * api reasonable.  You can provide public methods for those you
@@ -2616,14 +2007,14 @@ abstract class Role implements ActiveRecordInterface
      * @param      Criteria $criteria optional Criteria object to narrow the query
      * @param      ConnectionInterface $con optional connection object
      * @param      string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-     * @return ObjectCollection|ChildRolesUsers[] List of ChildRolesUsers objects
+     * @return ObjectCollection|ChildRoleToUser[] List of ChildRoleToUser objects
      */
-    public function getRolesUserssJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    public function getRoleToUsersJoinUser(Criteria $criteria = null, ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
     {
-        $query = ChildRolesUsersQuery::create(null, $criteria);
+        $query = ChildRoleToUserQuery::create(null, $criteria);
         $query->joinWith('User', $joinBehavior);
 
-        return $this->getRolesUserss($query, $con);
+        return $this->getRoleToUsers($query, $con);
     }
 
     /**
@@ -2812,13 +2203,13 @@ abstract class Role implements ActiveRecordInterface
      */
     protected function doAddPermission(ChildPermission $permission)
     {
-        $permissionsRoles = new ChildPermissionsRoles();
+        $permissionToRole = new ChildPermissionToRole();
 
-        $permissionsRoles->setPermission($permission);
+        $permissionToRole->setPermission($permission);
 
-        $permissionsRoles->setRole($this);
+        $permissionToRole->setRole($this);
 
-        $this->addPermissionsRoles($permissionsRoles);
+        $this->addPermissionToRole($permissionToRole);
 
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
@@ -2841,267 +2232,26 @@ abstract class Role implements ActiveRecordInterface
     public function removePermission(ChildPermission $permission)
     {
         if ($this->getPermissions()->contains($permission)) {
-            $permissionsRoles = new ChildPermissionsRoles();
+            $permissionToRole = new ChildPermissionToRole();
 
-            $permissionsRoles->setPermission($permission);
+            $permissionToRole->setPermission($permission);
             if ($permission->isRolesLoaded()) {
                 //remove the back reference if available
                 $permission->getRoles()->removeObject($this);
             }
 
-            $permissionsRoles->setRole($this);
-            $this->removePermissionsRoles(clone $permissionsRoles);
-            $permissionsRoles->clear();
+            $permissionToRole->setRole($this);
+            $this->removePermissionToRole(clone $permissionToRole);
+            $permissionToRole->clear();
 
             $this->collPermissions->remove($this->collPermissions->search($permission));
-
+            
             if (null === $this->permissionsScheduledForDeletion) {
                 $this->permissionsScheduledForDeletion = clone $this->collPermissions;
                 $this->permissionsScheduledForDeletion->clear();
             }
 
             $this->permissionsScheduledForDeletion->push($permission);
-        }
-
-
-        return $this;
-    }
-
-    /**
-     * Clears out the collProhibitions collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addProhibitions()
-     */
-    public function clearProhibitions()
-    {
-        $this->collProhibitions = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Initializes the collProhibitions crossRef collection.
-     *
-     * By default this just sets the collProhibitions collection to an empty collection (like clearProhibitions());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @return void
-     */
-    public function initProhibitions()
-    {
-        $this->collProhibitions = new ObjectCollection();
-        $this->collProhibitionsPartial = true;
-
-        $this->collProhibitions->setModel('\Phlopsi\AccessControl\Propel\Prohibition');
-    }
-
-    /**
-     * Checks if the collProhibitions collection is loaded.
-     *
-     * @return bool
-     */
-    public function isProhibitionsLoaded()
-    {
-        return null !== $this->collProhibitions;
-    }
-
-    /**
-     * Gets a collection of ChildProhibition objects related by a many-to-many relationship
-     * to the current object by way of the prohibitions_roles cross-reference table.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildRole is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return ObjectCollection|ChildProhibition[] List of ChildProhibition objects
-     */
-    public function getProhibitions(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        $partial = $this->collProhibitionsPartial && !$this->isNew();
-        if (null === $this->collProhibitions || null !== $criteria || $partial) {
-            if ($this->isNew()) {
-                // return empty collection
-                if (null === $this->collProhibitions) {
-                    $this->initProhibitions();
-                }
-            } else {
-                $query = ChildProhibitionQuery::create(null, $criteria)
-                    ->filterByRole($this);
-                $collProhibitions = $query->find($con);
-                if (null !== $criteria) {
-                    return $collProhibitions;
-                }
-
-                if ($partial && $this->collProhibitions) {
-                    //make sure that already added objects gets added to the list of the database.
-                    foreach ($this->collProhibitions as $obj) {
-                        if (!$collProhibitions->contains($obj)) {
-                            $collProhibitions[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collProhibitions = $collProhibitions;
-                $this->collProhibitionsPartial = false;
-            }
-        }
-
-        return $this->collProhibitions;
-    }
-
-    /**
-     * Sets a collection of Prohibition objects related by a many-to-many relationship
-     * to the current object by way of the prohibitions_roles cross-reference table.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param  Collection $prohibitions A Propel collection.
-     * @param  ConnectionInterface $con Optional connection object
-     * @return $this|ChildRole The current object (for fluent API support)
-     */
-    public function setProhibitions(Collection $prohibitions, ConnectionInterface $con = null)
-    {
-        $this->clearProhibitions();
-        $currentProhibitions = $this->getProhibitions();
-
-        $prohibitionsScheduledForDeletion = $currentProhibitions->diff($prohibitions);
-
-        foreach ($prohibitionsScheduledForDeletion as $toDelete) {
-            $this->removeProhibition($toDelete);
-        }
-
-        foreach ($prohibitions as $prohibition) {
-            if (!$currentProhibitions->contains($prohibition)) {
-                $this->doAddProhibition($prohibition);
-            }
-        }
-
-        $this->collProhibitionsPartial = false;
-        $this->collProhibitions = $prohibitions;
-
-        return $this;
-    }
-
-    /**
-     * Gets the number of Prohibition objects related by a many-to-many relationship
-     * to the current object by way of the prohibitions_roles cross-reference table.
-     *
-     * @param      Criteria $criteria Optional query object to filter the query
-     * @param      boolean $distinct Set to true to force count distinct
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return int the number of related Prohibition objects
-     */
-    public function countProhibitions(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
-    {
-        $partial = $this->collProhibitionsPartial && !$this->isNew();
-        if (null === $this->collProhibitions || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collProhibitions) {
-                return 0;
-            } else {
-                if ($partial && !$criteria) {
-                    return count($this->getProhibitions());
-                }
-
-                $query = ChildProhibitionQuery::create(null, $criteria);
-                if ($distinct) {
-                    $query->distinct();
-                }
-
-                return $query
-                    ->filterByRole($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collProhibitions);
-        }
-    }
-
-    /**
-     * Associate a ChildProhibition to this object
-     * through the prohibitions_roles cross reference table.
-     *
-     * @param ChildProhibition $prohibition
-     * @return ChildRole The current object (for fluent API support)
-     */
-    public function addProhibition(ChildProhibition $prohibition)
-    {
-        if ($this->collProhibitions === null) {
-            $this->initProhibitions();
-        }
-
-        if (!$this->getProhibitions()->contains($prohibition)) {
-            // only add it if the **same** object is not already associated
-            $this->collProhibitions->push($prohibition);
-            $this->doAddProhibition($prohibition);
-        }
-
-        return $this;
-    }
-
-    /**
-     *
-     * @param ChildProhibition $prohibition
-     */
-    protected function doAddProhibition(ChildProhibition $prohibition)
-    {
-        $prohibitionsRoles = new ChildProhibitionsRoles();
-
-        $prohibitionsRoles->setProhibition($prohibition);
-
-        $prohibitionsRoles->setRole($this);
-
-        $this->addProhibitionsRoles($prohibitionsRoles);
-
-        // set the back reference to this object directly as using provided method either results
-        // in endless loop or in multiple relations
-        if (!$prohibition->isRolesLoaded()) {
-            $prohibition->initRoles();
-            $prohibition->getRoles()->push($this);
-        } elseif (!$prohibition->getRoles()->contains($this)) {
-            $prohibition->getRoles()->push($this);
-        }
-
-    }
-
-    /**
-     * Remove prohibition of this object
-     * through the prohibitions_roles cross reference table.
-     *
-     * @param ChildProhibition $prohibition
-     * @return ChildRole The current object (for fluent API support)
-     */
-    public function removeProhibition(ChildProhibition $prohibition)
-    {
-        if ($this->getProhibitions()->contains($prohibition)) {
-            $prohibitionsRoles = new ChildProhibitionsRoles();
-
-            $prohibitionsRoles->setProhibition($prohibition);
-            if ($prohibition->isRolesLoaded()) {
-                //remove the back reference if available
-                $prohibition->getRoles()->removeObject($this);
-            }
-
-            $prohibitionsRoles->setRole($this);
-            $this->removeProhibitionsRoles(clone $prohibitionsRoles);
-            $prohibitionsRoles->clear();
-
-            $this->collProhibitions->remove($this->collProhibitions->search($prohibition));
-
-            if (null === $this->prohibitionsScheduledForDeletion) {
-                $this->prohibitionsScheduledForDeletion = clone $this->collProhibitions;
-                $this->prohibitionsScheduledForDeletion->clear();
-            }
-
-            $this->prohibitionsScheduledForDeletion->push($prohibition);
         }
 
 
@@ -3294,13 +2444,13 @@ abstract class Role implements ActiveRecordInterface
      */
     protected function doAddSessionType(ChildSessionType $sessionType)
     {
-        $rolesSessionTypes = new ChildRolesSessionTypes();
+        $roleToSessionType = new ChildRoleToSessionType();
 
-        $rolesSessionTypes->setSessionType($sessionType);
+        $roleToSessionType->setSessionType($sessionType);
 
-        $rolesSessionTypes->setRole($this);
+        $roleToSessionType->setRole($this);
 
-        $this->addRolesSessionTypes($rolesSessionTypes);
+        $this->addRoleToSessionType($roleToSessionType);
 
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
@@ -3323,20 +2473,20 @@ abstract class Role implements ActiveRecordInterface
     public function removeSessionType(ChildSessionType $sessionType)
     {
         if ($this->getSessionTypes()->contains($sessionType)) {
-            $rolesSessionTypes = new ChildRolesSessionTypes();
+            $roleToSessionType = new ChildRoleToSessionType();
 
-            $rolesSessionTypes->setSessionType($sessionType);
+            $roleToSessionType->setSessionType($sessionType);
             if ($sessionType->isRolesLoaded()) {
                 //remove the back reference if available
                 $sessionType->getRoles()->removeObject($this);
             }
 
-            $rolesSessionTypes->setRole($this);
-            $this->removeRolesSessionTypes(clone $rolesSessionTypes);
-            $rolesSessionTypes->clear();
+            $roleToSessionType->setRole($this);
+            $this->removeRoleToSessionType(clone $roleToSessionType);
+            $roleToSessionType->clear();
 
             $this->collSessionTypes->remove($this->collSessionTypes->search($sessionType));
-
+            
             if (null === $this->sessionTypesScheduledForDeletion) {
                 $this->sessionTypesScheduledForDeletion = clone $this->collSessionTypes;
                 $this->sessionTypesScheduledForDeletion->clear();
@@ -3535,13 +2685,13 @@ abstract class Role implements ActiveRecordInterface
      */
     protected function doAddUser(ChildUser $user)
     {
-        $rolesUsers = new ChildRolesUsers();
+        $roleToUser = new ChildRoleToUser();
 
-        $rolesUsers->setUser($user);
+        $roleToUser->setUser($user);
 
-        $rolesUsers->setRole($this);
+        $roleToUser->setRole($this);
 
-        $this->addRolesUsers($rolesUsers);
+        $this->addRoleToUser($roleToUser);
 
         // set the back reference to this object directly as using provided method either results
         // in endless loop or in multiple relations
@@ -3564,20 +2714,20 @@ abstract class Role implements ActiveRecordInterface
     public function removeUser(ChildUser $user)
     {
         if ($this->getUsers()->contains($user)) {
-            $rolesUsers = new ChildRolesUsers();
+            $roleToUser = new ChildRoleToUser();
 
-            $rolesUsers->setUser($user);
+            $roleToUser->setUser($user);
             if ($user->isRolesLoaded()) {
                 //remove the back reference if available
                 $user->getRoles()->removeObject($this);
             }
 
-            $rolesUsers->setRole($this);
-            $this->removeRolesUsers(clone $rolesUsers);
-            $rolesUsers->clear();
+            $roleToUser->setRole($this);
+            $this->removeRoleToUser(clone $roleToUser);
+            $roleToUser->clear();
 
             $this->collUsers->remove($this->collUsers->search($user));
-
+            
             if (null === $this->usersScheduledForDeletion) {
                 $this->usersScheduledForDeletion = clone $this->collUsers;
                 $this->usersScheduledForDeletion->clear();
@@ -3598,9 +2748,6 @@ abstract class Role implements ActiveRecordInterface
     public function clear()
     {
         $this->external_id = null;
-        $this->tree_left = null;
-        $this->tree_right = null;
-        $this->tree_level = null;
         $this->id = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
@@ -3620,33 +2767,23 @@ abstract class Role implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collPermissionsRoless) {
-                foreach ($this->collPermissionsRoless as $o) {
+            if ($this->collPermissionToRoles) {
+                foreach ($this->collPermissionToRoles as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collProhibitionsRoless) {
-                foreach ($this->collProhibitionsRoless as $o) {
+            if ($this->collRoleToSessionTypes) {
+                foreach ($this->collRoleToSessionTypes as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
-            if ($this->collRolesSessionTypess) {
-                foreach ($this->collRolesSessionTypess as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collRolesUserss) {
-                foreach ($this->collRolesUserss as $o) {
+            if ($this->collRoleToUsers) {
+                foreach ($this->collRoleToUsers as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
             if ($this->collPermissions) {
                 foreach ($this->collPermissions as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
-            if ($this->collProhibitions) {
-                foreach ($this->collProhibitions as $o) {
                     $o->clearAllReferences($deep);
                 }
             }
@@ -3662,15 +2799,10 @@ abstract class Role implements ActiveRecordInterface
             }
         } // if ($deep)
 
-        // nested_set behavior
-        $this->collNestedSetChildren = null;
-        $this->aNestedSetParent = null;
-        $this->collPermissionsRoless = null;
-        $this->collProhibitionsRoless = null;
-        $this->collRolesSessionTypess = null;
-        $this->collRolesUserss = null;
+        $this->collPermissionToRoles = null;
+        $this->collRoleToSessionTypes = null;
+        $this->collRoleToUsers = null;
         $this->collPermissions = null;
-        $this->collProhibitions = null;
         $this->collSessionTypes = null;
         $this->collUsers = null;
     }
@@ -3684,916 +2816,6 @@ abstract class Role implements ActiveRecordInterface
     {
         return (string) $this->exportTo(RoleTableMap::DEFAULT_STRING_FORMAT);
     }
-
-    // nested_set behavior
-
-    /**
-     * Execute queries that were saved to be run inside the save transaction
-     *
-     * @param  ConnectionInterface $con Connection to use.
-     */
-    protected function processNestedSetQueries(ConnectionInterface $con)
-    {
-        foreach ($this->nestedSetQueries as $query) {
-            $query['arguments'][] = $con;
-            call_user_func_array($query['callable'], $query['arguments']);
-        }
-        $this->nestedSetQueries = array();
-    }
-
-    /**
-     * Proxy getter method for the left value of the nested set model.
-     * It provides a generic way to get the value, whatever the actual column name is.
-     *
-     * @return     int The nested set left value
-     */
-    public function getLeftValue()
-    {
-        return $this->tree_left;
-    }
-
-    /**
-     * Proxy getter method for the right value of the nested set model.
-     * It provides a generic way to get the value, whatever the actual column name is.
-     *
-     * @return     int The nested set right value
-     */
-    public function getRightValue()
-    {
-        return $this->tree_right;
-    }
-
-    /**
-     * Proxy getter method for the level value of the nested set model.
-     * It provides a generic way to get the value, whatever the actual column name is.
-     *
-     * @return     int The nested set level value
-     */
-    public function getLevel()
-    {
-        return $this->tree_level;
-    }
-
-    /**
-     * Proxy setter method for the left value of the nested set model.
-     * It provides a generic way to set the value, whatever the actual column name is.
-     *
-     * @param  int $v The nested set left value
-     * @return $this|ChildRole The current object (for fluent API support)
-     */
-    public function setLeftValue($v)
-    {
-        return $this->setTreeLeft($v);
-    }
-
-    /**
-     * Proxy setter method for the right value of the nested set model.
-     * It provides a generic way to set the value, whatever the actual column name is.
-     *
-     * @param      int $v The nested set right value
-     * @return     $this|ChildRole The current object (for fluent API support)
-     */
-    public function setRightValue($v)
-    {
-        return $this->setTreeRight($v);
-    }
-
-    /**
-     * Proxy setter method for the level value of the nested set model.
-     * It provides a generic way to set the value, whatever the actual column name is.
-     *
-     * @param      int $v The nested set level value
-     * @return     $this|ChildRole The current object (for fluent API support)
-     */
-    public function setLevel($v)
-    {
-        return $this->setTreeLevel($v);
-    }
-
-    /**
-     * Creates the supplied node as the root node.
-     *
-     * @return     $this|ChildRole The current object (for fluent API support)
-     * @throws     PropelException
-     */
-    public function makeRoot()
-    {
-        if ($this->getLeftValue() || $this->getRightValue()) {
-            throw new PropelException('Cannot turn an existing node into a root node.');
-        }
-
-        $this->setLeftValue(1);
-        $this->setRightValue(2);
-        $this->setLevel(0);
-
-        return $this;
-    }
-
-    /**
-     * Tests if object is a node, i.e. if it is inserted in the tree
-     *
-     * @return     bool
-     */
-    public function isInTree()
-    {
-        return $this->getLeftValue() > 0 && $this->getRightValue() > $this->getLeftValue();
-    }
-
-    /**
-     * Tests if node is a root
-     *
-     * @return     bool
-     */
-    public function isRoot()
-    {
-        return $this->isInTree() && $this->getLeftValue() == 1;
-    }
-
-    /**
-     * Tests if node is a leaf
-     *
-     * @return     bool
-     */
-    public function isLeaf()
-    {
-        return $this->isInTree() &&  ($this->getRightValue() - $this->getLeftValue()) == 1;
-    }
-
-    /**
-     * Tests if node is a descendant of another node
-     *
-     * @param      ChildRole $parent Propel node object
-     * @return     bool
-     */
-    public function isDescendantOf(ChildRole $parent)
-    {
-        return $this->isInTree() && $this->getLeftValue() > $parent->getLeftValue() && $this->getRightValue() < $parent->getRightValue();
-    }
-
-    /**
-     * Tests if node is a ancestor of another node
-     *
-     * @param      ChildRole $child Propel node object
-     * @return     bool
-     */
-    public function isAncestorOf(ChildRole $child)
-    {
-        return $child->isDescendantOf($this);
-    }
-
-    /**
-     * Tests if object has an ancestor
-     *
-     * @return boolean
-     */
-    public function hasParent()
-    {
-        return $this->getLevel() > 0;
-    }
-
-    /**
-     * Sets the cache for parent node of the current object.
-     * Warning: this does not move the current object in the tree.
-     * Use moveTofirstChildOf() or moveToLastChildOf() for that purpose
-     *
-     * @param      ChildRole $parent
-     * @return     $this|ChildRole The current object, for fluid interface
-     */
-    public function setParent(ChildRole $parent = null)
-    {
-        $this->aNestedSetParent = $parent;
-
-        return $this;
-    }
-
-    /**
-     * Gets parent node for the current object if it exists
-     * The result is cached so further calls to the same method don't issue any queries
-     *
-     * @param  ConnectionInterface $con Connection to use.
-     * @return ChildRole|null Propel object if exists else null
-     */
-    public function getParent(ConnectionInterface $con = null)
-    {
-        if (null === $this->aNestedSetParent && $this->hasParent()) {
-            $this->aNestedSetParent = ChildRoleQuery::create()
-                ->ancestorsOf($this)
-                ->orderByLevel(true)
-                ->findOne($con);
-        }
-
-        return $this->aNestedSetParent;
-    }
-
-    /**
-     * Determines if the node has previous sibling
-     *
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     bool
-     */
-    public function hasPrevSibling(ConnectionInterface $con = null)
-    {
-        if (!ChildRoleQuery::isValid($this)) {
-            return false;
-        }
-
-        return ChildRoleQuery::create()
-            ->filterByTreeRight($this->getLeftValue() - 1)
-            ->exists($con);
-    }
-
-    /**
-     * Gets previous sibling for the given node if it exists
-     *
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ChildRole|null         Propel object if exists else null
-     */
-    public function getPrevSibling(ConnectionInterface $con = null)
-    {
-        return ChildRoleQuery::create()
-            ->filterByTreeRight($this->getLeftValue() - 1)
-            ->findOne($con);
-    }
-
-    /**
-     * Determines if the node has next sibling
-     *
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     bool
-     */
-    public function hasNextSibling(ConnectionInterface $con = null)
-    {
-        if (!ChildRoleQuery::isValid($this)) {
-            return false;
-        }
-
-        return ChildRoleQuery::create()
-            ->filterByTreeLeft($this->getRightValue() + 1)
-            ->exists($con);
-    }
-
-    /**
-     * Gets next sibling for the given node if it exists
-     *
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ChildRole|null         Propel object if exists else null
-     */
-    public function getNextSibling(ConnectionInterface $con = null)
-    {
-        return ChildRoleQuery::create()
-            ->filterByTreeLeft($this->getRightValue() + 1)
-            ->findOne($con);
-    }
-
-    /**
-     * Clears out the $collNestedSetChildren collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return     void
-     */
-    public function clearNestedSetChildren()
-    {
-        $this->collNestedSetChildren = null;
-    }
-
-    /**
-     * Initializes the $collNestedSetChildren collection.
-     *
-     * @return     void
-     */
-    public function initNestedSetChildren()
-    {
-        $this->collNestedSetChildren = new ObjectCollection();
-        $this->collNestedSetChildren->setModel('\Phlopsi\AccessControl\Propel\Role');
-    }
-
-    /**
-     * Adds an element to the internal $collNestedSetChildren collection.
-     * Beware that this doesn't insert a node in the tree.
-     * This method is only used to facilitate children hydration.
-     *
-     * @param      ChildRole $role
-     *
-     * @return     void
-     */
-    public function addNestedSetChild(ChildRole $role)
-    {
-        if (null === $this->collNestedSetChildren) {
-            $this->initNestedSetChildren();
-        }
-        if (!in_array($role, $this->collNestedSetChildren->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
-            $this->collNestedSetChildren[]= $role;
-            $role->setParent($this);
-        }
-    }
-
-    /**
-     * Tests if node has children
-     *
-     * @return     bool
-     */
-    public function hasChildren()
-    {
-        return ($this->getRightValue() - $this->getLeftValue()) > 1;
-    }
-
-    /**
-     * Gets the children of the given node
-     *
-     * @param      Criteria  $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ObjectCollection|ChildRole[] List of ChildRole objects
-     */
-    public function getChildren(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if (null === $this->collNestedSetChildren || null !== $criteria) {
-            if ($this->isLeaf() || ($this->isNew() && null === $this->collNestedSetChildren)) {
-                // return empty collection
-                $this->initNestedSetChildren();
-            } else {
-                $collNestedSetChildren = ChildRoleQuery::create(null, $criteria)
-                    ->childrenOf($this)
-                    ->orderByBranch()
-                    ->find($con);
-                if (null !== $criteria) {
-                    return $collNestedSetChildren;
-                }
-                $this->collNestedSetChildren = $collNestedSetChildren;
-            }
-        }
-
-        return $this->collNestedSetChildren;
-    }
-
-    /**
-     * Gets number of children for the given node
-     *
-     * @param      Criteria  $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     int       Number of children
-     */
-    public function countChildren(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if (null === $this->collNestedSetChildren || null !== $criteria) {
-            if ($this->isLeaf() || ($this->isNew() && null === $this->collNestedSetChildren)) {
-                return 0;
-            } else {
-                return ChildRoleQuery::create(null, $criteria)
-                    ->childrenOf($this)
-                    ->count($con);
-            }
-        } else {
-            return count($this->collNestedSetChildren);
-        }
-    }
-
-    /**
-     * Gets the first child of the given node
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ChildRole|null First child or null if this is a leaf
-     */
-    public function getFirstChild(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isLeaf()) {
-            return null;
-        } else {
-            return ChildRoleQuery::create(null, $criteria)
-                ->childrenOf($this)
-                ->orderByBranch()
-                ->findOne($con);
-        }
-    }
-
-    /**
-     * Gets the last child of the given node
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ChildRole|null Last child or null if this is a leaf
-     */
-    public function getLastChild(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isLeaf()) {
-            return null;
-        } else {
-            return ChildRoleQuery::create(null, $criteria)
-                ->childrenOf($this)
-                ->orderByBranch(true)
-                ->findOne($con);
-        }
-    }
-
-    /**
-     * Gets the siblings of the given node
-     *
-     * @param boolean             $includeNode Whether to include the current node or not
-     * @param Criteria            $criteria Criteria to filter results.
-     * @param ConnectionInterface $con Connection to use.
-     *
-     * @return ObjectCollection|ChildRole[] List of ChildRole objects
-     */
-    public function getSiblings($includeNode = false, Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isRoot()) {
-            return array();
-        } else {
-            $query = ChildRoleQuery::create(null, $criteria)
-                ->childrenOf($this->getParent($con))
-                ->orderByBranch();
-            if (!$includeNode) {
-                $query->prune($this);
-            }
-
-            return $query->find($con);
-        }
-    }
-
-    /**
-     * Gets descendants for the given node
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ObjectCollection|ChildRole[] List of ChildRole objects
-     */
-    public function getDescendants(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isLeaf()) {
-            return array();
-        } else {
-            return ChildRoleQuery::create(null, $criteria)
-                ->descendantsOf($this)
-                ->orderByBranch()
-                ->find($con);
-        }
-    }
-
-    /**
-     * Gets number of descendants for the given node
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     int         Number of descendants
-     */
-    public function countDescendants(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isLeaf()) {
-            // save one query
-            return 0;
-        } else {
-            return ChildRoleQuery::create(null, $criteria)
-                ->descendantsOf($this)
-                ->count($con);
-        }
-    }
-
-    /**
-     * Gets descendants for the given node, plus the current node
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ObjectCollection|ChildRole[] List of ChildRole objects
-     */
-    public function getBranch(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        return ChildRoleQuery::create(null, $criteria)
-            ->branchOf($this)
-            ->orderByBranch()
-            ->find($con);
-    }
-
-    /**
-     * Gets ancestors for the given node, starting with the root node
-     * Use it for breadcrumb paths for instance
-     *
-     * @param      Criteria $criteria Criteria to filter results.
-     * @param      ConnectionInterface $con Connection to use.
-     * @return     ObjectCollection|ChildRole[] List of ChildRole objects
-     */
-    public function getAncestors(Criteria $criteria = null, ConnectionInterface $con = null)
-    {
-        if ($this->isRoot()) {
-            // save one query
-            return array();
-        } else {
-            return ChildRoleQuery::create(null, $criteria)
-                ->ancestorsOf($this)
-                ->orderByBranch()
-                ->find($con);
-        }
-    }
-
-    /**
-     * Inserts the given $child node as first child of current
-     * The modifications in the current object and the tree
-     * are not persisted until the child object is saved.
-     *
-     * @param      ChildRole $child    Propel object for child node
-     *
-     * @return     $this|ChildRole The current Propel object
-     */
-    public function addChild(ChildRole $child)
-    {
-        if ($this->isNew()) {
-            throw new PropelException('A ChildRole object must not be new to accept children.');
-        }
-        $child->insertAsFirstChildOf($this);
-
-        return $this;
-    }
-
-    /**
-     * Inserts the current node as first child of given $parent node
-     * The modifications in the current object and the tree
-     * are not persisted until the current object is saved.
-     *
-     * @param      ChildRole $parent    Propel object for parent node
-     *
-     * @return     $this|ChildRole The current Propel object
-     */
-    public function insertAsFirstChildOf(ChildRole $parent)
-    {
-        if ($this->isInTree()) {
-            throw new PropelException('A ChildRole object must not already be in the tree to be inserted. Use the moveToFirstChildOf() instead.');
-        }
-        $left = $parent->getLeftValue() + 1;
-        // Update node properties
-        $this->setLeftValue($left);
-        $this->setRightValue($left + 1);
-        $this->setLevel($parent->getLevel() + 1);
-        // update the children collection of the parent
-        $parent->addNestedSetChild($this);
-
-        // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries[] = array(
-            'callable'  => array('\Phlopsi\AccessControl\Propel\RoleQuery', 'makeRoomForLeaf'),
-            'arguments' => array($left, $this->isNew() ? null : $this)
-        );
-
-        return $this;
-    }
-
-    /**
-     * Inserts the current node as last child of given $parent node
-     * The modifications in the current object and the tree
-     * are not persisted until the current object is saved.
-     *
-     * @param  ChildRole $parent Propel object for parent node
-     * @return $this|ChildRole The current Propel object
-     */
-    public function insertAsLastChildOf(ChildRole $parent)
-    {
-        if ($this->isInTree()) {
-            throw new PropelException(
-                'A ChildRole object must not already be in the tree to be inserted. Use the moveToLastChildOf() instead.'
-            );
-        }
-
-        $left = $parent->getRightValue();
-        // Update node properties
-        $this->setLeftValue($left);
-        $this->setRightValue($left + 1);
-        $this->setLevel($parent->getLevel() + 1);
-
-        // update the children collection of the parent
-        $parent->addNestedSetChild($this);
-
-        // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\Phlopsi\AccessControl\Propel\RoleQuery', 'makeRoomForLeaf'),
-            'arguments' => array($left, $this->isNew() ? null : $this)
-        );
-
-        return $this;
-    }
-
-    /**
-     * Inserts the current node as prev sibling given $sibling node
-     * The modifications in the current object and the tree
-     * are not persisted until the current object is saved.
-     *
-     * @param      ChildRole $sibling    Propel object for parent node
-     *
-     * @return     $this|ChildRole The current Propel object
-     */
-    public function insertAsPrevSiblingOf(ChildRole $sibling)
-    {
-        if ($this->isInTree()) {
-            throw new PropelException('A ChildRole object must not already be in the tree to be inserted. Use the moveToPrevSiblingOf() instead.');
-        }
-        $left = $sibling->getLeftValue();
-        // Update node properties
-        $this->setLeftValue($left);
-        $this->setRightValue($left + 1);
-        $this->setLevel($sibling->getLevel());
-        // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\Phlopsi\AccessControl\Propel\RoleQuery', 'makeRoomForLeaf'),
-            'arguments' => array($left, $this->isNew() ? null : $this)
-        );
-
-        return $this;
-    }
-
-    /**
-     * Inserts the current node as next sibling given $sibling node
-     * The modifications in the current object and the tree
-     * are not persisted until the current object is saved.
-     *
-     * @param      ChildRole $sibling    Propel object for parent node
-     *
-     * @return     $this|ChildRole The current Propel object
-     */
-    public function insertAsNextSiblingOf(ChildRole $sibling)
-    {
-        if ($this->isInTree()) {
-            throw new PropelException('A ChildRole object must not already be in the tree to be inserted. Use the moveToNextSiblingOf() instead.');
-        }
-        $left = $sibling->getRightValue() + 1;
-        // Update node properties
-        $this->setLeftValue($left);
-        $this->setRightValue($left + 1);
-        $this->setLevel($sibling->getLevel());
-        // Keep the tree modification query for the save() transaction
-        $this->nestedSetQueries []= array(
-            'callable'  => array('\Phlopsi\AccessControl\Propel\RoleQuery', 'makeRoomForLeaf'),
-            'arguments' => array($left, $this->isNew() ? null : $this)
-        );
-
-        return $this;
-    }
-
-    /**
-     * Moves current node and its subtree to be the first child of $parent
-     * The modifications in the current object and the tree are immediate
-     *
-     * @param      ChildRole $parent    Propel object for parent node
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     $this|ChildRole The current Propel object
-     */
-    public function moveToFirstChildOf(ChildRole $parent, ConnectionInterface $con = null)
-    {
-        if (!$this->isInTree()) {
-            throw new PropelException('A ChildRole object must be already in the tree to be moved. Use the insertAsFirstChildOf() instead.');
-        }
-        if ($parent->isDescendantOf($this)) {
-            throw new PropelException('Cannot move a node as child of one of its subtree nodes.');
-        }
-
-        $this->moveSubtreeTo($parent->getLeftValue() + 1, $parent->getLevel() - $this->getLevel() + 1, $con);
-
-        return $this;
-    }
-
-    /**
-     * Moves current node and its subtree to be the last child of $parent
-     * The modifications in the current object and the tree are immediate
-     *
-     * @param      ChildRole $parent    Propel object for parent node
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     $this|ChildRole The current Propel object
-     */
-    public function moveToLastChildOf(ChildRole $parent, ConnectionInterface $con = null)
-    {
-        if (!$this->isInTree()) {
-            throw new PropelException('A ChildRole object must be already in the tree to be moved. Use the insertAsLastChildOf() instead.');
-        }
-        if ($parent->isDescendantOf($this)) {
-            throw new PropelException('Cannot move a node as child of one of its subtree nodes.');
-        }
-
-        $this->moveSubtreeTo($parent->getRightValue(), $parent->getLevel() - $this->getLevel() + 1, $con);
-
-        return $this;
-    }
-
-    /**
-     * Moves current node and its subtree to be the previous sibling of $sibling
-     * The modifications in the current object and the tree are immediate
-     *
-     * @param      ChildRole $sibling    Propel object for sibling node
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     $this|ChildRole The current Propel object
-     */
-    public function moveToPrevSiblingOf(ChildRole $sibling, ConnectionInterface $con = null)
-    {
-        if (!$this->isInTree()) {
-            throw new PropelException('A ChildRole object must be already in the tree to be moved. Use the insertAsPrevSiblingOf() instead.');
-        }
-        if ($sibling->isRoot()) {
-            throw new PropelException('Cannot move to previous sibling of a root node.');
-        }
-        if ($sibling->isDescendantOf($this)) {
-            throw new PropelException('Cannot move a node as sibling of one of its subtree nodes.');
-        }
-
-        $this->moveSubtreeTo($sibling->getLeftValue(), $sibling->getLevel() - $this->getLevel(), $con);
-
-        return $this;
-    }
-
-    /**
-     * Moves current node and its subtree to be the next sibling of $sibling
-     * The modifications in the current object and the tree are immediate
-     *
-     * @param      ChildRole $sibling    Propel object for sibling node
-     * @param      ConnectionInterface $con    Connection to use.
-     *
-     * @return     $this|ChildRole The current Propel object
-     */
-    public function moveToNextSiblingOf(ChildRole $sibling, ConnectionInterface $con = null)
-    {
-        if (!$this->isInTree()) {
-            throw new PropelException('A ChildRole object must be already in the tree to be moved. Use the insertAsNextSiblingOf() instead.');
-        }
-        if ($sibling->isRoot()) {
-            throw new PropelException('Cannot move to next sibling of a root node.');
-        }
-        if ($sibling->isDescendantOf($this)) {
-            throw new PropelException('Cannot move a node as sibling of one of its subtree nodes.');
-        }
-
-        $this->moveSubtreeTo($sibling->getRightValue() + 1, $sibling->getLevel() - $this->getLevel(), $con);
-
-        return $this;
-    }
-
-    /**
-     * Move current node and its children to location $destLeft and updates rest of tree
-     *
-     * @param      int    $destLeft Destination left value
-     * @param      int    $levelDelta Delta to add to the levels
-     * @param      ConnectionInterface $con        Connection to use.
-     */
-    protected function moveSubtreeTo($destLeft, $levelDelta, ConnectionInterface $con = null)
-    {
-        $left  = $this->getLeftValue();
-        $right = $this->getRightValue();
-
-        $treeSize = $right - $left +1;
-
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(RoleTableMap::DATABASE_NAME);
-        }
-
-        $con->transaction(function () use ($con, $treeSize, $destLeft, $left, $right, $levelDelta) {
-            $preventDefault = false;
-
-            // make room next to the target for the subtree
-            ChildRoleQuery::shiftRLValues($treeSize, $destLeft, null, $con);
-
-            if (!$preventDefault) {
-                if ($left >= $destLeft) { // src was shifted too?
-                    $left += $treeSize;
-                    $right += $treeSize;
-                }
-
-                if ($levelDelta) {
-                    // update the levels of the subtree
-                    ChildRoleQuery::shiftLevel($levelDelta, $left, $right, $con);
-                }
-
-                // move the subtree to the target
-                ChildRoleQuery::shiftRLValues($destLeft - $left, $left, $right, $con);
-            }
-
-            // remove the empty room at the previous location of the subtree
-            ChildRoleQuery::shiftRLValues(-$treeSize, $right + 1, null, $con);
-
-            // update all loaded nodes
-            ChildRoleQuery::updateLoadedNodes(null, $con);
-        });
-    }
-
-    /**
-     * Deletes all descendants for the given node
-     * Instance pooling is wiped out by this command,
-     * so existing ChildRole instances are probably invalid (except for the current one)
-     *
-     * @param      ConnectionInterface $con Connection to use.
-     *
-     * @return     int         number of deleted nodes
-     */
-    public function deleteDescendants(ConnectionInterface $con = null)
-    {
-        if ($this->isLeaf()) {
-            // save one query
-            return;
-        }
-        if (null === $con) {
-            $con = Propel::getServiceContainer()->getReadConnection(RoleTableMap::DATABASE_NAME);
-        }
-        $left = $this->getLeftValue();
-        $right = $this->getRightValue();
-
-        return $con->transaction(function () use ($con, $left, $right) {
-            // delete descendant nodes (will empty the instance pool)
-            $ret = ChildRoleQuery::create()
-                ->descendantsOf($this)
-                ->delete($con);
-
-            // fill up the room that was used by descendants
-            ChildRoleQuery::shiftRLValues($left - $right + 1, $right, null, $con);
-
-            // fix the right value for the current node, which is now a leaf
-            $this->setRightValue($left + 1);
-
-            return $ret;
-        });
-    }
-
-    /**
-     * Returns a pre-order iterator for this node and its children.
-     *
-     * @return NestedSetRecursiveIterator
-     */
-    public function getIterator()
-    {
-        return new NestedSetRecursiveIterator($this);
-    }
-
-    /**
-     * Code to be run before persisting the object
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preSave(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after persisting the object
-     * @param ConnectionInterface $con
-     */
-    public function postSave(ConnectionInterface $con = null)
-    {
-
-    }
-
-    /**
-     * Code to be run before inserting to database
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preInsert(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after inserting to database
-     * @param ConnectionInterface $con
-     */
-    public function postInsert(ConnectionInterface $con = null)
-    {
-
-    }
-
-    /**
-     * Code to be run before updating the object in database
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preUpdate(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after updating the object in database
-     * @param ConnectionInterface $con
-     */
-    public function postUpdate(ConnectionInterface $con = null)
-    {
-
-    }
-
-    /**
-     * Code to be run before deleting the object in database
-     * @param  ConnectionInterface $con
-     * @return boolean
-     */
-    public function preDelete(ConnectionInterface $con = null)
-    {
-        return true;
-    }
-
-    /**
-     * Code to be run after deleting the object in database
-     * @param ConnectionInterface $con
-     */
-    public function postDelete(ConnectionInterface $con = null)
-    {
-
-    }
-
 
     /**
      * Derived method to catches calls to undefined methods.

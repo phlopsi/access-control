@@ -139,21 +139,13 @@ class UserTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('ProhibitionsUsers', '\\Phlopsi\\AccessControl\\Propel\\ProhibitionsUsers', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('RoleToUser', '\\Phlopsi\\AccessControl\\Propel\\RoleToUser', RelationMap::ONE_TO_MANY, array (
         0 =>
         array (
         0 => ':users_id',
         1 => ':id',
         ),
-        ), null, null, 'ProhibitionsUserss', false);
-        $this->addRelation('RolesUsers', '\\Phlopsi\\AccessControl\\Propel\\RolesUsers', RelationMap::ONE_TO_MANY, array (
-        0 =>
-        array (
-        0 => ':users_id',
-        1 => ':id',
-        ),
-        ), null, null, 'RolesUserss', false);
-        $this->addRelation('Prohibition', '\\Phlopsi\\AccessControl\\Propel\\Prohibition', RelationMap::MANY_TO_MANY, array(), null, null, 'Prohibitions');
+        ), null, null, 'RoleToUsers', false);
         $this->addRelation('Role', '\\Phlopsi\\AccessControl\\Propel\\Role', RelationMap::MANY_TO_MANY, array(), null, null, 'Roles');
     } // buildRelations()
 
@@ -213,7 +205,7 @@ class UserTableMap extends TableMap
                 : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
         ];
     }
-
+    
     /**
      * The class that the tableMap will make instances of.
      *
@@ -274,7 +266,7 @@ class UserTableMap extends TableMap
     public static function populateObjects(DataFetcherInterface $dataFetcher)
     {
         $results = array();
-
+    
         // set the class once to avoid overhead in the loop
         $cls = static::getOMClass(false);
         // populate the object(s)
