@@ -4,6 +4,7 @@ namespace Phlopsi\AccessControl;
 use Propel\Generator\Builder\Util\SchemaReader;
 use Propel\Generator\Platform\SqlitePlatform;
 use Propel\Generator\Util\SqlParser;
+use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Connection\ConnectionWrapper;
 use Propel\Runtime\Connection\PdoConnection;
 use Propel\Runtime\Propel;
@@ -17,17 +18,22 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @var \Propel\Runtime\Connection\PdoConnection
      */
     protected static $pdo;
-    
+
     /**
      * @var string
      */
     protected static $sql;
-    
+
     /**
      * @var \Phlopsi\AccessControl\AccessControl
      */
     protected $access_control;
-    
+
+    /**
+     * @var \Phlopsi\AccessControl\AccessControl
+     */
+    protected $access_control_faulty;
+
     /**
      * @var \PHPUnit_Extensions_Database_DB_IDatabaseConnection
      */
@@ -36,13 +42,13 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public static function setUpBeforeClass()
     {
         self::$pdo = new PdoConnection('sqlite::memory:');
-        
+
         $connection = new ConnectionWrapper(self::$pdo);
-        
+
         $serviceContainer = Propel::getServiceContainer();
         $serviceContainer->setAdapterClass('access_control', 'sqlite');
         $serviceContainer->setConnection('access_control', $connection);
-        
+
         $platform = new SqlitePlatform();
         $schema_reader = new SchemaReader($platform);
         $file = __DIR__ . '/../../../schema.xml';
@@ -59,8 +65,28 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     protected function setUp()
     {
         $this->connection = $this->createDefaultDBConnection(self::$pdo);
+
         SqlParser::executeString(self::$sql, self::$pdo);
+
         $this->access_control = new AccessControl();
+
+        $mock_connection = $this
+            ->getMockBuilder(ConnectionInterface::class)
+            ->getMock();
+
+        $mock_connection
+            ->method('transaction')
+            ->will($this->throwException(new \Exception));
+
+        $mock_connection
+            ->method('prepare')
+            ->will($this->throwException(new \Exception));
+
+        $mock_connection
+            ->method('query')
+            ->will($this->throwException(new \Exception));
+
+        $this->access_control_faulty = new AccessControl($mock_connection);
     }
 
     protected function tearDown()
@@ -76,9 +102,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     protected function getDataSet()
     {
-        
+
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
@@ -87,7 +113,16 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->createPermission('');
     }
-    
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createPermission
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testCreatePermissionException()
+    {
+        $this->access_control_faulty->createPermission('TEST_PERMISSION');
+    }
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission
      */
@@ -98,17 +133,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @depends testCreatePermission
-     * @covers \Phlopsi\AccessControl\AccessControl::createPermission
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
-     */
-    public function testCreatePermissionTwice()
-    {
-        $this->access_control->createPermission('TEST_PERMISSION');
-        $this->access_control->createPermission('TEST_PERMISSION');
-    }
-    
-    /**
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
@@ -116,7 +140,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->deletePermission('');
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
      */
@@ -125,7 +149,16 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $this->access_control->deletePermission('TEST_PERMISSION');
         $this->assertFalse($result);
     }
-    
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testDeletePermissionException()
+    {
+        $this->access_control_faulty->deletePermission('TEST_PERMISSION');
+    }
+
     /**
      * @depends testCreatePermission
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
@@ -138,7 +171,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($result);
         $this->assertEquals(0, $this->getConnection()->getRowCount('permissions'));
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createRole
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
@@ -147,7 +180,16 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->createRole('');
     }
-    
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createRole
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testCreateRoleException()
+    {
+        $this->access_control_faulty->createRole('TEST_ROLE');
+    }
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createRole
      */
@@ -159,17 +201,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @depends testCreateRole
-     * @covers \Phlopsi\AccessControl\AccessControl::createRole
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
-     */
-    public function testCreateRoleTwice()
-    {
-        $this->access_control->createRole('TEST_ROLE');
-        $this->access_control->createRole('TEST_ROLE');
-    }
-    
-    /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
@@ -177,7 +208,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->deleteRole('');
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
      */
@@ -186,7 +217,16 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $this->access_control->deleteRole('TEST_ROLE');
         $this->assertFalse($result);
     }
-    
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testDeleteRoleException()
+    {
+        $this->access_control_faulty->deleteRole('TEST_ROLE');
+    }
+
     /**
      * @depends testCreateRole
      * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
@@ -199,7 +239,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($result);
         $this->assertEquals(0, $this->getConnection()->getRowCount('roles'));
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
@@ -208,7 +248,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->retrieveRole('');
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
@@ -217,7 +257,24 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->retrieveRole('TEST_ROLE');
     }
-    
+
+    /**
+     * @depends testCreateRole
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testRetrieveRoleException()
+    {
+        try {
+            $this->access_control->createRole('TEST_ROLE');
+        } catch (\Exception $exception) {
+            $this->fail($exception->getTraceAsString());
+        }
+
+        $this->access_control_faulty->retrieveRole('TEST_ROLE');
+    }
+
     /**
      * @depends testCreateRole
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
@@ -231,7 +288,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertInstanceOf(\Phlopsi\AccessControl\Role::class, $role);
         $this->assertEquals('TEST_ROLE', $role->getId());
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createSessionType
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
@@ -240,7 +297,16 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->createSessionType('');
     }
-    
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createSessionType
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testCreateSessionTypeException()
+    {
+        $this->access_control_faulty->createSessionType('TEST_SESSION_TYPE');
+    }
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createSessionType
      */
@@ -252,17 +318,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @depends testCreateSessionType
-     * @covers \Phlopsi\AccessControl\AccessControl::createSessionType
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
-     */
-    public function testCreateSessionTypeTwice()
-    {
-        $this->access_control->createSessionType('TEST_SESSION_TYPE');
-        $this->access_control->createSessionType('TEST_SESSION_TYPE');
-    }
-    
-    /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteSessionType
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
@@ -270,7 +325,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->deleteSessionType('');
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteSessionType
      */
@@ -279,7 +334,16 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $this->access_control->deleteSessionType('TEST_SESSION_TYPE');
         $this->assertFalse($result);
     }
-    
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteSessionType
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testDeleteSessionTypeException()
+    {
+        $this->access_control_faulty->deleteSessionType('TEST_SESSION_TYPE');
+    }
+
     /**
      * @depends testCreateSessionType
      * @covers \Phlopsi\AccessControl\AccessControl::deleteSessionType
@@ -292,7 +356,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($result);
         $this->assertEquals(0, $this->getConnection()->getRowCount('session_types'));
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveSessionType
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
@@ -301,7 +365,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->retrieveSessionType('');
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveSessionType
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
@@ -310,7 +374,24 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->retrieveSessionType('TEST_SESSION_TYPE');
     }
-    
+
+    /**
+     * @depends testCreateSessionType
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveSessionType
+     * @uses \Phlopsi\AccessControl\AccessControl::createSessionType
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testRetrieveSessionTypeException()
+    {
+        try {
+            $this->access_control->createSessionType('TEST_SESSION_TYPE');
+        } catch (\Exception $exception) {
+            $this->fail($exception->getTraceAsString());
+        }
+
+        $this->access_control_faulty->retrieveSessionType('TEST_SESSION_TYPE');
+    }
+
     /**
      * @depends testCreateSessionType
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveSessionType
@@ -324,7 +405,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertInstanceOf(\Phlopsi\AccessControl\SessionType::class, $sesssion_type);
         $this->assertEquals('TEST_SESSION_TYPE', $sesssion_type->getId());
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createUser
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
@@ -333,7 +414,16 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->createUser('');
     }
-    
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::createUser
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testCreateUserException()
+    {
+        $this->access_control_faulty->createUser('TEST_USER');
+    }
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createUser
      */
@@ -345,17 +435,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @depends testCreateUser
-     * @covers \Phlopsi\AccessControl\AccessControl::createUser
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
-     */
-    public function testCreateUserTwice()
-    {
-        $this->access_control->createUser('TEST_USER');
-        $this->access_control->createUser('TEST_USER');
-    }
-    
-    /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
@@ -363,7 +442,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->deleteUser('');
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
      */
@@ -372,7 +451,16 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $this->access_control->deleteUser('TEST_USER');
         $this->assertFalse($result);
     }
-    
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testDeleteUserException()
+    {
+        $this->access_control_faulty->deleteUser('TEST_USER');
+    }
+
     /**
      * @depends testCreateUser
      * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
@@ -385,7 +473,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($result);
         $this->assertEquals(0, $this->getConnection()->getRowCount('users'));
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
@@ -394,7 +482,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->retrieveUser('');
     }
-    
+
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
@@ -403,7 +491,24 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->access_control->retrieveUser('TEST_USER');
     }
-    
+
+    /**
+     * @depends testCreateUser
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testRetrieveUserException()
+    {
+        try {
+            $this->access_control->createUser('TEST_USER');
+        } catch (\Exception $exception) {
+            $this->fail($exception->getTraceAsString());
+        }
+
+        $this->access_control_faulty->retrieveUser('TEST_USER');
+    }
+
     /**
      * @depends testCreateUser
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
