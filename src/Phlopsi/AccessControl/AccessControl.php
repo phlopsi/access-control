@@ -135,7 +135,8 @@ class AccessControl
         }
 
         try {
-            $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id, $this->connection);
+            $permission = PropelPermissionQuery::create()
+                ->findOneByExternalId($permission_id, $this->connection);
             
             if (is_null($permission)) {
                 return false;
@@ -162,7 +163,8 @@ class AccessControl
         }
 
         try {
-            $role = PropelRoleQuery::create()->findOneByExternalId($role_id, $this->connection);
+            $role = PropelRoleQuery::create()
+                ->findOneByExternalId($role_id, $this->connection);
             
             if (is_null($role)) {
                 return false;
@@ -189,7 +191,8 @@ class AccessControl
         }
 
         try {
-            $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id, $this->connection);
+            $session_type = PropelSessionTypeQuery::create()
+                ->findOneByExternalId($session_type_id, $this->connection);
             
             if (is_null($session_type)) {
                 return false;
@@ -216,7 +219,8 @@ class AccessControl
         }
 
         try {
-            $user = PropelUserQuery::create()->findOneByExternalId($user_id, $this->connection);
+            $user = PropelUserQuery::create()
+                ->findOneByExternalId($user_id, $this->connection);
             
             if (is_null($user)) {
                 return false;
@@ -243,7 +247,8 @@ class AccessControl
         }
 
         try {
-            $role = PropelRoleQuery::create()->findOneByExternalId($role_id, $this->connection);
+            $role = PropelRoleQuery::create()
+                ->findOneByExternalId($role_id, $this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -268,7 +273,8 @@ class AccessControl
         }
 
         try {
-            $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id, $this->connection);
+            $session_type = PropelSessionTypeQuery::create()
+                ->findOneByExternalId($session_type_id, $this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -294,7 +300,8 @@ class AccessControl
         }
 
         try {
-            $user = PropelUserQuery::create()->findOneByExternalId($user_id, $this->connection);
+            $user = PropelUserQuery::create()
+                ->findOneByExternalId($user_id, $this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
