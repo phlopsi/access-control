@@ -13,12 +13,26 @@ use Phlopsi\AccessControl\Propel\SessionType as PropelSessionType;
 use Phlopsi\AccessControl\Propel\SessionTypeQuery as PropelSessionTypeQuery;
 use Phlopsi\AccessControl\Propel\User as PropelUser;
 use Phlopsi\AccessControl\Propel\UserQuery as PropelUserQuery;
+use Propel\Runtime\Connection\ConnectionInterface;
 
 /**
  * @author Patrick Fischer <nbphobos@gmail.com>
  */
 class AccessControl
 {
+    /**
+     * @var ConnectionInterface
+     */
+    private $connection;
+    
+    /**
+     * @param ConnectionInterface $connection
+     */
+    public function __construct(ConnectionInterface $connection = null)
+    {
+        $this->connection = $connection;
+    }
+    
     /**
      * @param string $permission_id
      * @throws LengthException
@@ -33,7 +47,7 @@ class AccessControl
         try {
             $new_permission = new PropelPermission();
             $new_permission->setExternalId($permission_id);
-            $new_permission->save();
+            $new_permission->save($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -54,7 +68,7 @@ class AccessControl
         try {
             $new_role = new PropelRole();
             $new_role->setExternalId($role_id);
-            $new_role->save();
+            $new_role->save($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -77,7 +91,7 @@ class AccessControl
         try {
             $new_session_type = new PropelSessionType();
             $new_session_type->setExternalId($session_type_id);
-            $new_session_type->save();
+            $new_session_type->save($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -100,7 +114,7 @@ class AccessControl
         try {
             $new_user = new PropelUser();
             $new_user->setExternalId($user_id);
-            $new_user->save();
+            $new_user->save($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -121,13 +135,13 @@ class AccessControl
         }
 
         try {
-            $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
+            $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id, $this->connection);
             
             if (is_null($permission)) {
                 return false;
             }
             
-            $permission->delete();
+            $permission->delete($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -148,13 +162,13 @@ class AccessControl
         }
 
         try {
-            $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
+            $role = PropelRoleQuery::create()->findOneByExternalId($role_id, $this->connection);
             
             if (is_null($role)) {
                 return false;
             }
             
-            $role->delete();
+            $role->delete($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -175,13 +189,13 @@ class AccessControl
         }
 
         try {
-            $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
+            $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id, $this->connection);
             
             if (is_null($session_type)) {
                 return false;
             }
             
-            $session_type->delete();
+            $session_type->delete($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -202,13 +216,13 @@ class AccessControl
         }
 
         try {
-            $user = PropelUserQuery::create()->findOneByExternalId($user_id);
+            $user = PropelUserQuery::create()->findOneByExternalId($user_id, $this->connection);
             
             if (is_null($user)) {
                 return false;
             }
             
-            $user->delete();
+            $user->delete($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -229,7 +243,7 @@ class AccessControl
         }
 
         try {
-            $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
+            $role = PropelRoleQuery::create()->findOneByExternalId($role_id, $this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -254,7 +268,7 @@ class AccessControl
         }
 
         try {
-            $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id);
+            $session_type = PropelSessionTypeQuery::create()->findOneByExternalId($session_type_id, $this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -280,7 +294,7 @@ class AccessControl
         }
 
         try {
-            $user = PropelUserQuery::create()->findOneByExternalId($user_id);
+            $user = PropelUserQuery::create()->findOneByExternalId($user_id, $this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
