@@ -24,7 +24,7 @@ class AccessControl
      * @var ConnectionInterface
      */
     private $connection;
-    
+
     /**
      * @param ConnectionInterface $connection
      */
@@ -32,9 +32,10 @@ class AccessControl
     {
         $this->connection = $connection;
     }
-    
+
     /**
      * @param string $permission_id
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -55,7 +56,9 @@ class AccessControl
 
     /**
      * @param string $role_id
+     *
      * @return Role
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -64,7 +67,7 @@ class AccessControl
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
-        
+
         try {
             $new_role = new PropelRole();
             $new_role->setExternalId($role_id);
@@ -78,7 +81,9 @@ class AccessControl
 
     /**
      * @param string $session_type_id
+     *
      * @return SessionType
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -101,7 +106,9 @@ class AccessControl
 
     /**
      * @param string $user_id
+     *
      * @return User
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -124,7 +131,9 @@ class AccessControl
 
     /**
      * @param string $permission_id
+     *
      * @return bool
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -137,22 +146,24 @@ class AccessControl
         try {
             $permission = PropelPermissionQuery::create()
                 ->findOneByExternalId($permission_id, $this->connection);
-            
+
             if (is_null($permission)) {
                 return false;
             }
-            
+
             $permission->delete($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
-        
+
         return true;
     }
 
     /**
      * @param string $role_id
+     *
      * @return bool
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -165,22 +176,24 @@ class AccessControl
         try {
             $role = PropelRoleQuery::create()
                 ->findOneByExternalId($role_id, $this->connection);
-            
+
             if (is_null($role)) {
                 return false;
             }
-            
+
             $role->delete($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
-        
+
         return true;
     }
 
     /**
      * @param string $session_type_id
+     *
      * @return bool
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -193,22 +206,24 @@ class AccessControl
         try {
             $session_type = PropelSessionTypeQuery::create()
                 ->findOneByExternalId($session_type_id, $this->connection);
-            
+
             if (is_null($session_type)) {
                 return false;
             }
-            
+
             $session_type->delete($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
-        
+
         return true;
     }
 
     /**
      * @param string $user_id
+     *
      * @return bool
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -221,22 +236,24 @@ class AccessControl
         try {
             $user = PropelUserQuery::create()
                 ->findOneByExternalId($user_id, $this->connection);
-            
+
             if (is_null($user)) {
                 return false;
             }
-            
+
             $user->delete($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
-        
+
         return true;
     }
 
     /**
      * @param string $role_id
+     *
      * @return Role
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -262,7 +279,9 @@ class AccessControl
 
     /**
      * @param string $session_type_id
+     *
      * @return SessionType
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -289,7 +308,9 @@ class AccessControl
 
     /**
      * @param string $user_id
+     *
      * @return User
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
