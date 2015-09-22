@@ -108,6 +108,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission
+     * @covers static::testCreatePermissionWithEmptyId
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testCreatePermissionWithEmptyId()
