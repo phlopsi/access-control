@@ -21,7 +21,7 @@ use Propel\Runtime\Connection\ConnectionInterface;
 class AccessControl
 {
     /**
-     * @var ConnectionInterface
+     * @var ConnectionInterface|null
      */
     private $connection;
 
