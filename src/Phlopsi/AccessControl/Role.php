@@ -23,7 +23,7 @@ class Role
     {
         $this->role = $role;
     }
-    
+
     /**
      * @return string
      */
@@ -31,9 +31,10 @@ class Role
     {
         return $this->role->getExternalId();
     }
-    
+
     /**
      * @param string $permission_id
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -54,6 +55,7 @@ class Role
 
     /**
      * @param string $permission_id
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
