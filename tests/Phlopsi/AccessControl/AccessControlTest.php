@@ -107,7 +107,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControlTest::testCreatePermissionWithEmptyId
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
@@ -281,7 +280,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @depends testCreateRole
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
      * @uses \Phlopsi\AccessControl\AccessControl::createRole
-     * @uses \Phlopsi\AccessControl\Role::getId
      */
     public function testRetrieveRole()
     {
@@ -398,7 +396,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @depends testCreateSessionType
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveSessionType
      * @uses \Phlopsi\AccessControl\AccessControl::createSessionType
-     * @uses \Phlopsi\AccessControl\SessionType::getId
      */
     public function testRetrieveSessionType()
     {
@@ -515,7 +512,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @depends testCreateUser
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
      * @uses \Phlopsi\AccessControl\AccessControl::createUser
-     * @uses \Phlopsi\AccessControl\User::getId
      */
     public function testRetrieveUser()
     {

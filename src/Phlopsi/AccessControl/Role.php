@@ -23,6 +23,8 @@ class Role
 
     /**
      * @param PropelRole $role
+     * 
+     * @codeCoverageIgnore
      */
     public function __construct(PropelRole $role, ConnectionInterface $connection = null)
     {
@@ -32,6 +34,8 @@ class Role
 
     /**
      * @return string
+     * 
+     * @codeCoverageIgnore
      */
     public function getId()
     {

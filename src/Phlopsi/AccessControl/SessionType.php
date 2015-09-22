@@ -18,6 +18,8 @@ class SessionType
 
     /**
      * @param PropelSessionType $session_type
+     * 
+     * @codeCoverageIgnore
      */
     public function __construct(PropelSessionType $session_type)
     {
@@ -26,6 +28,8 @@ class SessionType
     
     /**
      * @return string
+     * 
+     * @codeCoverageIgnore
      */
     public function getId()
     {
