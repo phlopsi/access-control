@@ -93,6 +93,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $this->connection = null;
         $this->access_control = null;
+        $this->access_control_faulty = null;
     }
 
     protected function getConnection()
