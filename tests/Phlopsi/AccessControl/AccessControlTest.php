@@ -51,7 +51,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         $platform = new SqlitePlatform();
         $schema_reader = new SchemaReader($platform);
-        $file = __DIR__ . '/../../../schema.xml';
+        $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'schema.xml';
         $schema = $schema_reader->parseFile($file);
         $database = $schema->getDatabase('access_control');
         self::$sql = $platform->getAddTablesDDL($database);
