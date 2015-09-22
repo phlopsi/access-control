@@ -47,8 +47,9 @@ class AccessControl
 
         try {
             $new_permission = new PropelPermission();
-            $new_permission->setExternalId($permission_id);
-            $new_permission->save($this->connection);
+            $new_permission
+                ->setExternalId($permission_id)
+                ->save($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -70,8 +71,9 @@ class AccessControl
 
         try {
             $new_role = new PropelRole();
-            $new_role->setExternalId($role_id);
-            $new_role->save($this->connection);
+            $new_role
+                ->setExternalId($role_id)
+                ->save($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -95,8 +97,9 @@ class AccessControl
 
         try {
             $new_session_type = new PropelSessionType();
-            $new_session_type->setExternalId($session_type_id);
-            $new_session_type->save($this->connection);
+            $new_session_type
+                ->setExternalId($session_type_id)
+                ->save($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
@@ -120,8 +123,9 @@ class AccessControl
 
         try {
             $new_user = new PropelUser();
-            $new_user->setExternalId($user_id);
-            $new_user->save($this->connection);
+            $new_user
+                ->setExternalId($user_id)
+                ->save($this->connection);
         } catch (\Exception $exception) {
             throw new RuntimeException('', 0, $exception);
         }
