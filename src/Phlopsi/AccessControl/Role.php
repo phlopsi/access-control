@@ -12,6 +12,11 @@ use Phlopsi\AccessControl\Propel\Role as PropelRole;
 class Role
 {
     /**
+     * @var ConnectionInterface|null
+     */
+    private $connection;
+
+    /**
      * @var PropelRole
      */
     private $role;
@@ -19,9 +24,10 @@ class Role
     /**
      * @param PropelRole $role
      */
-    public function __construct(PropelRole $role)
+    public function __construct(PropelRole $role, ConnectionInterface $connection = null)
     {
         $this->role = $role;
+        $this->connection = $connection;
     }
 
     /**
@@ -44,13 +50,20 @@ class Role
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
+        try {
+            $permission = PropelPermissionQuery::create()
+                ->findOneByExternalId($permission_id, $this->connection);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
+        }
 
         if (is_null($permission)) {
             throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
         }
 
-        $this->role->addPermission($permission);
+        $this->role
+            ->addPermission($permission)
+            ->save($this->connection);
     }
 
     /**
@@ -65,12 +78,19 @@ class Role
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        $permission = PropelPermissionQuery::create()->findOneByExternalId($permission_id);
+        try {
+            $permission = PropelPermissionQuery::create()
+                ->findOneByExternalId($permission_id, $this->connection);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
+        }
 
         if (is_null($permission)) {
             throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
         }
 
-        $this->role->removePermission($permission);
+        $this->role
+            ->removePermission($permission)
+            ->save($this->connection);
     }
 }
