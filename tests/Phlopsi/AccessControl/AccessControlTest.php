@@ -1,66 +1,29 @@
 <?php
 namespace Phlopsi\AccessControl;
 
-use Propel\Generator\Builder\Util\SchemaReader;
-use Propel\Generator\Platform\SqlitePlatform;
 use Propel\Generator\Util\SqlParser;
-use Propel\Runtime\Connection\ConnectionInterface;
-use Propel\Runtime\Connection\ConnectionWrapper;
-use Propel\Runtime\Connection\PdoConnection;
-use Propel\Runtime\Propel;
 
 /**
  * @author Patrick Fischer <nbphobos@gmail.com>
  */
 class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 {
-    /**
-     * @var \Propel\Runtime\Connection\PdoConnection
-     */
-    protected static $pdo;
-
-    /**
-     * @var string
-     */
-    protected static $sql;
+    use Test\DatabaseTestCaseTrait;
 
     /**
      * @var \Phlopsi\AccessControl\AccessControl
      */
-    protected $access_control;
+    private $access_control;
 
     /**
      * @var \Phlopsi\AccessControl\AccessControl
      */
-    protected $access_control_faulty;
+    private $access_control_faulty;
 
     /**
      * @var \PHPUnit_Extensions_Database_DB_IDatabaseConnection
      */
-    protected $connection;
-
-    public static function setUpBeforeClass()
-    {
-        self::$pdo = new PdoConnection('sqlite::memory:');
-
-        $connection = new ConnectionWrapper(self::$pdo);
-
-        $serviceContainer = Propel::getServiceContainer();
-        $serviceContainer->setAdapterClass('access_control', 'sqlite');
-        $serviceContainer->setConnection('access_control', $connection);
-
-        $platform = new SqlitePlatform();
-        $schema_reader = new SchemaReader($platform);
-        $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'schema.xml';
-        $schema = $schema_reader->parseFile($file);
-        $database = $schema->getDatabase('access_control');
-        self::$sql = $platform->getAddTablesDDL($database);
-    }
-
-    public static function tearDownAfterClass()
-    {
-        self::$pdo = null;
-    }
+    private $connection;
 
     protected function setUp()
     {
@@ -69,24 +32,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         SqlParser::executeString(self::$sql, self::$pdo);
 
         $this->access_control = new AccessControl();
-
-        $mock_connection = $this
-            ->getMockBuilder(ConnectionInterface::class)
-            ->getMock();
-
-        $mock_connection
-            ->method('transaction')
-            ->will($this->throwException(new \Exception));
-
-        $mock_connection
-            ->method('prepare')
-            ->will($this->throwException(new \Exception));
-
-        $mock_connection
-            ->method('query')
-            ->will($this->throwException(new \Exception));
-
-        $this->access_control_faulty = new AccessControl($mock_connection);
+        $this->access_control_faulty = new AccessControl($this->getMockedConnection());
     }
 
     protected function tearDown()
