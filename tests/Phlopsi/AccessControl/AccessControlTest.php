@@ -11,12 +11,12 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     use Test\DatabaseTestCaseTrait;
 
     /**
-     * @var \Phlopsi\AccessControl\AccessControl
+     * @var AccessControl
      */
     private $access_control;
 
     /**
-     * @var \Phlopsi\AccessControl\AccessControl
+     * @var AccessControl
      */
     private $access_control_faulty;
 
