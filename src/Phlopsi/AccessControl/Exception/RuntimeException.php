@@ -1,5 +1,4 @@
 <?php
-
 namespace Phlopsi\AccessControl\Exception;
 
 /**
