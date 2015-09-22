@@ -44,7 +44,7 @@ class Role
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function addPermission(string $permission_id)
+    public function addPermission($permission_id)
     {
         if (empty($permission_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -72,7 +72,7 @@ class Role
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function removePermission(string $permission_id)
+    public function removePermission($permission_id)
     {
         if (empty($permission_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);

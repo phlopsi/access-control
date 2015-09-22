@@ -10,7 +10,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "~7.0",
+        "php": ">= 5.6",
         "propel/propel": "@alpha"
     },
     "require-dev": {

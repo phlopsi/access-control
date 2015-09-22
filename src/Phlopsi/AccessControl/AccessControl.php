@@ -39,7 +39,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function createPermission(string $permission_id)
+    public function createPermission($permission_id)
     {
         if (empty($permission_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -63,7 +63,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function createRole(string $role_id)
+    public function createRole($role_id)
     {
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -89,7 +89,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function createSessionType(string $session_type_id)
+    public function createSessionType($session_type_id)
     {
         if (empty($session_type_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -115,7 +115,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function createUser(string $user_id)
+    public function createUser($user_id)
     {
         if (empty($user_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -141,7 +141,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function deletePermission(string $permission_id)
+    public function deletePermission($permission_id)
     {
         if (empty($permission_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -171,7 +171,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function deleteRole(string $role_id)
+    public function deleteRole($role_id)
     {
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -201,7 +201,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function deleteSessionType(string $session_type_id)
+    public function deleteSessionType($session_type_id)
     {
         if (empty($session_type_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -231,7 +231,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function deleteUser(string $user_id)
+    public function deleteUser($user_id)
     {
         if (empty($user_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -261,7 +261,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function retrieveRole(string $role_id)
+    public function retrieveRole($role_id)
     {
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -289,7 +289,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function retrieveSessionType(string $session_type_id)
+    public function retrieveSessionType($session_type_id)
     {
         if (empty($session_type_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -318,7 +318,7 @@ class AccessControl
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function retrieveUser(string $user_id)
+    public function retrieveUser($user_id)
     {
         if (empty($user_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
