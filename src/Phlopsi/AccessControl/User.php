@@ -19,7 +19,7 @@ class User
 
     /**
      * @param PropelUser $user
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function __construct(PropelUser $user)
@@ -29,7 +29,7 @@ class User
     
     /**
      * @return string
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function getId()

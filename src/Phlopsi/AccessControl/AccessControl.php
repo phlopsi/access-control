@@ -25,7 +25,7 @@ class AccessControl
 
     /**
      * @param ConnectionInterface $connection
-     * 
+     *
      * @codeCoverageIgnore
      */
     public function __construct(ConnectionInterface $connection = null)
