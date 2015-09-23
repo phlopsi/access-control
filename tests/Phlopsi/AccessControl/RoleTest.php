@@ -102,4 +102,74 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         // Assert
         $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME));
     }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::removePermission
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testRemovePermissionWithEmptyId()
+    {
+        // Arrange
+        $propel_role = $this->getMock(Propel\Role::class);
+        $role = new Role($propel_role);
+
+        // Act
+        $role->removePermission('');
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::removePermission
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testRemovePermissionWithInvalidId()
+    {
+        // Arrange
+        $propel_role = $this->getMock(Propel\Role::class);
+        $role = new Role($propel_role);
+
+        // Act
+        $role->removePermission('TEST_ROLE');
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::removePermission
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testRemovePermissionException()
+    {
+        // Arrange
+        $propel_role = $this->getMock(Propel\Role::class);
+        $role = new Role($propel_role, $this->getFaultyConnection());
+
+        // Act
+        $role->removePermission('TEST_ROLE');
+    }
+
+    /**
+     * @depends testAddPermission
+     * @covers \Phlopsi\AccessControl\Role::removePermission
+     * @uses \Phlopsi\AccessControl\Role::addPermission
+     */
+    public function testRemovePermission()
+    {
+        // Arrange
+        $propel_role = new Propel\Role();
+        $propel_role
+            ->setExternalId('TEST_ROLE')
+            ->save();
+
+        $propel_permission = new Propel\Permission();
+        $propel_permission
+            ->setExternalId('TEST_ROLE')
+            ->save();
+
+        $role = new Role($propel_role);
+        $role->addPermission('TEST_ROLE');
+
+        // Act
+        $role->removePermission('TEST_ROLE');
+
+        // Assert
+        $this->assertEquals(0, $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME));
+    }
 }
