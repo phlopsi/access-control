@@ -11,3 +11,6 @@ before_script:
 script:
     - ./vendor/bin/phpcs "--colors" "--report-width=auto" "--warning-severity=0" "--standard=PSR2" "src"
     - ./vendor/bin/phpunit
+
+after_script:
+    - php vendor/bin/coveralls

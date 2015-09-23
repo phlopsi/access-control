@@ -1,2 +1,2 @@
-access-control [![Build Status](https://travis-ci.org/phlopsi/access-control.svg?branch=0.1.0)](https://travis-ci.org/phlopsi/access-control)
-=============================================================================================================================================
+access-control [![Build Status](https://travis-ci.org/phlopsi/access-control.svg?branch=0.1.0)](https://travis-ci.org/phlopsi/access-control) [![Coverage Status](https://coveralls.io/repos/phlopsi/access-control/badge.svg?branch=0.1.0&service=github)](https://coveralls.io/github/phlopsi/access-control?branch=0.1.0)
+============================================================================================================================================================================================================================================================================================================================
