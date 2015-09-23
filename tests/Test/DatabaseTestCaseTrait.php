@@ -45,7 +45,7 @@ trait DatabaseTestCaseTrait
         self::$pdo = null;
     }
     
-    private function getMockedConnection()
+    private function getFaultyConnection()
     {
         $mocked_connection = $this
             ->getMockBuilder(ConnectionInterface::class)
