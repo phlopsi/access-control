@@ -11,16 +11,6 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     use Test\DatabaseTestCaseTrait;
 
     /**
-     * @var AccessControl
-     */
-    private $access_control;
-
-    /**
-     * @var AccessControl
-     */
-    private $access_control_faulty;
-
-    /**
      * @var \PHPUnit_Extensions_Database_DB_IDatabaseConnection
      */
     private $connection;
@@ -30,16 +20,11 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $this->connection = $this->createDefaultDBConnection(self::$pdo);
 
         SqlParser::executeString(self::$sql, self::$pdo);
-
-        $this->access_control = new AccessControl();
-        $this->access_control_faulty = new AccessControl($this->getFaultyConnection());
     }
 
     protected function tearDown()
     {
         $this->connection = null;
-        $this->access_control = null;
-        $this->access_control_faulty = null;
     }
 
     protected function getConnection()
