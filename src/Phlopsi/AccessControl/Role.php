@@ -66,9 +66,13 @@ class Role
             throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
         }
 
-        $this->role
-            ->addPermission($permission)
-            ->save($this->connection);
+        try {
+            $this->role
+                ->addPermission($permission)
+                ->save($this->connection);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
+        }
     }
 
     /**
@@ -94,8 +98,12 @@ class Role
             throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
         }
 
-        $this->role
-            ->removePermission($permission)
-            ->save($this->connection);
+        try {
+            $this->role
+                ->removePermission($permission)
+                ->save($this->connection);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
+        }
     }
 }
