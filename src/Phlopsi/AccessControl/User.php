@@ -6,12 +6,18 @@ use Phlopsi\AccessControl\Exception\RuntimeException;
 use Phlopsi\AccessControl\Propel\PermissionQuery as PropelPermissionQuery;
 use Phlopsi\AccessControl\Propel\RoleQuery as PropelRoleQuery;
 use Phlopsi\AccessControl\Propel\User as PropelUser;
+use Propel\Runtime\Connection\ConnectionInterface;
 
 /**
  * @author Patrick Fischer <nbphobos@gmail.com>
  */
 class User
 {
+    /**
+     * @var ConnectionInterface|null
+     */
+    private $connection;
+
     /**
      * @var PropelUser
      */
@@ -22,11 +28,12 @@ class User
      *
      * @codeCoverageIgnore
      */
-    public function __construct(PropelUser $user)
+    public function __construct(PropelUser $user, ConnectionInterface $connection = null)
     {
         $this->user = $user;
+        $this->connection = $connection;
     }
-    
+
     /**
      * @return string
      *
@@ -39,6 +46,7 @@ class User
 
     /**
      * @param string $role_id
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -48,18 +56,31 @@ class User
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
+        try {
+            $role = PropelRoleQuery::create()
+                ->findOneByExternalId($role_id, $this->connection);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
+        }
 
         if (is_null($role)) {
             throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
         }
 
-        $this->role->addPermission($role);
+        try {
+            $this->user
+                ->addRole($role)
+                ->save($this->connection);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
+        }
     }
 
     /**
      * @param string $permission_id
+     *
      * @return boolean
+     *
      * @throws LengthException
      */
     public function hasPermission(string $permission_id)
@@ -68,29 +89,33 @@ class User
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        //TODO more efficiency!
-        $roles = $this->user->getRoles();
+        try {
+            //TODO more efficiency!
+            $roles = $this->user->getRoles(null, $this->connection);
 
-        foreach ($roles as $role) {
-            $permission = PropelPermissionQuery::create()
-                ->filterByRole($role)
-                ->findByExternalId($permission_id);
-
-            if (!is_null($permission)) {
-                return true;
-            }
-
-            $descendant_roles = $role->getDescendants();
-
-            foreach ($descendant_roles as $descendant_role) {
+            foreach ($roles as $role) {
                 $permission = PropelPermissionQuery::create()
-                    ->filterByRole($descendant_role)
-                    ->findByExternalId($permission_id);
+                    ->filterByRole($role)
+                    ->findByExternalId($permission_id, $this->connection);
 
                 if (!is_null($permission)) {
                     return true;
                 }
+
+                $descendant_roles = $role->getDescendants(null, $this->connection);
+
+                foreach ($descendant_roles as $descendant_role) {
+                    $permission = PropelPermissionQuery::create()
+                        ->filterByRole($descendant_role)
+                        ->findByExternalId($permission_id, $this->connection);
+
+                    if (!is_null($permission)) {
+                        return true;
+                    }
+                }
             }
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
         }
 
         return false;
@@ -98,6 +123,7 @@ class User
 
     /**
      * @param string $role_id
+     *
      * @throws LengthException
      * @throws RuntimeException
      */
@@ -107,12 +133,23 @@ class User
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
         }
 
-        $role = PropelRoleQuery::create()->findOneByExternalId($role_id);
+        try {
+            $role = PropelRoleQuery::create()
+                ->findOneByExternalId($role_id, $this->connection);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
+        }
 
         if (is_null($role)) {
             throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
         }
 
-        $this->user->removeRole($role);
+        try {
+            $this->user
+                ->removeRole($role)
+                ->save($this->connection);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
+        }
     }
 }
