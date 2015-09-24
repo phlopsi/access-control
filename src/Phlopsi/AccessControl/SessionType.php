@@ -66,9 +66,13 @@ class SessionType
             throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
         }
 
-        $this->session_type
-            ->addRole($role)
-            ->save($this->connection);
+        try {
+            $this->session_type
+                ->addRole($role)
+                ->save($this->connection);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
+        }
     }
 
     /**
@@ -94,8 +98,12 @@ class SessionType
             throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
         }
 
-        $this->session_type
-            ->removeRole($role)
-            ->save($this->connection);
+        try {
+            $this->session_type
+                ->removeRole($role)
+                ->save($this->connection);
+        } catch (\Exception $exception) {
+            throw new RuntimeException('', 0, $exception);
+        }
     }
 }
