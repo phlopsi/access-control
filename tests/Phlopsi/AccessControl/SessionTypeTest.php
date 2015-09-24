@@ -94,7 +94,7 @@ class SessionTypeTest extends \PHPUnit_Extensions_Database_TestCase
             ->setExternalId('TEST_ROLE')
             ->save();
 
-        $session_type = new Role($propel_session_type);
+        $session_type = new SessionType($propel_session_type);
 
         // Act
         $session_type->addRole('TEST_ROLE');
@@ -163,7 +163,7 @@ class SessionTypeTest extends \PHPUnit_Extensions_Database_TestCase
             ->setExternalId('TEST_ROLE')
             ->save();
 
-        $session_type = new Role($propel_session_type);
+        $session_type = new SessionType($propel_session_type);
         $session_type->addRole('TEST_ROLE');
 
         // Act

@@ -91,7 +91,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
 
         $propel_permission = new Propel\Permission();
         $propel_permission
-            ->setExternalId('TEST_ROLE')
+            ->setExternalId('TEST_PERMISSION')
             ->save();
 
         $role = new Role($propel_role);
