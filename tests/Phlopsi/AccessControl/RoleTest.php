@@ -97,7 +97,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $role = new Role($propel_role);
 
         // Act
-        $role->addPermission('TEST_ROLE');
+        $role->addPermission('TEST_PERMISSION');
 
         // Assert
         $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME));
@@ -128,7 +128,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $role = new Role($propel_role);
 
         // Act
-        $role->removePermission('TEST_ROLE');
+        $role->removePermission('TEST_PERMISSION');
     }
 
     /**
@@ -142,7 +142,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $role = new Role($propel_role, $this->getFaultyConnection());
 
         // Act
-        $role->removePermission('TEST_ROLE');
+        $role->removePermission('TEST_PERMISSION');
     }
 
     /**
@@ -160,14 +160,14 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
 
         $propel_permission = new Propel\Permission();
         $propel_permission
-            ->setExternalId('TEST_ROLE')
+            ->setExternalId('TEST_PERMISSION')
             ->save();
 
         $role = new Role($propel_role);
-        $role->addPermission('TEST_ROLE');
+        $role->addPermission('TEST_PERMISSION');
 
         // Act
-        $role->removePermission('TEST_ROLE');
+        $role->removePermission('TEST_PERMISSION');
 
         // Assert
         $this->assertEquals(0, $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME));
