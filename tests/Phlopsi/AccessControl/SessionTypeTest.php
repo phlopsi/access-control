@@ -128,7 +128,7 @@ class SessionTypeTest extends \PHPUnit_Extensions_Database_TestCase
         $session_type = new SessionType($propel_session_type);
 
         // Act
-        $session_type->removeRole('TEST_SESSION_TYPE');
+        $session_type->removeRole('TEST_ROLE');
     }
 
     /**
@@ -142,7 +142,7 @@ class SessionTypeTest extends \PHPUnit_Extensions_Database_TestCase
         $session_type = new SessionType($propel_session_type, $this->getFaultyConnection());
 
         // Act
-        $session_type->removeRole('TEST_SESSION_TYPE');
+        $session_type->removeRole('TEST_ROLE');
     }
 
     /**
