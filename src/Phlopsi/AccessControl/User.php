@@ -50,7 +50,7 @@ class User
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function addRole(string $role_id)
+    public function addRole($role_id)
     {
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -83,7 +83,7 @@ class User
      *
      * @throws LengthException
      */
-    public function hasPermission(string $permission_id)
+    public function hasPermission($permission_id)
     {
         if (empty($permission_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
@@ -127,7 +127,7 @@ class User
      * @throws LengthException
      * @throws RuntimeException
      */
-    public function removeRole(string $role_id)
+    public function removeRole($role_id)
     {
         if (empty($role_id)) {
             throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
