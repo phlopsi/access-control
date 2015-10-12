@@ -12,6 +12,8 @@ use Propel\Runtime\Connection\ConnectionInterface;
  */
 class Role
 {
+    use Exception\TranslateExceptionsTrait;
+    
     /**
      * @var \Propel\Runtime\Connection\ConnectionInterface|null
      */
@@ -52,28 +54,22 @@ class Role
      */
     public function addPermission($permission_id)
     {
-        if (empty($permission_id)) {
-            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-        }
+        $this->execute(function () use ($permission_id) {
+            if (empty($permission_id)) {
+                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
+            }
 
-        try {
             $permission = PropelPermissionQuery::create()
                 ->findOneByExternalId($permission_id, $this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
 
-        if (is_null($permission)) {
-            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
-        }
+            if (is_null($permission)) {
+                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
+            }
 
-        try {
             $this->role
                 ->addPermission($permission)
                 ->save($this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
+        });
     }
 
     /**
@@ -84,27 +80,21 @@ class Role
      */
     public function removePermission($permission_id)
     {
-        if (empty($permission_id)) {
-            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-        }
+        $this->execute(function () use ($permission_id) {
+            if (empty($permission_id)) {
+                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
+            }
 
-        try {
             $permission = PropelPermissionQuery::create()
                 ->findOneByExternalId($permission_id, $this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
 
-        if (is_null($permission)) {
-            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
-        }
+            if (is_null($permission)) {
+                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
+            }
 
-        try {
             $this->role
                 ->removePermission($permission)
                 ->save($this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
+        });
     }
 }

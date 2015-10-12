@@ -13,6 +13,8 @@ use Propel\Runtime\Connection\ConnectionInterface;
  */
 class User
 {
+    use Exception\TranslateExceptionsTrait;
+    
     /**
      * @var \Propel\Runtime\Connection\ConnectionInterface|null
      */
@@ -53,28 +55,22 @@ class User
      */
     public function addRole($role_id)
     {
-        if (empty($role_id)) {
-            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-        }
-
-        try {
+        $this->execute(function () use ($role_id) {
+            if (empty($role_id)) {
+                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
+            }
+        
             $role = PropelRoleQuery::create()
                 ->findOneByExternalId($role_id, $this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
 
-        if (is_null($role)) {
-            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
-        }
+            if (is_null($role)) {
+                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
+            }
 
-        try {
             $this->user
                 ->addRole($role)
                 ->save($this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
+        });
     }
 
     /**
@@ -86,40 +82,25 @@ class User
      */
     public function hasPermission($permission_id)
     {
-        if (empty($permission_id)) {
-            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-        }
-
-        try {
-            //TODO more efficiency!
-            $roles = $this->user->getRoles(null, $this->connection);
-
-            foreach ($roles as $role) {
-                $permission = PropelPermissionQuery::create()
-                    ->filterByRole($role)
-                    ->findByExternalId($permission_id, $this->connection);
-
-                if (!is_null($permission)) {
-                    return true;
-                }
-
-                $descendant_roles = $role->getDescendants(null, $this->connection);
-
-                foreach ($descendant_roles as $descendant_role) {
-                    $permission = PropelPermissionQuery::create()
-                        ->filterByRole($descendant_role)
-                        ->findByExternalId($permission_id, $this->connection);
-
-                    if (!is_null($permission)) {
-                        return true;
-                    }
-                }
+        return $this->execute(function () use ($permission_id) {
+            if (empty($permission_id)) {
+                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
+            
+            $permission = PropelPermissionQuery::create()
+                ->findOneByExternalId($permission_id, $this->connection);
 
-        return false;
+            if (is_null($permission)) {
+                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
+            }
+
+            $role_has_permission = PropelRoleQuery::create()
+                ->filterByUser($this->user)
+                ->filterByPermission($permission)
+                ->exists($this->connection);
+
+            return $role_has_permission;
+        });
     }
 
     /**
@@ -130,27 +111,21 @@ class User
      */
     public function removeRole($role_id)
     {
-        if (empty($role_id)) {
-            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-        }
+        $this->execute(function () use ($role_id) {
+            if (empty($role_id)) {
+                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
+            }
 
-        try {
             $role = PropelRoleQuery::create()
                 ->findOneByExternalId($role_id, $this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
 
-        if (is_null($role)) {
-            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
-        }
+            if (is_null($role)) {
+                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
+            }
 
-        try {
             $this->user
                 ->removeRole($role)
                 ->save($this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
+        });
     }
 }

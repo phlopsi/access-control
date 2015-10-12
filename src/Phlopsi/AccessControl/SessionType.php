@@ -12,6 +12,8 @@ use Propel\Runtime\Connection\ConnectionInterface;
  */
 class SessionType
 {
+    use Exception\TranslateExceptionsTrait;
+    
     /**
      * @var \Propel\Runtime\Connection\ConnectionInterface|null
      */
@@ -52,28 +54,22 @@ class SessionType
      */
     public function addRole($role_id)
     {
-        if (empty($role_id)) {
-            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-        }
+        $this->execute(function () use ($role_id) {
+            if (empty($role_id)) {
+                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
+            }
 
-        try {
             $role = PropelRoleQuery::create()
                 ->findOneByExternalId($role_id, $this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
 
-        if (is_null($role)) {
-            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
-        }
+            if (is_null($role)) {
+                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
+            }
 
-        try {
             $this->session_type
                 ->addRole($role)
                 ->save($this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
+        });
     }
 
     /**
@@ -84,27 +80,21 @@ class SessionType
      */
     public function removeRole($role_id)
     {
-        if (empty($role_id)) {
-            throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-        }
+        $this->execute(function () use ($role_id) {
+            if (empty($role_id)) {
+                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
+            }
 
-        try {
             $role = PropelRoleQuery::create()
                 ->findOneByExternalId($role_id, $this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
 
-        if (is_null($role)) {
-            throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
-        }
+            if (is_null($role)) {
+                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
+            }
 
-        try {
             $this->session_type
                 ->removeRole($role)
                 ->save($this->connection);
-        } catch (\Exception $exception) {
-            throw new RuntimeException('', 0, $exception);
-        }
+        });
     }
 }
