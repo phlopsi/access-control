@@ -19,12 +19,12 @@ use Propel\Runtime\Connection\ConnectionInterface;
 class AccessControl
 {
     /**
-     * @var ConnectionInterface|null
+     * @var \Propel\Runtime\Connection\ConnectionInterface|null
      */
     private $connection;
 
     /**
-     * @param ConnectionInterface $connection
+     * @param \Propel\Runtime\Connection\ConnectionInterface $connection
      *
      * @codeCoverageIgnore
      */
@@ -36,8 +36,8 @@ class AccessControl
     /**
      * @param string $permission_id
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function createPermission($permission_id)
     {
@@ -58,10 +58,10 @@ class AccessControl
     /**
      * @param string $role_id
      *
-     * @return Role
+     * @return \Phlopsi\AccessControl\Role
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function createRole($role_id)
     {
@@ -84,10 +84,10 @@ class AccessControl
     /**
      * @param string $session_type_id
      *
-     * @return SessionType
+     * @return \Phlopsi\AccessControl\SessionType
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function createSessionType($session_type_id)
     {
@@ -110,10 +110,10 @@ class AccessControl
     /**
      * @param string $user_id
      *
-     * @return User
+     * @return \Phlopsi\AccessControl\User
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function createUser($user_id)
     {
@@ -138,8 +138,8 @@ class AccessControl
      *
      * @return bool
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function deletePermission($permission_id)
     {
@@ -168,8 +168,8 @@ class AccessControl
      *
      * @return bool
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function deleteRole($role_id)
     {
@@ -198,8 +198,8 @@ class AccessControl
      *
      * @return bool
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function deleteSessionType($session_type_id)
     {
@@ -228,8 +228,8 @@ class AccessControl
      *
      * @return bool
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function deleteUser($user_id)
     {
@@ -256,10 +256,10 @@ class AccessControl
     /**
      * @param string $role_id
      *
-     * @return Role
+     * @return \Phlopsi\AccessControl\Role
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function retrieveRole($role_id)
     {
@@ -284,10 +284,10 @@ class AccessControl
     /**
      * @param string $session_type_id
      *
-     * @return SessionType
+     * @return \Phlopsi\AccessControl\SessionType
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function retrieveSessionType($session_type_id)
     {
@@ -313,10 +313,10 @@ class AccessControl
     /**
      * @param string $user_id
      *
-     * @return User
+     * @return \Phlopsi\AccessControl\User
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function retrieveUser($user_id)
     {

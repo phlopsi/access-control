@@ -13,17 +13,18 @@ use Propel\Runtime\Connection\ConnectionInterface;
 class Role
 {
     /**
-     * @var ConnectionInterface|null
+     * @var \Propel\Runtime\Connection\ConnectionInterface|null
      */
     private $connection;
 
     /**
-     * @var PropelRole
+     * @var \Phlopsi\AccessControl\Propel\Role
      */
     private $role;
 
     /**
-     * @param PropelRole $role
+     * @param \Phlopsi\AccessControl\Propel\Role $role
+     * @param \Propel\Runtime\Connection\ConnectionInterface $connection
      *
      * @codeCoverageIgnore
      */
@@ -46,8 +47,8 @@ class Role
     /**
      * @param string $permission_id
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function addPermission($permission_id)
     {
@@ -78,8 +79,8 @@ class Role
     /**
      * @param string $permission_id
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function removePermission($permission_id)
     {

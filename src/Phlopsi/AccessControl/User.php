@@ -14,17 +14,18 @@ use Propel\Runtime\Connection\ConnectionInterface;
 class User
 {
     /**
-     * @var ConnectionInterface|null
+     * @var \Propel\Runtime\Connection\ConnectionInterface|null
      */
     private $connection;
 
     /**
-     * @var PropelUser
+     * @var \Phlopsi\AccessControl\Propel\User
      */
     private $user;
 
     /**
-     * @param PropelUser $user
+     * @param \Phlopsi\AccessControl\Propel\User $user
+     * @param \Propel\Runtime\Connection\ConnectionInterface $connection
      *
      * @codeCoverageIgnore
      */
@@ -47,8 +48,8 @@ class User
     /**
      * @param string $role_id
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function addRole($role_id)
     {
@@ -79,9 +80,9 @@ class User
     /**
      * @param string $permission_id
      *
-     * @return boolean
+     * @return bool
      *
-     * @throws LengthException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
      */
     public function hasPermission($permission_id)
     {
@@ -124,8 +125,8 @@ class User
     /**
      * @param string $role_id
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function removeRole($role_id)
     {

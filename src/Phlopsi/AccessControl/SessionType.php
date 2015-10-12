@@ -13,17 +13,18 @@ use Propel\Runtime\Connection\ConnectionInterface;
 class SessionType
 {
     /**
-     * @var ConnectionInterface|null
+     * @var \Propel\Runtime\Connection\ConnectionInterface|null
      */
     private $connection;
 
     /**
-     * @var PropelSessionType
+     * @var \Phlopsi\AccessControl\Propel\SessionType
      */
     private $session_type;
 
     /**
-     * @param PropelSessionType $session_type
+     * @param \Phlopsi\AccessControl\Propel\SessionType $session_type
+     * @param \Propel\Runtime\Connection\ConnectionInterface $connection
      *
      * @codeCoverageIgnore
      */
@@ -46,8 +47,8 @@ class SessionType
     /**
      * @param string $role_id
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function addRole($role_id)
     {
@@ -78,8 +79,8 @@ class SessionType
     /**
      * @param string $role_id
      *
-     * @throws LengthException
-     * @throws RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function removeRole($role_id)
     {
