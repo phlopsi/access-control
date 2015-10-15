@@ -1,4 +1,5 @@
 /build/
 /nbproject/private/
-/vendor/
 /propel.yml
+/src/Phlopsi/AccessControl/Propel/
+/vendor/
