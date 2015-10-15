@@ -9,14 +9,14 @@ class ExternalExceptionReflection extends ExceptionReflection
     /**
      * @param mixed $argument
      *
-     * @throws \LogicException
+     * @throws \DomainException
      */
     public function __construct($argument)
     {
         parent::__construct($argument);
 
         if ($this->isInternal()) {
-            throw new \LogicException(\sprintf('Exception %s is not externally defined', $this->name));
+            throw new \DomainException(\sprintf('Exception %s is not externally defined', $this->name));
         }
     }
 }
