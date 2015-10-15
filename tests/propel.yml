@@ -1,0 +1,21 @@
+# http://propelorm.org/documentation/reference/configuration-file.html
+
+propel:
+    general:
+        project: AccessControl
+        version: 0.1.0
+    database:
+        connections:
+            access_control:
+                adapter: sqlite
+                dsn: 'sqlite::memory:'
+                user: ''
+                password: ''
+    paths:
+        phpDir: src
+    generator:
+        platformClass: Propel\Generator\Platform\SqlitePlatform
+        objectModel:
+            addGenericAccessors: false
+            addGenericMutators: false
+            addHooks: false
