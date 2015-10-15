@@ -10,8 +10,6 @@ class ExceptionReflection extends \ReflectionClass
      * @param mixed $argument
      *
      * @throws \LogicException
-     *
-     * @codeCoverageIgnore
      */
     public function __construct($argument)
     {

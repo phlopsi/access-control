@@ -13,8 +13,6 @@ trait TranslateExceptionsTrait
      * @return mixed
      *
      * @throws \Phlopsi\AccessControl\Exception\Exception
-     *
-     * @codeCoverageIgnore
      */
     private function execute(callable $callable)
     {

@@ -23,6 +23,7 @@
             <exclude>
                 <directory>src/Phlopsi/AccessControl/Exception/</directory>
                 <directory>src/Phlopsi/AccessControl/Propel/</directory>
+                <directory>src/Phlopsi/ExceptionTranslator/</directory>
             </exclude>
         </whitelist>
     </filter>
