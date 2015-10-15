@@ -9,7 +9,8 @@ before_script:
     - composer install
 
 script:
-    - ./vendor/bin/phpcs "--colors" "--report-width=auto" "--warning-severity=0" "--standard=PSR2" "src"
+    - ./vendor/bin/phpcs --colors --report-width=auto --warning-severity=0 --standard=PSR2 "src"
+    - ./vendor/bin/propel model:build
     - ./vendor/bin/phpunit
 
 after_script:
