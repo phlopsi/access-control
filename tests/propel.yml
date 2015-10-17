@@ -12,7 +12,7 @@ propel:
                 user: ''
                 password: ''
     paths:
-        phpDir: src
+        phpDir: build/src
     generator:
         platformClass: Propel\Generator\Platform\SqlitePlatform
         objectModel:
