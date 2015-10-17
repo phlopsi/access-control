@@ -1,1 +1,1 @@
-"vendor\bin\propel.bat" "model:build"
+vendor\bin\propel.bat model:build
