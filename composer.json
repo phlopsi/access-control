@@ -27,7 +27,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Phlopsi\\": "src/Phlopsi/"
+            "Phlopsi\\": ["src/Phlopsi/", "build/src/Phlopsi/"]
         }
     },
     "autoload-dev": {

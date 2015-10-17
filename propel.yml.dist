@@ -5,7 +5,7 @@ propel:
         project: AccessControl
         version: 0.1.0
     paths:
-        phpDir: src
+        phpDir: build/src
     generator:
         objectModel:
             addGenericAccessors: false
