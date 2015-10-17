@@ -14,10 +14,10 @@
         "propel/propel": "@alpha"
     },
     "require-dev": {
-        "phpunit/phpunit": "5.0.x@dev",
+        "phpunit/phpunit": "^5.0.0",
         "phpunit/dbunit": "@stable",
         "squizlabs/php_codesniffer": "@stable",
-        "satooshi/php-coveralls": "dev-master"
+        "satooshi/php-coveralls": "@stable"
     },
     "authors": [
         {
