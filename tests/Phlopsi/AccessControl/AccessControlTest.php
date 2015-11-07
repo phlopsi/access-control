@@ -14,11 +14,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @var AccessControl
      */
-    private $access_control;
-
-    /**
-     * @var AccessControl
-     */
     private $access_control_faulty;
 
     /**
@@ -32,7 +27,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         SqlParser::executeString(self::$sql, self::$pdo);
 
-        $this->access_control = new AccessControl();
         $this->access_control_faulty = new AccessControl($this->getFaultyConnection());
     }
 
@@ -58,8 +52,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreatePermissionWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->createPermission('');
+        $access_control->createPermission('');
     }
 
     /**
@@ -77,8 +74,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreatePermission()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->createPermission('TEST_PERMISSION');
+        $access_control->createPermission('TEST_PERMISSION');
 
         // Assert
         $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\PermissionTableMap::TABLE_NAME));
@@ -90,8 +90,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeletePermissionWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->deletePermission('');
+        $access_control->deletePermission('');
     }
 
     /**
@@ -99,8 +102,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeletePermissionWithInvalidId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $result = $this->access_control->deletePermission('TEST_PERMISSION');
+        $result = $access_control->deletePermission('TEST_PERMISSION');
 
         // Assert
         $this->assertFalse($result);
@@ -124,10 +130,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testDeletePermission()
     {
         // Arrange
-        $this->access_control->createPermission('TEST_PERMISSION');
+        $access_control = new AccessControl();
+        $access_control->createPermission('TEST_PERMISSION');
 
         // Act
-        $result = $this->access_control->deletePermission('TEST_PERMISSION');
+        $result = $access_control->deletePermission('TEST_PERMISSION');
 
         // Assert
         $this->assertTrue($result);
@@ -140,8 +147,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateRoleWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->createRole('');
+        $access_control->createRole('');
     }
 
     /**
@@ -159,8 +169,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateRole()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $role = $this->access_control->createRole('TEST_ROLE');
+        $role = $access_control->createRole('TEST_ROLE');
 
         // Assert
         $this->assertInstanceOf(\Phlopsi\AccessControl\Role::class, $role);
@@ -173,8 +186,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteRoleWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->deleteRole('');
+        $access_control->deleteRole('');
     }
 
     /**
@@ -182,8 +198,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteRoleWithInvalidId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $result = $this->access_control->deleteRole('TEST_ROLE');
+        $result = $access_control->deleteRole('TEST_ROLE');
 
         // Assert
         $this->assertFalse($result);
@@ -207,10 +226,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testDeleteRole()
     {
         // Arrange
-        $this->access_control->createRole('TEST_ROLE');
+        $access_control = new AccessControl();
+        $access_control->createRole('TEST_ROLE');
 
         // Act
-        $result = $this->access_control->deleteRole('TEST_ROLE');
+        $result = $access_control->deleteRole('TEST_ROLE');
 
         // Assert
         $this->assertTrue($result);
@@ -223,8 +243,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testRetrieveRoleWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->retrieveRole('');
+        $access_control->retrieveRole('');
     }
 
     /**
@@ -233,8 +256,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testRetrieveRoleWithInvalidId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->retrieveRole('TEST_ROLE');
+        $access_control->retrieveRole('TEST_ROLE');
     }
 
     /**
@@ -246,8 +272,10 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRetrieveRoleException()
     {
         // Arrange
+        $access_control = new AccessControl();
+
         try {
-            $this->access_control->createRole('TEST_ROLE');
+            $access_control->createRole('TEST_ROLE');
         } catch (\Exception $exception) {
             $this->fail($exception->getTraceAsString());
         }
@@ -264,10 +292,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRetrieveRole()
     {
         // Arrange
-        $this->access_control->createRole('TEST_ROLE');
+        $access_control = new AccessControl();
+        $access_control->createRole('TEST_ROLE');
 
         // Act
-        $role = $this->access_control->retrieveRole('TEST_ROLE');
+        $role = $access_control->retrieveRole('TEST_ROLE');
 
         // Assert
         $this->assertInstanceOf(\Phlopsi\AccessControl\Role::class, $role);
@@ -280,8 +309,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateSessionTypeWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->createSessionType('');
+        $access_control->createSessionType('');
     }
 
     /**
@@ -299,8 +331,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateSessionType()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $session_type = $this->access_control->createSessionType('TEST_SESSION_TYPE');
+        $session_type = $access_control->createSessionType('TEST_SESSION_TYPE');
 
         // Assert
         $this->assertInstanceOf(\Phlopsi\AccessControl\SessionType::class, $session_type);
@@ -313,8 +348,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteSessionTypeWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->deleteSessionType('');
+        $access_control->deleteSessionType('');
     }
 
     /**
@@ -322,8 +360,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteSessionTypeWithInvalidId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $result = $this->access_control->deleteSessionType('TEST_SESSION_TYPE');
+        $result = $access_control->deleteSessionType('TEST_SESSION_TYPE');
 
         // Assert
         $this->assertFalse($result);
@@ -347,10 +388,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testDeleteSessionType()
     {
         // Arrange
-        $this->access_control->createSessionType('TEST_SESSION_TYPE');
+        $access_control = new AccessControl();
+        $access_control->createSessionType('TEST_SESSION_TYPE');
 
         // Act
-        $result = $this->access_control->deleteSessionType('TEST_SESSION_TYPE');
+        $result = $access_control->deleteSessionType('TEST_SESSION_TYPE');
 
         // Assert
         $this->assertTrue($result);
@@ -363,8 +405,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testRetrieveSessionTypeWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->retrieveSessionType('');
+        $access_control->retrieveSessionType('');
     }
 
     /**
@@ -373,8 +418,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testRetrieveSessionTypeWithInvalidId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->retrieveSessionType('TEST_SESSION_TYPE');
+        $access_control->retrieveSessionType('TEST_SESSION_TYPE');
     }
 
     /**
@@ -386,8 +434,10 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRetrieveSessionTypeException()
     {
         // Arrange
+        $access_control = new AccessControl();
+
         try {
-            $this->access_control->createSessionType('TEST_SESSION_TYPE');
+            $access_control->createSessionType('TEST_SESSION_TYPE');
         } catch (\Exception $exception) {
             $this->fail($exception->getTraceAsString());
         }
@@ -404,10 +454,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRetrieveSessionType()
     {
         // Arrange
-        $this->access_control->createSessionType('TEST_SESSION_TYPE');
+        $access_control = new AccessControl();
+        $access_control->createSessionType('TEST_SESSION_TYPE');
 
         // Act
-        $sesssion_type = $this->access_control->retrieveSessionType('TEST_SESSION_TYPE');
+        $sesssion_type = $access_control->retrieveSessionType('TEST_SESSION_TYPE');
 
         // Assert
         $this->assertInstanceOf(\Phlopsi\AccessControl\SessionType::class, $sesssion_type);
@@ -420,8 +471,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateUserWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->createUser('');
+        $access_control->createUser('');
     }
 
     /**
@@ -439,8 +493,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateUser()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $user = $this->access_control->createUser('TEST_USER');
+        $user = $access_control->createUser('TEST_USER');
 
         // Assert
         $this->assertInstanceOf(\Phlopsi\AccessControl\User::class, $user);
@@ -453,8 +510,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteUserWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->deleteUser('');
+        $access_control->deleteUser('');
     }
 
     /**
@@ -462,8 +522,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteUserWithInvalidId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $result = $this->access_control->deleteUser('TEST_USER');
+        $result = $access_control->deleteUser('TEST_USER');
 
         // Assert
         $this->assertFalse($result);
@@ -487,10 +550,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testDeleteUser()
     {
         // Arrange
-        $this->access_control->createUser('TEST_USER');
+        $access_control = new AccessControl();
+        $access_control->createUser('TEST_USER');
 
         // Act
-        $result = $this->access_control->deleteUser('TEST_USER');
+        $result = $access_control->deleteUser('TEST_USER');
 
         // Assert
         $this->assertTrue($result);
@@ -503,8 +567,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testRetrieveUserWithEmptyId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->retrieveUser('');
+        $access_control->retrieveUser('');
     }
 
     /**
@@ -513,8 +580,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testRetrieveUserWithInvalidId()
     {
+        // Arrange
+        $access_control = new AccessControl();
+
         // Act
-        $this->access_control->retrieveUser('TEST_USER');
+        $access_control->retrieveUser('TEST_USER');
     }
 
     /**
@@ -526,8 +596,10 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRetrieveUserException()
     {
         // Arrange
+        $access_control = new AccessControl();
+
         try {
-            $this->access_control->createUser('TEST_USER');
+            $access_control->createUser('TEST_USER');
         } catch (\Exception $exception) {
             $this->fail($exception->getTraceAsString());
         }
@@ -544,10 +616,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRetrieveUser()
     {
         // Arrange
-        $this->access_control->createUser('TEST_USER');
+        $access_control = new AccessControl();
+        $access_control->createUser('TEST_USER');
 
         // Act
-        $user = $this->access_control->retrieveUser('TEST_USER');
+        $user = $access_control->retrieveUser('TEST_USER');
 
         // Assert
         $this->assertInstanceOf(\Phlopsi\AccessControl\User::class, $user);
