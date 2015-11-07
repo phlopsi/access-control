@@ -60,7 +60,7 @@
             <unique-column name="external_id" />
         </unique>
     </table>
-    <table name="roles_session_types" phpName="RoleToSessionType" isCrossRef="true">
+    <!--table name="roles_session_types" phpName="RoleToSessionType" isCrossRef="true">
         <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
         <column name="session_types_id" phpName="SessionTypeId" type="integer" required="true" primaryKey="true" />
         <foreign-key foreignTable="roles">
@@ -69,7 +69,7 @@
         <foreign-key foreignTable="session_types">
             <reference local="session_types_id" foreign="id" />
         </foreign-key>
-    </table>
+    </table-->
     <table name="roles_users" phpName="RoleToUser" isCrossRef="true">
         <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
         <column name="users_id" phpName="UserId" type="integer" required="true" primaryKey="true" />
@@ -80,13 +80,13 @@
             <reference local="users_id" foreign="id" />
         </foreign-key>
     </table>
-    <table name="session_types" phpName="SessionType">
-        <!--behavior name="nested_set" /-->
+    <!--table name="session_types" phpName="SessionType">
+        <behavior name="nested_set" />
         <column name="external_id" type="longvarchar" required="true" />
         <unique>
             <unique-column name="external_id" />
         </unique>
-    </table>
+    </table-->
     <table name="users" phpName="User">
         <column name="external_id" type="longvarchar" required="true" />
         <unique>
