@@ -33,7 +33,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     protected function tearDown()
     {
         $this->connection = null;
-        $this->access_control = null;
         $this->access_control_faulty = null;
     }
 
