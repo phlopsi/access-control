@@ -15,10 +15,17 @@ use Phlopsi\AccessControl\Propel\User as PropelUser;
 use Phlopsi\AccessControl\Propel\UserQuery as PropelUserQuery;
 use Propel\Runtime\Connection\ConnectionInterface;
 
+/**
+ * Entry point for API usage
+ *
+ * This is the main class for interaction with the AccessControl API.
+ * Every application using this API should always be accessing it through this class.
+ * It handles all the creation, retrieving and deletion processes for users, roles and permissions.
+ */
 class AccessControl
 {
     use Exception\TranslateExceptionsTrait;
-    
+
     /**
      * @var \Propel\Runtime\Connection\ConnectionInterface|null
      */
@@ -26,6 +33,7 @@ class AccessControl
 
     /**
      * @param \Propel\Runtime\Connection\ConnectionInterface $connection
+     *        This parameter should only be set for testing purposes!
      *
      * @codeCoverageIgnore
      */
@@ -35,6 +43,10 @@ class AccessControl
     }
 
     /**
+     * Creates a new permission in the database
+     *
+     * It will throw an exception if the permission already exists or if it couldn't be created.
+     *
      * @param string $permission_id
      *
      * @throws \Phlopsi\AccessControl\Exception\LengthException
@@ -55,6 +67,11 @@ class AccessControl
     }
 
     /**
+     * Creates a new role in the database
+     *
+     * It will throw an exception if the role already exists or if it couldn't be created.
+     * It will return a Role object, if the role was successfully created.
+     *
      * @param string $role_id
      *
      * @return \Phlopsi\AccessControl\Role
@@ -79,6 +96,11 @@ class AccessControl
     }
 
     /**
+     * Creates a new user in the database
+     *
+     * It will throw an exception if the user already exists or if it couldn't be created.
+     * It will return a User object, if the role was successfully created.
+     *
      * @param string $user_id
      *
      * @return \Phlopsi\AccessControl\User
@@ -103,6 +125,10 @@ class AccessControl
     }
 
     /**
+     * Deletes an existing permission from the database
+     *
+     * It will return true, if the permission was successfully deleted or false, if it could not be found.
+     *
      * @param string $permission_id
      *
      * @return bool
@@ -131,6 +157,10 @@ class AccessControl
     }
 
     /**
+     * Deletes an existing role from the database
+     *
+     * It will return true, if the role was successfully deleted or false, if it could not be found.
+     *
      * @param string $role_id
      *
      * @return bool
@@ -159,6 +189,10 @@ class AccessControl
     }
 
     /**
+     * Deletes an existing user from the database
+     *
+     * It will return true, if the user was successfully deleted or false, if it could not be found.
+     *
      * @param string $user_id
      *
      * @return bool
@@ -187,6 +221,11 @@ class AccessControl
     }
 
     /**
+     * Retrieves an existing role from the database
+     *
+     * It will throw an exception if the role could not be found.
+     * It will return a Role object, if the role was successfully retrieved.
+     *
      * @param string $role_id
      *
      * @return \Phlopsi\AccessControl\Role
@@ -213,6 +252,11 @@ class AccessControl
     }
 
     /**
+     * Retrieves an existing user from the database
+     *
+     * It will throw an exception if the user could not be found.
+     * It will return a User object, if the user was successfully retrieved.
+     *
      * @param string $user_id
      *
      * @return \Phlopsi\AccessControl\User
