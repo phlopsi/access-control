@@ -12,11 +12,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     use Test\DatabaseTestCaseTrait;
 
     /**
-     * @var AccessControl
-     */
-    private $access_control_faulty;
-
-    /**
      * @var \PHPUnit_Extensions_Database_DB_IDatabaseConnection
      */
     private $connection;
@@ -26,14 +21,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->connection = $this->createDefaultDBConnection(self::$pdo);
 
         SqlParser::executeString(self::$sql, self::$pdo);
-
-        $this->access_control_faulty = new AccessControl($this->getFaultyConnection());
     }
 
     protected function tearDown()
     {
         $this->connection = null;
-        $this->access_control_faulty = null;
     }
 
     protected function getConnection()
@@ -64,8 +56,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreatePermissionException()
     {
+        // Arrange
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->createPermission('TEST_PERMISSION');
+        $access_control_faulty->createPermission('TEST_PERMISSION');
     }
 
     /**
@@ -117,8 +112,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeletePermissionException()
     {
+        // Arrange
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->deletePermission('TEST_PERMISSION');
+        $access_control_faulty->deletePermission('TEST_PERMISSION');
     }
 
     /**
@@ -159,8 +157,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateRoleException()
     {
+        // Arrange
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->createRole('TEST_ROLE');
+        $access_control_faulty->createRole('TEST_ROLE');
     }
 
     /**
@@ -213,8 +214,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteRoleException()
     {
+        // Arrange
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->deleteRole('TEST_ROLE');
+        $access_control_faulty->deleteRole('TEST_ROLE');
     }
 
     /**
@@ -279,8 +283,10 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
             $this->fail($exception->getTraceAsString());
         }
 
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->retrieveRole('TEST_ROLE');
+        $access_control_faulty->retrieveRole('TEST_ROLE');
     }
 
     /**
@@ -321,8 +327,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateSessionTypeException()
     {
+        // Arrange
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->createSessionType('TEST_SESSION_TYPE');
+        $access_control_faulty->createSessionType('TEST_SESSION_TYPE');
     }
 
     /**
@@ -375,8 +384,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteSessionTypeException()
     {
+        // Arrange
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->deleteSessionType('TEST_SESSION_TYPE');
+        $access_control_faulty->deleteSessionType('TEST_SESSION_TYPE');
     }
 
     /**
@@ -441,8 +453,10 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
             $this->fail($exception->getTraceAsString());
         }
 
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->retrieveSessionType('TEST_SESSION_TYPE');
+        $access_control_faulty->retrieveSessionType('TEST_SESSION_TYPE');
     }
 
     /**
@@ -483,8 +497,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testCreateUserException()
     {
+        // Arrange
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->createUser('TEST_USER');
+        $access_control_faulty->createUser('TEST_USER');
     }
 
     /**
@@ -537,8 +554,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testDeleteUserException()
     {
+        // Arrange
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->deleteUser('TEST_USER');
+        $access_control_faulty->deleteUser('TEST_USER');
     }
 
     /**
@@ -603,8 +623,10 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
             $this->fail($exception->getTraceAsString());
         }
 
+        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+
         // Act
-        $this->access_control_faulty->retrieveUser('TEST_USER');
+        $access_control_faulty->retrieveUser('TEST_USER');
     }
 
     /**
