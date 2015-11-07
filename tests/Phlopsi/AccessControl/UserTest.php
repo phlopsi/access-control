@@ -1,11 +1,12 @@
 <?php
+/**
+ * @author Patrick Fischer <nbphobos@gmail.com>
+ */
+
 namespace Phlopsi\AccessControl;
 
 use Propel\Generator\Util\SqlParser;
 
-/**
- * @author Patrick Fischer <nbphobos@gmail.com>
- */
 class UserTest extends \PHPUnit_Extensions_Database_TestCase
 {
     use Test\DatabaseTestCaseTrait;

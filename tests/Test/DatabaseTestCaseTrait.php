@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Patrick Fischer <nbphobos@gmail.com>
+ */
+
 namespace Phlopsi\AccessControl\Test;
 
 use Propel\Generator\Builder\Util\SchemaReader;

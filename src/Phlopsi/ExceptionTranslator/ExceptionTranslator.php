@@ -1,12 +1,13 @@
 <?php
+/**
+ * @author Patrick Fischer <nbphobos@gmail.com>
+ */
+
 namespace Phlopsi\ExceptionTranslator;
 
 use Phlopsi\ExceptionTranslator\Reflection\ExceptionReflection;
 use Phlopsi\ExceptionTranslator\Reflection\ExternalExceptionReflection;
 
-/**
- * @author Patrick Fischer <nbphobos@gmail.com>
- */
 class ExceptionTranslator
 {
     /**

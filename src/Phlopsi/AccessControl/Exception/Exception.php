@@ -1,9 +1,10 @@
 <?php
-namespace Phlopsi\AccessControl\Exception;
-
 /**
  * @author Patrick Fischer <nbphobos@gmail.com>
  */
+
+namespace Phlopsi\AccessControl\Exception;
+
 interface Exception
 {
 }

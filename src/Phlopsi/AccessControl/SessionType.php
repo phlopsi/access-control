@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author Patrick Fischer <nbphobos@gmail.com>
+ */
+
 namespace Phlopsi\AccessControl;
 
 use Phlopsi\AccessControl\Exception\LengthException;
@@ -7,9 +11,6 @@ use Phlopsi\AccessControl\Propel\RoleQuery as PropelRoleQuery;
 use Phlopsi\AccessControl\Propel\SessionType as PropelSessionType;
 use Propel\Runtime\Connection\ConnectionInterface;
 
-/**
- * @author Patrick Fischer <nbphobos@gmail.com>
- */
 class SessionType
 {
     use Exception\TranslateExceptionsTrait;

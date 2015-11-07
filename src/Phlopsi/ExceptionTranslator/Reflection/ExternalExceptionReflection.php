@@ -1,9 +1,10 @@
 <?php
-namespace Phlopsi\ExceptionTranslator\Reflection;
-
 /**
  * @author Patrick Fischer <nbphobos@gmail.com>
  */
+
+namespace Phlopsi\ExceptionTranslator\Reflection;
+
 class ExternalExceptionReflection extends ExceptionReflection
 {
     /**
