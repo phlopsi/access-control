@@ -62,11 +62,7 @@ class User
             }
         
             $role = PropelRoleQuery::create()
-                ->findOneByExternalId($role_id, $this->connection);
-
-            if (is_null($role)) {
-                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
-            }
+                ->requireOneByExternalId($role_id, $this->connection);
 
             $this->user
                 ->addRole($role)
@@ -89,11 +85,7 @@ class User
             }
             
             $permission = PropelPermissionQuery::create()
-                ->findOneByExternalId($permission_id, $this->connection);
-
-            if (is_null($permission)) {
-                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $permission_id));
-            }
+                ->requireOneByExternalId($permission_id, $this->connection);
 
             $role_has_permission = PropelRoleQuery::create()
                 ->filterByUser($this->user)
@@ -118,11 +110,7 @@ class User
             }
 
             $role = PropelRoleQuery::create()
-                ->findOneByExternalId($role_id, $this->connection);
-
-            if (is_null($role)) {
-                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
-            }
+                ->requireOneByExternalId($role_id, $this->connection);
 
             $this->user
                 ->removeRole($role)

@@ -241,11 +241,7 @@ class AccessControl
             }
 
             $role = PropelRoleQuery::create()
-                ->findOneByExternalId($role_id, $this->connection);
-
-            if (is_null($role)) {
-                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $role_id));
-            }
+                ->requireOneByExternalId($role_id, $this->connection);
 
             return new Role($role);
         });
@@ -272,11 +268,7 @@ class AccessControl
             }
 
             $user = PropelUserQuery::create()
-                ->findOneByExternalId($user_id, $this->connection);
-
-            if (is_null($user)) {
-                throw new RuntimeException(sprintf(RuntimeException::ENTITY_NOT_FOUND, $user_id));
-            }
+                ->requireOneByExternalId($user_id, $this->connection);
 
             return new User($user);
         });
