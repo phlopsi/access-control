@@ -6,7 +6,6 @@
 namespace Phlopsi\AccessControl;
 
 use Phlopsi\AccessControl\Exception\LengthException;
-use Phlopsi\AccessControl\Exception\RuntimeException;
 use Phlopsi\AccessControl\Propel\PermissionQuery as PropelPermissionQuery;
 use Phlopsi\AccessControl\Propel\Role as PropelRole;
 use Propel\Runtime\Connection\ConnectionInterface;
