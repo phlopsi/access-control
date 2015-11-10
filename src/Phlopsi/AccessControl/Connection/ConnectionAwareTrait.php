@@ -14,6 +14,11 @@ trait ConnectionAwareTrait
      */
     private $connection;
 
+    /**
+     * @param ConnectionInterface $connection
+     *
+     * @codeCoverageIgnore
+     */
     public function setConnection(ConnectionInterface $connection)
     {
         $this->connection = $connection;
