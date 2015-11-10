@@ -73,7 +73,8 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     {
         // Arrange
         $propel_user = $this->getMock(Propel\User::class);
-        $user = new User($propel_user, $this->getFaultyConnection());
+        $user = new User($propel_user);
+        $user->setConnection($this->getFaultyConnection());
 
         // Act
         $user->addRole('TEST_ROLE');
@@ -140,7 +141,8 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     {
         // Arrange
         $propel_user = $this->getMock(Propel\User::class);
-        $user = new User($propel_user, $this->getFaultyConnection());
+        $user = new User($propel_user);
+        $user->setConnection($this->getFaultyConnection());
 
         // Act
         $user->removeRole('TEST_ROLE');
@@ -210,7 +212,8 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     {
         // Arrange
         $propel_user = $this->getMock(Propel\User::class);
-        $user = new User($propel_user, $this->getFaultyConnection());
+        $user = new User($propel_user);
+        $user->setConnection($this->getFaultyConnection());
 
         // Act
         $user->hasPermission('TEST_PERMISSION');
@@ -251,13 +254,13 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
         $propel_permission
             ->setExternalId('TEST_PERMISSION')
             ->save();
-        
+
         $propel_role = new Propel\Role();
         $propel_role
             ->setExternalId('TEST_ROLE')
             ->addPermission($propel_permission)
             ->save();
-        
+
         $propel_user = new Propel\User();
         $propel_user
             ->setExternalId('TEST_USER')

@@ -48,7 +48,7 @@ trait DatabaseTestCaseTrait
     {
         self::$pdo = null;
     }
-    
+
     private function getFaultyConnection()
     {
         $mocked_connection = $this
@@ -66,7 +66,7 @@ trait DatabaseTestCaseTrait
         $mocked_connection
             ->method('query')
             ->will($this->throwException(new \Exception));
-        
+
         return $mocked_connection;
     }
 }

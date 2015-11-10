@@ -5,19 +5,15 @@
 
 namespace Phlopsi\AccessControl;
 
+use Phlopsi\AccessControl\Connection\ConnectionAware;
 use Phlopsi\AccessControl\Exception\LengthException;
 use Phlopsi\AccessControl\Propel\PermissionQuery as PropelPermissionQuery;
 use Phlopsi\AccessControl\Propel\Role as PropelRole;
-use Propel\Runtime\Connection\ConnectionInterface;
 
-class Role
+class Role implements ConnectionAware
 {
+    use Connection\ConnectionAwareTrait;
     use Exception\TranslateExceptionsTrait;
-    
-    /**
-     * @var \Propel\Runtime\Connection\ConnectionInterface|null
-     */
-    private $connection;
 
     /**
      * @var \Phlopsi\AccessControl\Propel\Role
@@ -26,14 +22,12 @@ class Role
 
     /**
      * @param \Phlopsi\AccessControl\Propel\Role $role
-     * @param \Propel\Runtime\Connection\ConnectionInterface $connection
      *
      * @codeCoverageIgnore
      */
-    public function __construct(PropelRole $role, ConnectionInterface $connection = null)
+    public function __construct(PropelRole $role)
     {
         $this->role = $role;
-        $this->connection = $connection;
     }
 
     /**

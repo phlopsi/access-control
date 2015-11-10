@@ -57,7 +57,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testCreatePermissionException()
     {
         // Arrange
-        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Act
         $access_control_faulty->createPermission('TEST_PERMISSION');
@@ -113,7 +114,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testDeletePermissionException()
     {
         // Arrange
-        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Act
         $access_control_faulty->deletePermission('TEST_PERMISSION');
@@ -158,7 +160,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testCreateRoleException()
     {
         // Arrange
-        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Act
         $access_control_faulty->createRole('TEST_ROLE');
@@ -215,7 +218,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testDeleteRoleException()
     {
         // Arrange
-        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Act
         $access_control_faulty->deleteRole('TEST_ROLE');
@@ -283,7 +287,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
             $this->fail($exception->getTraceAsString());
         }
 
-        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Act
         $access_control_faulty->retrieveRole('TEST_ROLE');
@@ -328,7 +333,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testCreateUserException()
     {
         // Arrange
-        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Act
         $access_control_faulty->createUser('TEST_USER');
@@ -385,7 +391,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     public function testDeleteUserException()
     {
         // Arrange
-        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Act
         $access_control_faulty->deleteUser('TEST_USER');
@@ -453,7 +460,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
             $this->fail($exception->getTraceAsString());
         }
 
-        $access_control_faulty = new AccessControl($this->getFaultyConnection());
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Act
         $access_control_faulty->retrieveUser('TEST_USER');

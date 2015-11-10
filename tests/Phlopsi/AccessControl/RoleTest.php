@@ -73,7 +73,8 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     {
         // Arrange
         $propel_role = $this->getMock(Propel\Role::class);
-        $role = new Role($propel_role, $this->getFaultyConnection());
+        $role = new Role($propel_role);
+        $role->setConnection($this->getFaultyConnection());
 
         // Act
         $role->addPermission('TEST_ROLE');
@@ -140,7 +141,8 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     {
         // Arrange
         $propel_role = $this->getMock(Propel\Role::class);
-        $role = new Role($propel_role, $this->getFaultyConnection());
+        $role = new Role($propel_role);
+        $role->setConnection($this->getFaultyConnection());
 
         // Act
         $role->removePermission('TEST_PERMISSION');

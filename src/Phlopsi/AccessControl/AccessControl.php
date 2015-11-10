@@ -5,6 +5,7 @@
 
 namespace Phlopsi\AccessControl;
 
+use Phlopsi\AccessControl\Connection\ConnectionAware;
 use Phlopsi\AccessControl\Exception\LengthException;
 use Phlopsi\AccessControl\Propel\Permission as PropelPermission;
 use Phlopsi\AccessControl\Propel\PermissionQuery as PropelPermissionQuery;
@@ -12,7 +13,6 @@ use Phlopsi\AccessControl\Propel\Role as PropelRole;
 use Phlopsi\AccessControl\Propel\RoleQuery as PropelRoleQuery;
 use Phlopsi\AccessControl\Propel\User as PropelUser;
 use Phlopsi\AccessControl\Propel\UserQuery as PropelUserQuery;
-use Propel\Runtime\Connection\ConnectionInterface;
 
 /**
  * Entry point for API usage
@@ -21,25 +21,10 @@ use Propel\Runtime\Connection\ConnectionInterface;
  * Every application using this API should always be accessing it through this class.
  * It handles all the creation, retrieving and deletion processes for users, roles and permissions.
  */
-class AccessControl
+class AccessControl implements ConnectionAware
 {
+    use Connection\ConnectionAwareTrait;
     use Exception\TranslateExceptionsTrait;
-
-    /**
-     * @var \Propel\Runtime\Connection\ConnectionInterface|null
-     */
-    private $connection;
-
-    /**
-     * @param \Propel\Runtime\Connection\ConnectionInterface $connection
-     *        This parameter should only be set for testing purposes!
-     *
-     * @codeCoverageIgnore
-     */
-    public function __construct(ConnectionInterface $connection = null)
-    {
-        $this->connection = $connection;
-    }
 
     /**
      * Creates a new permission in the database

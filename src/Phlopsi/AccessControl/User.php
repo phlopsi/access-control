@@ -5,20 +5,16 @@
 
 namespace Phlopsi\AccessControl;
 
+use Phlopsi\AccessControl\Connection\ConnectionAware;
 use Phlopsi\AccessControl\Exception\LengthException;
 use Phlopsi\AccessControl\Propel\PermissionQuery as PropelPermissionQuery;
 use Phlopsi\AccessControl\Propel\RoleQuery as PropelRoleQuery;
 use Phlopsi\AccessControl\Propel\User as PropelUser;
-use Propel\Runtime\Connection\ConnectionInterface;
 
-class User
+class User implements ConnectionAware
 {
+    use Connection\ConnectionAwareTrait;
     use Exception\TranslateExceptionsTrait;
-    
-    /**
-     * @var \Propel\Runtime\Connection\ConnectionInterface|null
-     */
-    private $connection;
 
     /**
      * @var \Phlopsi\AccessControl\Propel\User
@@ -27,14 +23,12 @@ class User
 
     /**
      * @param \Phlopsi\AccessControl\Propel\User $user
-     * @param \Propel\Runtime\Connection\ConnectionInterface $connection
      *
      * @codeCoverageIgnore
      */
-    public function __construct(PropelUser $user, ConnectionInterface $connection = null)
+    public function __construct(PropelUser $user)
     {
         $this->user = $user;
-        $this->connection = $connection;
     }
 
     /**
@@ -59,7 +53,7 @@ class User
             if (empty($role_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
-        
+
             $role = PropelRoleQuery::create()
                 ->requireOneByExternalId($role_id, $this->connection);
 
@@ -82,7 +76,7 @@ class User
             if (empty($permission_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
-            
+
             $permission = PropelPermissionQuery::create()
                 ->requireOneByExternalId($permission_id, $this->connection);
 
