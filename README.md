@@ -9,6 +9,7 @@ $access_control = new \Phlopsi\AccessControl\AccessControl();
 
 $user = $access_control->createUser('phlopsi');
 $role = $access_control->createRole('admin');
+
 $access_control->createPermission('user_management/view');
 ```
 
@@ -26,6 +27,7 @@ $access_control->deletePermission('user_management/view');
 $access_control = new \Phlopsi\AccessControl\AccessControl();
 
 $role = $access_control->retrieveRole('admin');
+
 $role->addPermission('user_management/view');
 $role->removePermission('user_management/view');
 ```
@@ -35,6 +37,7 @@ $role->removePermission('user_management/view');
 $access_control = new \Phlopsi\AccessControl\AccessControl();
 
 $user = $access_control->retrieveUser('phlopsi');
+
 $user->addRole('admin');
 $user->removeRole('admin');
 ```
@@ -43,7 +46,7 @@ $user->removeRole('admin');
 ```php
 $access_control = new \Phlopsi\AccessControl\AccessControl();
 
-$user = $access_control->retrieveUser('phlopsi');
+$user           = $access_control->retrieveUser('phlopsi');
 $has_permission = $user->hasPermission('user_management/view');
 
 if ($has_permission) {
@@ -51,4 +54,13 @@ if ($has_permission) {
 } else {
     // Prompt login, redirect, output error message, etc.
 }
+```
+
+### How to get a list of all permissions/roles/users?
+```php
+$access_control = new \Phlopsi\AccessControl\AccessControl();
+
+$permissions = $access_control->retrievePermissionList();
+$roles       = $access_control->retrieveRoleList();
+$users       = $access_control->retrieveUserList();
 ```
