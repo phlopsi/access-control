@@ -7,6 +7,9 @@ namespace Phlopsi\AccessControl;
 
 use Phlopsi\AccessControl\Connection\ConnectionAware;
 use Phlopsi\AccessControl\Exception\LengthException;
+use Phlopsi\AccessControl\Propel\Map\PermissionTableMap;
+use Phlopsi\AccessControl\Propel\Map\RoleTableMap;
+use Phlopsi\AccessControl\Propel\Map\UserTableMap;
 use Phlopsi\AccessControl\Propel\Permission as PropelPermission;
 use Phlopsi\AccessControl\Propel\PermissionQuery as PropelPermissionQuery;
 use Phlopsi\AccessControl\Propel\Role as PropelRole;
@@ -205,6 +208,23 @@ class AccessControl implements ConnectionAware
     }
 
     /**
+     * Retrieves a list of all existing permissions from the database
+     *
+     * @return string[]
+     *
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function retrievePermissionList()
+    {
+        return $this->execute(function () {
+            return PropelPermissionQuery::create()
+                ->select(PermissionTableMap::COL_EXTERNAL_ID)
+                ->find($this->connection)
+                ->getData();
+        });
+    }
+
+    /**
      * Retrieves an existing role from the database
      *
      * It will throw an exception if the role could not be found.
@@ -232,6 +252,23 @@ class AccessControl implements ConnectionAware
     }
 
     /**
+     * Retrieves a list of all existing roles from the database
+     *
+     * @return string[]
+     *
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function retrieveRoleList()
+    {
+        return $this->execute(function () {
+            return PropelRoleQuery::create()
+                ->select(RoleTableMap::COL_EXTERNAL_ID)
+                ->find($this->connection)
+                ->getData();
+        });
+    }
+
+    /**
      * Retrieves an existing user from the database
      *
      * It will throw an exception if the user could not be found.
@@ -255,6 +292,23 @@ class AccessControl implements ConnectionAware
                 ->requireOneByExternalId($user_id, $this->connection);
 
             return new User($user);
+        });
+    }
+
+    /**
+     * Retrieves a list of all existing users from the database
+     *
+     * @return string[]
+     *
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function retrieveUserList()
+    {
+        return $this->execute(function () {
+            return PropelUserQuery::create()
+                ->select(UserTableMap::COL_EXTERNAL_ID)
+                ->find($this->connection)
+                ->getData();
         });
     }
 }

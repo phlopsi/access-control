@@ -141,6 +141,60 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testRetrievePermissionListException()
+    {
+        // Arrange
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Act
+        $access_control_faulty->retrievePermissionList();
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList
+     */
+    public function testRetrieveEmptyPermissionList()
+    {
+        // Arrange
+        $access_control = new AccessControl();
+
+        // Act
+        $result = $access_control->retrievePermissionList();
+
+        // Assert
+        $this->assertTrue(is_array($result));
+        $this->assertEmpty($result);
+    }
+
+    /**
+     * @depends testCreatePermission
+     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission
+     */
+    public function testRetrievePermissionList()
+    {
+        // Arrange
+        $access_control = new AccessControl();
+        $access_control->createPermission('TEST_PERMISSION_0');
+        $access_control->createPermission('TEST_PERMISSION_1');
+        $access_control->createPermission('TEST_PERMISSION_2');
+
+        // Act
+        $result = $access_control->retrievePermissionList();
+
+        // Assert
+        $this->assertTrue(is_array($result));
+        $this->assertCount(3, $result);
+        $this->assertContains('TEST_PERMISSION_0', $result);
+        $this->assertContains('TEST_PERMISSION_1', $result);
+        $this->assertContains('TEST_PERMISSION_2', $result);
+    }
+
+    /**
      * @covers \Phlopsi\AccessControl\AccessControl::createRole
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
@@ -314,6 +368,60 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRoleList
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testRetrieveRoleListException()
+    {
+        // Arrange
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Act
+        $access_control_faulty->retrieveRoleList();
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRoleList
+     */
+    public function testRetrieveEmptyRoleList()
+    {
+        // Arrange
+        $access_control = new AccessControl();
+
+        // Act
+        $result = $access_control->retrieveRoleList();
+
+        // Assert
+        $this->assertTrue(is_array($result));
+        $this->assertEmpty($result);
+    }
+
+    /**
+     * @depends testCreateRole
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRoleList
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole
+     */
+    public function testRetrieveRoleList()
+    {
+        // Arrange
+        $access_control = new AccessControl();
+        $access_control->createRole('TEST_ROLE_0');
+        $access_control->createRole('TEST_ROLE_1');
+        $access_control->createRole('TEST_ROLE_2');
+
+        // Act
+        $result = $access_control->retrieveRoleList();
+
+        // Assert
+        $this->assertTrue(is_array($result));
+        $this->assertCount(3, $result);
+        $this->assertContains('TEST_ROLE_0', $result);
+        $this->assertContains('TEST_ROLE_1', $result);
+        $this->assertContains('TEST_ROLE_2', $result);
+    }
+
+    /**
      * @covers \Phlopsi\AccessControl\AccessControl::createUser
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
@@ -484,5 +592,59 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         // Assert
         $this->assertInstanceOf(\Phlopsi\AccessControl\User::class, $user);
         $this->assertEquals('TEST_USER', $user->getId());
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUserList
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testRetrieveUserListException()
+    {
+        // Arrange
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Act
+        $access_control_faulty->retrieveUserList();
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUserList
+     */
+    public function testRetrieveEmptyUserList()
+    {
+        // Arrange
+        $access_control = new AccessControl();
+
+        // Act
+        $result = $access_control->retrieveUserList();
+
+        // Assert
+        $this->assertTrue(is_array($result));
+        $this->assertEmpty($result);
+    }
+
+    /**
+     * @depends testCreateUser
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUserList
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser
+     */
+    public function testRetrieveUserList()
+    {
+        // Arrange
+        $access_control = new AccessControl();
+        $access_control->createUser('TEST_USER_0');
+        $access_control->createUser('TEST_USER_1');
+        $access_control->createUser('TEST_USER_2');
+
+        // Act
+        $result = $access_control->retrieveUserList();
+
+        // Assert
+        $this->assertTrue(is_array($result));
+        $this->assertCount(3, $result);
+        $this->assertContains('TEST_USER_0', $result);
+        $this->assertContains('TEST_USER_1', $result);
+        $this->assertContains('TEST_USER_2', $result);
     }
 }
