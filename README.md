@@ -1,3 +1,4 @@
+[![PHP 7.0](https://img.shields.io/badge/PHP-7.0-8080c0.svg)](https://secure.php.net/)
 [![Build Status](https://travis-ci.org/phlopsi/access-control.svg?branch=0.1.0)](https://travis-ci.org/phlopsi/access-control)
 [![Coverage Status](https://coveralls.io/repos/phlopsi/access-control/badge.svg?branch=0.1.0&service=github)](https://coveralls.io/github/phlopsi/access-control?branch=0.1.0)
 
