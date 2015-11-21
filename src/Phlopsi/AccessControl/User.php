@@ -47,7 +47,7 @@ class User implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function addRole($role_id)
+    public function addRole(string $role_id)
     {
         $this->execute(function () use ($role_id) {
             if (empty($role_id)) {
@@ -70,7 +70,7 @@ class User implements ConnectionAware
      *
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function hasPermission($permission_id)
+    public function hasPermission(string $permission_id)
     {
         return $this->execute(function () use ($permission_id) {
             if (empty($permission_id)) {
@@ -95,7 +95,7 @@ class User implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function removeRole($role_id)
+    public function removeRole(string $role_id)
     {
         $this->execute(function () use ($role_id) {
             if (empty($role_id)) {

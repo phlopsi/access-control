@@ -46,7 +46,7 @@ class Role implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function addPermission($permission_id)
+    public function addPermission(string $permission_id)
     {
         $this->execute(function () use ($permission_id) {
             if (empty($permission_id)) {
@@ -68,7 +68,7 @@ class Role implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function removePermission($permission_id)
+    public function removePermission(string $permission_id)
     {
         $this->execute(function () use ($permission_id) {
             if (empty($permission_id)) {

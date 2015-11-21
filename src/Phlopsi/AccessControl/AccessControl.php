@@ -39,7 +39,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function createPermission($permission_id)
+    public function createPermission(string $permission_id)
     {
         $this->execute(function () use ($permission_id) {
             if (empty($permission_id)) {
@@ -66,7 +66,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function createRole($role_id)
+    public function createRole(string $role_id)
     {
         return $this->execute(function () use ($role_id) {
             if (empty($role_id)) {
@@ -95,7 +95,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function createUser($user_id)
+    public function createUser(string $user_id)
     {
         return $this->execute(function () use ($user_id) {
             if (empty($user_id)) {
@@ -123,7 +123,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function deletePermission($permission_id)
+    public function deletePermission(string $permission_id)
     {
         return $this->execute(function () use ($permission_id) {
             if (empty($permission_id)) {
@@ -155,7 +155,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function deleteRole($role_id)
+    public function deleteRole(string $role_id)
     {
         return $this->execute(function () use ($role_id) {
             if (empty($role_id)) {
@@ -187,7 +187,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function deleteUser($user_id)
+    public function deleteUser(string $user_id)
     {
         return $this->execute(function () use ($user_id) {
             if (empty($user_id)) {
@@ -237,7 +237,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function retrieveRole($role_id)
+    public function retrieveRole(string $role_id)
     {
         return $this->execute(function () use ($role_id) {
             if (empty($role_id)) {
@@ -281,7 +281,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function retrieveUser($user_id)
+    public function retrieveUser(string $user_id)
     {
         return $this->execute(function () use ($user_id) {
             if (empty($user_id)) {
