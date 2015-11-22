@@ -38,7 +38,7 @@ class User implements ConnectionAware
      *
      * @codeCoverageIgnore
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->user->getExternalId();
     }
@@ -72,7 +72,7 @@ class User implements ConnectionAware
      *
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function hasPermission(string $permission_id)
+    public function hasPermission(string $permission_id): bool
     {
         return $this->execute(function () use ($permission_id) {
             if (empty($permission_id)) {

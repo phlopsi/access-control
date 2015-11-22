@@ -37,7 +37,7 @@ class Role implements ConnectionAware
      *
      * @codeCoverageIgnore
      */
-    public function getId()
+    public function getId(): string
     {
         return $this->role->getExternalId();
     }

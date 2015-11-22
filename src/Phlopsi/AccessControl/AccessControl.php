@@ -68,7 +68,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function createRole(string $role_id)
+    public function createRole(string $role_id): Role
     {
         return $this->execute(function () use ($role_id) {
             if (empty($role_id)) {
@@ -97,7 +97,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function createUser(string $user_id)
+    public function createUser(string $user_id): User
     {
         return $this->execute(function () use ($user_id) {
             if (empty($user_id)) {
@@ -125,7 +125,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function deletePermission(string $permission_id)
+    public function deletePermission(string $permission_id): bool
     {
         return $this->execute(function () use ($permission_id) {
             if (empty($permission_id)) {
@@ -157,7 +157,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function deleteRole(string $role_id)
+    public function deleteRole(string $role_id): bool
     {
         return $this->execute(function () use ($role_id) {
             if (empty($role_id)) {
@@ -189,7 +189,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function deleteUser(string $user_id)
+    public function deleteUser(string $user_id): bool
     {
         return $this->execute(function () use ($user_id) {
             if (empty($user_id)) {
@@ -216,7 +216,7 @@ class AccessControl implements ConnectionAware
      *
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function retrievePermissionList()
+    public function retrievePermissionList(): array
     {
         return $this->execute(function () {
             return PropelPermissionQuery::create()
@@ -239,7 +239,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function retrieveRole(string $role_id)
+    public function retrieveRole(string $role_id): Role
     {
         return $this->execute(function () use ($role_id) {
             if (empty($role_id)) {
@@ -260,7 +260,7 @@ class AccessControl implements ConnectionAware
      *
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function retrieveRoleList()
+    public function retrieveRoleList(): array
     {
         return $this->execute(function () {
             return PropelRoleQuery::create()
@@ -283,7 +283,7 @@ class AccessControl implements ConnectionAware
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function retrieveUser(string $user_id)
+    public function retrieveUser(string $user_id): User
     {
         return $this->execute(function () use ($user_id) {
             if (empty($user_id)) {
@@ -304,7 +304,7 @@ class AccessControl implements ConnectionAware
      *
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function retrieveUserList()
+    public function retrieveUserList(): array
     {
         return $this->execute(function () {
             return PropelUserQuery::create()

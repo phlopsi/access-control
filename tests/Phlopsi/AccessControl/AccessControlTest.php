@@ -168,7 +168,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrievePermissionList();
 
         // Assert
-        $this->assertTrue(is_array($result));
         $this->assertEmpty($result);
     }
 
@@ -189,7 +188,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrievePermissionList();
 
         // Assert
-        $this->assertTrue(is_array($result));
         $this->assertCount(3, $result);
         $this->assertContains('TEST_PERMISSION_0', $result);
         $this->assertContains('TEST_PERMISSION_1', $result);
@@ -235,7 +233,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $role = $access_control->createRole('TEST_ROLE');
 
         // Assert
-        $this->assertInstanceOf(\Phlopsi\AccessControl\Role::class, $role);
         $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\RoleTableMap::TABLE_NAME));
     }
 
@@ -365,7 +362,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $role = $access_control->retrieveRole('TEST_ROLE');
 
         // Assert
-        $this->assertInstanceOf(\Phlopsi\AccessControl\Role::class, $role);
         $this->assertEquals('TEST_ROLE', $role->getId());
     }
 
@@ -395,7 +391,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrieveRoleList();
 
         // Assert
-        $this->assertTrue(is_array($result));
         $this->assertEmpty($result);
     }
 
@@ -416,7 +411,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrieveRoleList();
 
         // Assert
-        $this->assertTrue(is_array($result));
         $this->assertCount(3, $result);
         $this->assertContains('TEST_ROLE_0', $result);
         $this->assertContains('TEST_ROLE_1', $result);
@@ -462,7 +456,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $user = $access_control->createUser('TEST_USER');
 
         // Assert
-        $this->assertInstanceOf(\Phlopsi\AccessControl\User::class, $user);
         $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\UserTableMap::TABLE_NAME));
     }
 
@@ -592,7 +585,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $user = $access_control->retrieveUser('TEST_USER');
 
         // Assert
-        $this->assertInstanceOf(\Phlopsi\AccessControl\User::class, $user);
         $this->assertEquals('TEST_USER', $user->getId());
     }
 
@@ -622,7 +614,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrieveUserList();
 
         // Assert
-        $this->assertTrue(is_array($result));
         $this->assertEmpty($result);
     }
 
@@ -643,7 +634,6 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrieveUserList();
 
         // Assert
-        $this->assertTrue(is_array($result));
         $this->assertCount(3, $result);
         $this->assertContains('TEST_USER_0', $result);
         $this->assertContains('TEST_USER_1', $result);
