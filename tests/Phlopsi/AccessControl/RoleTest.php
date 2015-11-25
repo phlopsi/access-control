@@ -177,4 +177,143 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         // Assert
         $this->assertEquals(0, $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME));
     }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::addUser
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testAddUserWithEmptyId()
+    {
+        // Arrange
+        $propel_role = $this->getMock(Propel\Role::class);
+        $role = new Role($propel_role);
+
+        // Act
+        $role->addUser('');
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::addUser
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testAddUserWithInvalidId()
+    {
+        // Arrange
+        $propel_role = $this->getMock(Propel\Role::class);
+        $role = new Role($propel_role);
+
+        // Act
+        $role->addUser('TEST_USER');
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::addUser
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testAddUserException()
+    {
+        // Arrange
+        $propel_role = $this->getMock(Propel\Role::class);
+        $role = new Role($propel_role);
+        $role->setConnection($this->getFaultyConnection());
+
+        // Act
+        $role->addUser('TEST_USER');
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::addUser
+     */
+    public function testAddUser()
+    {
+        // Arrange
+        $propel_role = new Propel\Role();
+        $propel_role
+            ->setExternalId('TEST_ROLE')
+            ->save();
+
+        $propel_user = new Propel\User();
+        $propel_user
+            ->setExternalId('TEST_USER')
+            ->save();
+
+        $role = new Role($propel_role);
+
+        // Act
+        $role->addUser('TEST_USER');
+
+        // Assert
+        $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\RoleToUserTableMap::TABLE_NAME));
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::removeUser
+     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
+     */
+    public function testRemoveUserWithEmptyId()
+    {
+        // Arrange
+        $propel_role = $this->getMock(Propel\Role::class);
+        $role = new Role($propel_role);
+
+        // Act
+        $role->removeUser('');
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::removeUser
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testRemoveUserWithInvalidId()
+    {
+        // Arrange
+        $propel_role = $this->getMock(Propel\Role::class);
+        $role = new Role($propel_role);
+
+        // Act
+        $role->removeUser('TEST_USER');
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::removeUser
+     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function testRemoveUserException()
+    {
+        // Arrange
+        $propel_role = $this->getMock(Propel\Role::class);
+        $role = new Role($propel_role);
+        $role->setConnection($this->getFaultyConnection());
+
+        // Act
+        $role->removeUser('TEST_USER');
+    }
+
+    /**
+     * @depends testAddUser
+     * @covers \Phlopsi\AccessControl\Role::removeUser
+     * @uses \Phlopsi\AccessControl\Role::addUser
+     */
+    public function testRemoveUser()
+    {
+        // Arrange
+        $propel_role = new Propel\Role();
+        $propel_role
+            ->setExternalId('TEST_ROLE')
+            ->save();
+
+        $propel_user = new Propel\User();
+        $propel_user
+            ->setExternalId('TEST_USER')
+            ->save();
+
+        $role = new Role($propel_role);
+        $role->addUser('TEST_USER');
+
+        // Act
+        $role->removeUser('TEST_USER');
+
+        // Assert
+        $this->assertEquals(0, $this->getConnection()->getRowCount(Propel\Map\RoleToUserTableMap::TABLE_NAME));
+    }
 }

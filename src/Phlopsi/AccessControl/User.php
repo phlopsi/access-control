@@ -44,28 +44,6 @@ class User implements ConnectionAware
     }
 
     /**
-     * @param string $role_id
-     *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
-     */
-    public function addRole(string $role_id)
-    {
-        $this->execute(function () use ($role_id) {
-            if (empty($role_id)) {
-                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-            }
-
-            $role = PropelRoleQuery::create()
-                ->requireOneByExternalId($role_id, $this->connection);
-
-            $this->user
-                ->addRole($role)
-                ->save($this->connection);
-        });
-    }
-
-    /**
      * @param string $permission_id
      *
      * @return bool
@@ -88,28 +66,6 @@ class User implements ConnectionAware
                 ->exists($this->connection);
 
             return $role_has_permission;
-        });
-    }
-
-    /**
-     * @param string $role_id
-     *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
-     */
-    public function removeRole(string $role_id)
-    {
-        $this->execute(function () use ($role_id) {
-            if (empty($role_id)) {
-                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-            }
-
-            $role = PropelRoleQuery::create()
-                ->requireOneByExternalId($role_id, $this->connection);
-
-            $this->user
-                ->removeRole($role)
-                ->save($this->connection);
         });
     }
 }

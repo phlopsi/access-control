@@ -10,6 +10,7 @@ namespace Phlopsi\AccessControl;
 use Phlopsi\AccessControl\Connection\ConnectionAware;
 use Phlopsi\AccessControl\Exception\LengthException;
 use Phlopsi\AccessControl\Propel\PermissionQuery as PropelPermissionQuery;
+use Phlopsi\AccessControl\Propel\UserQuery as PropelUserQuery;
 use Phlopsi\AccessControl\Propel\Role as PropelRole;
 
 class Role implements ConnectionAware
@@ -82,6 +83,50 @@ class Role implements ConnectionAware
 
             $this->role
                 ->removePermission($permission)
+                ->save($this->connection);
+        });
+    }
+
+    /**
+     * @param string $user_id
+     *
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function addUser(string $user_id)
+    {
+        $this->execute(function () use ($user_id) {
+            if (empty($user_id)) {
+                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
+            }
+
+            $user = PropelUserQuery::create()
+                ->requireOneByExternalId($user_id, $this->connection);
+
+            $this->role
+                ->addUser($user)
+                ->save($this->connection);
+        });
+    }
+
+    /**
+     * @param string $user_id
+     *
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function removeUser(string $user_id)
+    {
+        $this->execute(function () use ($user_id) {
+            if (empty($user_id)) {
+                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
+            }
+
+            $user = PropelUserQuery::create()
+                ->requireOneByExternalId($user_id, $this->connection);
+
+            $this->role
+                ->removeUser($user)
                 ->save($this->connection);
         });
     }
