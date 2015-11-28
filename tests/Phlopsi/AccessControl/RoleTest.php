@@ -104,7 +104,11 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $role->addPermission('TEST_PERMISSION');
 
         // Assert
-        $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME));
+        $this->assertEquals(
+            1,
+            $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME),
+            'Assert that "access_control"."permissions_roles" has 1 row'
+        );
     }
 
     /**
@@ -175,7 +179,11 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $role->removePermission('TEST_PERMISSION');
 
         // Assert
-        $this->assertEquals(0, $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME));
+        $this->assertEquals(
+            0,
+            $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME),
+            'Assert that "access_control"."permissions_roles" has no rows'
+        );
     }
 
     /**
@@ -243,7 +251,11 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $role->addUser('TEST_USER');
 
         // Assert
-        $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\RoleToUserTableMap::TABLE_NAME));
+        $this->assertEquals(
+            1,
+            $this->getConnection()->getRowCount(Propel\Map\RoleToUserTableMap::TABLE_NAME),
+            'Assert that "access_control"."roles_users" has 1 row'
+        );
     }
 
     /**
@@ -314,6 +326,10 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $role->removeUser('TEST_USER');
 
         // Assert
-        $this->assertEquals(0, $this->getConnection()->getRowCount(Propel\Map\RoleToUserTableMap::TABLE_NAME));
+        $this->assertEquals(
+            0,
+            $this->getConnection()->getRowCount(Propel\Map\RoleToUserTableMap::TABLE_NAME),
+            'Assert that "access_control"."roles_users" has no rows'
+        );
     }
 }

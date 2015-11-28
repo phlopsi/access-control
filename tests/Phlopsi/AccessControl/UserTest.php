@@ -104,7 +104,7 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
         $has_permission = $user->hasPermission('TEST_PERMISSION');
 
         // Assert
-        $this->assertFalse($has_permission);
+        $this->assertFalse($has_permission, 'Assert that User::hasPermission returns false');
     }
 
     /**
@@ -136,6 +136,6 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
         $has_permission = $user->hasPermission('TEST_PERMISSION');
 
         // Assert
-        $this->assertTrue($has_permission);
+        $this->assertTrue($has_permission, 'Assert that User::hasPermission returns true');
     }
 }

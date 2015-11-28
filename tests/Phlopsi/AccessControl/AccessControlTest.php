@@ -78,7 +78,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $access_control->createPermission('TEST_PERMISSION');
 
         // Assert
-        $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\PermissionTableMap::TABLE_NAME));
+        $this->assertEquals(
+            1,
+            $this->getConnection()->getRowCount(Propel\Map\PermissionTableMap::TABLE_NAME),
+            'Assert that "access_control"."permissions" has 1 row'
+        );
     }
 
     /**
@@ -106,7 +110,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->deletePermission('TEST_PERMISSION');
 
         // Assert
-        $this->assertFalse($result);
+        $this->assertFalse($result, 'Assert that AccessControl::deletePermission returns false');
     }
 
     /**
@@ -138,8 +142,13 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->deletePermission('TEST_PERMISSION');
 
         // Assert
-        $this->assertTrue($result);
-        $this->assertEquals(0, $this->getConnection()->getRowCount(Propel\Map\PermissionTableMap::TABLE_NAME));
+        $this->assertTrue($result, 'Assert that AccessControl::deletePermission returns true');
+
+        $this->assertEquals(
+            0,
+            $this->getConnection()->getRowCount(Propel\Map\PermissionTableMap::TABLE_NAME),
+            'Assert that "access_control"."permissions" has no rows'
+        );
     }
 
     /**
@@ -233,7 +242,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $role = $access_control->createRole('TEST_ROLE');
 
         // Assert
-        $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\RoleTableMap::TABLE_NAME));
+        $this->assertEquals(
+            1,
+            $this->getConnection()->getRowCount(Propel\Map\RoleTableMap::TABLE_NAME),
+            'Assert that "access_control"."roles" has 1 row'
+        );
     }
 
     /**
@@ -261,7 +274,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->deleteRole('TEST_ROLE');
 
         // Assert
-        $this->assertFalse($result);
+        $this->assertFalse($result, 'Assert that AccessControl::deleteRole returns false');
     }
 
     /**
@@ -293,8 +306,13 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->deleteRole('TEST_ROLE');
 
         // Assert
-        $this->assertTrue($result);
-        $this->assertEquals(0, $this->getConnection()->getRowCount(Propel\Map\RoleTableMap::TABLE_NAME));
+        $this->assertTrue($result, 'Assert that AccessControl::deleteRole returns true');
+
+        $this->assertEquals(
+            0,
+            $this->getConnection()->getRowCount(Propel\Map\RoleTableMap::TABLE_NAME),
+            'Assert that "access_control"."roles" has no rows'
+        );
     }
 
     /**
@@ -456,7 +474,11 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $user = $access_control->createUser('TEST_USER');
 
         // Assert
-        $this->assertEquals(1, $this->getConnection()->getRowCount(Propel\Map\UserTableMap::TABLE_NAME));
+        $this->assertEquals(
+            1,
+            $this->getConnection()->getRowCount(Propel\Map\UserTableMap::TABLE_NAME),
+            'Assert that "access_control"."users" has 1 row'
+        );
     }
 
     /**
@@ -484,7 +506,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->deleteUser('TEST_USER');
 
         // Assert
-        $this->assertFalse($result);
+        $this->assertFalse($result, 'Assert that AccessControl::deleteUser returns false');
     }
 
     /**
@@ -516,8 +538,13 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->deleteUser('TEST_USER');
 
         // Assert
-        $this->assertTrue($result);
-        $this->assertEquals(0, $this->getConnection()->getRowCount(Propel\Map\UserTableMap::TABLE_NAME));
+        $this->assertTrue($result, 'Assert that AccessControl::deleteUser returns true');
+
+        $this->assertEquals(
+            0,
+            $this->getConnection()->getRowCount(Propel\Map\UserTableMap::TABLE_NAME),
+            'Assert that "access_control"."users" has no rows'
+        );
     }
 
     /**
