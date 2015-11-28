@@ -33,14 +33,14 @@ $role->addPermission('user_management/view');
 $role->removePermission('user_management/view');
 ```
 
-### How to add/remove a role to/from a user?
+### How to add/remove a user to/from a role?
 ```php
 $access_control = new \Phlopsi\AccessControl\AccessControl();
 
-$user = $access_control->retrieveUser('phlopsi');
+$role = $access_control->retrieveRole('admin');
 
-$user->addRole('admin');
-$user->removeRole('admin');
+$role->addUser('phlopsi');
+$role->removeUser('phlopsi');
 ```
 
 ### How to check, if a user has a permission?
