@@ -7,13 +7,13 @@ declare(strict_types = 1);
 
 namespace Phlopsi\ExceptionTranslator;
 
-use Phlopsi\ExceptionTranslator\Reflection\ExceptionReflection;
-use Phlopsi\ExceptionTranslator\Reflection\ExternalExceptionReflection;
+use Phlopsi\Reflection\ExceptionReflection;
+use Phlopsi\Reflection\ExternalExceptionReflection;
 
 class ExceptionTranslator
 {
     /**
-     * @var ExternalExceptionReflection
+     * @var \Phlopsi\Reflection\ExternalExceptionReflection
      */
     private $default_exception_reflection;
     
@@ -23,9 +23,7 @@ class ExceptionTranslator
     private $exception_namespace;
 
     /**
-     * @param ExternalExceptionReflection $default_exception_reflection
-     *
-     * @throws \LogicException
+     * @param \Phlopsi\Reflection\ExternalExceptionReflection $default_exception_reflection
      *
      * @codeCoverageIgnore
      */
@@ -36,13 +34,15 @@ class ExceptionTranslator
     }
 
     /**
-     * @param ExceptionReflection $exception_reflection
+     * @param \Phlopsi\Reflection\ExceptionReflection $exception_reflection
      *
-     * @return ExternalExceptionReflection
+     * @throws \DomainException
+     *
+     * @return \Phlopsi\Reflection\ExternalExceptionReflection
      *
      * @codeCoverageIgnore
      */
-    public function translate(ExceptionReflection $exception_reflection)
+    public function translate(ExceptionReflection $exception_reflection): ExternalExceptionReflection
     {
         $current_exception_reflection = $exception_reflection;
         

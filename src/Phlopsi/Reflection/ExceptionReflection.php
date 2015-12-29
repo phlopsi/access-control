@@ -5,7 +5,7 @@
 
 declare(strict_types = 1);
 
-namespace Phlopsi\ExceptionTranslator\Reflection;
+namespace Phlopsi\Reflection;
 
 class ExceptionReflection extends \ReflectionClass
 {

@@ -8,8 +8,8 @@ declare(strict_types = 1);
 namespace Phlopsi\AccessControl\Exception;
 
 use \Phlopsi\ExceptionTranslator\ExceptionTranslator;
-use \Phlopsi\ExceptionTranslator\Reflection\ExceptionReflection;
-use \Phlopsi\ExceptionTranslator\Reflection\ExternalExceptionReflection;
+use \Phlopsi\Reflection\ExceptionReflection;
+use \Phlopsi\Reflection\ExternalExceptionReflection;
 
 trait TranslateExceptionsTrait
 {
@@ -17,6 +17,7 @@ trait TranslateExceptionsTrait
      * @param callable $callable
      *
      * @return mixed
+     *   Same return type as $callable
      *
      * @throws \Phlopsi\AccessControl\Exception\Exception
      */
