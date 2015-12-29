@@ -52,7 +52,7 @@ class Role implements ConnectionAware
     public function addPermission(string $permission_id)
     {
         $this->execute(function () use ($permission_id) {
-            if (empty($permission_id)) {
+            if (0 === strlen($permission_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
@@ -74,7 +74,7 @@ class Role implements ConnectionAware
     public function removePermission(string $permission_id)
     {
         $this->execute(function () use ($permission_id) {
-            if (empty($permission_id)) {
+            if (0 === strlen($permission_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
@@ -96,7 +96,7 @@ class Role implements ConnectionAware
     public function addUser(string $user_id)
     {
         $this->execute(function () use ($user_id) {
-            if (empty($user_id)) {
+            if (0 === strlen($user_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
@@ -118,7 +118,7 @@ class Role implements ConnectionAware
     public function removeUser(string $user_id)
     {
         $this->execute(function () use ($user_id) {
-            if (empty($user_id)) {
+            if (0 === strlen($user_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 

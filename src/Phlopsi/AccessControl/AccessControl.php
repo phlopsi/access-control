@@ -44,7 +44,7 @@ class AccessControl implements ConnectionAware
     public function createPermission(string $permission_id)
     {
         $this->execute(function () use ($permission_id) {
-            if (empty($permission_id)) {
+            if (0 === strlen($permission_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
@@ -71,7 +71,7 @@ class AccessControl implements ConnectionAware
     public function createRole(string $role_id): Role
     {
         return $this->execute(function () use ($role_id) {
-            if (empty($role_id)) {
+            if (0 === strlen($role_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
@@ -100,7 +100,7 @@ class AccessControl implements ConnectionAware
     public function createUser(string $user_id): User
     {
         return $this->execute(function () use ($user_id) {
-            if (empty($user_id)) {
+            if (0 === strlen($user_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
@@ -128,7 +128,7 @@ class AccessControl implements ConnectionAware
     public function deletePermission(string $permission_id): bool
     {
         return $this->execute(function () use ($permission_id) {
-            if (empty($permission_id)) {
+            if (0 === strlen($permission_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
@@ -160,7 +160,7 @@ class AccessControl implements ConnectionAware
     public function deleteRole(string $role_id): bool
     {
         return $this->execute(function () use ($role_id) {
-            if (empty($role_id)) {
+            if (0 === strlen($role_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
@@ -192,7 +192,7 @@ class AccessControl implements ConnectionAware
     public function deleteUser(string $user_id): bool
     {
         return $this->execute(function () use ($user_id) {
-            if (empty($user_id)) {
+            if (0 === strlen($user_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
@@ -242,7 +242,7 @@ class AccessControl implements ConnectionAware
     public function retrieveRole(string $role_id): Role
     {
         return $this->execute(function () use ($role_id) {
-            if (empty($role_id)) {
+            if (0 === strlen($role_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
@@ -286,7 +286,7 @@ class AccessControl implements ConnectionAware
     public function retrieveUser(string $user_id): User
     {
         return $this->execute(function () use ($user_id) {
-            if (empty($user_id)) {
+            if (0 === strlen($user_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 

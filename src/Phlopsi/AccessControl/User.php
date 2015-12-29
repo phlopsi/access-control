@@ -53,7 +53,7 @@ class User implements ConnectionAware
     public function hasPermission(string $permission_id): bool
     {
         return $this->execute(function () use ($permission_id) {
-            if (empty($permission_id)) {
+            if (0 === strlen($permission_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
 
