@@ -26,7 +26,10 @@ trait DatabaseTestCaseTrait
      */
     private static $sql;
 
-    public static function setUpBeforeClass()
+    /**
+     * @beforeClass
+     */
+    public static function setUpDatabaseTestCaseBeforeClass()
     {
         self::$pdo = new PdoConnection('sqlite::memory:');
 
@@ -39,36 +42,39 @@ trait DatabaseTestCaseTrait
         $platform = new SqlitePlatform();
         $schema_reader = new SchemaReader($platform);
 
-        $file = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'schema.xml';
+        $file = \dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'schema.xml';
         $schema = $schema_reader->parseFile($file);
 
         $database = $schema->getDatabase('access_control');
         self::$sql = $platform->getAddTablesDDL($database);
     }
 
-    public static function tearDownAfterClass()
+    /**
+     * @afterClass
+     */
+    public static function tearDownDatabaseTestCaseAfterClass()
     {
         self::$pdo = null;
     }
 
     private function getFaultyConnection()
     {
-        $mocked_connection = $this
+        $stub_connection = $this
             ->getMockBuilder(ConnectionInterface::class)
             ->getMock();
 
-        $mocked_connection
+        $stub_connection
             ->method('transaction')
             ->will($this->throwException(new \Exception));
 
-        $mocked_connection
+        $stub_connection
             ->method('prepare')
             ->will($this->throwException(new \Exception));
 
-        $mocked_connection
+        $stub_connection
             ->method('query')
             ->will($this->throwException(new \Exception));
 
-        return $mocked_connection;
+        return $stub_connection;
     }
 }
