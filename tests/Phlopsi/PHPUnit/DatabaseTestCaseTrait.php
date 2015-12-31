@@ -35,9 +35,10 @@ trait DatabaseTestCaseTrait
 
         $connection = new ConnectionWrapper(self::$pdo);
 
-        $serviceContainer = Propel::getServiceContainer();
-        $serviceContainer->setAdapterClass('access_control', 'sqlite');
-        $serviceContainer->setConnection('access_control', $connection);
+        $service_container = new \Propel\Runtime\ServiceContainer\StandardServiceContainer();
+        $service_container->setAdapterClass('access_control', 'sqlite');
+        $service_container->setConnection('access_control', $connection);
+        Propel::setServiceContainer($service_container);
 
         $platform = new SqlitePlatform();
         $schema_reader = new SchemaReader($platform);
