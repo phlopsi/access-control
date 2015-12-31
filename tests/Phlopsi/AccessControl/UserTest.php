@@ -11,7 +11,7 @@ use Propel\Generator\Util\SqlParser;
 
 class UserTest extends \PHPUnit_Extensions_Database_TestCase
 {
-    use Test\DatabaseTestCaseTrait;
+    use \Phlopsi\PHPUnit\DatabaseTestCaseTrait;
 
     /**
      * @var \PHPUnit_Extensions_Database_DB_IDatabaseConnection
@@ -40,7 +40,8 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\User::hasPermission
+     * @covers \Phlopsi\AccessControl\User::hasPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testHasPermissionWithEmptyId()
@@ -54,7 +55,8 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\User::hasPermission
+     * @covers \Phlopsi\AccessControl\User::hasPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testHasPermissionWithInvalidId()
@@ -68,7 +70,8 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\User::hasPermission
+     * @covers \Phlopsi\AccessControl\User::hasPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testHasPermissionException()
@@ -83,7 +86,8 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\User::hasPermission
+     * @covers \Phlopsi\AccessControl\User::hasPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testHasPermissionFalse()
     {
@@ -108,7 +112,8 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\User::hasPermission
+     * @covers \Phlopsi\AccessControl\User::hasPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testHasPermissionTrue()
     {

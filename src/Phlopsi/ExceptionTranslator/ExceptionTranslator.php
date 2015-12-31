@@ -39,8 +39,6 @@ class ExceptionTranslator
      * @throws \DomainException
      *
      * @return \Phlopsi\Reflection\ExternalExceptionReflection
-     *
-     * @codeCoverageIgnore
      */
     public function translate(ExceptionReflection $exception_reflection): ExternalExceptionReflection
     {

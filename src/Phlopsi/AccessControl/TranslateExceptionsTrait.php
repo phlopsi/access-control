@@ -5,9 +5,10 @@
 
 declare(strict_types = 1);
 
-namespace Phlopsi\AccessControl\Exception;
+namespace Phlopsi\AccessControl;
 
 use \Phlopsi\ExceptionTranslator\ExceptionTranslator;
+use \Phlopsi\AccessControl\Exception\RuntimeException;
 use \Phlopsi\Reflection\ExceptionReflection;
 use \Phlopsi\Reflection\ExternalExceptionReflection;
 

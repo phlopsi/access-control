@@ -16,7 +16,7 @@ use Phlopsi\AccessControl\Propel\Role as PropelRole;
 class Role implements ConnectionAware
 {
     use Connection\ConnectionAwareTrait;
-    use Exception\TranslateExceptionsTrait;
+    use TranslateExceptionsTrait;
 
     /**
      * @var \Phlopsi\AccessControl\Propel\Role

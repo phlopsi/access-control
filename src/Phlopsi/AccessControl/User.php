@@ -16,7 +16,7 @@ use Phlopsi\AccessControl\Propel\User as PropelUser;
 class User implements ConnectionAware
 {
     use Connection\ConnectionAwareTrait;
-    use Exception\TranslateExceptionsTrait;
+    use TranslateExceptionsTrait;
 
     /**
      * @var \Phlopsi\AccessControl\Propel\User

@@ -5,7 +5,7 @@
 
 declare(strict_types = 1);
 
-namespace Phlopsi\AccessControl\Test;
+namespace Phlopsi\PHPUnit;
 
 use Propel\Generator\Builder\Util\SchemaReader;
 use Propel\Generator\Platform\SqlitePlatform;
@@ -42,7 +42,7 @@ trait DatabaseTestCaseTrait
         $platform = new SqlitePlatform();
         $schema_reader = new SchemaReader($platform);
 
-        $file = \dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'schema.xml';
+        $file = \dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'schema.xml';
         $schema = $schema_reader->parseFile($file);
 
         $database = $schema->getDatabase('access_control');
@@ -59,6 +59,7 @@ trait DatabaseTestCaseTrait
 
     private function getFaultyConnection()
     {
+        /** @var \PHPUnit_Extensions_Database_TestCase $this */
         $stub_connection = $this
             ->getMockBuilder(ConnectionInterface::class)
             ->getMock();

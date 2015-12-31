@@ -13,17 +13,13 @@
     forceCoversAnnotation="true"
 >
     <testsuites>
-        <testsuite name="all">
-            <directory>tests/</directory>
+        <testsuite name="AccessControl">
+            <directory>tests/Phlopsi/AccessControl/</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory>src/</directory>
-            <exclude>
-                <directory>src/Phlopsi/AccessControl/Exception/</directory>
-                <directory>src/Phlopsi/ExceptionTranslator/</directory>
-            </exclude>
+            <directory>src/Phlopsi/AccessControl/</directory>
         </whitelist>
     </filter>
     <logging>

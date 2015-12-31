@@ -11,7 +11,7 @@ use Propel\Generator\Util\SqlParser;
 
 class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 {
-    use Test\DatabaseTestCaseTrait;
+    use \Phlopsi\PHPUnit\DatabaseTestCaseTrait;
 
     /**
      * @var \PHPUnit_Extensions_Database_DB_IDatabaseConnection
@@ -40,7 +40,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::createPermission
+     * @covers \Phlopsi\AccessControl\AccessControl::createPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testCreatePermissionWithEmptyId()
@@ -53,7 +54,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::createPermission
+     * @covers \Phlopsi\AccessControl\AccessControl::createPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testCreatePermissionException()
@@ -67,7 +69,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::createPermission
+     * @covers \Phlopsi\AccessControl\AccessControl::createPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testCreatePermission()
     {
@@ -86,7 +89,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
+     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testDeletePermissionWithEmptyId()
@@ -99,7 +103,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
+     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeletePermissionWithInvalidId()
     {
@@ -114,7 +119,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
+     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testDeletePermissionException()
@@ -129,8 +135,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @depends testCreatePermission
-     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission
-     * @uses \Phlopsi\AccessControl\AccessControl::createPermission
+     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeletePermission()
     {
@@ -152,7 +159,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList
+     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrievePermissionListException()
@@ -166,7 +174,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList
+     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRetrieveEmptyPermissionList()
     {
@@ -182,8 +191,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @depends testCreatePermission
-     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList
+     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList()
      * @uses \Phlopsi\AccessControl\AccessControl::createPermission
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRetrievePermissionList()
     {
@@ -204,7 +214,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::createRole
+     * @covers \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testCreateRoleWithEmptyId()
@@ -217,7 +228,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::createRole
+     * @covers \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testCreateRoleException()
@@ -231,7 +243,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::createRole
+     * @covers \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testCreateRole()
     {
@@ -250,7 +263,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testDeleteRoleWithEmptyId()
@@ -263,7 +277,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeleteRoleWithInvalidId()
     {
@@ -278,7 +293,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testDeleteRoleException()
@@ -293,8 +309,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @depends testCreateRole
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole
-     * @uses \Phlopsi\AccessControl\AccessControl::createRole
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeleteRole()
     {
@@ -316,7 +333,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testRetrieveRoleWithEmptyId()
@@ -329,7 +347,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveRoleWithInvalidId()
@@ -343,8 +362,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @depends testCreateRole
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
-     * @uses \Phlopsi\AccessControl\AccessControl::createRole
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveRoleException()
@@ -367,8 +387,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @depends testCreateRole
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole
-     * @uses \Phlopsi\AccessControl\AccessControl::createRole
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRetrieveRole()
     {
@@ -384,7 +405,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRoleList
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRoleList()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveRoleListException()
@@ -398,7 +420,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRoleList
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRoleList()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRetrieveEmptyRoleList()
     {
@@ -414,8 +437,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @depends testCreateRole
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRoleList
-     * @uses \Phlopsi\AccessControl\AccessControl::createRole
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveRoleList()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRetrieveRoleList()
     {
@@ -436,7 +460,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::createUser
+     * @covers \Phlopsi\AccessControl\AccessControl::createUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testCreateUserWithEmptyId()
@@ -449,7 +474,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::createUser
+     * @covers \Phlopsi\AccessControl\AccessControl::createUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testCreateUserException()
@@ -463,7 +489,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::createUser
+     * @covers \Phlopsi\AccessControl\AccessControl::createUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testCreateUser()
     {
@@ -482,7 +509,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testDeleteUserWithEmptyId()
@@ -495,7 +523,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeleteUserWithInvalidId()
     {
@@ -510,7 +539,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testDeleteUserException()
@@ -525,8 +555,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @depends testCreateUser
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser
-     * @uses \Phlopsi\AccessControl\AccessControl::createUser
+     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser()
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeleteUser()
     {
@@ -548,7 +579,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testRetrieveUserWithEmptyId()
@@ -561,7 +593,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveUserWithInvalidId()
@@ -575,8 +608,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @depends testCreateUser
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
-     * @uses \Phlopsi\AccessControl\AccessControl::createUser
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser()
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveUserException()
@@ -599,8 +633,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @depends testCreateUser
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser
-     * @uses \Phlopsi\AccessControl\AccessControl::createUser
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser()
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRetrieveUser()
     {
@@ -616,7 +651,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUserList
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUserList()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveUserListException()
@@ -630,7 +666,8 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUserList
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUserList()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRetrieveEmptyUserList()
     {
@@ -646,8 +683,9 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @depends testCreateUser
-     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUserList
-     * @uses \Phlopsi\AccessControl\AccessControl::createUser
+     * @covers \Phlopsi\AccessControl\AccessControl::retrieveUserList()
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRetrieveUserList()
     {

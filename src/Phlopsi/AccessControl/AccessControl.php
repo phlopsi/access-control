@@ -29,7 +29,7 @@ use Phlopsi\AccessControl\Propel\UserQuery as PropelUserQuery;
 class AccessControl implements ConnectionAware
 {
     use Connection\ConnectionAwareTrait;
-    use Exception\TranslateExceptionsTrait;
+    use TranslateExceptionsTrait;
 
     /**
      * Creates a new permission in the database
