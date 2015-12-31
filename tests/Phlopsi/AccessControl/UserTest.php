@@ -7,6 +7,8 @@ declare(strict_types = 1);
 
 namespace Phlopsi\AccessControl;
 
+use Phlopsi\AccessControl\Exception\LengthException;
+use Phlopsi\AccessControl\Exception\RuntimeException;
 use Propel\Generator\Util\SqlParser;
 
 class UserTest extends \PHPUnit_Extensions_Database_TestCase
@@ -42,13 +44,15 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\User::hasPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testHasPermissionWithEmptyId()
     {
         // Arrange
         $propel_user = $this->getMock(Propel\User::class);
         $user = new User($propel_user);
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $user->hasPermission('');
@@ -57,13 +61,15 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\User::hasPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testHasPermissionWithInvalidId()
     {
         // Arrange
         $propel_user = $this->getMock(Propel\User::class);
         $user = new User($propel_user);
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $user->hasPermission('TEST_PERMISSION');
@@ -72,7 +78,6 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\User::hasPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testHasPermissionException()
     {
@@ -80,6 +85,9 @@ class UserTest extends \PHPUnit_Extensions_Database_TestCase
         $propel_user = $this->getMock(Propel\User::class);
         $user = new User($propel_user);
         $user->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $user->hasPermission('TEST_PERMISSION');

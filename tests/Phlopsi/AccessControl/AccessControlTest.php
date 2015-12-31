@@ -7,6 +7,8 @@ declare(strict_types = 1);
 
 namespace Phlopsi\AccessControl;
 
+use Phlopsi\AccessControl\Exception\LengthException;
+use Phlopsi\AccessControl\Exception\RuntimeException;
 use Propel\Generator\Util\SqlParser;
 
 class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
@@ -42,12 +44,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testCreatePermissionWithEmptyId()
     {
         // Arrange
         $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $access_control->createPermission('');
@@ -56,13 +60,15 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testCreatePermissionException()
     {
         // Arrange
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->createPermission('TEST_PERMISSION');
@@ -91,12 +97,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testDeletePermissionWithEmptyId()
     {
         // Arrange
         $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $access_control->deletePermission('');
@@ -121,13 +129,15 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testDeletePermissionException()
     {
         // Arrange
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->deletePermission('TEST_PERMISSION');
@@ -161,13 +171,15 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrievePermissionListException()
     {
         // Arrange
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->retrievePermissionList();
@@ -216,12 +228,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testCreateRoleWithEmptyId()
     {
         // Arrange
         $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $access_control->createRole('');
@@ -230,13 +244,15 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testCreateRoleException()
     {
         // Arrange
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->createRole('TEST_ROLE');
@@ -265,12 +281,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testDeleteRoleWithEmptyId()
     {
         // Arrange
         $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $access_control->deleteRole('');
@@ -295,13 +313,15 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testDeleteRoleException()
     {
         // Arrange
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->deleteRole('TEST_ROLE');
@@ -335,12 +355,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testRetrieveRoleWithEmptyId()
     {
         // Arrange
         $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $access_control->retrieveRole('');
@@ -349,12 +371,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveRoleWithInvalidId()
     {
         // Arrange
         $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control->retrieveRole('TEST_ROLE');
@@ -365,21 +389,18 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveRole()
      * @uses \Phlopsi\AccessControl\AccessControl::createRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveRoleException()
     {
         // Arrange
         $access_control = new AccessControl();
-
-        try {
-            $access_control->createRole('TEST_ROLE');
-        } catch (\Exception $exception) {
-            $this->fail($exception->getTraceAsString());
-        }
+        $access_control->createRole('TEST_ROLE');
 
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->retrieveRole('TEST_ROLE');
@@ -407,13 +428,15 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveRoleList()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveRoleListException()
     {
         // Arrange
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->retrieveRoleList();
@@ -462,12 +485,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testCreateUserWithEmptyId()
     {
         // Arrange
         $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $access_control->createUser('');
@@ -476,13 +501,15 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::createUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testCreateUserException()
     {
         // Arrange
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->createUser('TEST_USER');
@@ -511,12 +538,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testDeleteUserWithEmptyId()
     {
         // Arrange
         $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $access_control->deleteUser('');
@@ -541,13 +570,15 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testDeleteUserException()
     {
         // Arrange
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->deleteUser('TEST_USER');
@@ -581,12 +612,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testRetrieveUserWithEmptyId()
     {
         // Arrange
         $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $access_control->retrieveUser('');
@@ -595,12 +628,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveUserWithInvalidId()
     {
         // Arrange
         $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control->retrieveUser('TEST_USER');
@@ -611,21 +646,18 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveUser()
      * @uses \Phlopsi\AccessControl\AccessControl::createUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveUserException()
     {
         // Arrange
         $access_control = new AccessControl();
-
-        try {
-            $access_control->createUser('TEST_USER');
-        } catch (\Exception $exception) {
-            $this->fail($exception->getTraceAsString());
-        }
+        $access_control->createUser('TEST_USER');
 
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->retrieveUser('TEST_USER');
@@ -653,13 +685,15 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrieveUserList()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRetrieveUserListException()
     {
         // Arrange
         $access_control_faulty = new AccessControl();
         $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $access_control_faulty->retrieveUserList();

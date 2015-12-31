@@ -7,6 +7,8 @@ declare(strict_types = 1);
 
 namespace Phlopsi\AccessControl;
 
+use Phlopsi\AccessControl\Exception\LengthException;
+use Phlopsi\AccessControl\Exception\RuntimeException;
 use Propel\Generator\Util\SqlParser;
 
 class RoleTest extends \PHPUnit_Extensions_Database_TestCase
@@ -42,13 +44,15 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::addPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testAddPermissionWithEmptyId()
     {
         // Arrange
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $role->addPermission('');
@@ -57,13 +61,15 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::addPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testAddPermissionWithInvalidId()
     {
         // Arrange
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $role->addPermission('TEST_ROLE');
@@ -72,7 +78,6 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::addPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testAddPermissionException()
     {
@@ -80,6 +85,9 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
         $role->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $role->addPermission('TEST_ROLE');
@@ -118,13 +126,15 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::removePermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testRemovePermissionWithEmptyId()
     {
         // Arrange
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $role->removePermission('');
@@ -133,13 +143,15 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::removePermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRemovePermissionWithInvalidId()
     {
         // Arrange
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $role->removePermission('TEST_PERMISSION');
@@ -148,7 +160,6 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::removePermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRemovePermissionException()
     {
@@ -156,6 +167,9 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
         $role->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $role->removePermission('TEST_PERMISSION');
@@ -197,13 +211,15 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::addUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testAddUserWithEmptyId()
     {
         // Arrange
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $role->addUser('');
@@ -212,13 +228,15 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::addUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testAddUserWithInvalidId()
     {
         // Arrange
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $role->addUser('TEST_USER');
@@ -227,7 +245,6 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::addUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testAddUserException()
     {
@@ -235,6 +252,9 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
         $role->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $role->addUser('TEST_USER');
@@ -273,13 +293,15 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::removeUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\LengthException
      */
     public function testRemoveUserWithEmptyId()
     {
         // Arrange
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
 
         // Act
         $role->removeUser('');
@@ -288,13 +310,15 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::removeUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRemoveUserWithInvalidId()
     {
         // Arrange
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $role->removeUser('TEST_USER');
@@ -303,7 +327,6 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @covers \Phlopsi\AccessControl\Role::removeUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     * @expectedException \Phlopsi\AccessControl\Exception\RuntimeException
      */
     public function testRemoveUserException()
     {
@@ -311,6 +334,9 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $propel_role = $this->getMock(Propel\Role::class);
         $role = new Role($propel_role);
         $role->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
 
         // Act
         $role->removeUser('TEST_USER');
