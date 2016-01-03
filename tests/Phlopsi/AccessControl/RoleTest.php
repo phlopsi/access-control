@@ -9,6 +9,11 @@ namespace Phlopsi\AccessControl;
 
 use Phlopsi\AccessControl\Exception\LengthException;
 use Phlopsi\AccessControl\Exception\RuntimeException;
+use Phlopsi\AccessControl\Propel\Map\PermissionToRoleTableMap;
+use Phlopsi\AccessControl\Propel\Map\RoleToUserTableMap;
+use Phlopsi\AccessControl\Propel\Permission as PropelPermission;
+use Phlopsi\AccessControl\Propel\Role as PropelRole;
+use Phlopsi\AccessControl\Propel\User as PropelUser;
 use Propel\Generator\Util\SqlParser;
 
 class RoleTest extends \PHPUnit_Extensions_Database_TestCase
@@ -48,7 +53,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testAddPermissionWithEmptyId()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
 
         // Expect
@@ -65,14 +70,14 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testAddPermissionWithInvalidId()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
 
         // Expect
         $this->setExpectedException(RuntimeException::class);
 
         // Act
-        $role->addPermission('TEST_ROLE');
+        $role->addPermission('TEST_PERMISSION');
     }
 
     /**
@@ -82,7 +87,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testAddPermissionException()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
         $role->setConnection($this->getFaultyConnection());
 
@@ -100,27 +105,53 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testAddPermission()
     {
         // Arrange
-        $propel_role = new Propel\Role();
+        $propel_role = new PropelRole();
         $propel_role
             ->setExternalId('TEST_ROLE')
             ->save();
 
-        $propel_permission = new Propel\Permission();
-        $propel_permission
+        $role = new Role($propel_role);
+
+        (new PropelPermission())
             ->setExternalId('TEST_PERMISSION')
             ->save();
-
-        $role = new Role($propel_role);
 
         // Act
         $role->addPermission('TEST_PERMISSION');
 
         // Assert
-        $this->assertEquals(
-            1,
-            $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME),
-            'Assert that "access_control"."permissions_roles" has 1 row'
-        );
+        $message = 'Assert that "%s"."%s" has 1 row';
+        $message = sprintf($message, PermissionToRoleTableMap::DATABASE_NAME, PermissionToRoleTableMap::TABLE_NAME);
+        $this->assertTableRowCount(PermissionToRoleTableMap::TABLE_NAME, 1, $message);
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\Role::addPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
+     */
+    public function testAddPermissionTwice()
+    {
+        // Arrange
+        $propel_role = new PropelRole();
+        $propel_role
+            ->setExternalId('TEST_ROLE')
+            ->save();
+
+        $role = new Role($propel_role);
+
+        (new PropelPermission())
+            ->setExternalId('TEST_PERMISSION')
+            ->save();
+
+        $role->addPermission('TEST_PERMISSION');
+
+        // Act
+        $role->addPermission('TEST_PERMISSION');
+
+        // Assert
+        $message = 'Assert that "%s"."%s" has 1 row';
+        $message = sprintf($message, PermissionToRoleTableMap::DATABASE_NAME, PermissionToRoleTableMap::TABLE_NAME);
+        $this->assertTableRowCount(PermissionToRoleTableMap::TABLE_NAME, 1, $message);
     }
 
     /**
@@ -130,7 +161,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRemovePermissionWithEmptyId()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
 
         // Expect
@@ -147,7 +178,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRemovePermissionWithInvalidId()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
 
         // Expect
@@ -164,7 +195,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRemovePermissionException()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
         $role->setConnection($this->getFaultyConnection());
 
@@ -178,19 +209,18 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @depends testAddPermission
      * @covers \Phlopsi\AccessControl\Role::removePermission()
-     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @uses \Phlopsi\AccessControl\Role::addPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRemovePermission()
     {
         // Arrange
-        $propel_role = new Propel\Role();
+        $propel_role = new PropelRole();
         $propel_role
             ->setExternalId('TEST_ROLE')
             ->save();
 
-        $propel_permission = new Propel\Permission();
-        $propel_permission
+        (new PropelPermission())
             ->setExternalId('TEST_PERMISSION')
             ->save();
 
@@ -201,11 +231,37 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $role->removePermission('TEST_PERMISSION');
 
         // Assert
-        $this->assertEquals(
-            0,
-            $this->getConnection()->getRowCount(Propel\Map\PermissionToRoleTableMap::TABLE_NAME),
-            'Assert that "access_control"."permissions_roles" has no rows'
-        );
+        $message = 'Assert that "%s"."%s" is empty';
+        $message = sprintf($message, PermissionToRoleTableMap::DATABASE_NAME, PermissionToRoleTableMap::TABLE_NAME);
+        $this->assertTableRowCount(PermissionToRoleTableMap::TABLE_NAME, 0, $message);
+    }
+
+    /**
+     * @depends testRemovePermission
+     * @covers \Phlopsi\AccessControl\Role::removePermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
+     */
+    public function testRemovePermissionWithoutRelation()
+    {
+        debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
+        
+        // Arrange
+        $propel_role = new PropelRole();
+        $propel_role
+            ->setExternalId('TEST_ROLE')
+            ->save();
+
+        $role = new Role($propel_role);
+
+        (new PropelPermission())
+            ->setExternalId('TEST_PERMISSION')
+            ->save();
+
+        // Act
+        $role->removePermission('TEST_PERMISSION');
+
+        // Assert
+        $this->addToAssertionCount(1);
     }
 
     /**
@@ -215,7 +271,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testAddUserWithEmptyId()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
 
         // Expect
@@ -232,7 +288,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testAddUserWithInvalidId()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
 
         // Expect
@@ -249,7 +305,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testAddUserException()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
         $role->setConnection($this->getFaultyConnection());
 
@@ -267,27 +323,54 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testAddUser()
     {
         // Arrange
-        $propel_role = new Propel\Role();
+        $propel_role = new PropelRole();
         $propel_role
             ->setExternalId('TEST_ROLE')
             ->save();
 
-        $propel_user = new Propel\User();
-        $propel_user
+        $role = new Role($propel_role);
+
+        (new PropelUser())
             ->setExternalId('TEST_USER')
             ->save();
-
-        $role = new Role($propel_role);
 
         // Act
         $role->addUser('TEST_USER');
 
         // Assert
-        $this->assertEquals(
-            1,
-            $this->getConnection()->getRowCount(Propel\Map\RoleToUserTableMap::TABLE_NAME),
-            'Assert that "access_control"."roles_users" has 1 row'
-        );
+        $message = 'Assert that "%s"."%s" has 1 row';
+        $message = sprintf($message, RoleToUserTableMap::DATABASE_NAME, RoleToUserTableMap::TABLE_NAME);
+        $this->assertTableRowCount(RoleToUserTableMap::TABLE_NAME, 1, $message);
+    }
+
+    /**
+     * @depends testAddUser
+     * @covers \Phlopsi\AccessControl\Role::addUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
+     */
+    public function testAddUserTwice()
+    {
+        // Arrange
+        $propel_role = new PropelRole();
+        $propel_role
+            ->setExternalId('TEST_ROLE')
+            ->save();
+
+        $role = new Role($propel_role);
+
+        (new PropelUser())
+            ->setExternalId('TEST_USER')
+            ->save();
+
+        $role->addUser('TEST_USER');
+
+        // Act
+        $role->addUser('TEST_USER');
+
+        // Assert
+        $message = 'Assert that "%s"."%s" has 1 row';
+        $message = sprintf($message, RoleToUserTableMap::DATABASE_NAME, RoleToUserTableMap::TABLE_NAME);
+        $this->assertTableRowCount(RoleToUserTableMap::TABLE_NAME, 1, $message);
     }
 
     /**
@@ -297,7 +380,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRemoveUserWithEmptyId()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
 
         // Expect
@@ -314,7 +397,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRemoveUserWithInvalidId()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
 
         // Expect
@@ -331,7 +414,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     public function testRemoveUserException()
     {
         // Arrange
-        $propel_role = $this->getMock(Propel\Role::class);
+        $propel_role = $this->getMock(PropelRole::class);
         $role = new Role($propel_role);
         $role->setConnection($this->getFaultyConnection());
 
@@ -345,19 +428,18 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @depends testAddUser
      * @covers \Phlopsi\AccessControl\Role::removeUser()
-     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      * @uses \Phlopsi\AccessControl\Role::addUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRemoveUser()
     {
         // Arrange
-        $propel_role = new Propel\Role();
+        $propel_role = new PropelRole();
         $propel_role
             ->setExternalId('TEST_ROLE')
             ->save();
 
-        $propel_user = new Propel\User();
-        $propel_user
+        (new PropelUser())
             ->setExternalId('TEST_USER')
             ->save();
 
@@ -368,10 +450,34 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
         $role->removeUser('TEST_USER');
 
         // Assert
-        $this->assertEquals(
-            0,
-            $this->getConnection()->getRowCount(Propel\Map\RoleToUserTableMap::TABLE_NAME),
-            'Assert that "access_control"."roles_users" has no rows'
-        );
+        $message = 'Assert that "%s"."%s" is empty';
+        $message = sprintf($message, RoleToUserTableMap::DATABASE_NAME, RoleToUserTableMap::TABLE_NAME);
+        $this->assertTableRowCount(RoleToUserTableMap::TABLE_NAME, 0, $message);
+    }
+
+    /**
+     * @depends testRemoveUser
+     * @covers \Phlopsi\AccessControl\Role::removeUser()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
+     */
+    public function testRemoveUserWithoutRelation()
+    {
+        // Arrange
+        $propel_role = new PropelRole();
+        $propel_role
+            ->setExternalId('TEST_ROLE')
+            ->save();
+
+        $role = new Role($propel_role);
+
+        (new PropelUser())
+            ->setExternalId('TEST_USER')
+            ->save();
+
+        // Act
+        $role->removeUser('TEST_USER');
+
+        // Assert
+        $this->addToAssertionCount(1);
     }
 }
