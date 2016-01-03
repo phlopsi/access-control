@@ -243,8 +243,6 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
      */
     public function testRemovePermissionWithoutRelation()
     {
-        debug_print_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
-        
         // Arrange
         $propel_role = new PropelRole();
         $propel_role
