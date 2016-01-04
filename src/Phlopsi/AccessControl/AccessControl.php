@@ -35,15 +35,16 @@ class AccessControl implements ConnectionAware
      * Creates a new permission in the database
      *
      * It will throw an exception if the permission already exists or if it couldn't be created.
+     * It will return a Permission object, if the permission was successfully created.
      *
      * @param string $permission_id
      *
      * @throws \Phlopsi\AccessControl\Exception\LengthException
      * @throws \Phlopsi\AccessControl\Exception\RuntimeException
      */
-    public function createPermission(string $permission_id)
+    public function createPermission(string $permission_id): Permission
     {
-        $this->execute(function () use ($permission_id) {
+        return $this->execute(function () use ($permission_id) {
             if (0 === strlen($permission_id)) {
                 throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
             }
@@ -52,6 +53,8 @@ class AccessControl implements ConnectionAware
             $new_permission
                 ->setExternalId($permission_id)
                 ->save($this->connection);
+
+            return new Permission($new_permission);
         });
     }
 
