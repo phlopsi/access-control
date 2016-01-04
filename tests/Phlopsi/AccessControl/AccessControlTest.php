@@ -426,6 +426,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that %s::retrieveRole() returns the correct role';
+        $message = \sprintf($message, AccessControl::class);
         $this->assertEquals('TEST_ROLE', $result, $message);
     }
 
@@ -686,6 +687,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that %s::retrieveUser() returns the correct user';
+        $message = \sprintf($message, AccessControl::class);
         $this->assertEquals('TEST_USER', $result, $message);
     }
 
