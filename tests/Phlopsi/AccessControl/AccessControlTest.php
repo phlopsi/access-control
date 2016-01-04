@@ -170,6 +170,82 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     }
 
     /**
+     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
+     */
+    public function testRetrievePermissionWithEmptyId()
+    {
+        // Arrange
+        $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(LengthException::class);
+
+        // Act
+        $access_control->retrievePermission('');
+    }
+
+    /**
+     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
+     */
+    public function testRetrievePermissionWithInvalidId()
+    {
+        // Arrange
+        $access_control = new AccessControl();
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
+
+        // Act
+        $access_control->retrievePermission('TEST_PERMISSION');
+    }
+
+    /**
+     * @depends testCreatePermission
+     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
+     */
+    public function testRetrievePermissionException()
+    {
+        // Arrange
+        $access_control = new AccessControl();
+        $access_control->createPermission('TEST_PERMISSION');
+
+        $access_control_faulty = new AccessControl();
+        $access_control_faulty->setConnection($this->getFaultyConnection());
+
+        // Expect
+        $this->setExpectedException(RuntimeException::class);
+
+        // Act
+        $access_control_faulty->retrievePermission('TEST_PERMISSION');
+    }
+
+    /**
+     * @depends testCreatePermission
+     * @covers \Phlopsi\AccessControl\AccessControl::retrievePermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission()
+     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
+     */
+    public function testRetrievePermission()
+    {
+        // Arrange
+        $access_control = new AccessControl();
+        $access_control->createPermission('TEST_PERMISSION');
+
+        // Act
+        $permission = $access_control->retrievePermission('TEST_PERMISSION');
+        $result = $permission->getId();
+
+        // Assert
+        $message = 'Assert that %s::retrievePermission() returns the correct permission';
+        $message = \sprintf($message, AccessControl::class);
+        $this->assertEquals('TEST_PERMISSION', $result, $message);
+    }
+
+    /**
      * @covers \Phlopsi\AccessControl\AccessControl::retrievePermissionList()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */

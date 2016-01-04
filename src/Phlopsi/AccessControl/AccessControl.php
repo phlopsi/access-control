@@ -213,6 +213,33 @@ class AccessControl implements ConnectionAware
     }
 
     /**
+     * Retrieves an existing permission from the database
+     *
+     * It will throw an exception if the permission could not be found.
+     * It will return a Permission object, if the permission was successfully retrieved.
+     *
+     * @param string $permission_id
+     *
+     * @return \Phlopsi\AccessControl\Permission
+     *
+     * @throws \Phlopsi\AccessControl\Exception\LengthException
+     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     */
+    public function retrievePermission(string $permission_id): Permission
+    {
+        return $this->execute(function () use ($permission_id) {
+            if (0 === strlen($permission_id)) {
+                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
+            }
+
+            $permission = PropelPermissionQuery::create()
+                ->requireOneByExternalId($permission_id, $this->connection);
+
+            return new Permission($permission);
+        });
+    }
+
+    /**
      * Retrieves a list of all existing permissions from the database
      *
      * @return string[]
