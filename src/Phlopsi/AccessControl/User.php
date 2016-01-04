@@ -54,25 +54,18 @@ class User implements ConnectionAware
     }
 
     /**
-     * @param string $permission_id
+     * @param \Phlopsi\AccessControl\Permission $permission
      *
      * @return bool
-     *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
      */
-    public function hasPermission(string $permission_id): bool
+    public function hasPermission(Permission $permission): bool
     {
-        return $this->execute(function () use ($permission_id) {
-            if (0 === strlen($permission_id)) {
-                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-            }
-
-            $permission = PropelPermissionQuery::create()
-                ->requireOneByExternalId($permission_id, $this->connection);
-
+        return $this->execute(function () use ($permission) {
+            $propel_permission = $permission->getInternalObject();
+            
             $role_has_permission = PropelRoleQuery::create()
                 ->filterByUser($this->user)
-                ->filterByPermission($permission)
+                ->filterByPermission($propel_permission)
                 ->exists($this->connection);
 
             return $role_has_permission;
