@@ -91,7 +91,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that "%s"."%s" has 1 row';
-        $message = sprintf($message, PermissionTableMap::DATABASE_NAME, PermissionTableMap::TABLE_NAME);
+        $message = \sprintf($message, PermissionTableMap::DATABASE_NAME, PermissionTableMap::TABLE_NAME);
         $this->assertTableRowCount(PermissionTableMap::TABLE_NAME, 1, $message);
     }
 
@@ -165,7 +165,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($result, $message);
 
         $message = 'Assert that "%s"."%s" is empty';
-        $message = sprintf($message, PermissionTableMap::DATABASE_NAME, PermissionTableMap::TABLE_NAME);
+        $message = \sprintf($message, PermissionTableMap::DATABASE_NAME, PermissionTableMap::TABLE_NAME);
         $this->assertTableRowCount(PermissionTableMap::TABLE_NAME, 0, $message);
     }
 
@@ -275,7 +275,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrievePermissionList();
 
         // Assert
-        $message = sprintf('Assert that %s::retrievePermissionList() returns an empty array', AccessControl::class);
+        $message = \sprintf('Assert that %s::retrievePermissionList() returns an empty array', AccessControl::class);
         $this->assertEmpty($result, $message);
     }
 
@@ -298,7 +298,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that %s::retrievePermissionList() returns an array that contains 3 permissions';
-        $message = sprintf($message, AccessControl::class);
+        $message = \sprintf($message, AccessControl::class);
         $this->assertCount(3, $result, $message);
         $this->assertContains('TEST_PERMISSION_0', $result, $message);
         $this->assertContains('TEST_PERMISSION_1', $result, $message);
@@ -352,7 +352,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that "%s"."%s" has 1 row';
-        $message = sprintf($message, RoleTableMap::DATABASE_NAME, RoleTableMap::TABLE_NAME);
+        $message = \sprintf($message, RoleTableMap::DATABASE_NAME, RoleTableMap::TABLE_NAME);
         $this->assertTableRowCount(RoleTableMap::TABLE_NAME, 1, $message);
     }
 
@@ -426,7 +426,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($result, $message);
 
         $message = 'Assert that "%s"."%s" is empty';
-        $message = sprintf($message, RoleTableMap::DATABASE_NAME, RoleTableMap::TABLE_NAME);
+        $message = \sprintf($message, RoleTableMap::DATABASE_NAME, RoleTableMap::TABLE_NAME);
         $this->assertTableRowCount(RoleTableMap::TABLE_NAME, 0, $message);
     }
 
@@ -536,7 +536,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrieveRoleList();
 
         // Assert
-        $message = sprintf('Assert that %s::retrieveRoleList() returns an empty array', AccessControl::class);
+        $message = \sprintf('Assert that %s::retrieveRoleList() returns an empty array', AccessControl::class);
         $this->assertEmpty($result, $message);
     }
 
@@ -559,7 +559,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that %s::retrieveRoleList() returns an array that contains 3 roles';
-        $message = sprintf($message, AccessControl::class);
+        $message = \sprintf($message, AccessControl::class);
         $this->assertCount(3, $result, $message);
         $this->assertContains('TEST_ROLE_0', $result, $message);
         $this->assertContains('TEST_ROLE_1', $result, $message);
@@ -613,7 +613,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that "%s"."%s" has 1 row';
-        $message = sprintf($message, UserTableMap::DATABASE_NAME, UserTableMap::TABLE_NAME);
+        $message = \sprintf($message, UserTableMap::DATABASE_NAME, UserTableMap::TABLE_NAME);
         $this->assertTableRowCount(UserTableMap::TABLE_NAME, 1, $message);
     }
 
@@ -687,7 +687,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $this->assertTrue($result, $message);
 
         $message = 'Assert that "%s"."%s" is empty';
-        $message = sprintf($message, UserTableMap::DATABASE_NAME, UserTableMap::TABLE_NAME);
+        $message = \sprintf($message, UserTableMap::DATABASE_NAME, UserTableMap::TABLE_NAME);
         $this->assertTableRowCount(UserTableMap::TABLE_NAME, 0, $message);
     }
 
@@ -797,7 +797,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrieveUserList();
 
         // Assert
-        $message = sprintf('Assert that %s::retrieveUserList() returns an empty array', AccessControl::class);
+        $message = \sprintf('Assert that %s::retrieveUserList() returns an empty array', AccessControl::class);
         $this->assertEmpty($result, $message);
     }
 
@@ -820,7 +820,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that %s::retrieveUserList() returns an array that contains 3 users';
-        $message = sprintf($message, AccessControl::class);
+        $message = \sprintf($message, AccessControl::class);
         $this->assertCount(3, $result, $message);
         $this->assertContains('TEST_USER_0', $result, $message);
         $this->assertContains('TEST_USER_1', $result, $message);

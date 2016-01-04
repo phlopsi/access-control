@@ -121,7 +121,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that "%s"."%s" has 1 row';
-        $message = sprintf($message, PermissionToRoleTableMap::DATABASE_NAME, PermissionToRoleTableMap::TABLE_NAME);
+        $message = \sprintf($message, PermissionToRoleTableMap::DATABASE_NAME, PermissionToRoleTableMap::TABLE_NAME);
         $this->assertTableRowCount(PermissionToRoleTableMap::TABLE_NAME, 1, $message);
     }
 
@@ -150,7 +150,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that "%s"."%s" has 1 row';
-        $message = sprintf($message, PermissionToRoleTableMap::DATABASE_NAME, PermissionToRoleTableMap::TABLE_NAME);
+        $message = \sprintf($message, PermissionToRoleTableMap::DATABASE_NAME, PermissionToRoleTableMap::TABLE_NAME);
         $this->assertTableRowCount(PermissionToRoleTableMap::TABLE_NAME, 1, $message);
     }
 
@@ -232,7 +232,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that "%s"."%s" is empty';
-        $message = sprintf($message, PermissionToRoleTableMap::DATABASE_NAME, PermissionToRoleTableMap::TABLE_NAME);
+        $message = \sprintf($message, PermissionToRoleTableMap::DATABASE_NAME, PermissionToRoleTableMap::TABLE_NAME);
         $this->assertTableRowCount(PermissionToRoleTableMap::TABLE_NAME, 0, $message);
     }
 
@@ -337,7 +337,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that "%s"."%s" has 1 row';
-        $message = sprintf($message, RoleToUserTableMap::DATABASE_NAME, RoleToUserTableMap::TABLE_NAME);
+        $message = \sprintf($message, RoleToUserTableMap::DATABASE_NAME, RoleToUserTableMap::TABLE_NAME);
         $this->assertTableRowCount(RoleToUserTableMap::TABLE_NAME, 1, $message);
     }
 
@@ -367,7 +367,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that "%s"."%s" has 1 row';
-        $message = sprintf($message, RoleToUserTableMap::DATABASE_NAME, RoleToUserTableMap::TABLE_NAME);
+        $message = \sprintf($message, RoleToUserTableMap::DATABASE_NAME, RoleToUserTableMap::TABLE_NAME);
         $this->assertTableRowCount(RoleToUserTableMap::TABLE_NAME, 1, $message);
     }
 
@@ -449,7 +449,7 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that "%s"."%s" is empty';
-        $message = sprintf($message, RoleToUserTableMap::DATABASE_NAME, RoleToUserTableMap::TABLE_NAME);
+        $message = \sprintf($message, RoleToUserTableMap::DATABASE_NAME, RoleToUserTableMap::TABLE_NAME);
         $this->assertTableRowCount(RoleToUserTableMap::TABLE_NAME, 0, $message);
     }
 
