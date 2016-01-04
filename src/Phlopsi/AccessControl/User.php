@@ -44,6 +44,16 @@ class User implements ConnectionAware
     }
 
     /**
+     * @return \Phlopsi\AccessControl\Propel\User
+     *
+     * @codeCoverageIgnore
+     */
+    public function getInternalObject(): PropelUser
+    {
+        return $this->user;
+    }
+
+    /**
      * @param string $permission_id
      *
      * @return bool

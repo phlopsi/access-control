@@ -44,6 +44,16 @@ class Role implements ConnectionAware
     }
 
     /**
+     * @return \Phlopsi\AccessControl\Propel\Role
+     *
+     * @codeCoverageIgnore
+     */
+    public function getInternalObject(): PropelRole
+    {
+        return $this->role;
+    }
+
+    /**
      * @param string $permission_id
      *
      * @throws \Phlopsi\AccessControl\Exception\LengthException

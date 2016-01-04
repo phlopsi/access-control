@@ -35,4 +35,14 @@ class Permission
     {
         return $this->permission->getExternalId();
     }
+
+    /**
+     * @return \Phlopsi\AccessControl\Propel\Permission
+     *
+     * @codeCoverageIgnore
+     */
+    public function getInternalObject(): PropelPermission
+    {
+        return $this->permission;
+    }
 }
