@@ -8,9 +8,6 @@ declare(strict_types = 1);
 namespace Phlopsi\AccessControl;
 
 use Phlopsi\AccessControl\Connection\ConnectionAware;
-use Phlopsi\AccessControl\Exception\LengthException;
-use Phlopsi\AccessControl\Propel\PermissionQuery as PropelPermissionQuery;
-use Phlopsi\AccessControl\Propel\UserQuery as PropelUserQuery;
 use Phlopsi\AccessControl\Propel\Role as PropelRole;
 
 class Role implements ConnectionAware
@@ -44,89 +41,75 @@ class Role implements ConnectionAware
     }
 
     /**
-     * @param string $permission_id
+     * @return \Phlopsi\AccessControl\Propel\Role
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @codeCoverageIgnore
      */
-    public function addPermission(string $permission_id)
+    public function getInternalObject(): PropelRole
     {
-        $this->execute(function () use ($permission_id) {
-            if (0 === strlen($permission_id)) {
-                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-            }
+        return $this->role;
+    }
 
-            $permission = PropelPermissionQuery::create()
-                ->requireOneByExternalId($permission_id, $this->connection);
+    /**
+     * @param \Phlopsi\AccessControl\Permission $permission
+     *
+     * @throws \Phlopsi\AccessControl\Exception\Exception
+     */
+    public function addPermission(Permission $permission)
+    {
+        $this->execute(function () use ($permission) {
+            $propel_permission = $permission->getInternalObject();
 
             $this->role
-                ->addPermission($permission)
+                ->addPermission($propel_permission)
                 ->save($this->connection);
         });
     }
 
     /**
-     * @param string $permission_id
+     * @param \Phlopsi\AccessControl\Permission $permission
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
-    public function removePermission(string $permission_id)
+    public function removePermission(Permission $permission)
     {
-        $this->execute(function () use ($permission_id) {
-            if (0 === strlen($permission_id)) {
-                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-            }
-
-            $permission = PropelPermissionQuery::create()
-                ->requireOneByExternalId($permission_id, $this->connection);
+        $this->execute(function () use ($permission) {
+            $propel_permission = $permission->getInternalObject();
 
             $this->role
-                ->removePermission($permission)
+                ->removePermission($propel_permission)
                 ->save($this->connection);
         });
     }
 
     /**
-     * @param string $user_id
+     * @param \Phlopsi\AccessControl\User $user
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
-    public function addUser(string $user_id)
+    public function addUser(User $user)
     {
-        $this->execute(function () use ($user_id) {
-            if (0 === strlen($user_id)) {
-                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-            }
-
-            $user = PropelUserQuery::create()
-                ->requireOneByExternalId($user_id, $this->connection);
+        $this->execute(function () use ($user) {
+            $propel_user = $user->getInternalObject();
 
             $this->role
-                ->addUser($user)
+                ->addUser($propel_user)
                 ->save($this->connection);
         });
     }
 
     /**
-     * @param string $user_id
+     * @param \Phlopsi\AccessControl\User $user
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
-    public function removeUser(string $user_id)
+    public function removeUser(User $user)
     {
-        $this->execute(function () use ($user_id) {
-            if (0 === strlen($user_id)) {
-                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-            }
-
-            $user = PropelUserQuery::create()
-                ->requireOneByExternalId($user_id, $this->connection);
+        $this->execute(function () use ($user) {
+            $propel_user = $user->getInternalObject();
 
             $this->role
-                ->removeUser($user)
+                ->removeUser($propel_user)
                 ->save($this->connection);
         });
     }

@@ -8,6 +8,7 @@ declare(strict_types = 1);
 namespace Phlopsi\AccessControl;
 
 use \Phlopsi\ExceptionTranslator\ExceptionTranslator;
+use \Phlopsi\AccessControl\Exception\Exception;
 use \Phlopsi\AccessControl\Exception\RuntimeException;
 use \Phlopsi\Reflection\ExceptionReflection;
 use \Phlopsi\Reflection\ExternalExceptionReflection;
@@ -33,7 +34,7 @@ trait TranslateExceptionsTrait
             $exception_translator = new ExceptionTranslator($default_exception_reflection);
             $exception_reflection = new ExceptionReflection($exception);
             $translated_exception_reflection = $exception_translator->translate($exception_reflection);
-            
+
             throw $translated_exception_reflection->newInstance(
                 $exception->getMessage(),
                 $exception->getCode(),

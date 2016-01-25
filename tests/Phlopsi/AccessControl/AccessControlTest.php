@@ -87,62 +87,38 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $access_control = new AccessControl();
 
         // Act
-        $access_control->createPermission('TEST_PERMISSION');
+        $result = $access_control->createPermission('TEST_PERMISSION');
 
         // Assert
+        $message = 'Assert that %s::createPermission() returns an object of type %s';
+        $message = \sprintf($message, AccessControl::class, Permission::class);
+        $this->assertTrue(\is_object($result), $message);
+        $this->assertInstanceOf(Permission::class, $result, $message);
+
         $message = 'Assert that "%s"."%s" has 1 row';
-        $message = sprintf($message, PermissionTableMap::DATABASE_NAME, PermissionTableMap::TABLE_NAME);
+        $message = \sprintf($message, PermissionTableMap::DATABASE_NAME, PermissionTableMap::TABLE_NAME);
         $this->assertTableRowCount(PermissionTableMap::TABLE_NAME, 1, $message);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission()
-     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     */
-    public function testDeletePermissionWithEmptyId()
-    {
-        // Arrange
-        $access_control = new AccessControl();
-
-        // Expect
-        $this->setExpectedException(LengthException::class);
-
-        // Act
-        $access_control->deletePermission('');
-    }
-
-    /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission()
-     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     */
-    public function testDeletePermissionWithInvalidId()
-    {
-        // Arrange
-        $access_control = new AccessControl();
-
-        // Act
-        $result = $access_control->deletePermission('TEST_PERMISSION');
-
-        // Assert
-        $message = sprintf('Assert that %s::deletePermission() returns false', AccessControl::class);
-        $this->assertFalse($result, $message);
-    }
-
-    /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deletePermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeletePermissionException()
     {
         // Arrange
-        $access_control_faulty = new AccessControl();
+        $access_control = new AccessControl();
+        $permission = $access_control->createPermission('TEST_PERMISSION');
+
+        $access_control_faulty = clone $access_control;
         $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Expect
         $this->setExpectedException(RuntimeException::class);
 
         // Act
-        $access_control_faulty->deletePermission('TEST_PERMISSION');
+        $access_control_faulty->deletePermission($permission);
     }
 
     /**
@@ -155,17 +131,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         // Arrange
         $access_control = new AccessControl();
-        $access_control->createPermission('TEST_PERMISSION');
+        $permission = $access_control->createPermission('TEST_PERMISSION');
 
         // Act
-        $result = $access_control->deletePermission('TEST_PERMISSION');
+        $access_control->deletePermission($permission);
 
         // Assert
-        $message = sprintf('Assert that %s::deletePermission() returns true', AccessControl::class);
-        $this->assertTrue($result, $message);
-
         $message = 'Assert that "%s"."%s" is empty';
-        $message = sprintf($message, PermissionTableMap::DATABASE_NAME, PermissionTableMap::TABLE_NAME);
+        $message = \sprintf($message, PermissionTableMap::DATABASE_NAME, PermissionTableMap::TABLE_NAME);
         $this->assertTableRowCount(PermissionTableMap::TABLE_NAME, 0, $message);
     }
 
@@ -275,7 +248,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrievePermissionList();
 
         // Assert
-        $message = sprintf('Assert that %s::retrievePermissionList() returns an empty array', AccessControl::class);
+        $message = \sprintf('Assert that %s::retrievePermissionList() returns an empty array', AccessControl::class);
         $this->assertEmpty($result, $message);
     }
 
@@ -298,7 +271,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that %s::retrievePermissionList() returns an array that contains 3 permissions';
-        $message = sprintf($message, AccessControl::class);
+        $message = \sprintf($message, AccessControl::class);
         $this->assertCount(3, $result, $message);
         $this->assertContains('TEST_PERMISSION_0', $result, $message);
         $this->assertContains('TEST_PERMISSION_1', $result, $message);
@@ -348,62 +321,38 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $access_control = new AccessControl();
 
         // Act
-        $access_control->createRole('TEST_ROLE');
+        $result = $access_control->createRole('TEST_ROLE');
 
         // Assert
+        $message = 'Assert that %s::createRole() returns an object of type %s';
+        $message = \sprintf($message, AccessControl::class, Role::class);
+        $this->assertTrue(\is_object($result), $message);
+        $this->assertInstanceOf(Role::class, $result, $message);
+
         $message = 'Assert that "%s"."%s" has 1 row';
-        $message = sprintf($message, RoleTableMap::DATABASE_NAME, RoleTableMap::TABLE_NAME);
+        $message = \sprintf($message, RoleTableMap::DATABASE_NAME, RoleTableMap::TABLE_NAME);
         $this->assertTableRowCount(RoleTableMap::TABLE_NAME, 1, $message);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteRole()
-     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     */
-    public function testDeleteRoleWithEmptyId()
-    {
-        // Arrange
-        $access_control = new AccessControl();
-
-        // Expect
-        $this->setExpectedException(LengthException::class);
-
-        // Act
-        $access_control->deleteRole('');
-    }
-
-    /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole()
-     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     */
-    public function testDeleteRoleWithInvalidId()
-    {
-        // Arrange
-        $access_control = new AccessControl();
-
-        // Act
-        $result = $access_control->deleteRole('TEST_ROLE');
-
-        // Assert
-        $message = sprintf('Assert that %s::deleteRole() returns false', AccessControl::class);
-        $this->assertFalse($result, $message);
-    }
-
-    /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteRole()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeleteRoleException()
     {
         // Arrange
-        $access_control_faulty = new AccessControl();
+        $access_control = new AccessControl();
+        $role = $access_control->createRole('TEST_ROLE');
+
+        $access_control_faulty = clone $access_control;
         $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Expect
         $this->setExpectedException(RuntimeException::class);
 
         // Act
-        $access_control_faulty->deleteRole('TEST_ROLE');
+        $access_control_faulty->deleteRole($role);
     }
 
     /**
@@ -416,17 +365,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         // Arrange
         $access_control = new AccessControl();
-        $access_control->createRole('TEST_ROLE');
+        $role = $access_control->createRole('TEST_ROLE');
 
         // Act
-        $result = $access_control->deleteRole('TEST_ROLE');
+        $access_control->deleteRole($role);
 
         // Assert
-        $message = sprintf('Assert that %s::deleteRole() returns true', AccessControl::class);
-        $this->assertTrue($result, $message);
-
         $message = 'Assert that "%s"."%s" is empty';
-        $message = sprintf($message, RoleTableMap::DATABASE_NAME, RoleTableMap::TABLE_NAME);
+        $message = \sprintf($message, RoleTableMap::DATABASE_NAME, RoleTableMap::TABLE_NAME);
         $this->assertTableRowCount(RoleTableMap::TABLE_NAME, 0, $message);
     }
 
@@ -536,7 +482,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrieveRoleList();
 
         // Assert
-        $message = sprintf('Assert that %s::retrieveRoleList() returns an empty array', AccessControl::class);
+        $message = \sprintf('Assert that %s::retrieveRoleList() returns an empty array', AccessControl::class);
         $this->assertEmpty($result, $message);
     }
 
@@ -559,7 +505,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that %s::retrieveRoleList() returns an array that contains 3 roles';
-        $message = sprintf($message, AccessControl::class);
+        $message = \sprintf($message, AccessControl::class);
         $this->assertCount(3, $result, $message);
         $this->assertContains('TEST_ROLE_0', $result, $message);
         $this->assertContains('TEST_ROLE_1', $result, $message);
@@ -609,62 +555,38 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $access_control = new AccessControl();
 
         // Act
-        $access_control->createUser('TEST_USER');
+        $result = $access_control->createUser('TEST_USER');
 
         // Assert
+        $message = 'Assert that %s::createUser() returns an object of type %s';
+        $message = \sprintf($message, AccessControl::class, User::class);
+        $this->assertTrue(\is_object($result), $message);
+        $this->assertInstanceOf(User::class, $result, $message);
+
         $message = 'Assert that "%s"."%s" has 1 row';
-        $message = sprintf($message, UserTableMap::DATABASE_NAME, UserTableMap::TABLE_NAME);
+        $message = \sprintf($message, UserTableMap::DATABASE_NAME, UserTableMap::TABLE_NAME);
         $this->assertTableRowCount(UserTableMap::TABLE_NAME, 1, $message);
     }
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteUser()
-     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     */
-    public function testDeleteUserWithEmptyId()
-    {
-        // Arrange
-        $access_control = new AccessControl();
-
-        // Expect
-        $this->setExpectedException(LengthException::class);
-
-        // Act
-        $access_control->deleteUser('');
-    }
-
-    /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser()
-     * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
-     */
-    public function testDeleteUserWithInvalidId()
-    {
-        // Arrange
-        $access_control = new AccessControl();
-
-        // Act
-        $result = $access_control->deleteUser('TEST_USER');
-
-        // Assert
-        $message = sprintf('Assert that %s::deleteUser() returns false', AccessControl::class);
-        $this->assertFalse($result, $message);
-    }
-
-    /**
-     * @covers \Phlopsi\AccessControl\AccessControl::deleteUser()
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeleteUserException()
     {
         // Arrange
-        $access_control_faulty = new AccessControl();
+        $access_control = new AccessControl();
+        $user = $access_control->createUser('TEST_USER');
+
+        $access_control_faulty = clone $access_control;
         $access_control_faulty->setConnection($this->getFaultyConnection());
 
         // Expect
         $this->setExpectedException(RuntimeException::class);
 
         // Act
-        $access_control_faulty->deleteUser('TEST_USER');
+        $access_control_faulty->deleteUser($user);
     }
 
     /**
@@ -677,17 +599,14 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
     {
         // Arrange
         $access_control = new AccessControl();
-        $access_control->createUser('TEST_USER');
+        $user = $access_control->createUser('TEST_USER');
 
         // Act
-        $result = $access_control->deleteUser('TEST_USER');
+        $access_control->deleteUser($user);
 
         // Assert
-        $message = sprintf('Assert that %s::deleteUser() returns true', AccessControl::class);
-        $this->assertTrue($result, $message);
-
         $message = 'Assert that "%s"."%s" is empty';
-        $message = sprintf($message, UserTableMap::DATABASE_NAME, UserTableMap::TABLE_NAME);
+        $message = \sprintf($message, UserTableMap::DATABASE_NAME, UserTableMap::TABLE_NAME);
         $this->assertTableRowCount(UserTableMap::TABLE_NAME, 0, $message);
     }
 
@@ -797,7 +716,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
         $result = $access_control->retrieveUserList();
 
         // Assert
-        $message = sprintf('Assert that %s::retrieveUserList() returns an empty array', AccessControl::class);
+        $message = \sprintf('Assert that %s::retrieveUserList() returns an empty array', AccessControl::class);
         $this->assertEmpty($result, $message);
     }
 
@@ -820,7 +739,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
         // Assert
         $message = 'Assert that %s::retrieveUserList() returns an array that contains 3 users';
-        $message = sprintf($message, AccessControl::class);
+        $message = \sprintf($message, AccessControl::class);
         $this->assertCount(3, $result, $message);
         $this->assertContains('TEST_USER_0', $result, $message);
         $this->assertContains('TEST_USER_1', $result, $message);

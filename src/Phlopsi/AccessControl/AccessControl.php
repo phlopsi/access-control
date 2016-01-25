@@ -39,8 +39,7 @@ class AccessControl implements ConnectionAware
      *
      * @param string $permission_id
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function createPermission(string $permission_id): Permission
     {
@@ -68,8 +67,7 @@ class AccessControl implements ConnectionAware
      *
      * @return \Phlopsi\AccessControl\Role
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function createRole(string $role_id): Role
     {
@@ -97,8 +95,7 @@ class AccessControl implements ConnectionAware
      *
      * @return \Phlopsi\AccessControl\User
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function createUser(string $user_id): User
     {
@@ -119,96 +116,45 @@ class AccessControl implements ConnectionAware
     /**
      * Deletes an existing permission from the database
      *
-     * It will return true, if the permission was successfully deleted or false, if it could not be found.
+     * @param \Phlopsi\AccessControl\Permission $permission
      *
-     * @param string $permission_id
-     *
-     * @return bool
-     *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
-    public function deletePermission(string $permission_id): bool
+    public function deletePermission(Permission $permission)
     {
-        return $this->execute(function () use ($permission_id) {
-            if (0 === strlen($permission_id)) {
-                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-            }
-
-            $permission = PropelPermissionQuery::create()
-                ->findOneByExternalId($permission_id, $this->connection);
-
-            if (is_null($permission)) {
-                return false;
-            }
-
-            $permission->delete($this->connection);
-
-            return true;
+        return $this->execute(function () use ($permission) {
+            $propel_permission = $permission->getInternalObject();
+            $propel_permission->delete($this->connection);
         });
     }
 
     /**
      * Deletes an existing role from the database
      *
-     * It will return true, if the role was successfully deleted or false, if it could not be found.
+     * @param \Phlopsi\AccessControl\Role $role
      *
-     * @param string $role_id
-     *
-     * @return bool
-     *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
-    public function deleteRole(string $role_id): bool
+    public function deleteRole(Role $role)
     {
-        return $this->execute(function () use ($role_id) {
-            if (0 === strlen($role_id)) {
-                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-            }
-
-            $role = PropelRoleQuery::create()
-                ->findOneByExternalId($role_id, $this->connection);
-
-            if (is_null($role)) {
-                return false;
-            }
-
-            $role->delete($this->connection);
-
-            return true;
+        $this->execute(function () use ($role) {
+            $propel_role = $role->getInternalObject();
+            $propel_role->delete($this->connection);
         });
     }
 
     /**
      * Deletes an existing user from the database
      *
-     * It will return true, if the user was successfully deleted or false, if it could not be found.
+     * @param \Phlopsi\AccessControl\User $user
      *
-     * @param string $user_id
-     *
-     * @return bool
-     *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
-    public function deleteUser(string $user_id): bool
+    public function deleteUser(User $user)
     {
-        return $this->execute(function () use ($user_id) {
-            if (0 === strlen($user_id)) {
-                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-            }
-
-            $user = PropelUserQuery::create()
-                ->findOneByExternalId($user_id, $this->connection);
-
-            if (is_null($user)) {
-                return false;
-            }
-
-            $user->delete($this->connection);
-
-            return true;
+        $this->execute(function () use ($user) {
+            $propel_user = $user->getInternalObject();
+            $propel_user->delete($this->connection);
         });
     }
 
@@ -222,8 +168,7 @@ class AccessControl implements ConnectionAware
      *
      * @return \Phlopsi\AccessControl\Permission
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrievePermission(string $permission_id): Permission
     {
@@ -244,7 +189,7 @@ class AccessControl implements ConnectionAware
      *
      * @return string[]
      *
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrievePermissionList(): array
     {
@@ -266,8 +211,7 @@ class AccessControl implements ConnectionAware
      *
      * @return \Phlopsi\AccessControl\Role
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrieveRole(string $role_id): Role
     {
@@ -288,7 +232,7 @@ class AccessControl implements ConnectionAware
      *
      * @return string[]
      *
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrieveRoleList(): array
     {
@@ -310,8 +254,7 @@ class AccessControl implements ConnectionAware
      *
      * @return \Phlopsi\AccessControl\User
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrieveUser(string $user_id): User
     {
@@ -332,7 +275,7 @@ class AccessControl implements ConnectionAware
      *
      * @return string[]
      *
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrieveUserList(): array
     {
