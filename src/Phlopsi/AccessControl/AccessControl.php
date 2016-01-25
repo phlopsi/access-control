@@ -39,8 +39,7 @@ class AccessControl implements ConnectionAware
      *
      * @param string $permission_id
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function createPermission(string $permission_id): Permission
     {
@@ -68,8 +67,7 @@ class AccessControl implements ConnectionAware
      *
      * @return \Phlopsi\AccessControl\Role
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function createRole(string $role_id): Role
     {
@@ -97,8 +95,7 @@ class AccessControl implements ConnectionAware
      *
      * @return \Phlopsi\AccessControl\User
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function createUser(string $user_id): User
     {
@@ -121,7 +118,7 @@ class AccessControl implements ConnectionAware
      *
      * @param \Phlopsi\AccessControl\Permission $permission
      *
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function deletePermission(Permission $permission)
     {
@@ -136,7 +133,7 @@ class AccessControl implements ConnectionAware
      *
      * @param \Phlopsi\AccessControl\Role $role
      *
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function deleteRole(Role $role)
     {
@@ -151,7 +148,7 @@ class AccessControl implements ConnectionAware
      *
      * @param \Phlopsi\AccessControl\User $user
      *
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function deleteUser(User $user)
     {
@@ -171,8 +168,7 @@ class AccessControl implements ConnectionAware
      *
      * @return \Phlopsi\AccessControl\Permission
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrievePermission(string $permission_id): Permission
     {
@@ -193,7 +189,7 @@ class AccessControl implements ConnectionAware
      *
      * @return string[]
      *
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrievePermissionList(): array
     {
@@ -215,8 +211,7 @@ class AccessControl implements ConnectionAware
      *
      * @return \Phlopsi\AccessControl\Role
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrieveRole(string $role_id): Role
     {
@@ -237,7 +232,7 @@ class AccessControl implements ConnectionAware
      *
      * @return string[]
      *
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrieveRoleList(): array
     {
@@ -259,8 +254,7 @@ class AccessControl implements ConnectionAware
      *
      * @return \Phlopsi\AccessControl\User
      *
-     * @throws \Phlopsi\AccessControl\Exception\LengthException
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrieveUser(string $user_id): User
     {
@@ -281,7 +275,7 @@ class AccessControl implements ConnectionAware
      *
      * @return string[]
      *
-     * @throws \Phlopsi\AccessControl\Exception\RuntimeException
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function retrieveUserList(): array
     {

@@ -8,8 +8,6 @@ declare(strict_types = 1);
 namespace Phlopsi\AccessControl;
 
 use Phlopsi\AccessControl\Connection\ConnectionAware;
-use Phlopsi\AccessControl\Exception\LengthException;
-use Phlopsi\AccessControl\Propel\PermissionQuery as PropelPermissionQuery;
 use Phlopsi\AccessControl\Propel\RoleQuery as PropelRoleQuery;
 use Phlopsi\AccessControl\Propel\User as PropelUser;
 
@@ -57,12 +55,14 @@ class User implements ConnectionAware
      * @param \Phlopsi\AccessControl\Permission $permission
      *
      * @return bool
+     *
+     * @throws \Phlopsi\AccessControl\Exception\Exception
      */
     public function hasPermission(Permission $permission): bool
     {
         return $this->execute(function () use ($permission) {
             $propel_permission = $permission->getInternalObject();
-            
+
             $role_has_permission = PropelRoleQuery::create()
                 ->filterByUser($this->user)
                 ->filterByPermission($propel_permission)

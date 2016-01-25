@@ -7,7 +7,6 @@ declare(strict_types = 1);
 
 namespace Phlopsi\AccessControl;
 
-use Phlopsi\AccessControl\Exception\LengthException;
 use Phlopsi\AccessControl\Exception\RuntimeException;
 use Phlopsi\AccessControl\Propel\Permission as PropelPermission;
 use Phlopsi\AccessControl\Propel\Role as PropelRole;
