@@ -43,6 +43,8 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \Phlopsi\AccessControl\Role::addPermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testAddPermission()
@@ -65,6 +67,8 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @depends testAddPermission
      * @covers \Phlopsi\AccessControl\Role::addPermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testAddPermissionTwice()
@@ -89,6 +93,8 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @depends testAddPermission
      * @covers \Phlopsi\AccessControl\Role::removePermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
      * @uses \Phlopsi\AccessControl\Role::addPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
@@ -114,6 +120,8 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @depends testRemovePermission
      * @covers \Phlopsi\AccessControl\Role::removePermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRemovePermissionWithoutRelation()
@@ -133,6 +141,8 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \Phlopsi\AccessControl\Role::addUser()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testAddUser()
@@ -155,6 +165,8 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @depends testAddUser
      * @covers \Phlopsi\AccessControl\Role::addUser()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testAddUserTwice()
@@ -179,6 +191,8 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @depends testAddUser
      * @covers \Phlopsi\AccessControl\Role::removeUser()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser()
      * @uses \Phlopsi\AccessControl\Role::addUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
@@ -204,6 +218,8 @@ class RoleTest extends \PHPUnit_Extensions_Database_TestCase
     /**
      * @depends testRemoveUser
      * @covers \Phlopsi\AccessControl\Role::removeUser()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testRemoveUserWithoutRelation()

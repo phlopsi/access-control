@@ -102,6 +102,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deletePermission()
+     * @uses \Phlopsi\AccessControl\AccessControl::createPermission()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeletePermissionException()
@@ -335,6 +336,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteRole()
+     * @uses \Phlopsi\AccessControl\AccessControl::createRole()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeleteRoleException()
@@ -568,6 +570,7 @@ class AccessControlTest extends \PHPUnit_Extensions_Database_TestCase
 
     /**
      * @covers \Phlopsi\AccessControl\AccessControl::deleteUser()
+     * @uses \Phlopsi\AccessControl\AccessControl::createUser()
      * @uses \Phlopsi\AccessControl\TranslateExceptionsTrait::execute()
      */
     public function testDeleteUserException()
