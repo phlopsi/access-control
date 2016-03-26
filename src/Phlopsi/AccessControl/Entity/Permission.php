@@ -5,7 +5,7 @@
 
 declare(strict_types = 1);
 
-namespace Phlopsi\AccessControl;
+namespace Phlopsi\AccessControl\Entity;
 
 use Phlopsi\AccessControl\Propel\Permission as PropelPermission;
 

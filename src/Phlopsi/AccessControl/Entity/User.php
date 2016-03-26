@@ -5,7 +5,7 @@
 
 declare(strict_types = 1);
 
-namespace Phlopsi\AccessControl;
+namespace Phlopsi\AccessControl\Entity;
 
 use Phlopsi\AccessControl\Connection\ConnectionAware;
 use Phlopsi\AccessControl\Propel\RoleQuery as PropelRoleQuery;
@@ -13,8 +13,8 @@ use Phlopsi\AccessControl\Propel\User as PropelUser;
 
 class User implements ConnectionAware
 {
-    use Connection\ConnectionAwareTrait;
-    use TranslateExceptionsTrait;
+    use \Phlopsi\AccessControl\Connection\ConnectionAwareTrait;
+    use \Phlopsi\AccessControl\TranslateExceptionsTrait;
 
     /**
      * @var \Phlopsi\AccessControl\Propel\User

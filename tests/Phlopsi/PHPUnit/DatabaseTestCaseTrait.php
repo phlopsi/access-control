@@ -17,6 +17,11 @@ use Propel\Runtime\Propel;
 trait DatabaseTestCaseTrait
 {
     /**
+     * @var \Propel\Runtime\Configuration
+     */
+    private static $configuration;
+
+    /**
      * @var \Propel\Runtime\Connection\PdoConnection
      */
     private static $pdo;
@@ -31,23 +36,33 @@ trait DatabaseTestCaseTrait
      */
     public static function setUpDatabaseTestCaseBeforeClass()
     {
-        self::$pdo = new PdoConnection('sqlite::memory:');
+        $base_directory = \dirname(__DIR__, 3);
 
-        $connection = new ConnectionWrapper(self::$pdo);
+        $configuration_file = \implode(
+            DIRECTORY_SEPARATOR,
+            [$base_directory, 'build', 'config', 'propel.php']
+        );
 
-        $service_container = new \Propel\Runtime\ServiceContainer\StandardServiceContainer();
-        $service_container->setAdapterClass('access_control', 'sqlite');
-        $service_container->setConnection('access_control', $connection);
-        Propel::setServiceContainer($service_container);
+        /** @var \Propel\Runtime\Configuration $configuration */
+        $configuration = require $configuration_file;
 
-        $platform = new SqlitePlatform();
-        $schema_reader = new SchemaReader($platform);
+        self::$configuration = $configuration;
+        self::$pdo = $configuration
+            ->getConnectionManager('access_control')
+            ->getWriteConnection()
+            ->getWrappedConnection();
 
-        $file = \dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'schema.xml';
-        $schema = $schema_reader->parseFile($file);
+        $schema_file = $base_directory . DIRECTORY_SEPARATOR . 'schema.xml';
 
-        $database = $schema->getDatabase('access_control');
-        self::$sql = $platform->getAddTablesDDL($database);
+        $schema_reader = new SchemaReader();
+        $schema_reader->setGeneratorConfig($configuration);
+
+        $schema = $schema_reader->parseFile($schema_file);
+
+        $database = $schema->getDatabase();
+        self::$sql = (new SqlitePlatform())->getAddEntitiesDDL($database);
+
+
     }
 
     /**

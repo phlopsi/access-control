@@ -9,5 +9,7 @@ namespace Phlopsi\AccessControl\Exception;
 
 class LengthException extends \LengthException implements Exception
 {
-    const ARGUMENT_IS_EMPTY_STRING = 'The argument is an empty string, which is not allowed!';
+    const CODE_ARGUMENT_IS_EMPTY_STRING = 1;
+
+    const MESSAGE_ARGUMENT_IS_EMPTY_STRING = 'The provided argument is an empty string';
 }

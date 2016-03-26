@@ -5,92 +5,93 @@
     defaultIdMethod="native"
     name="access_control"
     namespace="Phlopsi\AccessControl\Propel"
+    platform="sqlite"
 >
     <behavior name="auto_add_pk" />
-    <table name="permissions" phpName="Permission">
-        <!--behavior name="nested_set" /-->
-        <column name="external_id" type="longvarchar" required="true" />
+    <entity name="Permission">
+        <!--behavior tableName="nested_set" /-->
+        <field name="externalId" type="longvarchar" required="true" />
         <unique>
-            <unique-column name="external_id" />
+            <unique-field name="externalId" />
         </unique>
-    </table>
-    <table name="permissions_roles" phpName="PermissionToRole" isCrossRef="true">
-        <column name="permissions_id" phpName="PermissionId" type="integer" required="true" primaryKey="true" />
-        <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
-        <foreign-key foreignTable="permissions">
-            <reference local="permissions_id" foreign="id" />
-        </foreign-key>
-        <foreign-key foreignTable="roles">
-            <reference local="roles_id" foreign="id" />
-        </foreign-key>
-    </table>
-    <!--table name="prohibitions" phpName="Prohibition">
-        <behavior name="nested_set" />
-        <column name="external_id" type="longvarchar" required="true" />
+    </entity>
+    <entity name="PermissionToRole" isCrossRef="true">
+        <field name="permissionId" type="integer" required="true" primaryKey="true" />
+        <field name="roleId" type="integer" required="true" primaryKey="true" />
+        <relation target="Permission">
+            <reference local="permissionId" foreign="id" />
+        </relation>
+        <relation target="Role">
+            <reference local="roleId" foreign="id" />
+        </relation>
+    </entity>
+    <!--table tableName="prohibitions" name="Prohibition">
+        <behavior tableName="nested_set" />
+        <field tableName="external_id" type="longvarchar" required="true" />
         <unique>
-            <unique-column name="external_id" />
+            <unique-field name="ExternalId" />
         </unique>
     </table-->
-    <!--table name="prohibitions_roles" phpName="ProhibitionToRole" isCrossRef="true">
-        <column name="prohibitions_id" phpName="ProhibitionId" type="integer" required="true" primaryKey="true" />
-        <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
-        <foreign-key foreignTable="prohibitions">
+    <!--table tableName="prohibitions_roles" name="ProhibitionToRole" isCrossRef="true">
+        <field tableName="prohibitions_id" name="ProhibitionId" type="integer" required="true" primaryKey="true" />
+        <field tableName="roles_id" name="RoleId" type="integer" required="true" primaryKey="true" />
+        <relation foreignEntity="prohibitions">
             <reference local="prohibitions_id" foreign="id" />
-        </foreign-key>
-        <foreign-key foreignTable="roles">
+        </relation>
+        <relation foreignEntity="roles">
             <reference local="roles_id" foreign="id" />
-        </foreign-key>
+        </relation>
     </table-->
-    <!--table name="prohibitions_users" phpName="ProhibitionToUser" isCrossRef="true">
-        <behavior name="timestampable" />
-        <column name="prohibitions_id" phpName="ProhibitionId" type="integer" required="true" primaryKey="true" />
-        <column name="users_id" phpName="UserId" type="integer" required="true" primaryKey="true" />
-        <column name="prohibited_until" type="timestamp" />
-        <foreign-key foreignTable="prohibitions">
+    <!--table tableName="prohibitions_users" name="ProhibitionToUser" isCrossRef="true">
+        <behavior tableName="timestampable" />
+        <field tableName="prohibitions_id" name="ProhibitionId" type="integer" required="true" primaryKey="true" />
+        <field tableName="users_id" name="UserId" type="integer" required="true" primaryKey="true" />
+        <field tableName="prohibited_until" type="timestamp" />
+        <relation foreignEntity="prohibitions">
             <reference local="prohibitions_id" foreign="id" />
-        </foreign-key>
-        <foreign-key foreignTable="users">
+        </relation>
+        <relation foreignEntity="users">
             <reference local="users_id" foreign="id" />
-        </foreign-key>
+        </relation>
     </table-->
-    <table name="roles" phpName="Role">
-        <!--behavior name="nested_set" /-->
-        <column name="external_id" type="longvarchar" required="true" />
+    <entity name="Role">
+        <!--behavior tableName="nested_set" /-->
+        <field name="externalId" type="longvarchar" required="true" />
         <unique>
-            <unique-column name="external_id" />
+            <unique-field name="externalId" />
         </unique>
-    </table>
-    <!--table name="roles_session_types" phpName="RoleToSessionType" isCrossRef="true">
-        <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
-        <column name="session_types_id" phpName="SessionTypeId" type="integer" required="true" primaryKey="true" />
-        <foreign-key foreignTable="roles">
+    </entity>
+    <!--table tableName="roles_session_types" name="RoleToSessionType" isCrossRef="true">
+        <field tableName="roles_id" name="RoleId" type="integer" required="true" primaryKey="true" />
+        <field tableName="session_types_id" name="SessionTypeId" type="integer" required="true" primaryKey="true" />
+        <relation foreignEntity="roles">
             <reference local="roles_id" foreign="id" />
-        </foreign-key>
-        <foreign-key foreignTable="session_types">
+        </relation>
+        <relation foreignEntity="session_types">
             <reference local="session_types_id" foreign="id" />
-        </foreign-key>
+        </relation>
     </table-->
-    <table name="roles_users" phpName="RoleToUser" isCrossRef="true">
-        <column name="roles_id" phpName="RoleId" type="integer" required="true" primaryKey="true" />
-        <column name="users_id" phpName="UserId" type="integer" required="true" primaryKey="true" />
-        <foreign-key foreignTable="roles">
-            <reference local="roles_id" foreign="id" />
-        </foreign-key>
-        <foreign-key foreignTable="users">
-            <reference local="users_id" foreign="id" />
-        </foreign-key>
-    </table>
-    <!--table name="session_types" phpName="SessionType">
-        <behavior name="nested_set" />
-        <column name="external_id" type="longvarchar" required="true" />
+    <entity name="RoleToUser" isCrossRef="true">
+        <field name="roleId" type="integer" required="true" primaryKey="true" />
+        <field name="userId" type="integer" required="true" primaryKey="true" />
+        <relation target="Role">
+            <reference local="roleId" foreign="id" />
+        </relation>
+        <relation target="User">
+            <reference local="userId" foreign="id" />
+        </relation>
+    </entity>
+    <!--table tableName="session_types" name="SessionType">
+        <behavior tableName="nested_set" />
+        <field tableName="external_id" type="longvarchar" required="true" />
         <unique>
-            <unique-column name="external_id" />
+            <unique-field name="ExternalId" />
         </unique>
     </table-->
-    <table name="users" phpName="User">
-        <column name="external_id" type="longvarchar" required="true" />
+    <entity name="User">
+        <field name="externalId" type="longvarchar" required="true" />
         <unique>
-            <unique-column name="external_id" />
+            <unique-field name="externalId" />
         </unique>
-    </table>
+    </entity>
 </database>

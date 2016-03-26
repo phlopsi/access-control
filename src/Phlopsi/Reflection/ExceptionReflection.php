@@ -1,18 +1,15 @@
 <?php
-/**
- * @author Patrick Fischer <nbphobos@gmail.com>
- */
-
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Phlopsi\Reflection;
 
+/**
+ * @author Patrick Fischer <nbphobos@gmail.com>
+ */
 class ExceptionReflection extends \ReflectionClass
 {
     /**
      * @param mixed $argument
-     *
-     * @throws \DomainException
      */
     public function __construct($argument)
     {
@@ -23,7 +20,7 @@ class ExceptionReflection extends \ReflectionClass
         }
 
         if (!(\Exception::class === $this->name || $this->isSubclassOf(\Exception::class))) {
-            throw new \DomainException(\sprintf('Class %s is not an Exception', $this->name));
+            throw new \DomainException(\sprintf('Class `%s` is not an `Exception`', $this->name));
         }
     }
 }

@@ -10,8 +10,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">= 7.0",
-        "propel/propel": "@alpha"
+        "php": ">=7.0.0",
+        "propel/propel": "dev-data-mapper"
     },
     "require-dev": {
         "phpunit/phpunit": "@stable",
@@ -27,7 +27,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Phlopsi\\": ["src/Phlopsi/", "build/src/Phlopsi/"]
+            "Phlopsi\\": ["src/", "build/src/"]
         }
     },
     "autoload-dev": {

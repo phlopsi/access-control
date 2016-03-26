@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Phlopsi\AccessControl\Exception;
+namespace Phlopsi\Reflection\Exception;
 
 interface Exception
 {
