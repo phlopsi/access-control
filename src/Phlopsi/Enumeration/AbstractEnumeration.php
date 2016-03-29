@@ -31,7 +31,7 @@ abstract class AbstractEnumeration implements Enumeration
     private $value;
 
     /**
-     * Initializes the enumeration properties
+     * @inheritDoc
      */
     protected static function initialize()
     {
