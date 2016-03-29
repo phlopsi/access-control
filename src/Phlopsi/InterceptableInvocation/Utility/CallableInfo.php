@@ -34,9 +34,6 @@ class CallableInfo
 
     /**
      * @param callable $callable Callable for which information is requested
-     *
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableInfo::$callable
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableInfo::$type
      */
     public function __construct(callable $callable)
     {
@@ -48,9 +45,6 @@ class CallableInfo
      * Detects and returns the type of the provided callable
      *
      * @return \Phlopsi\InterceptableInvocation\Utility\CallableType The detected type
-     *
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableInfo::$callable
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableInfo::$type
      */
     public function detectType(): CallableType
     {

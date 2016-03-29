@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Phlopsi\InterceptableInvocation\Utility;
 
+use Phlopsi\Enumeration\AbstractEnumeration;
+use Phlopsi\Enumeration\Enumeration;
+
 /**
  * Type-safe pseudo enumeration of a callable type
  *
@@ -10,45 +13,40 @@ namespace Phlopsi\InterceptableInvocation\Utility;
  *
  * @author Patrick Fischer <nbphobos@gmail.com>
  */
-final class CallableType extends AbstractEnumeration
+final class CallableType extends AbstractEnumeration implements Enumeration
 {
     /**
-     * @var bool
-     */
-    private static $initialized = false;
-
-    /**
-     * @var \Phlopsi\InterceptableInvocation\Utility\CallableType
+     * @var CallableType
      */
     public static $CLOSURE;
 
     /**
-     * @var \Phlopsi\InterceptableInvocation\Utility\CallableType
+     * @var CallableType
      */
     public static $FUNCTION;
 
     /**
-     * @var \Phlopsi\InterceptableInvocation\Utility\CallableType
+     * @var CallableType
      */
     public static $INVOCABLE_OBJECT;
 
     /**
-     * @var \Phlopsi\InterceptableInvocation\Utility\CallableType
+     * @var CallableType
      */
     public static $OBJECT_METHOD;
 
     /**
-     * @var \Phlopsi\InterceptableInvocation\Utility\CallableType
+     * @var CallableType
      */
     public static $RELATIVE_OBJECT_METHOD;
 
     /**
-     * @var \Phlopsi\InterceptableInvocation\Utility\CallableType
+     * @var CallableType
      */
     public static $RELATIVE_STATIC_CLASS_METHOD;
 
     /**
-     * @var \Phlopsi\InterceptableInvocation\Utility\CallableType
+     * @var CallableType
      */
     public static $STATIC_CLASS_METHOD;
 
@@ -56,20 +54,10 @@ final class CallableType extends AbstractEnumeration
      * @inheritDoc
      *
      * @uses \Phlopsi\InterceptableInvocation\Utility\CallableType::__construct()
-     *
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableType::$CLOSURE
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableType::$FUNCTION
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableType::$INVOCABLE_OBJECT
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableType::$OBJECT_METHOD
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableType::$RELATIVE_OBJECT_METHOD
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableType::$RELATIVE_STATIC_CLASS_METHOD
-     * @see \Phlopsi\InterceptableInvocation\Utility\CallableType::$STATIC_CLASS_METHOD
      */
     public static function initialize()
     {
-        if (self::$initialized) {
-            throw new \LogicException(sprintf('`%s` is already initialized', self::class));
-        }
+        parent::initialize();
 
         self::$CLOSURE = new self('CLOSURE');
         self::$FUNCTION = new self('FUNCTION');
@@ -78,8 +66,6 @@ final class CallableType extends AbstractEnumeration
         self::$RELATIVE_OBJECT_METHOD = new self('RELATIVE_OBJECT_METHOD');
         self::$RELATIVE_STATIC_CLASS_METHOD = new self('RELATIVE_STATIC_CLASS_METHOD');
         self::$STATIC_CLASS_METHOD = new self('STATIC_CLASS_METHOD');
-
-        self::$initialized = true;
     }
 }
 

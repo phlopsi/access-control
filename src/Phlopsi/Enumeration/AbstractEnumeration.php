@@ -1,15 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace Phlopsi\InterceptableInvocation\Utility;
+namespace Phlopsi\Enumeration;
 
 /**
  * Defines common enumeration behaviour
  *
  * @author Patrick Fischer <nbphobos@gmail.com>
  */
-abstract class AbstractEnumeration
+abstract class AbstractEnumeration implements Enumeration
 {
+    /**
+     * Used by `self::initialize()`
+     *
+     * @var bool
+     *
+     * @see \Phlopsi\InterceptableInvocation\Utility\AbstractEnumeration::initialize()
+     */
+    private static $initialized = false;
+
     /**
      * Represents the enumeration property as a string
      *
@@ -24,7 +33,14 @@ abstract class AbstractEnumeration
     /**
      * Initializes the enumeration properties
      */
-    abstract public static function initialize();
+    protected static function initialize()
+    {
+        if (self::$initialized) {
+            throw new \LogicException(sprintf('`%s` is already initialized', static::class));
+        }
+
+        self::$initialized = true;
+    }
 
     /**
      * Disables the `__set_state()` magic method
@@ -51,7 +67,6 @@ abstract class AbstractEnumeration
      * @param string $value The string representation of the enumeration property
      *
      * @see \Phlopsi\InterceptableInvocation\Utility\AbstractEnumeration::initialize()
-     * @see \Phlopsi\InterceptableInvocation\Utility\AbstractEnumeration::$value
      */
     final protected function __construct(string $value)
     {
@@ -59,11 +74,7 @@ abstract class AbstractEnumeration
     }
 
     /**
-     * Returns the string representation of the enumeration property
-     *
-     * @return string
-     *
-     * @see \Phlopsi\InterceptableInvocation\Utility\AbstractEnumeration::$value
+     * @inheritDoc
      */
     final public function __toString(): string
     {
