@@ -74,7 +74,7 @@ class PermissionRepositoryTest extends \PHPUnit_Framework_TestCase
 
         // Assert
         $message = 'Assert that %s::create() returns an object of type %s';
-        $message = \sprintf($message, PermissionRepository::class, Permission::class);
+        $message = \sprintf($message, DefaultPermissionRepository::class, Permission::class);
         $this->assertTrue(\is_object($result), $message);
         $this->assertInstanceOf(Permission::class, $result, $message);
     }
@@ -145,7 +145,7 @@ class PermissionRepositoryTest extends \PHPUnit_Framework_TestCase
 
         // Assert
         $message = 'Assert that %s::retrieve() returns an object of type %s';
-        $message = \sprintf($message, PermissionRepository::class, Permission::class);
+        $message = \sprintf($message, DefaultPermissionRepository::class, Permission::class);
         $this->assertTrue(\is_object($result), $message);
         $this->assertInstanceOf(Permission::class, $result, $message);
     }

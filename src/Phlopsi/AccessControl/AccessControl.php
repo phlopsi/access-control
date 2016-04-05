@@ -1,14 +1,9 @@
 <?php
-/**
- * @author Patrick Fischer <nbphobos@gmail.com>
- */
-
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Phlopsi\AccessControl;
 
-use Phlopsi\AccessControl\Repository\PermissionRepository;
-use Phlopsi\AccessControl\Repository\Proxy\ExceptionTranslatorRepositoryProxy;
+use Phlopsi\AccessControl\Repository\DefaultPermissionRepository;
 use Propel\Permission as PropelPermission;
 
 /**
@@ -17,6 +12,8 @@ use Propel\Permission as PropelPermission;
  * This is the main class for interaction with the AccessControl API.
  * Every application using this API should always be accessing it through this class.
  * It handles all the creation, retrieving and deletion processes for users, roles and permissions.
+ *
+ * @author Patrick Fischer <nbphobos@gmail.com>
  */
 class AccessControl
 {
@@ -37,9 +34,7 @@ class AccessControl
     {
         if (null === $this->permissionRepository) {
             $propelPermissionRepository = $this->configuration->getRepository(PropelPermission::class);
-            $permissionRepository = new PermissionRepository($propelPermissionRepository);
-            $this->permissionRepository =
-                new ExceptionTranslatorRepositoryProxy($permissionRepository, $functionWrapper);
+            $this->permissionRepository = new DefaultPermissionRepository($propelPermissionRepository);
         }
 
         return $this->permissionRepository;
