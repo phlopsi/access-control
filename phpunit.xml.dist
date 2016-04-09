@@ -13,8 +13,8 @@
     forceCoversAnnotation="true"
 >
     <testsuites>
-        <testsuite name="AccessControl">
-            <directory>tests/Phlopsi/AccessControl/</directory>
+        <testsuite name="unit">
+            <directory>tests/phpunit/unit/</directory>
         </testsuite>
     </testsuites>
     <filter>

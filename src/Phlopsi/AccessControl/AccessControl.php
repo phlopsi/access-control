@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Phlopsi\AccessControl;
 
+use Phlopsi\AccessControl\Propel\Base\BasePermissionRepository;
+use Phlopsi\AccessControl\Propel\Permission;
 use Phlopsi\AccessControl\Repository\DefaultPermissionRepository;
-use Propel\Permission as PropelPermission;
+use Propel\Runtime\Configuration;
 
 /**
  * Entry point for API usage
@@ -18,56 +20,40 @@ use Propel\Permission as PropelPermission;
 class AccessControl
 {
     /**
-     * @var \Propel\Runtime\Configuration
+     * @var BasePermissionRepository
      */
-    private $configuration;
+    private $propelPermissionRepository;
 
     /**
-     * @var \Phlopsi\AccessControl\Repository\PermissionRepository
+     * Factory method
+     *
+     * @return self
      */
-    private $permissionRepository;
+    public static function fromConfiguration(Configuration $configuration)
+    {
+        $propelPermissionRepository = $configuration->getRepository(Permission::class);
+        assert($propelPermissionRepository instanceof BasePermissionRepository);
+
+        return new self($propelPermissionRepository);
+    }
+
+    /**
+     * @param BasePermissionRepository $propelPermissionRepository
+     *
+     * @codeCoverageIgnore
+     */
+    public function __construct(BasePermissionRepository $propelPermissionRepository)
+    {
+        $this->propelPermissionRepository = $propelPermissionRepository;
+    }
 
     /**
      * @return \Phlopsi\AccessControl\Repository\PermissionRepository
      */
     public function getPermissionRepository(): PermissionRepository
     {
-        if (null === $this->permissionRepository) {
-            $propelPermissionRepository = $this->configuration->getRepository(PropelPermission::class);
-            $this->permissionRepository = new DefaultPermissionRepository($propelPermissionRepository);
-        }
-
-        return $this->permissionRepository;
+        return new DefaultPermissionRepository($this->propelPermissionRepository);
     }
-
-//    use Connection\ConnectionAwareTrait;
-//    use TranslateExceptionsTrait;
-//
-//    /**
-//     * Creates a new permission in the database
-//     *
-//     * It will throw an exception if the permission already exists or if it couldn't be created.
-//     * It will return a Permission object, if the permission was successfully created.
-//     *
-//     * @param string $permission_id
-//     *
-//     * @throws \Phlopsi\AccessControl\Exception\Exception
-//     */
-//    public function createPermission(string $permission_id): Permission
-//    {
-//        return $this->execute(function () use ($permission_id) {
-//            if (0 === strlen($permission_id)) {
-//                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-//            }
-//
-//            $new_permission = new PropelPermission();
-//            $new_permission
-//                ->setExternalId($permission_id)
-//                ->save($this->connection);
-//
-//            return new Permission($new_permission);
-//        });
-//    }
 //
 //    /**
 //     * Creates a new role in the database
@@ -126,21 +112,6 @@ class AccessControl
 //    }
 //
 //    /**
-//     * Deletes an existing permission from the database
-//     *
-//     * @param \Phlopsi\AccessControl\Permission $permission
-//     *
-//     * @throws \Phlopsi\AccessControl\Exception\Exception
-//     */
-//    public function deletePermission(Permission $permission)
-//    {
-//        return $this->execute(function () use ($permission) {
-//            $propel_permission = $permission->getInternalObject();
-//            $propel_permission->delete($this->connection);
-//        });
-//    }
-//
-//    /**
 //     * Deletes an existing role from the database
 //     *
 //     * @param \Phlopsi\AccessControl\Role $role
@@ -167,49 +138,6 @@ class AccessControl
 //        $this->execute(function () use ($user) {
 //            $propel_user = $user->getInternalObject();
 //            $propel_user->delete($this->connection);
-//        });
-//    }
-//
-//    /**
-//     * Retrieves an existing permission from the database
-//     *
-//     * It will throw an exception if the permission could not be found.
-//     * It will return a Permission object, if the permission was successfully retrieved.
-//     *
-//     * @param string $permission_id
-//     *
-//     * @return \Phlopsi\AccessControl\Permission
-//     *
-//     * @throws \Phlopsi\AccessControl\Exception\Exception
-//     */
-//    public function retrievePermission(string $permission_id): Permission
-//    {
-//        return $this->execute(function () use ($permission_id) {
-//            if (0 === strlen($permission_id)) {
-//                throw new LengthException(LengthException::ARGUMENT_IS_EMPTY_STRING);
-//            }
-//
-//            $permission = PropelPermissionQuery::create()
-//                ->requireOneByExternalId($permission_id, $this->connection);
-//
-//            return new Permission($permission);
-//        });
-//    }
-//
-//    /**
-//     * Retrieves a list of all existing permissions from the database
-//     *
-//     * @return string[]
-//     *
-//     * @throws \Phlopsi\AccessControl\Exception\Exception
-//     */
-//    public function retrievePermissionList(): array
-//    {
-//        return $this->execute(function () {
-//            return PropelPermissionQuery::create()
-//                ->select(PermissionTableMap::COL_EXTERNAL_ID)
-//                ->find($this->connection)
-//                ->getData();
 //        });
 //    }
 //

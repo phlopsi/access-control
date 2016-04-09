@@ -15,7 +15,6 @@
     },
     "require-dev": {
         "phpunit/phpunit": "@stable",
-        "phpunit/dbunit": "@stable",
         "squizlabs/php_codesniffer": "@stable",
         "satooshi/php-coveralls": "@stable"
     },
@@ -27,12 +26,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "Phlopsi\\": ["src/", "build/src/"]
+            "Phlopsi\\AccessControl\\": ["src/Phlopsi/AccessControl/", "build/src/Phlopsi/AccessControl/"]
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Phlopsi\\": "tests/Phlopsi/"
+            "Phlopsi\\AccessControl\\": "tests/phpunit/unit/Phlopsi/AccessControl/"
         }
     }
 }
