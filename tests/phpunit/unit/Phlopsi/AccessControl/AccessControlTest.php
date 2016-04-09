@@ -50,7 +50,9 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
     {
         // Arrange
         $basePermissionRepository = $this->getBasePermissionRepositoryDummy();
-        $accessControl = new AccessControl($basePermissionRepository);
+        $baseRoleRepository = $this->getBaseRoleRepositoryDummy();
+        $baseUserRepository = $this->getBaseUserRepositoryDummy();
+        $accessControl = new AccessControl($basePermissionRepository, $baseRoleRepository, $baseUserRepository);
 
         // Act
         $result = $accessControl->getPermissionRepository();
@@ -65,8 +67,10 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
     public function testGetRoleRepository()
     {
         // Arrange
+        $basePermissionRepository = $this->getBasePermissionRepositoryDummy();
         $baseRoleRepository = $this->getBaseRoleRepositoryDummy();
-        $accessControl = new AccessControl($baseRoleRepository);
+        $baseUserRepository = $this->getBaseUserRepositoryDummy();
+        $accessControl = new AccessControl($basePermissionRepository, $baseRoleRepository, $baseUserRepository);
 
         // Act
         $result = $accessControl->getRoleRepository();
@@ -81,8 +85,10 @@ class AccessControlTest extends \PHPUnit_Framework_TestCase
     public function testGetUserRepository()
     {
         // Arrange
+        $basePermissionRepository = $this->getBasePermissionRepositoryDummy();
+        $baseRoleRepository = $this->getBaseRoleRepositoryDummy();
         $baseUserRepository = $this->getBaseUserRepositoryDummy();
-        $accessControl = new AccessControl($baseUserRepository);
+        $accessControl = new AccessControl($basePermissionRepository, $baseRoleRepository, $baseUserRepository);
 
         // Act
         $result = $accessControl->getUserRepository();
