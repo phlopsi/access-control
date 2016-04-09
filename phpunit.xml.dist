@@ -13,6 +13,7 @@
     failOnRisky="true"
     failOnWarning="true"
     forceCoversAnnotation="true"
+    verbose="true"
 >
     <testsuites>
         <testsuite name="unit">

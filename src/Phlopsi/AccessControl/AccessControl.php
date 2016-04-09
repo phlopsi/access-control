@@ -51,7 +51,7 @@ class AccessControl
     /**
      * @return \Phlopsi\AccessControl\Repository\PermissionRepository
      */
-    public function getPermissionRepository(): Repository\PermissionRepository
+    public function getPermissionRepository(): PermissionRepository
     {
         return new DefaultPermissionRepository($this->propelPermissionRepository);
     }
