@@ -9,6 +9,7 @@ use Phlopsi\AccessControl\Propel\Base\BaseUserRepository;
 use Phlopsi\AccessControl\Repository\PermissionRepository;
 use Phlopsi\AccessControl\Repository\RoleRepository;
 use Phlopsi\AccessControl\Repository\UserRepository;
+use PHPUnit_Framework_MockObject_MockBuilder as MockBuilder;
 
 class AccessControlTest extends \PHPUnit_Framework_TestCase
 {

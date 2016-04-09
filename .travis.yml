@@ -9,7 +9,7 @@ before_script:
 
 script:
     - ./vendor/bin/phpcs --colors --report-width=auto --warning-severity=0 --standard=PSR2 "src"
-    - ./vendor/bin/propel model:build --config-dir=./tests/
+    - ./vendor/bin/propel model:build
     - phpdbg -qrr vendor/bin/phpunit --testsuite unit
 
 after_script:
