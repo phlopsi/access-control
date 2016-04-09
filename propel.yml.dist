@@ -14,6 +14,7 @@ propel:
     paths:
         phpDir: build/src
     generator:
+        defaultConnection: access_control
         objectModel:
             addGenericAccessors: false
             addGenericMutators: false
