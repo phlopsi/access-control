@@ -8,8 +8,4 @@ namespace Phlopsi\AccessControl\Repository;
  */
 interface Repository
 {
-    public function create(string $entity_id);
-    public function delete($entity);
-    public function retrieve(string $entity_id);
-    public function retrieveList(): array;
 }
