@@ -6,6 +6,7 @@ namespace Phlopsi\AccessControl;
 use Phlopsi\AccessControl\Propel\Base\BasePermissionRepository;
 use Phlopsi\AccessControl\Propel\Permission;
 use Phlopsi\AccessControl\Repository\DefaultPermissionRepository;
+use Phlopsi\AccessControl\Repository\PermissionRepository;
 use Propel\Runtime\Configuration;
 
 /**
@@ -20,7 +21,7 @@ use Propel\Runtime\Configuration;
 class AccessControl
 {
     /**
-     * @var BasePermissionRepository
+     * @var \Phlopsi\AccessControl\Propel\Base\BasePermissionRepository
      */
     private $propelPermissionRepository;
 
@@ -38,7 +39,7 @@ class AccessControl
     }
 
     /**
-     * @param BasePermissionRepository $propelPermissionRepository
+     * @param \Phlopsi\AccessControl\Propel\Base\BasePermissionRepository $propelPermissionRepository
      *
      * @codeCoverageIgnore
      */
@@ -50,7 +51,7 @@ class AccessControl
     /**
      * @return \Phlopsi\AccessControl\Repository\PermissionRepository
      */
-    public function getPermissionRepository(): PermissionRepository
+    public function getPermissionRepository(): Repository\PermissionRepository
     {
         return new DefaultPermissionRepository($this->propelPermissionRepository);
     }
