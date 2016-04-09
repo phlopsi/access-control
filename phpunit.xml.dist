@@ -10,6 +10,8 @@
     beStrictAboutTodoAnnotatedTests="true"
     bootstrap="vendor/autoload.php"
     colors="true"
+    failOnRisky="true"
+    failOnWarning="true"
     forceCoversAnnotation="true"
 >
     <testsuites>
