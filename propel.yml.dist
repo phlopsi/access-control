@@ -4,6 +4,13 @@ propel:
     general:
         project: AccessControl
         version: 0.1.0
+    database:
+        connections:
+            access_control:
+                adapter: sqlite
+                dsn: 'sqlite::memory:'
+                user: ''
+                password: ''
     paths:
         phpDir: build/src
     generator:
